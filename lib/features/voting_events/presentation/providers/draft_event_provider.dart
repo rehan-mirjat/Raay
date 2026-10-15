@@ -148,8 +148,8 @@ class DraftEventNotifier extends StateNotifier<DraftEventState> {
         eligibilityType: eTypeStr,
         // MUST BE EXPLICIT ARRAYS! Cloud functions require arrays for SELECTED states, 
         // even if empty, but previously we sent null if empty.
-        eligibilityDepartmentIds: eTypeStr == 'SELECTED_DEPARTMENTS' ? state.selectedDepartmentIds : null,
-        eligibilityUserIds: eTypeStr == 'SELECTED_MEMBERS' ? state.selectedUserIds : null,
+        eligibilityDepartmentIds: eTypeStr == 'SELECTED_DEPARTMENTS' ? state.selectedDepartmentIds : const [],
+        eligibilityUserIds: eTypeStr == 'SELECTED_MEMBERS' ? state.selectedUserIds : const [],
         startAt: state.startAt!,
         endAt: state.endAt!,
       );

@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { requireActiveMembership, requireOperationalOrganization } from "../utils/authorization";
 
 export const assignMemberToDepartment = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
@@ -26,17 +27,9 @@ export const assignMemberToDepartment = onCall(async (request) => {
   try {
     await db.runTransaction(async (transaction) => {
       // 1. Verify Caller is Owner/Admin in organization
-      const callerMemberRef = db.collection("organizationMembers").doc(`${organizationId}_${uid}`);
-      const callerSnap = await transaction.get(callerMemberRef);
+      await requireActiveMembership(db, organizationId, uid, ["owner", "admin"], { tx: transaction });
 
-      if (!callerSnap.exists || callerSnap.data()?.status !== "active") {
-        throw new HttpsError("permission-denied", "Access denied.");
-      }
-
-      const role = callerSnap.data()?.role;
-      if (role !== "owner" && role !== "admin") {
-        throw new HttpsError("permission-denied", "Only Owners or Admins can assign members to departments.");
-      }
+      await requireOperationalOrganization(db, organizationId, transaction);
 
       // 2. Verify Target User is an active member in SAME organization
       const targetMemberRef = db.collection("organizationMembers").doc(`${organizationId}_${targetUid}`);

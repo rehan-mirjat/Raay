@@ -22,7 +22,7 @@ export const createAdmin = onCall(async (request) => {
     target = await getAuth().getUserByEmail(email);
   } catch (error: any) {
     if (error?.code === "auth/user-not-found") {
-      throw new HttpsError("not-found", "No SecureVote account uses that email address.");
+      throw new HttpsError("not-found", "No Kivora account uses that email address.");
     }
     console.error("createAdmin could not find the requested account", { code: error?.code ?? "unknown" });
     throw new HttpsError("unavailable", "The account could not be checked. Try again.");

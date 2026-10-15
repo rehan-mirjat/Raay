@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/layout/responsive.dart';
 import '../../../../core/widgets/loading_view.dart';
+import '../../../../core/widgets/error_view.dart';
 import '../../../organizations/domain/organization_enums.dart';
 import '../../../organizations/presentation/providers/organization_providers.dart';
 import '../../data/voting_event_repository.dart';
@@ -30,13 +32,33 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
   String? _loadingEventId;
 
   @override
+  void initState() {
+    super.initState();
+    _currentStep = widget.initialStep.clamp(0, 4);
+
+    // If creating a NEW event (no existingEventId provided), reset any leftover draft
+    if (widget.existingEventId == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final activeOrgContext = ref.read(activeOrganizationContextProvider).valueOrNull?.context;
+        if (activeOrgContext != null) {
+          ref.read(draftEventProvider(activeOrgContext.organization.id).notifier).reset();
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final activeContextState = ref.watch(activeOrganizationContextProvider);
     final orgContext = activeContextState.valueOrNull?.context;
 
     if (orgContext == null) {
       return const Scaffold(
-          body: Center(child: Text('No active organization.')));
+        body: ErrorView(
+          type: ErrorViewType.organizationRequired,
+          message: 'Choose an organization to create or manage voting events.',
+        ),
+      );
     }
 
     final orgId = orgContext.organization.id;
@@ -53,7 +75,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
       return const Scaffold(body: LoadingView(message: 'Loading event draft…'));
     }
 
-    if (role != OrganizationRole.owner && role != OrganizationRole.admin) {
+    if (!role.isAdmin) {
       return const Scaffold(
           body: Center(child: Text('Unauthorized: Admins only.')));
     }
@@ -90,84 +112,133 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(draftState.serverEventId != null
-              ? 'Edit Event Draft'
-              : 'Create Voting Event'),
-        ),
-        body: Stepper(
-          type: ResponsiveLayout.isWide(context)
-              ? StepperType.horizontal
-              : StepperType.vertical,
-          currentStep: _currentStep,
-          onStepTapped: (step) {
-            _handleStepTap(step, orgId, draftState.serverEventId);
-          },
-          controlsBuilder: (context, details) =>
-              const SizedBox.shrink(), // Custom controls in each step
-          steps: [
-            Step(
-              title: const Text('Basic Info'),
-              content: BasicInfoStep(
-                  orgId: orgId, onNext: () => setState(() => _currentStep = 1)),
-              isActive: _currentStep >= 0,
-            ),
-            Step(
-              title: const Text('Schedule'),
-              content: ScheduleStep(
-                  orgId: orgId,
-                  onNext: () => setState(() => _currentStep = 2),
-                  onBack: () => setState(() => _currentStep = 0)),
-              isActive: _currentStep >= 1,
-            ),
-            Step(
-              title: const Text('Eligibility'),
-              content: EligibilityStep(
-                  orgId: orgId,
-                  onNext: () => setState(() => _currentStep = 3),
-                  onBack: () => setState(() => _currentStep = 1)),
-              isActive: _currentStep >= 2,
-            ),
-            Step(
-              title: const Text('Choices'),
-              content: draftState.serverEventId == null
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 24),
-                      child: Column(
-                        children: [
-                          const Text(
-                              'Please complete the Eligibility step and tap "Create Draft & Continue" first.'),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: () async {
-                              final success = await ref
-                                  .read(draftEventProvider(orgId).notifier)
-                                  .createServerDraft();
-                              if (success && mounted) {
-                                setState(() {});
-                              }
-                            },
-                            child: const Text('Create Draft Now'),
+        backgroundColor: AppTheme.backgroundLight,
+        body: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1140),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_rounded, color: AppTheme.secondaryNavy),
+                        onPressed: () {
+                          if (context.canPop()) {
+                            context.pop();
+                          } else {
+                            context.go('/admin/events');
+                          }
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        draftState.serverEventId != null
+                            ? 'Edit Event Draft'
+                            : 'Create Voting Event',
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.secondaryNavy,
+                            ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: Theme(
+                      data: Theme.of(context).copyWith(
+                        colorScheme: Theme.of(context).colorScheme.copyWith(
+                              primary: AppTheme.primaryBlue,
+                            ),
+                      ),
+                      child: Stepper(
+                        physics: const ClampingScrollPhysics(),
+                        elevation: 0,
+                        type: ResponsiveLayout.isWide(context)
+                            ? StepperType.horizontal
+                            : StepperType.vertical,
+                        currentStep: _currentStep,
+                        onStepTapped: (step) {
+                          _handleStepTap(step, orgId, draftState.serverEventId);
+                        },
+                        controlsBuilder: (context, details) =>
+                            const SizedBox.shrink(), // Custom controls in each step
+                        steps: [
+                          Step(
+                            title: const Text('Basic Info'),
+                            content: BasicInfoStep(
+                                orgId: orgId, onNext: () => setState(() => _currentStep = 1)),
+                            isActive: _currentStep >= 0,
+                            state: _currentStep > 0 ? StepState.complete : StepState.indexed,
+                          ),
+                          Step(
+                            title: const Text('Schedule'),
+                            content: ScheduleStep(
+                                orgId: orgId,
+                                onNext: () => setState(() => _currentStep = 2),
+                                onBack: () => setState(() => _currentStep = 0)),
+                            isActive: _currentStep >= 1,
+                            state: _currentStep > 1 ? StepState.complete : StepState.indexed,
+                          ),
+                          Step(
+                            title: const Text('Eligibility'),
+                            content: EligibilityStep(
+                                orgId: orgId,
+                                onNext: () => setState(() => _currentStep = 3),
+                                onBack: () => setState(() => _currentStep = 1)),
+                            isActive: _currentStep >= 2,
+                            state: _currentStep > 2 ? StepState.complete : StepState.indexed,
+                          ),
+                          Step(
+                            title: const Text('Choices'),
+                            content: draftState.serverEventId == null
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 24),
+                                    child: Column(
+                                      children: [
+                                        const Text(
+                                            'Please complete the Eligibility step and tap "Create Draft & Continue" first.'),
+                                        const SizedBox(height: 16),
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            final success = await ref
+                                                .read(draftEventProvider(orgId).notifier)
+                                                .createServerDraft();
+                                            if (success && mounted) {
+                                              setState(() {});
+                                            }
+                                          },
+                                          child: const Text('Create Draft Now'),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : ChoicesStep(
+                                    orgId: orgId,
+                                    onNext: () => setState(() => _currentStep = 4),
+                                    onBack: () => setState(() => _currentStep = 2)),
+                            isActive: _currentStep >= 3,
+                            state: _currentStep > 3 ? StepState.complete : StepState.indexed,
+                          ),
+                          Step(
+                            title: const Text('Review'),
+                            content: draftState.serverEventId == null
+                                ? const Center(child: Text('Create Draft first.'))
+                                : ReviewStep(
+                                    orgId: orgId,
+                                    onBack: () => setState(() => _currentStep = 3)),
+                            isActive: _currentStep >= 4,
                           ),
                         ],
                       ),
-                    )
-                  : ChoicesStep(
-                      orgId: orgId,
-                      onNext: () => setState(() => _currentStep = 4),
-                      onBack: () => setState(() => _currentStep = 2)),
-              isActive: _currentStep >= 3,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            Step(
-              title: const Text('Review'),
-              content: draftState.serverEventId == null
-                  ? const Center(child: Text('Create Draft first.'))
-                  : ReviewStep(
-                      orgId: orgId,
-                      onBack: () => setState(() => _currentStep = 3)),
-              isActive: _currentStep >= 4,
-            ),
-          ],
+          ),
         ),
       ),
     );

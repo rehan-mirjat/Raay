@@ -230,7 +230,7 @@ class OrganizationRepository {
         'Invitation service returned an invalid response. Please try again.');
   }
 
-  /// Adds an existing verified SecureVote account directly as a regular member.
+  /// Adds an existing verified Kivora account directly as a regular member.
   Future<void> addMember({
     required String organizationId,
     required String email,
@@ -467,6 +467,21 @@ class OrganizationRepository {
     }
   }
 
+  /// Deletes an organization via [deleteOrganization] Cloud Function (Owner only).
+  Future<void> deleteOrganization({required String organizationId}) async {
+    try {
+      final callable = _firebase.functions.httpsCallable('deleteOrganization');
+      await callable.call({
+        'organizationId': organizationId.trim(),
+      });
+      _orgCache.remove(organizationId);
+    } on FirebaseFunctionsException catch (e) {
+      throw Exception(mapFirebaseFunctionsError(e));
+    } catch (_) {
+      throw Exception('Unable to delete organization.');
+    }
+  }
+
   /// Streams active membership records for the specified user ID.
   Stream<List<OrganizationMember>> watchUserMemberships(String userId) {
     if (userId.isEmpty) return Stream.value([]);
@@ -531,25 +546,30 @@ class OrganizationRepository {
       throw Exception('Unauthorized organization logo upload.');
     }
 
-    // Enforce 500 KB (512,000 bytes) limit
-    if (imageBytes.length >= 512000) {
+    // Enforce 5 MB (5,242,880 bytes) limit
+    if (imageBytes.length > 5242880) {
       throw Exception(
-          'Organization logo exceeds 500 KB size limit (512,000 bytes).');
-    }
-    if (imageBytes.length < 3 ||
-        imageBytes[0] != 0xFF ||
-        imageBytes[1] != 0xD8 ||
-        imageBytes[2] != 0xFF) {
-      throw Exception('Organization logos must be JPEG images.');
+          'Organization logo exceeds 5MB size limit.');
     }
 
-    // Upload to organization-scoped path: organizations/{orgId}/logo/logo.jpg
+    // Determine content type
+    String contentType = 'image/jpeg';
+    String extension = 'jpg';
+    if (imageBytes.length >= 8 && imageBytes[0] == 0x89 && imageBytes[1] == 0x50 && imageBytes[2] == 0x4E && imageBytes[3] == 0x47) {
+      contentType = 'image/png';
+      extension = 'png';
+    } else if (imageBytes.length >= 4 && imageBytes[0] == 0x52 && imageBytes[1] == 0x49 && imageBytes[2] == 0x46 && imageBytes[3] == 0x46) {
+      contentType = 'image/webp';
+      extension = 'webp';
+    }
+
+    // Upload to organization-scoped path: organizations/{orgId}/logo/logo.{ext}
     final storageRef = _firebase.storage
         .ref()
-        .child('organizations/$organizationId/logo/logo.jpg');
+        .child('organizations/$organizationId/logo/logo.$extension');
     final uploadTask = await storageRef.putData(
       Uint8List.fromList(imageBytes),
-      SettableMetadata(contentType: 'image/jpeg'),
+      SettableMetadata(contentType: contentType),
     );
 
     final downloadUrl = await uploadTask.ref.getDownloadURL();

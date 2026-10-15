@@ -30,20 +30,20 @@ class EventDetailScreen extends ConsumerWidget {
       ),
       body: eventAsync.when(
         loading: () => const LoadingView(message: 'Loading event details...'),
-        error: (err, _) => ErrorView(
+        error: (err, _) => ErrorView(type: ErrorViewType.generic, 
           message: 'Error loading voting event: $err',
           onRetry: () => ref.invalidate(singleVotingEventProvider(eventId)),
         ),
         data: (event) {
           if (event == null) {
-            return const ErrorView(
+            return const ErrorView(type: ErrorViewType.generic, 
               title: 'Event Not Found',
               message: 'The requested voting event does not exist or has been removed.',
             );
           }
 
           if (currentUser == null) {
-            return const ErrorView(
+            return const ErrorView(type: ErrorViewType.generic, 
               title: 'Authentication Required',
               message: 'Please sign in to view voting event details.',
             );
@@ -134,7 +134,7 @@ class EventDetailScreen extends ConsumerWidget {
                     // Participation State
                     participationAsync.when(
                       loading: () => const LoadingView(message: 'Checking participation status...'),
-                      error: (err, _) => ErrorView(message: 'Failed to verify participation status: $err'),
+                      error: (err, _) => ErrorView(type: ErrorViewType.generic, message: 'Failed to verify participation status: $err'),
                       data: (hasVoted) {
                         if (hasVoted) {
                           return Container(

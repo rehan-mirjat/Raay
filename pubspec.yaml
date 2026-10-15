@@ -1,4 +1,4 @@
-name: secure_e_voting
+name: kivora
 description: Secure e-voting system for academic elections using Flutter and Firebase.
 publish_to: "none"
 version: 1.0.0+1

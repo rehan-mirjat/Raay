@@ -1,93 +1,58 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
+import * as logger from "firebase-functions/logger";
+import {
+  CALLABLE_OPTIONS,
+  enforceRateLimit, failWith, loadDraftEventForChild, requireAdminMember, requireAuth,
+  requireId, requireOperationalOrg, writeAudit,
+} from "./votingCommon";
 
-export const deleteCandidatePhoto = onCall(async (request) => {
-  if (!request.auth || !request.auth.uid) {
-    throw new HttpsError("unauthenticated", "Authentication required.");
-  }
-
-  const uid = request.auth.uid;
-  const { candidateId } = request.data || {};
-
-  if (!candidateId || typeof candidateId !== "string" || candidateId.trim().length === 0) {
-    throw new HttpsError("invalid-argument", "Valid candidateId is required.");
-  }
+export const deleteCandidatePhoto = onCall(CALLABLE_OPTIONS, async (request) => {
+  const uid = requireAuth(request);
+  const candidateId = requireId((request.data || {}).candidateId, "candidateId");
 
   const db = getFirestore();
+  await enforceRateLimit(db, uid, "deleteCandidatePhoto");
   const candRef = db.collection("candidates").doc(candidateId);
 
-  let targetPhotoPath: string | null = null;
-
+  let photoPath: string;
   try {
-    // 1. Transactionally Clear photoUrl & photoPath
-    await db.runTransaction(async (transaction) => {
-      const candSnap = await transaction.get(candRef);
-      if (!candSnap.exists) {
-        throw new HttpsError("not-found", "Candidate not found.");
-      }
+    photoPath = await db.runTransaction(async (tx) => {
+      const candSnap = await tx.get(candRef);
+      if (!candSnap.exists) throw new HttpsError("not-found", "Candidate not found.");
+      const cand = candSnap.data()!;
+      const organizationId = cand.organizationId as string;
+      const votingEventId = cand.votingEventId as string;
 
-      const candData = candSnap.data()!;
-      const orgId = candData.organizationId;
-      const votingEventId = candData.votingEventId;
-      targetPhotoPath = candData.photoPath || `organizations/${orgId}/events/${votingEventId}/candidates/${candidateId}/photo.jpg`;
+      await requireAdminMember(tx, db, organizationId, uid, "delete candidate photos");
+      await requireOperationalOrg(tx, db, organizationId);
+      await loadDraftEventForChild(tx, db, organizationId, votingEventId, "Candidate photos");
 
-      // Validate Parent Event Status
-      const eventSnap = await transaction.get(db.collection("votingEvents").doc(votingEventId));
-      if (!eventSnap.exists || eventSnap.data()?.status !== "DRAFT" || eventSnap.data()?.organizationId !== orgId) {
-        throw new HttpsError("failed-precondition", "Candidate photo can be deleted ONLY for DRAFT events.");
-      }
-
-      // Validate Caller Role
-      const callerRef = db.collection("organizationMembers").doc(`${orgId}_${uid}`);
-      const callerSnap = await transaction.get(callerRef);
-
-      if (!callerSnap.exists || callerSnap.data()?.status !== "active" ||
-          callerSnap.data()?.organizationId !== orgId || callerSnap.data()?.userId !== uid) {
-        throw new HttpsError("permission-denied", "You are not an active member of this organization.");
-      }
-
-      const role = callerSnap.data()?.role;
-      if (role !== "owner" && role !== "admin") {
-        throw new HttpsError("permission-denied", "Only Organization Owners or Admins can delete candidate photos.");
-      }
-
-      transaction.update(candRef, {
-        photoUrl: null,
+      tx.update(candRef, {
         photoPath: null,
+        photoUrl: FieldValue.delete(), // removes the legacy token-URL field if present
         updatedAt: FieldValue.serverTimestamp(),
       });
-
-      const auditRef = db.collection("auditLogs").doc();
-      transaction.set(auditRef, {
-        organizationId: orgId,
+      writeAudit(tx, db, {
+        organizationId,
         actorUid: uid,
         action: "DELETE_CANDIDATE_PHOTO",
         resourceType: "candidate",
         resourceId: candidateId,
-        metadata: {
-          candidateName: candData.name,
-        },
-        timestamp: FieldValue.serverTimestamp(),
+        metadata: { candidateName: cand.name },
       });
-
-      return orgId;
+      return (cand.photoPath as string) ||
+        `organizations/${organizationId}/events/${votingEventId}/candidates/${candidateId}/photo.jpg`;
     });
-
-    // 2. Post-Transaction Storage Photo Cleanup (Retry-safe)
-    if (targetPhotoPath) {
-      try {
-        const storage = getStorage();
-        const bucket = storage.bucket();
-        await bucket.file(targetPhotoPath).delete();
-      } catch (e) {
-        // Storage cleanup errors do not fail the completed Firestore transaction
-      }
-    }
-
-    return { status: "success" };
-  } catch (error: any) {
-    if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to delete candidate photo.", error);
+  } catch (error) {
+    failWith("deleteCandidatePhoto", error, "Failed to delete candidate photo.");
   }
+
+  try {
+    await getStorage().bucket().file(photoPath).delete({ ignoreNotFound: true });
+  } catch (e) {
+    logger.warn("deleteCandidatePhoto: storage cleanup failed", { candidateId, photoPath, error: e });
+  }
+  return { status: "success" };
 });

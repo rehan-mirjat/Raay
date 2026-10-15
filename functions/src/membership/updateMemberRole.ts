@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { requireActiveMembership, requireOperationalOrganization } from "../utils/authorization";
 
 export const updateMemberRole = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
@@ -34,16 +35,10 @@ export const updateMemberRole = onCall(async (request) => {
 
       const [callerSnap, targetSnap] = await transaction.getAll(callerRef, targetRef);
 
-      if (!callerSnap.exists || callerSnap.data()?.status !== "active") {
-        throw new HttpsError("permission-denied", "You are not an active member of this organization.");
-      }
-
-      const callerRole = callerSnap.data()?.role;
-
       // ONLY Owners can update roles
-      if (callerRole !== "owner") {
-        throw new HttpsError("permission-denied", "Only Organization Owners can update member roles.");
-      }
+      await requireActiveMembership(db, organizationId, uid, ["owner"], { preFetchedSnap: callerSnap });
+
+      await requireOperationalOrganization(db, organizationId, transaction);
 
       if (!targetSnap.exists) {
         throw new HttpsError("not-found", "Target user is not a member of this organization.");

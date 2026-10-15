@@ -1,8 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 
-const URL_REGEX = /^https:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(\/.*)?$/;
-
 export const updateOrganization = onCall(async (request) => {
   // 1. Verify authentication
   if (!request.auth || !request.auth.uid) {
@@ -51,29 +49,34 @@ export const updateOrganization = onCall(async (request) => {
     updates.description = description ? description.trim() : "";
   }
 
+function isValidUrl(input: string): boolean {
+  try {
+    const url = new URL(input.trim());
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
   if (website !== undefined) {
-    if (website !== null && typeof website !== "string") {
-      throw new HttpsError("invalid-argument", "Website must be a valid HTTPS URL.");
-    }
-    if (typeof website === "string" && website.trim().length > 0) {
-      if (!URL_REGEX.test(website.trim())) {
-        throw new HttpsError("invalid-argument", "Website must be a valid HTTPS URL.");
+    const cleanWebsite = typeof website === "string" ? website.trim() : "";
+    if (cleanWebsite.length > 0) {
+      if (!isValidUrl(cleanWebsite)) {
+        throw new HttpsError("invalid-argument", "Website must be a valid URL (e.g. https://example.org).");
       }
-      updates.website = website.trim();
+      updates.website = cleanWebsite;
     } else {
       updates.website = null;
     }
   }
 
   if (logoUrl !== undefined) {
-    if (logoUrl !== null && typeof logoUrl !== "string") {
-      throw new HttpsError("invalid-argument", "Logo URL must be a valid HTTPS URL.");
-    }
-    if (typeof logoUrl === "string" && logoUrl.trim().length > 0) {
-      if (!URL_REGEX.test(logoUrl.trim())) {
-        throw new HttpsError("invalid-argument", "Logo URL must be a valid HTTPS URL.");
+    const cleanLogoUrl = typeof logoUrl === "string" ? logoUrl.trim() : "";
+    if (cleanLogoUrl.length > 0) {
+      if (!isValidUrl(cleanLogoUrl)) {
+        throw new HttpsError("invalid-argument", "Logo URL must be a valid URL.");
       }
-      updates.logoUrl = logoUrl.trim();
+      updates.logoUrl = cleanLogoUrl;
     } else {
       updates.logoUrl = null;
     }

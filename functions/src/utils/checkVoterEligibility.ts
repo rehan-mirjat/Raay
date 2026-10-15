@@ -9,7 +9,14 @@ export interface EligibilityCheckRequest {
 
 /**
  * Server-authoritative voter eligibility resolution engine.
- * Evaluates live membership status and event eligibility rules dynamically.
+ * Evaluates live membership status, then matches against the voter roll frozen
+ * in `votingEventEligibility.eligibleUserIds` at event activation (see
+ * `writeActivationDocs` in votingCommon.ts). The roster is never read off the
+ * `votingEvents` document itself - that document is member-readable and holds
+ * no roster - and eligibility is intentionally NOT re-derived live from
+ * department/member config, so a member who changes department (or is added
+ * to/removed from a SELECTED_MEMBERS list) after the event activates keeps the
+ * eligibility it had when voting opened.
  * Accepts optional pre-fetched DocumentSnapshots to enable 1-request transaction batching.
  */
 export async function checkVoterEligibility(
@@ -19,6 +26,7 @@ export async function checkVoterEligibility(
   preFetched?: {
     memberSnap?: DocumentSnapshot;
     eventSnap?: DocumentSnapshot;
+    eligibilitySnap?: DocumentSnapshot;
   }
 ): Promise<boolean> {
   const { organizationId, eventId, userId } = req;
@@ -36,8 +44,6 @@ export async function checkVoterEligibility(
     throw new HttpsError("permission-denied", "You do not have an active membership in this organization.");
   }
 
-  const memberData = memberSnap.data()!;
-
   // 2. Fetch target voting event if not pre-fetched
   const eventRef = db.collection("votingEvents").doc(eventId);
   const eventSnap = preFetched?.eventSnap || (await transaction.get(eventRef));
@@ -53,39 +59,26 @@ export async function checkVoterEligibility(
 
   const eligibilityType = eventData.eligibilityType;
 
-  // 3. Evaluate Live Eligibility Rules
+  // 3. ALL_MEMBERS: any currently active member of the organization is eligible.
   if (eligibilityType === "ALL_MEMBERS") {
-    return true; // Any active member in organizationId is eligible
-  }
-
-  if (eligibilityType === "SELECTED_DEPARTMENTS") {
-    const memberDeptId = memberData.departmentId;
-    if (!memberDeptId) {
-      throw new HttpsError("permission-denied", "You are not assigned to an eligible department for this event.");
-    }
-
-    const eligibleDepts: string[] = Array.isArray(eventData.eligibilityDepartmentIds)
-      ? eventData.eligibilityDepartmentIds
-      : [];
-
-    if (!eligibleDepts.includes(memberDeptId)) {
-      throw new HttpsError("permission-denied", "Your department is not eligible for this voting event.");
-    }
-
     return true;
   }
 
-  if (eligibilityType === "SELECTED_MEMBERS") {
-    const eligibleUsers: string[] = Array.isArray(eventData.eligibilityUserIds)
-      ? eventData.eligibilityUserIds
-      : [];
-
-    if (!eligibleUsers.includes(userId)) {
-      throw new HttpsError("permission-denied", "You are not on the eligible voters list for this event.");
-    }
-
-    return true;
+  if (eligibilityType !== "SELECTED_DEPARTMENTS" && eligibilityType !== "SELECTED_MEMBERS") {
+    throw new HttpsError("invalid-argument", `Unsupported eligibilityType '${eligibilityType}'.`);
   }
 
-  throw new HttpsError("invalid-argument", `Unsupported eligibilityType '${eligibilityType}'.`);
+  // 4. SELECTED_DEPARTMENTS / SELECTED_MEMBERS: match against the frozen voter roll.
+  const eligibilityRef = db.collection("votingEventEligibility").doc(eventId);
+  const eligibilitySnap = preFetched?.eligibilitySnap || (await transaction.get(eligibilityRef));
+
+  const eligibleUserIds: string[] = eligibilitySnap.exists && Array.isArray(eligibilitySnap.data()?.eligibleUserIds)
+    ? eligibilitySnap.data()!.eligibleUserIds
+    : [];
+
+  if (!eligibleUserIds.includes(userId)) {
+    throw new HttpsError("permission-denied", "You are not on the eligible voters list for this event.");
+  }
+
+  return true;
 }

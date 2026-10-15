@@ -29,7 +29,7 @@ class Validators {
   static String? email(String? value) {
     if (value == null || value.trim().isEmpty) return 'Email is required';
     final trimmed = value.trim();
-    final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,24}$');
     if (!regex.hasMatch(trimmed)) return 'Enter a valid email address';
     return null;
   }

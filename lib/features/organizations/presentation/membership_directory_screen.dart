@@ -7,6 +7,8 @@ import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
+import '../../../core/widgets/status_badge.dart';
+import '../../../services/firebase_service.dart';
 import '../domain/organization_enums.dart';
 import '../data/organization_repository.dart';
 import 'invite_member_dialog.dart';
@@ -64,36 +66,33 @@ class _MembershipDirectoryScreenState
         ],
       );
 
-  Widget _inviteButton(
-    BuildContext context,
-    String orgId,
-    String orgName,
-    OrganizationRole role,
-  ) =>
-      FilledButton.icon(
-        onPressed: () async {
-          final created = await showDialog<bool>(
-            context: context,
-            builder: (ctx) => InviteMemberDialog(
-              organizationId: orgId,
-              organizationName: orgName,
-              isOwner: role == OrganizationRole.owner,
-            ),
-          );
-          if (created == true && mounted) {
-            ref.invalidate(pendingInvitationsProvider(orgId));
-          }
-        },
-        icon: const Icon(Icons.person_add_alt_1_rounded, size: 18),
-        label: const Text('Invite member'),
-      );
+  Future<void> _openInvite(
+      BuildContext context, String orgId, String orgName, OrganizationRole role) async {
+    await showDialog<bool>(
+      context: context,
+      builder: (_) => InviteMemberDialog(
+        organizationId: orgId,
+        organizationName: orgName,
+        isOwner: role == OrganizationRole.owner,
+      ),
+    );
+    // Refresh regardless of the result: after a successful invite the dialog can
+    // also be closed by tapping outside it, which returns null.
+    if (mounted) ref.invalidate(pendingInvitationsProvider(orgId));
+  }
+
+  Future<void> _openAddExisting(BuildContext context, String orgId) async {
+    final added = await showDialog<bool>(
+      context: context,
+      builder: (_) => AddExistingMemberDialog(organizationId: orgId),
+    );
+    if (added == true && mounted) {
+      ref.invalidate(organizationMembersDirectoryProvider(orgId));
+    }
+  }
 
   Widget _memberActions(
-    BuildContext context,
-    String orgId,
-    String orgName,
-    OrganizationRole role,
-  ) =>
+          BuildContext context, String orgId, String orgName, OrganizationRole role) =>
       Wrap(
         alignment: WrapAlignment.end,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -101,62 +100,164 @@ class _MembershipDirectoryScreenState
         runSpacing: 10,
         children: [
           OutlinedButton.icon(
-            onPressed: () async {
-              final added = await showDialog<bool>(
-                context: context,
-                builder: (_) => AddExistingMemberDialog(organizationId: orgId),
-              );
-              if (added == true && mounted) {
-                ref.invalidate(organizationMembersDirectoryProvider(orgId));
-              }
-            },
+            onPressed: () => _openAddExisting(context, orgId),
             icon: const Icon(Icons.person_add_alt_rounded, size: 18),
             label: const Text('Add existing'),
           ),
-          _inviteButton(context, orgId, orgName, role),
+          FilledButton.icon(
+            onPressed: () => _openInvite(context, orgId, orgName, role),
+            icon: const Icon(Icons.person_add_alt_1_rounded, size: 18),
+            label: const Text('Invite member'),
+          ),
         ],
       );
 
-  Widget _memberSearchField() => TextField(
-        controller: _searchController,
-        focusNode: _searchFocusNode,
-        textInputAction: TextInputAction.search,
-        decoration: const InputDecoration(
-          hintText: 'Search members by name or email',
-          prefixIcon: Icon(Icons.search_rounded),
+  Widget _memberSearchField() => SizedBox(
+        height: 48,
+        child: TextField(
+          controller: _searchController,
+          focusNode: _searchFocusNode,
+          textInputAction: TextInputAction.search,
+          style: const TextStyle(fontSize: 14, color: AppTheme.secondaryNavy),
+          decoration: InputDecoration(
+            hintText: 'Search members by name or email',
+            hintStyle: const TextStyle(fontSize: 14, color: AppTheme.textSecondary),
+            prefixIcon: const Icon(Icons.search_rounded, size: 20),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppTheme.borderLight),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppTheme.borderLight),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppTheme.primaryBlue, width: 1.5),
+            ),
+            fillColor: AppTheme.surfaceWhite,
+            filled: true,
+            suffixIcon: _searchQuery.isEmpty
+                ? null
+                : IconButton(
+                    tooltip: 'Clear search',
+                    icon: const Icon(Icons.close_rounded, size: 18),
+                    onPressed: () {
+                      _searchController.clear();
+                      setState(() => _searchQuery = '');
+                    },
+                  ),
+          ),
+          onChanged: (value) =>
+              setState(() => _searchQuery = value.trim().toLowerCase()),
         ),
-        onChanged: (value) =>
-            setState(() => _searchQuery = value.trim().toLowerCase()),
       );
 
-  Widget _roleFilter(BuildContext context) => DropdownButtonFormField<String>(
-        initialValue: _selectedRoleFilter,
-        decoration: const InputDecoration(labelText: 'Filter by role'),
-        isExpanded: true,
-        items: const [
-          DropdownMenuItem(value: 'all', child: Text('All roles')),
-          DropdownMenuItem(value: 'owner', child: Text('Owners')),
-          DropdownMenuItem(value: 'admin', child: Text('Admins')),
-          DropdownMenuItem(value: 'member', child: Text('Members')),
-        ],
-        onChanged: (value) {
-          if (value != null) setState(() => _selectedRoleFilter = value);
+  Widget _roleFilter(BuildContext context) => PopupMenuButton<String>(
+        tooltip: 'Filter by role',
+        offset: const Offset(0, 52),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: AppTheme.borderLight),
+        ),
+        color: AppTheme.surfaceWhite,
+        onSelected: (value) {
+          setState(() => _selectedRoleFilter = value);
         },
+        itemBuilder: (ctx) => [
+          _roleMenuItem('all', 'All roles'),
+          _roleMenuItem('admin', 'Admins'),
+          _roleMenuItem('member', 'Members'),
+        ],
+        child: Container(
+          height: 48,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: _selectedRoleFilter != 'all' ? AppTheme.surfaceBlue : AppTheme.surfaceWhite,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: _selectedRoleFilter != 'all' ? AppTheme.primaryBlue : AppTheme.borderLight,
+              width: _selectedRoleFilter != 'all' ? 1.5 : 1.0,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.tune_rounded, size: 18, color: _selectedRoleFilter != 'all' ? AppTheme.primaryBlue : AppTheme.textSecondary),
+              const SizedBox(width: 8),
+              Text(
+                _selectedRoleFilter == 'all'
+                    ? 'All roles'
+                    : (_selectedRoleFilter == 'admin' ? 'Admins' : 'Members'),
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: _selectedRoleFilter != 'all' ? FontWeight.bold : FontWeight.w500,
+                  color: _selectedRoleFilter != 'all' ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: _selectedRoleFilter != 'all' ? AppTheme.primaryBlue : AppTheme.textSecondary),
+            ],
+          ),
+        ),
       );
+
+  PopupMenuItem<String> _roleMenuItem(String value, String label) {
+    final isSelected = _selectedRoleFilter == value;
+    return PopupMenuItem<String>(
+      value: value,
+      child: Row(
+        children: [
+          if (isSelected)
+            const Icon(Icons.check_rounded, size: 16, color: AppTheme.primaryBlue)
+          else
+            const SizedBox(width: 16),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: TextStyle(
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+              color: isSelected ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
+              fontSize: 13,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Map<String, dynamic>> _filter(List<Map<String, dynamic>> members) {
+    return members.where((m) {
+      final name = (m['displayName'] as String? ?? '').toLowerCase();
+      final email = (m['email'] as String? ?? '').toLowerCase();
+      final rawRole = (m['role'] as String? ?? '').toLowerCase();
+      final matchesQuery = _searchQuery.isEmpty ||
+          name.contains(_searchQuery) ||
+          email.contains(_searchQuery);
+      final matchesRole = _selectedRoleFilter == 'all' ||
+          rawRole == _selectedRoleFilter ||
+          rawRole.contains(_selectedRoleFilter);
+      return matchesQuery && matchesRole;
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
     final activeContextState = ref.watch(activeOrganizationContextProvider);
+    final background = Theme.of(context).scaffoldBackgroundColor;
 
     return activeContextState.when(
+      // Keep showing the directory while the context silently reloads.
+      skipLoadingOnReload: true,
       loading: () => Material(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child:
-            const LoadingView(message: 'Restoring active organization context...'),
+        color: background,
+        child: const LoadingView(message: 'Restoring active organization context...'),
       ),
       error: (err, stack) => Material(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: ErrorView(
+        color: background,
+        child: ErrorView(type: ErrorViewType.generic, 
           message: 'Failed to load organization context: $err',
           onRetry: () => ref.invalidate(activeOrganizationContextProvider),
         ),
@@ -167,7 +268,7 @@ class _MembershipDirectoryScreenState
 
         if (orgContext == null) {
           return Material(
-            color: Theme.of(context).scaffoldBackgroundColor,
+            color: background,
             child: const EmptyView(
               icon: Icons.corporate_fare_outlined,
               title: 'No Active Organization Selected',
@@ -178,417 +279,167 @@ class _MembershipDirectoryScreenState
         }
 
         final orgId = orgContext.organization.id;
+        final orgName = orgContext.organization.name;
         final callerRole = orgContext.member.role;
-        final membersAsync =
-            ref.watch(organizationMembersDirectoryProvider(orgId));
+        final isManager = callerRole.isAdmin;
 
-        return CallbackShortcuts(
-          bindings: {
-            const SingleActivator(LogicalKeyboardKey.slash): () =>
-                _searchFocusNode.requestFocus(),
+        if (!isManager) {
+          return Material(
+            color: background,
+            child: const EmptyView(
+              icon: Icons.lock_outline_rounded,
+              title: 'Access Restricted',
+              message: 'The member directory is restricted to organization administrators only.',
+            ),
+          );
+        }
+
+        final membersAsync = ref.watch(organizationMembersDirectoryProvider(orgId));
+        final hPad = compact ? 16.0 : 24.0;
+
+        // "/" focuses the search box, but only when it isn't already focused;
+        // a CallbackShortcuts binding would have swallowed the "/" keystroke
+        // while typing in the search field.
+        return Focus(
+          canRequestFocus: false,
+          onKeyEvent: (node, event) {
+            if (event is KeyDownEvent &&
+                event.logicalKey == LogicalKeyboardKey.slash &&
+                !_searchFocusNode.hasFocus) {
+              _searchFocusNode.requestFocus();
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
           },
-          child: FocusScope(
-            child: Material(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 1000),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Top Header: Title & Action Buttons aligned within 1000px container
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(
-                          compact ? 16 : 24,
-                          compact ? 16 : 28,
-                          compact ? 16 : 24,
-                          12,
-                        ),
-                        child: compact
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  _directoryHeading(context),
-                                  if (callerRole == OrganizationRole.owner ||
-                                      callerRole == OrganizationRole.admin) ...[
-                                    const SizedBox(height: 14),
-                                    _memberActions(context, orgId,
-                                        orgContext.organization.name, callerRole),
-                                  ],
-                                ],
-                              )
-                            : Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(child: _directoryHeading(context)),
-                                  if (callerRole == OrganizationRole.owner ||
-                                      callerRole == OrganizationRole.admin)
-                                    _memberActions(context, orgId,
-                                        orgContext.organization.name, callerRole),
-                                ],
-                              ),
-                      ),
-
-                      // Search & Filter controls
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: compact ? 16 : 24,
-                          vertical: 8,
-                        ),
-                        child: compact
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  _memberSearchField(),
-                                  const SizedBox(height: 10),
-                                  _roleFilter(context),
-                                ],
-                              )
-                            : Row(
-                                children: [
-                                  Expanded(
-                                      flex: 3, child: _memberSearchField()),
-                                  const SizedBox(width: 16),
-                                  Expanded(flex: 1, child: _roleFilter(context)),
-                                ],
-                              ),
-                      ),
-
-                      // Member Directory List
-                      Expanded(
-                        child: membersAsync.when(
-                          loading: () => const LoadingView(
-                              message: 'Loading member directory...'),
-                          error: (err, stack) => ErrorView(
-                            message: 'Error loading directory: $err',
-                            onRetry: () => ref.invalidate(
-                                organizationMembersDirectoryProvider(orgId)),
-                          ),
-                          data: (members) {
-                            final filtered = members.where((m) {
-                              final name =
-                                  (m['displayName'] as String? ?? '').toLowerCase();
-                              final email =
-                                  (m['email'] as String? ?? '').toLowerCase();
-                              final role =
-                                  (m['role'] as String? ?? '').toLowerCase();
-
-                              final matchesQuery = _searchQuery.isEmpty ||
-                                  name.contains(_searchQuery) ||
-                                  email.contains(_searchQuery);
-                              final matchesRole = _selectedRoleFilter == 'all' ||
-                                  role == _selectedRoleFilter;
-
-                              return matchesQuery && matchesRole;
-                            }).toList();
-
-                            return RefreshIndicator(
-                              onRefresh: () async {
-                                ref.invalidate(
-                                    organizationMembersDirectoryProvider(orgId));
-                                try {
-                                  await ref.read(
-                                      organizationMembersDirectoryProvider(orgId)
-                                          .future);
-                                } catch (_) {}
-                              },
-                              child: SingleChildScrollView(
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: compact ? 16 : 24,
-                                  vertical: 12,
+          child: Material(
+            color: background,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1000),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(hPad, compact ? 16 : 28, hPad, 12),
+                      child: compact
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                _directoryHeading(context),
+                                const SizedBox(height: 14),
+                                _memberActions(context, orgId, orgName, callerRole),
+                              ],
+                            )
+                          : Row(
+                              children: [
+                                Expanded(child: _directoryHeading(context)),
+                                _memberActions(context, orgId, orgName, callerRole),
+                              ],
+                            ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: hPad, vertical: 8),
+                      child: compact
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                _memberSearchField(),
+                                const SizedBox(height: 10),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: _roleFilter(context),
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                    if (callerRole == OrganizationRole.owner ||
-                                        callerRole == OrganizationRole.admin)
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom: 20),
-                                        child: PendingInvitationsWidget(
-                                          organizationId: orgId,
-                                          isOwner:
-                                              callerRole == OrganizationRole.owner,
+                              ],
+                            )
+                          : Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(child: _memberSearchField()),
+                                const SizedBox(width: 12),
+                                _roleFilter(context),
+                              ],
+                            ),
+                    ),
+                    Expanded(
+                      child: membersAsync.when(
+                        loading: () => const LoadingView(message: 'Loading member directory...'),
+                        error: (err, stack) => ErrorView(type: ErrorViewType.generic, 
+                          message: 'Error loading directory: $err',
+                          onRetry: () => ref.invalidate(organizationMembersDirectoryProvider(orgId)),
+                        ),
+                        data: (members) {
+                          final filtered = _filter(members);
+                          return RefreshIndicator(
+                            onRefresh: () async {
+                              ref.invalidate(organizationMembersDirectoryProvider(orgId));
+                              ref.invalidate(pendingInvitationsProvider(orgId));
+                              try {
+                                await ref.read(organizationMembersDirectoryProvider(orgId).future);
+                              } catch (_) {}
+                            },
+                            // Slivers: only visible member cards are built, instead of
+                            // a shrink-wrapped ListView inside a SingleChildScrollView.
+                            child: CustomScrollView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              slivers: [
+                                SliverPadding(
+                                  padding: EdgeInsets.fromLTRB(hPad, 12, hPad, 20),
+                                  sliver: SliverToBoxAdapter(
+                                    child: PendingInvitationsWidget(
+                                      organizationId: orgId,
+                                      isOwner: callerRole == OrganizationRole.owner,
+                                    ),
+                                  ),
+                                ),
+                                if (filtered.isEmpty)
+                                  SliverToBoxAdapter(
+                                    child: Container(
+                                      height: MediaQuery.sizeOf(context).height * 0.3,
+                                      alignment: Alignment.center,
+                                      padding: EdgeInsets.symmetric(horizontal: hPad),
+                                      child: Text(
+                                        members.isEmpty
+                                            ? 'No members yet\nAdd existing members or invite people to your organization.'
+                                            : 'No members match your search or role filter.',
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: AppTheme.textSecondary,
+                                          fontSize: 15,
                                         ),
                                       ),
-                                    if (filtered.isEmpty)
-                                      Container(
-                                        height:
-                                            MediaQuery.of(context).size.height * 0.3,
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          members.isEmpty
-                                              ? 'This organization has no members yet.'
-                                              : 'No members match your search or role filter.',
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            color: AppTheme.textSecondary,
-                                            fontSize: 15,
+                                    ),
+                                  )
+                                else
+                                  SliverPadding(
+                                    padding: EdgeInsets.fromLTRB(hPad, 0, hPad, 24),
+                                    sliver: SliverList.builder(
+                                      itemCount: filtered.length,
+                                      itemBuilder: (context, index) {
+                                        final member = filtered[index];
+                                        return _MemberCard(
+                                          member: member,
+                                          compact: compact,
+                                          onTap: () => showDialog<void>(
+                                            context: context,
+                                            builder: (_) => MemberProfileDialog(
+                                              organizationId: orgId,
+                                              callerRole: callerRole,
+                                              memberData: member,
+                                              onChanged: () => ref.invalidate(
+                                                  organizationMembersDirectoryProvider(orgId)),
+                                            ),
                                           ),
-                                        ),
-                                      )
-                                    else
-                                      ListView.builder(
-                                        shrinkWrap: true,
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        itemCount: filtered.length,
-                                        itemBuilder: (context, index) {
-                                          final member = filtered[index];
-                                          final name = member['displayName']
-                                                  as String? ??
-                                              'Unknown User';
-                                          final email =
-                                              member['email'] as String? ?? '';
-                                          final role =
-                                              (member['role'] as String? ??
-                                                      'member')
-                                                  .toUpperCase();
-                                          final status = member['status']
-                                                  as String? ??
-                                              'active';
-                                          final deptName =
-                                              member['departmentName'] as String?;
-
-                                          final isInactive = status == 'inactive';
-
-                                          return Card(
-                                            margin: const EdgeInsets.only(bottom: 12),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              side: const BorderSide(
-                                                  color: AppTheme.borderLight),
-                                            ),
-                                            child: InkWell(
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              hoverColor: AppTheme.surfaceBlue
-                                                  .withValues(alpha: 0.3),
-                                              onTap: (callerRole ==
-                                                          OrganizationRole.owner ||
-                                                      callerRole ==
-                                                          OrganizationRole.admin)
-                                                  ? () {
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (ctx) =>
-                                                            MemberProfileDialog(
-                                                          organizationId: orgId,
-                                                          callerRole: callerRole,
-                                                          memberData: member,
-                                                          onChanged: () =>
-                                                              ref.invalidate(
-                                                                  organizationMembersDirectoryProvider(
-                                                                      orgId)),
-                                                        ),
-                                                      );
-                                                    }
-                                                  : null,
-                                              child: Padding(
-                                                padding: EdgeInsets.all(
-                                                    compact ? 12 : 20),
-                                                child: Row(
-                                                  children: [
-                                                    CircleAvatar(
-                                                      radius: compact ? 20 : 24,
-                                                      backgroundColor: isInactive
-                                                          ? Colors.grey.shade300
-                                                          : AppTheme.primaryBlue
-                                                              .withValues(
-                                                                  alpha: 0.1),
-                                                      child: Text(
-                                                        name.isNotEmpty
-                                                            ? name[0]
-                                                                .toUpperCase()
-                                                            : 'U',
-                                                        style: TextStyle(
-                                                            color: isInactive
-                                                                ? Colors.grey
-                                                                    .shade600
-                                                                : AppTheme.primaryBlue,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 18),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                        width: compact ? 12 : 20),
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text(
-                                                            name,
-                                                            style: TextStyle(
-                                                              fontSize: 16,
-                                                              fontWeight:
-                                                                  FontWeight.bold,
-                                                              color: isInactive
-                                                                  ? Colors.grey
-                                                                  : AppTheme
-                                                                      .secondaryNavy,
-                                                              decoration: isInactive
-                                                                  ? TextDecoration
-                                                                      .lineThrough
-                                                                  : null,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(height: 4),
-                                                          Row(
-                                                            children: [
-                                                              const Icon(
-                                                                  Icons
-                                                                      .email_outlined,
-                                                                  size: 14,
-                                                                  color: AppTheme
-                                                                      .textSecondary),
-                                                              const SizedBox(
-                                                                  width: 6),
-                                                              Flexible(
-                                                                child: Text(email,
-                                                                    maxLines: 1,
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    style: const TextStyle(
-                                                                        color: AppTheme
-                                                                            .textSecondary,
-                                                                        fontSize:
-                                                                            13)),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          if (deptName != null &&
-                                                              deptName
-                                                                  .isNotEmpty) ...[
-                                                            const SizedBox(
-                                                                height: 4),
-                                                            Row(
-                                                              children: [
-                                                                const Icon(
-                                                                    Icons
-                                                                        .domain_outlined,
-                                                                    size: 14,
-                                                                    color: AppTheme
-                                                                        .textSecondary),
-                                                                const SizedBox(
-                                                                    width: 6),
-                                                                Flexible(
-                                                                  child: Text(
-                                                                      deptName,
-                                                                      maxLines: 1,
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      style: const TextStyle(
-                                                                          color: AppTheme
-                                                                              .textSecondary,
-                                                                          fontSize:
-                                                                              13)),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment.end,
-                                                      children: [
-                                                        Container(
-                                                          padding: const EdgeInsets
-                                                              .symmetric(
-                                                              horizontal: 10,
-                                                              vertical: 4),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: role == 'OWNER'
-                                                                ? AppTheme
-                                                                    .primaryBlue
-                                                                    .withValues(
-                                                                        alpha: 0.1)
-                                                                : Colors.grey
-                                                                    .shade100,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(12),
-                                                          ),
-                                                          child: Text(
-                                                            role,
-                                                            style: TextStyle(
-                                                                fontSize: 11,
-                                                                fontWeight:
-                                                                    FontWeight.bold,
-                                                                color: role ==
-                                                                        'OWNER'
-                                                                    ? AppTheme
-                                                                        .primaryBlue
-                                                                    : AppTheme
-                                                                        .secondaryNavy),
-                                                          ),
-                                                        ),
-                                                        if (isInactive) ...[
-                                                          const SizedBox(height: 6),
-                                                          Container(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal: 10,
-                                                                    vertical: 4),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: AppTheme.error
-                                                                  .withValues(
-                                                                      alpha: 0.1),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(12),
-                                                            ),
-                                                            child: const Text(
-                                                                'INACTIVE',
-                                                                style: TextStyle(
-                                                                    fontSize: 10,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: AppTheme
-                                                                        .error)),
-                                                          ),
-                                                        ],
-                                                      ],
-                                                    ),
-                                                    if (callerRole ==
-                                                            OrganizationRole
-                                                                .owner ||
-                                                        callerRole ==
-                                                            OrganizationRole
-                                                                .admin) ...[
-                                                      SizedBox(
-                                                          width: compact ? 6 : 16),
-                                                      const Icon(
-                                                          Icons.chevron_right,
-                                                          color:
-                                                              AppTheme.borderLight),
-                                                    ],
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -597,4 +448,139 @@ class _MembershipDirectoryScreenState
       },
     );
   }
+}
+
+class _MemberCard extends StatelessWidget {
+  const _MemberCard({
+    required this.member,
+    required this.compact,
+    required this.onTap,
+  });
+
+  final Map<String, dynamic> member;
+  final bool compact;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final name = member['displayName'] as String? ?? 'Unknown User';
+    final email = member['email'] as String? ?? '';
+    final role = (member['role'] as String? ?? 'member').toLowerCase();
+    final status = (member['status'] as String? ?? 'active').toLowerCase();
+    final deptName = member['departmentName'] as String?;
+    final rawPhotoUrl = (member['photoUrl'] as String?) ?? (member['photoURL'] as String?);
+    final photoUrl = FirebaseService.sanitizeStorageUrl(rawPhotoUrl);
+    final isInactive = status == 'inactive';
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: AppTheme.borderLight),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        hoverColor: AppTheme.surfaceBlue.withValues(alpha: 0.3),
+        onTap: onTap,
+        child: Padding(
+          padding: EdgeInsets.all(compact ? 12 : 20),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: compact ? 20 : 24,
+                backgroundColor: isInactive
+                    ? Colors.grey.shade300
+                    : AppTheme.surfaceBlue,
+                backgroundImage: photoUrl.isNotEmpty
+                    ? NetworkImage(photoUrl)
+                    : null,
+                child: photoUrl.isEmpty
+                    ? Text(
+                        name.isNotEmpty ? name[0].toUpperCase() : 'U',
+                        style: TextStyle(
+                          color: isInactive ? Colors.grey.shade600 : AppTheme.primaryBlue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      )
+                    : null,
+              ),
+              SizedBox(width: compact ? 12 : 20),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: isInactive ? Colors.grey : AppTheme.secondaryNavy,
+                        decoration: isInactive ? TextDecoration.lineThrough : null,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    _iconLine(Icons.email_outlined, email),
+                    if (deptName != null && deptName.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      _iconLine(Icons.domain_outlined, deptName),
+                    ],
+                  ],
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  StatusBadge.role(role),
+                  if (isInactive) ...[
+                    const SizedBox(height: 6),
+                    _pill('INACTIVE', AppTheme.error.withValues(alpha: 0.12),
+                        AppTheme.error,
+                        fontSize: 10),
+                  ],
+                ],
+              ),
+              SizedBox(width: compact ? 6 : 16),
+              const Icon(Icons.chevron_right, color: AppTheme.borderLight),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _iconLine(IconData icon, String text) => Row(
+        children: [
+          Icon(icon, size: 14, color: AppTheme.textSecondary),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+            ),
+          ),
+        ],
+      );
+
+  Widget _pill(String text, Color background, Color foreground,
+          {required double fontSize}) =>
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: background,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: foreground,
+          ),
+        ),
+      );
 }

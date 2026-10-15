@@ -82,8 +82,8 @@ class StatusBadge extends StatelessWidget {
     if (cleanRole == 'owner') {
       return StatusBadge(
         label: 'OWNER',
-        backgroundColor: Colors.purple.withValues(alpha: 0.12),
-        textColor: Colors.purple.shade700,
+        backgroundColor: AppTheme.accentGold.withValues(alpha: 0.15),
+        textColor: const Color(0xFFD97706),
         icon: Icons.stars_rounded,
       );
     } else if (cleanRole == 'admin') {
@@ -109,6 +109,7 @@ class StatusBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: textColor.withValues(alpha: 0.25), width: 1.0),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

@@ -31,21 +31,33 @@ class _ScheduleStepState extends ConsumerState<ScheduleStep> {
   }
 
   Future<void> _pickDateTime(bool isStart) async {
-    final initialDate = isStart ? (_startAt ?? DateTime.now()) : (_endAt ?? _startAt ?? DateTime.now().add(const Duration(minutes: 5)));
-    
+    final now = DateTime.now();
+    var safeInitialDate = isStart
+        ? (_startAt ?? now)
+        : (_endAt ?? _startAt ?? now.add(const Duration(minutes: 5)));
+
+    final firstDate = now.subtract(const Duration(days: 365));
+    final lastDate = now.add(const Duration(days: 365));
+
+    if (safeInitialDate.isBefore(firstDate)) {
+      safeInitialDate = firstDate;
+    } else if (safeInitialDate.isAfter(lastDate)) {
+      safeInitialDate = lastDate;
+    }
+
     final date = await showDatePicker(
       context: context,
-      initialDate: initialDate,
-      firstDate: DateTime.now().subtract(const Duration(days: 1)),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
+      initialDate: safeInitialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
     );
     if (date == null) return;
 
     if (!mounted) return;
-    
+
     final time = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.fromDateTime(initialDate),
+      initialTime: TimeOfDay.fromDateTime(safeInitialDate),
     );
     if (time == null) return;
 

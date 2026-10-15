@@ -1,114 +1,72 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import {
+  CALLABLE_OPTIONS,
+  enforceRateLimit, failWith, loadDraftEventForChild, optionalString, parseSortOrder,
+  rejectUnknownKeys, requireAdminMember, requireAuth, requireId, requireOperationalOrg,
+  requiredString, writeAudit,
+} from "./votingCommon";
 
-export const updateCandidate = onCall(async (request) => {
-  if (!request.auth || !request.auth.uid) {
-    throw new HttpsError("unauthenticated", "Authentication required.");
-  }
-
-  const uid = request.auth.uid;
+export const updateCandidate = onCall(CALLABLE_OPTIONS, async (request) => {
+  const uid = requireAuth(request);
   const data = request.data || {};
+  rejectUnknownKeys(data, ["candidateId", "name", "position", "party", "bio", "displayOrder"], "updateCandidate");
 
-  // Strict Schema Whitelisting
-  const allowedKeys = ["candidateId", "name", "party", "bio"];
-  for (const key of Object.keys(data)) {
-    if (!allowedKeys.includes(key)) {
-      throw new HttpsError("invalid-argument", `Unpermitted parameter '${key}' in updateCandidate payload.`);
-    }
-  }
-
-  const { candidateId, name, party, bio } = data;
-
-  if (!candidateId || typeof candidateId !== "string" || candidateId.trim().length === 0) {
-    throw new HttpsError("invalid-argument", "Valid candidateId is required.");
-  }
+  const candidateId = requireId(data.candidateId, "candidateId");
+  const name = data.name !== undefined ? requiredString(data.name, "Candidate name", 2, 100) : undefined;
+  const position = data.position !== undefined ? optionalString(data.position, "Position", 100) : undefined;
+  const party = data.party !== undefined ? optionalString(data.party, "Party name", 100) : undefined;
+  const bio = data.bio !== undefined ? optionalString(data.bio, "Bio", 1000) : undefined;
+  const displayOrder = data.displayOrder !== undefined ? parseSortOrder(data.displayOrder) : undefined;
 
   const db = getFirestore();
+  await enforceRateLimit(db, uid, "updateCandidate");
   const candRef = db.collection("candidates").doc(candidateId);
 
   try {
-    await db.runTransaction(async (transaction) => {
-      const candSnap = await transaction.get(candRef);
-      if (!candSnap.exists) {
-        throw new HttpsError("not-found", "Candidate not found.");
-      }
+    await db.runTransaction(async (tx) => {
+      const candSnap = await tx.get(candRef);
+      if (!candSnap.exists) throw new HttpsError("not-found", "Candidate not found.");
+      const cand = candSnap.data()!;
+      const organizationId = cand.organizationId as string;
 
-      const candData = candSnap.data()!;
-      const organizationId = candData.organizationId;
-      const votingEventId = candData.votingEventId;
+      await requireAdminMember(tx, db, organizationId, uid, "update candidates");
+      await requireOperationalOrg(tx, db, organizationId);
+      await loadDraftEventForChild(tx, db, organizationId, cand.votingEventId, "Candidates");
 
-      // Validate Parent Event Status
-      const eventSnap = await transaction.get(db.collection("votingEvents").doc(votingEventId));
-      if (!eventSnap.exists) {
-        throw new HttpsError("not-found", "Voting event not found.");
-      }
-
-      const eventStatus = eventSnap.data()?.status;
-      if (eventStatus !== "DRAFT") {
-        throw new HttpsError("failed-precondition", `Candidates can be updated ONLY in DRAFT events. Current status: '${eventStatus}'`);
-      }
-
-      // Validate Caller Role
-      const callerRef = db.collection("organizationMembers").doc(`${organizationId}_${uid}`);
-      const callerSnap = await transaction.get(callerRef);
-
-      if (!callerSnap.exists || callerSnap.data()?.status !== "active" ||
-          callerSnap.data()?.organizationId !== organizationId || callerSnap.data()?.userId !== uid) {
-        throw new HttpsError("permission-denied", "You are not an active member of this organization.");
-      }
-
-      const role = callerSnap.data()?.role;
-      if (role !== "owner" && role !== "admin") {
-        throw new HttpsError("permission-denied", "Only Organization Owners or Admins can update candidates.");
-      }
-
-      const updates: any = {
-        updatedAt: FieldValue.serverTimestamp(),
-      };
-
-      if (name !== undefined) {
-        if (typeof name !== "string" || name.trim().length < 3 || name.trim().length > 100) {
-          throw new HttpsError("invalid-argument", "Candidate name must be between 3 and 100 characters.");
+      const updates: Record<string, unknown> = {};
+      if (name !== undefined && name !== cand.name) {
+        const siblings = await tx.get(
+          db.collection("candidates")
+            .where("organizationId", "==", organizationId)
+            .where("votingEventId", "==", cand.votingEventId)
+        );
+        const lower = name.toLowerCase();
+        if (siblings.docs.some((d) => d.id !== candidateId && String(d.data().name || "").trim().toLowerCase() === lower)) {
+          throw new HttpsError("already-exists", "A candidate with this name already exists in this event.");
         }
-        updates.name = name.trim();
+        updates.name = name;
       }
+      if (position !== undefined && position !== cand.position) updates.position = position;
+      if (party !== undefined && party !== cand.party) updates.party = party;
+      if (bio !== undefined && bio !== cand.bio) updates.bio = bio;
+      if (displayOrder !== undefined && displayOrder !== cand.displayOrder) updates.displayOrder = displayOrder;
 
-      if (party !== undefined) {
-        const cleanParty = typeof party === "string" ? party.trim() : "";
-        if (cleanParty.length > 100) {
-          throw new HttpsError("invalid-argument", "Party name cannot exceed 100 characters.");
-        }
-        updates.party = cleanParty;
-      }
+      if (Object.keys(updates).length === 0) throw new HttpsError("invalid-argument", "No changes provided.");
 
-      if (bio !== undefined) {
-        const cleanBio = typeof bio === "string" ? bio.trim() : "";
-        if (cleanBio.length > 1000) {
-          throw new HttpsError("invalid-argument", "Bio cannot exceed 1000 characters.");
-        }
-        updates.bio = cleanBio;
-      }
-
-      transaction.update(candRef, updates);
-
-      // Audit Log
-      const auditRef = db.collection("auditLogs").doc();
-      transaction.set(auditRef, {
-        organizationId: organizationId,
+      tx.update(candRef, { ...updates, updatedAt: FieldValue.serverTimestamp() });
+      writeAudit(tx, db, {
+        organizationId,
         actorUid: uid,
         action: "UPDATE_CANDIDATE",
         resourceType: "candidate",
         resourceId: candidateId,
-        metadata: {
-          candidateName: updates.name || candData.name,
-        },
-        timestamp: FieldValue.serverTimestamp(),
+        metadata: { candidateName: (updates.name as string) || cand.name, changedFields: Object.keys(updates) },
       });
     });
 
     return { status: "success" };
-  } catch (error: any) {
-    if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to update candidate.", error);
+  } catch (error) {
+    failWith("updateCandidate", error, "Failed to update candidate.");
   }
 });

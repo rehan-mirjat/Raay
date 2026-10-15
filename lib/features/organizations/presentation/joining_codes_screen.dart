@@ -55,44 +55,46 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
       await showDialog<void>(
         context: context,
         barrierDismissible: false,
-        builder: (dialogContext) => AlertDialog(
-          icon: const Icon(Icons.key_rounded, color: AppTheme.primaryBlue),
-          title: const Text('Save this joining code'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text('This code is shown once. Share it only with people you want to join this organization.'),
-              const SizedBox(height: 16),
-              SelectableText(
-                result.rawCode,
-                textAlign: TextAlign.center,
-                style: Theme.of(dialogContext).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.2,
-                    ),
+        builder: (dialogContext) {
+          var copied = false;
+          return StatefulBuilder(
+            builder: (context, setDialogState) => AlertDialog(
+              icon: const Icon(Icons.key_rounded, color: AppTheme.primaryBlue),
+              title: const Text('Save this joining code'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text('This code is shown once. Share it only with people you want to join this organization.'),
+                  const SizedBox(height: 16),
+                  SelectableText(
+                    result.rawCode,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
+                        ),
+                  ),
+                ],
               ),
-            ],
-          ),
-          actions: [
-            TextButton.icon(
-              onPressed: () async {
-                await Clipboard.setData(ClipboardData(text: result.rawCode));
-                if (dialogContext.mounted) {
-                  ScaffoldMessenger.of(dialogContext).showSnackBar(
-                    const SnackBar(content: Text('Joining code copied.')),
-                  );
-                }
-              },
-              icon: const Icon(Icons.copy_rounded),
-              label: const Text('Copy code'),
+              actions: [
+                TextButton.icon(
+                  onPressed: () async {
+                    await Clipboard.setData(ClipboardData(text: result.rawCode));
+                    // In-dialog feedback: a SnackBar would render behind the modal barrier.
+                    if (context.mounted) setDialogState(() => copied = true);
+                  },
+                  icon: Icon(copied ? Icons.check_rounded : Icons.copy_rounded),
+                  label: Text(copied ? 'Copied' : 'Copy code'),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: const Text('Done'),
+                ),
+              ],
             ),
-            FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Done'),
-            ),
-          ],
-        ),
+          );
+        },
       );
     } catch (error) {
       if (mounted) {
@@ -121,8 +123,20 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
       ),
     );
     if (confirmed != true) return;
+    final codeId = code['codeId'] as String?;
+    if (codeId == null || codeId.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('This code cannot be revoked (missing identifier).'),
+            backgroundColor: AppTheme.error,
+          ),
+        );
+      }
+      return;
+    }
     try {
-      await ref.read(organizationRepositoryProvider).revokeJoiningCode(code['codeId'] as String);
+      await ref.read(organizationRepositoryProvider).revokeJoiningCode(codeId);
       ref.invalidate(organizationJoiningCodesProvider(orgId));
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -132,7 +146,10 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error.toString().replaceFirst('Exception: ', ''))),
+          SnackBar(
+            content: Text(error.toString().replaceFirst('Exception: ', '')),
+            backgroundColor: AppTheme.error,
+          ),
         );
       }
     }
@@ -157,7 +174,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
       ),
       body: contextState.when(
         loading: () => const LoadingView(message: 'Loading organization…'),
-        error: (error, _) => ErrorView(
+        error: (error, _) => ErrorView(type: ErrorViewType.generic, 
           message: 'Could not load organization access: $error',
           onRetry: () => ref.invalidate(activeOrganizationContextProvider),
         ),
@@ -171,8 +188,8 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
             );
           }
           final role = orgContext.member.role;
-          if (role != OrganizationRole.owner && role != OrganizationRole.admin) {
-            return const ErrorView(
+          if (!role.isAdmin) {
+            return const ErrorView(type: ErrorViewType.generic, 
               title: 'Administrator access required',
               message: 'Only this organization’s Owner and Admins can manage joining codes.',
             );
@@ -201,7 +218,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
                       padding: EdgeInsets.all(24),
                       child: Center(child: CircularProgressIndicator()),
                     ),
-                    error: (error, _) => ErrorView(
+                    error: (error, _) => ErrorView(type: ErrorViewType.generic, 
                       message: 'Could not load joining codes: $error',
                       onRetry: () => ref.invalidate(organizationJoiningCodesProvider(orgId)),
                     ),
@@ -281,6 +298,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
   Widget _maxUsesField() => TextFormField(
         controller: _maxUsesController,
         keyboardType: TextInputType.number,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         decoration: const InputDecoration(
           labelText: 'Maximum uses',
           helperText: 'Use 0 for unlimited.',
@@ -288,12 +306,22 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
       );
 
   Widget _codeCard(String orgId, Map<String, dynamic> code) {
-    final status = code['status'] as String? ?? 'unknown';
+    final rawStatus = code['status'] as String? ?? 'unknown';
     final uses = (code['currentUses'] as num?)?.toInt() ?? 0;
     final maxUses = (code['maxUses'] as num?)?.toInt() ?? 0;
     final expiry = DateTime.tryParse(code['expiresAt'] as String? ?? '');
+    // The server status can lag behind reality, so derive what the code can
+    // actually do right now.
+    var status = rawStatus;
+    if (rawStatus == 'active') {
+      if (expiry != null && expiry.isBefore(DateTime.now())) {
+        status = 'expired';
+      } else if (maxUses > 0 && uses >= maxUses) {
+        status = 'exhausted';
+      }
+    }
     final expiryLabel = expiry == null ? 'Expiry unavailable' : 'Expires ${_dateFormat.format(expiry.toLocal())}';
-    final active = status == 'active';
+    final active = rawStatus == 'active';
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(

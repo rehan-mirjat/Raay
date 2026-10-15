@@ -1,80 +1,52 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import {
+  CALLABLE_OPTIONS, EVENT_STATUS,
+  enforceRateLimit, failWith, loadEventAsAdmin, optionalString, rejectUnknownKeys,
+  requireAuth, requireId, writeAudit,
+} from "./votingCommon";
 
-export const cancelVotingEvent = onCall(async (request) => {
-  if (!request.auth || !request.auth.uid) {
-    throw new HttpsError("unauthenticated", "Authentication required.");
-  }
+export const cancelVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
+  const uid = requireAuth(request);
+  const data = request.data || {};
+  rejectUnknownKeys(data, ["eventId", "reason"], "cancelVotingEvent");
 
-  const uid = request.auth.uid;
-  const { eventId, reason } = request.data || {};
-
-  if (!eventId || typeof eventId !== "string" || eventId.trim().length === 0) {
-    throw new HttpsError("invalid-argument", "Valid eventId is required.");
-  }
+  const eventId = requireId(data.eventId, "eventId");
+  const reason = optionalString(data.reason, "Reason", 500);
 
   const db = getFirestore();
-  const eventRef = db.collection("votingEvents").doc(eventId);
+  await enforceRateLimit(db, uid, "cancelVotingEvent");
 
   try {
-    await db.runTransaction(async (transaction) => {
-      const eventSnap = await transaction.get(eventRef);
-      if (!eventSnap.exists) {
-        throw new HttpsError("not-found", "Voting event not found.");
+    await db.runTransaction(async (tx) => {
+      const { ref, data: ev, organizationId } =
+        await loadEventAsAdmin(tx, db, eventId, uid, "cancel voting events");
+
+      // Strict transition: SCHEDULED -> CANCELLED only
+      if (ev.status !== EVENT_STATUS.SCHEDULED) {
+        throw new HttpsError("failed-precondition", `Only SCHEDULED events can be cancelled. Current status: '${ev.status}'`);
       }
 
-      const eventData = eventSnap.data()!;
-      const organizationId = eventData.organizationId;
-      const currentStatus = eventData.status;
-
-      // Strict Transition: SCHEDULED -> CANCELLED only
-      if (currentStatus !== "SCHEDULED") {
-        throw new HttpsError("failed-precondition", `Only SCHEDULED events can be cancelled. Current status: '${currentStatus}'`);
-      }
-
-      // Validate Caller Membership & Role
-      const callerMemberRef = db.collection("organizationMembers").doc(`${organizationId}_${uid}`);
-      const callerMemberSnap = await transaction.get(callerMemberRef);
-
-      if (!callerMemberSnap.exists || callerMemberSnap.data()?.status !== "active") {
-        throw new HttpsError("permission-denied", "You are not an active member of this organization.");
-      }
-
-      const callerRole = callerMemberSnap.data()?.role;
-      if (callerRole !== "owner" && callerRole !== "admin") {
-        throw new HttpsError("permission-denied", "Only Organization Owners or Admins can cancel voting events.");
-      }
-
-      const cleanReason = reason && typeof reason === "string" ? reason.trim() : "";
-
-      transaction.update(eventRef, {
-        status: "CANCELLED",
+      tx.update(ref, {
+        status: EVENT_STATUS.CANCELLED,
         cancelledAt: FieldValue.serverTimestamp(),
         cancelledBy: uid,
-        cancelReason: cleanReason,
+        cancelReason: reason,
         updatedAt: FieldValue.serverTimestamp(),
       });
 
-      // Audit Log
-      const auditRef = db.collection("auditLogs").doc();
-      transaction.set(auditRef, {
-        organizationId: organizationId,
+      writeAudit(tx, db, {
+        organizationId,
         actorUid: uid,
         action: "CANCEL_VOTING_EVENT",
         resourceType: "votingEvent",
         resourceId: eventId,
-        metadata: {
-          previousStatus: "SCHEDULED",
-          newStatus: "CANCELLED",
-          reason: cleanReason,
-        },
-        timestamp: FieldValue.serverTimestamp(),
+        metadata: { previousStatus: EVENT_STATUS.SCHEDULED, newStatus: EVENT_STATUS.CANCELLED, reason },
       });
     });
 
     return { status: "success" };
-  } catch (error: any) {
-    if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to cancel voting event.", error);
+  } catch (error) {
+    failWith("cancelVotingEvent", error, "Failed to cancel voting event.");
   }
 });

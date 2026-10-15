@@ -49,7 +49,6 @@ export const completeRegistration = onCall(async (request) => {
       photoUrl: request.auth.token.picture || null,
       phoneNumber: null,
       emailVerified: request.auth.token.email_verified || false,
-      twoFactorEnabled: false,
       status: "active",
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),

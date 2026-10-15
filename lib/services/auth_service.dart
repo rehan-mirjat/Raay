@@ -1,10 +1,24 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'firebase_service.dart';
 
 class AuthService {
   final FirebaseService _firebase = FirebaseService();
+
+  // Single, lazily-created instance (never touched on web, where Firebase's
+  // popup flow is used instead).
+  late final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: const ['email']);
+
+  Future<void> _googleSignOutSafe() async {
+    if (kIsWeb) return;
+    try {
+      await _googleSignIn.signOut();
+    } catch (_) {}
+  }
 
   User? get currentUser => _firebase.auth.currentUser;
 
@@ -30,64 +44,118 @@ class AuthService {
     return credential;
   }
 
+  /// Returns the [UserCredential] on success, or `null` if the user cancelled.
+  /// Throws a user-friendly [Exception] (or [FirebaseAuthException]) on failure.
   Future<UserCredential?> signInWithGoogle() async {
-    final GoogleSignIn googleSignIn = GoogleSignIn();
-    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-    if (googleUser == null) return null; // Cancelled by user
-
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    final OAuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
+    UserCredential userCredential;
 
     try {
-      final userCredential = await _firebase.auth.signInWithCredential(credential);
-      final user = userCredential.user;
+      if (kIsWeb) {
+        // On web, google_sign_in does not reliably return an idToken.
+        // Firebase's own popup flow is the supported path.
+        final provider = GoogleAuthProvider()
+          ..addScope('email')
+          ..setCustomParameters({'prompt': 'select_account'});
+        userCredential = await _firebase.auth.signInWithPopup(provider);
+      } else {
+        final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+        if (googleUser == null) return null; // Cancelled by user
 
-      if (user != null) {
-        // Check if Firestore user document exists, if not, complete registration
-        final userDoc = await _firebase.firestore
-            .collection('users')
-            .doc(user.uid)
-            .get();
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
 
-        if (!userDoc.exists) {
-          final rawName = (user.displayName ?? 'Google User').trim();
-          final names = rawName.isNotEmpty ? rawName.split(' ') : ['Google', 'User'];
-          final firstName = names.first.isNotEmpty ? names.first : 'Google';
-          final lastName = names.length > 1 && names.sublist(1).join(' ').trim().isNotEmpty
-              ? names.sublist(1).join(' ').trim()
-              : 'User';
-
-          try {
-            await _firebase.functions.httpsCallable('completeRegistration').call({
-              'firstName': firstName,
-              'lastName': lastName,
-            });
-          } catch (_) {
-            throw Exception('Secure account setup failed. Please sign in again or contact support.');
-          }
-
-          // Set photoUrl from google photo if present
-          if (user.photoURL != null) {
-            await _firebase.firestore
-                .collection('users')
-                .doc(user.uid)
-                .update({'photoUrl': user.photoURL}).catchError((_) => null);
-          }
+        if (googleAuth.idToken == null && googleAuth.accessToken == null) {
+          await _googleSignOutSafe();
+          throw Exception('Google did not return valid credentials. Please try again.');
         }
 
-        await user.reload();
-        await user.getIdToken(true);
+        final OAuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        userCredential = await _firebase.auth.signInWithCredential(credential);
       }
-
-      return userCredential;
+    } on PlatformException catch (e) {
+      await _googleSignOutSafe();
+      switch (e.code) {
+        case 'sign_in_canceled':
+          return null;
+        case 'network_error':
+          throw Exception('Network error. Check your connection and try again.');
+        case 'sign_in_failed':
+          // Usually ApiException 10 / 12500: SHA-1/SHA-256 or OAuth client misconfigured.
+          throw Exception('Google sign-in is not configured correctly for this build. Please contact support.');
+        default:
+          throw Exception('Google sign-in failed. Please try again.');
+      }
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'account-exists-with-different-credential') {
-        throw Exception('Sign-in could not be completed. Try another sign-in method or use password recovery.');
+      await _googleSignOutSafe();
+      switch (e.code) {
+        case 'popup-closed-by-user':
+        case 'cancelled-popup-request':
+        case 'web-context-canceled':
+          return null;
+        case 'popup-blocked':
+          throw Exception('Your browser blocked the Google sign-in popup. Please allow popups and try again.');
+        case 'account-exists-with-different-credential':
+          throw Exception('Sign-in could not be completed. Try another sign-in method or use password recovery.');
+        default:
+          rethrow;
       }
-      rethrow;
+    }
+
+    final user = userCredential.user;
+    if (user == null) {
+      await _googleSignOutSafe();
+      throw Exception('Google sign-in failed. Please try again.');
+    }
+
+    try {
+      await _ensureUserProfile(user);
+      await user.reload();
+      await user.getIdToken(true);
+    } catch (e) {
+      // Do NOT leave a half-provisioned session behind: without this the
+      // auth-state listener would treat the user as signed in.
+      await _googleSignOutSafe();
+      await _firebase.auth.signOut();
+      if (e is Exception && e.toString().startsWith('Exception: Secure account setup')) {
+        rethrow;
+      }
+      throw Exception('Secure account setup failed. Please sign in again or contact support.');
+    }
+
+    return userCredential;
+  }
+
+  /// Creates the Firestore profile (via backend function) on first Google login.
+  Future<void> _ensureUserProfile(User user) async {
+    final userDoc = await _firebase.firestore.collection('users').doc(user.uid).get();
+    if (userDoc.exists) return;
+
+    final rawName = (user.displayName ?? '').trim();
+    final parts = rawName.isEmpty ? <String>[] : rawName.split(RegExp(r'\s+'));
+    final firstName = parts.isNotEmpty ? parts.first : 'Google';
+    final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : 'User';
+
+    try {
+      await _firebase.functions.httpsCallable('completeRegistration').call({
+        'firstName': firstName,
+        'lastName': lastName,
+      });
+    } catch (_) {
+      throw Exception('Secure account setup failed. Please sign in again or contact support.');
+    }
+
+    if (user.photoURL != null) {
+      try {
+        await _firebase.firestore
+            .collection('users')
+            .doc(user.uid)
+            .update({'photoUrl': user.photoURL});
+      } catch (_) {
+        // Non-critical: profile photo is optional.
+      }
     }
   }
 
@@ -189,14 +257,13 @@ class AuthService {
     if (user == null) throw Exception('No authenticated user found.');
 
     try {
-      try {
-        await _firebase.firestore.collection('users').doc(user.uid).delete();
-      } catch (_) {}
-
-      await GoogleSignIn().signOut().catchError((_) => null);
-      await user.delete();
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'requires-recent-login') {
+      // Runs server-side with Admin privileges: deletes the Firestore `users/{uid}`
+      // document (which the client is never allowed to do) and the Auth record.
+      await _firebase.functions.httpsCallable('deleteAccount').call();
+      await _googleSignOutSafe();
+      await _firebase.auth.signOut();
+    } on FirebaseFunctionsException catch (e) {
+      if (e.code == 'failed-precondition') {
         throw Exception('For security reasons, please sign out and sign back in before deleting your account.');
       }
       throw Exception(e.message ?? 'Failed to delete account.');
@@ -206,9 +273,7 @@ class AuthService {
   }
 
   Future<void> signOut() async {
-    try {
-      await GoogleSignIn().signOut();
-    } catch (_) {}
+    await _googleSignOutSafe();
     await _firebase.auth.signOut();
   }
 }

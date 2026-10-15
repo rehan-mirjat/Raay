@@ -18,11 +18,24 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
   List<Map<String, dynamic>> _organizations = [];
   bool _loading = true;
   String? _error;
+  String? _busyId;
 
   @override
   void initState() {
     super.initState();
-    _load();
+    // Only hit the admin-only callable once we know the caller is a platform admin.
+    Future.microtask(() async {
+      var isAdmin = false;
+      try {
+        isAdmin = await ref.read(platformAdminProvider.future);
+      } catch (_) {}
+      if (!mounted) return;
+      if (isAdmin) {
+        _load();
+      } else {
+        setState(() => _loading = false);
+      }
+    });
   }
 
   Future<void> _load() async {
@@ -44,26 +57,46 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
   }
 
   Future<void> _review(Map<String, dynamic> organization, String action) async {
+    if (_busyId != null) return;
+    final (label, resultingStatus, destructive) = switch (action) {
+      'VERIFY' => ('Verify', 'verified', false),
+      'REJECT' => ('Reject', 'rejected', true),
+      'SUSPEND' => ('Suspend', 'suspended', true),
+      'REACTIVATE' => ('Reactivate', 'active', false),
+      _ => (action, action.toLowerCase(), false),
+    };
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('${action[0]}${action.substring(1).toLowerCase()} organization?'),
-        content: Text('${organization['name']} will move to the corresponding status.'),
+      builder: (ctx) => AlertDialog(
+        title: Text('$label organization?'),
+        content: Text('${organization['name'] ?? 'This organization'} will be marked as $resultingStatus.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-          FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Confirm')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          FilledButton(
+            style: destructive ? FilledButton.styleFrom(backgroundColor: Theme.of(ctx).colorScheme.error) : null,
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(label),
+          ),
         ],
       ),
     );
-    if (confirmed != true) return;
+    if (confirmed != true || !mounted) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _busyId = organization['id'] as String?);
     try {
       await FirebaseService().functions.httpsCallable('reviewOrganization').call({
         'organizationId': organization['id'],
         'action': action,
       });
-      await _load();
+      messenger.showSnackBar(SnackBar(content: Text('Organization marked as $resultingStatus.')));
+      if (mounted) await _load();
     } on FirebaseFunctionsException catch (error) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message ?? 'Could not update organization.')));
+      messenger.showSnackBar(SnackBar(content: Text(error.message ?? 'Could not update organization.')));
+    } catch (_) {
+      messenger.showSnackBar(const SnackBar(content: Text('Could not update organization.')));
+    } finally {
+      if (mounted) setState(() => _busyId = null);
     }
   }
 
@@ -74,13 +107,13 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
       appBar: AppBar(title: const Text('Platform organizations'), actions: [IconButton(onPressed: _loading ? null : _load, tooltip: 'Refresh', icon: const Icon(Icons.refresh_rounded))]),
       body: admin.when(
         loading: () => const LoadingView(message: 'Checking platform access…'),
-        error: (_, __) => const ErrorView(title: 'Access unavailable', message: 'Could not verify platform administrator access.'),
+        error: (_, __) => const ErrorView(type: ErrorViewType.accessDenied, title: 'Access denied', message: 'Could not verify platform administrator access.'),
         data: (isAdmin) => !isAdmin
-            ? const ErrorView(title: 'Platform access required', message: 'This area is available only to Platform Super Admins.')
+            ? const ErrorView(type: ErrorViewType.accessDenied, title: 'Access denied', message: 'This area is available only to Platform Super Admins.')
             : _loading
                 ? const LoadingView(message: 'Loading organizations…')
                 : _error != null
-                    ? ErrorView(message: _error!, onRetry: _load)
+                    ? ErrorView(type: ErrorViewType.generic, message: _error!, onRetry: _load)
                     : _organizations.isEmpty
                         ? const Center(child: Text('No organizations have been registered yet.'))
                         : ListView.builder(
@@ -107,13 +140,13 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
           const SizedBox(height: 12),
           Wrap(spacing: 8, runSpacing: 8, children: [
             if (status == 'pending') ...[
-              FilledButton.tonal(onPressed: () => _review(organization, 'VERIFY'), child: const Text('Verify')),
-              OutlinedButton(onPressed: () => _review(organization, 'REJECT'), child: const Text('Reject')),
+              FilledButton.tonal(onPressed: _busyId != null ? null : () => _review(organization, 'VERIFY'), child: const Text('Verify')),
+              OutlinedButton(onPressed: _busyId != null ? null : () => _review(organization, 'REJECT'), child: const Text('Reject')),
             ],
             if (status == 'verified' || status == 'active')
-              OutlinedButton(onPressed: () => _review(organization, 'SUSPEND'), child: const Text('Suspend')),
+              OutlinedButton(onPressed: _busyId != null ? null : () => _review(organization, 'SUSPEND'), child: const Text('Suspend')),
             if (status == 'suspended')
-              FilledButton.tonal(onPressed: () => _review(organization, 'REACTIVATE'), child: const Text('Reactivate')),
+              FilledButton.tonal(onPressed: _busyId != null ? null : () => _review(organization, 'REACTIVATE'), child: const Text('Reactivate')),
           ]),
         ]),
       ),

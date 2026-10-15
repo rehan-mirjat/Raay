@@ -7,6 +7,7 @@ class AppTheme {
   static const Color primaryBlueDark = Color(0xFF1D4ED8);
   static const Color secondaryNavy = Color(0xFF0F172A); // Slate 900 Navy
   static const Color accentTeal = Color(0xFF10B981); // Emerald / Verified
+  static const Color accentGold = Color(0xFFF59E0B); // Kivora Brand Gold / Star Accent
   static const Color surfaceBlue = Color(0xFFEFF6FF); // Slate Blue Tint
   
   // Neutral Colors

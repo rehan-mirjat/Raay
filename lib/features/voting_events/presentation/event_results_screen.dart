@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../services/firebase_service.dart';
-import '../../organizations/domain/organization_enums.dart';
 import '../../organizations/presentation/providers/organization_providers.dart';
 
 class EventResultsScreen extends ConsumerStatefulWidget {
@@ -38,7 +37,7 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
   @override
   Widget build(BuildContext context) {
     final membership = ref.watch(activeOrganizationContextProvider).valueOrNull?.context?.member;
-    final canManage = membership?.role == OrganizationRole.owner || membership?.role == OrganizationRole.admin;
+    final canManage = membership?.isAdmin ?? false;
     final results = FirebaseService().firestore.collection('eventResults').doc(widget.eventId);
 
     return Scaffold(
@@ -48,7 +47,7 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
         builder: (context, snapshot) {
           final data = snapshot.data?.data();
           if (snapshot.hasError && !canManage) {
-            return const ErrorView(title: 'Results are not available', message: 'Results will appear here after they are published.');
+            return const ErrorView(type: ErrorViewType.generic, title: 'Results are not available', message: 'Results will appear here after they are published.');
           }
           if (snapshot.connectionState == ConnectionState.waiting && data == null && !canManage) {
             return const LoadingView(message: 'Loading published results…');

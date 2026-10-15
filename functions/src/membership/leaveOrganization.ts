@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { requireActiveMembership } from "../utils/authorization";
 
 export const leaveOrganization = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
@@ -25,11 +26,7 @@ export const leaveOrganization = onCall(async (request) => {
       }
 
       const memberData = memberSnap.data()!;
-      if (memberData.status !== "active") {
-        throw new HttpsError("permission-denied", "Inactive members cannot perform organization operations.");
-      }
-
-      const role = memberData.role;
+      const { role } = await requireActiveMembership(db, organizationId, uid, undefined, { preFetchedSnap: memberSnap });
 
       // Sole-Owner Protection Check
       if (role === "owner") {

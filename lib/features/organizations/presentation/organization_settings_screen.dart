@@ -1,12 +1,16 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../core/theme/app_theme.dart';
+import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../services/firebase_service.dart';
 import '../data/organization_repository.dart';
+import '../domain/organization.dart';
 import '../domain/organization_enums.dart';
 import 'providers/organization_providers.dart';
 
@@ -23,9 +27,19 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
   final _description = TextEditingController();
   final _website = TextEditingController();
   final _logoUrl = TextEditingController();
+
   String? _loadedOrgId;
   bool _saving = false;
   bool _uploadingLogo = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _name.addListener(() => setState(() {}));
+    _description.addListener(() => setState(() {}));
+    _website.addListener(() => setState(() {}));
+    _logoUrl.addListener(() => setState(() {}));
+  }
 
   @override
   void dispose() {
@@ -36,128 +50,154 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     super.dispose();
   }
 
+  bool _hasUnsavedChanges(Organization org) {
+    return _name.text.trim() != org.name ||
+        _description.text.trim() != org.description ||
+        _website.text.trim() != (org.website ?? '') ||
+        _logoUrl.text.trim() != (org.logoUrl ?? '');
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(activeOrganizationContextProvider);
+    final isDesktop = ResponsiveLayout.isWide(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Organization branding')),
+      backgroundColor: AppTheme.backgroundLight,
       body: state.when(
+        skipLoadingOnReload: true,
         loading: () => const LoadingView(message: 'Loading organization…'),
-        error: (error, _) => ErrorView(message: 'Could not load the active organization: $error'),
+        error: (error, _) => ErrorView(
+          type: ErrorViewType.generic,
+          message: 'Could not load the active organization: $error',
+        ),
         data: (active) {
           final orgContext = active.context;
           if (orgContext == null) {
-            return const ErrorView(title: 'Choose an organization', message: 'Select an organization before changing its branding.');
+            return const ErrorView(
+              type: ErrorViewType.organizationRequired,
+              title: 'No active organization',
+              message: 'Select an organization before changing its branding.',
+            );
           }
           final org = orgContext.organization;
           if (orgContext.member.role != OrganizationRole.owner) {
-            return const ErrorView(title: 'Owner access required', message: 'Only the organization Owner can update its branding.');
+            return const ErrorView(
+              type: ErrorViewType.accessDenied,
+              title: 'Access denied',
+              message: 'Only the organization Owner can update its branding.',
+            );
           }
+
           if (_loadedOrgId != org.id) {
             _loadedOrgId = org.id;
             _name.text = org.name;
             _description.text = org.description;
             _website.text = org.website ?? '';
             _logoUrl.text = org.logoUrl ?? '';
-            _primaryColor = org.brandColors['primary'] ?? '#2563EB';
-            _secondaryColor = org.brandColors['secondary'] ?? '#0F172A';
-            _accentColor = org.brandColors['accent'] ?? '#10B981';
           }
 
-          return Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
+          final unsaved = _hasUnsavedChanges(org);
+
+          return SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: isDesktop ? 32 : 16,
+              vertical: 24,
+            ),
+            child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 620),
-                child: Form(
-                  key: _formKey,
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                    Text(org.name, style: Theme.of(context).textTheme.headlineSmall),
-                    const SizedBox(height: 8),
-                    const Text('Update how your organization appears to members. Organization access and verification details cannot be changed here.'),
-                    const SizedBox(height: 24),
-                    TextFormField(
-                      controller: _name,
-                      maxLength: 100,
-                      textCapitalization: TextCapitalization.words,
-                      decoration: const InputDecoration(labelText: 'Organization name'),
-                      validator: (value) {
-                        final name = value?.trim() ?? '';
-                        return name.length < 3 ? 'Use at least 3 characters.' : null;
-                      },
+                constraints: const BoxConstraints(maxWidth: 1140),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 1. Back Navigation Link
+                    InkWell(
+                      onTap: () => context.go('/orgs/dashboard'),
+                      borderRadius: BorderRadius.circular(6),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.arrow_back_rounded, size: 16, color: AppTheme.primaryBlue),
+                            SizedBox(width: 6),
+                            Text(
+                              'Organization dashboard',
+                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 12),
-                    TextFormField(
-                      controller: _description,
-                      maxLength: 500,
-                      maxLines: 4,
-                      decoration: const InputDecoration(labelText: 'Description', alignLabelWithHint: true),
+
+                    // 2. Headline & Subtitle
+                    Text(
+                      'Organization branding',
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.secondaryNavy,
+                          ),
                     ),
-                    const SizedBox(height: 12),
-                    TextFormField(
-                      controller: _website,
-                      keyboardType: TextInputType.url,
-                      decoration: const InputDecoration(labelText: 'Website', hintText: 'https://example.org'),
-                      validator: (value) => _validOptionalHttps(value) ? null : 'Enter a valid HTTPS URL.',
+                    const SizedBox(height: 6),
+                    Text(
+                      'Shape how ${org.name} appears to members and voters.',
+                      style: const TextStyle(color: AppTheme.textSecondary, fontSize: 14),
                     ),
-                    const SizedBox(height: 12),
-                    TextFormField(
-                      controller: _logoUrl,
-                      keyboardType: TextInputType.url,
-                      decoration: const InputDecoration(labelText: 'Logo image URL', hintText: 'https://example.org/logo.png'),
-                      validator: (value) => _validOptionalHttps(value) ? null : 'Enter a valid HTTPS URL.',
-                    ),
-                    const SizedBox(height: 8),
-                    OutlinedButton.icon(
-                      onPressed: _uploadingLogo || _saving
-                          ? null
-                          : () => _pickAndUploadLogo(org.id),
-                      icon: _uploadingLogo
-                          ? const SizedBox.square(
-                              dimension: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                    const SizedBox(height: 28),
+
+                    // 3. Two-Column Layout (Form & Live Preview)
+                    Form(
+                      key: _formKey,
+                      child: isDesktop
+                          ? Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 7,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      _buildDetailsCard(context),
+                                      const SizedBox(height: 20),
+                                      _buildLogoCard(context, org.id),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 28),
+                                Expanded(
+                                  flex: 5,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      _buildLivePreviewCard(context),
+                                      const SizedBox(height: 20),
+                                      _buildPermissionsNoticeCard(context),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             )
-                          : const Icon(Icons.upload_rounded),
-                      label: Text(_uploadingLogo ? 'Uploading logo…' : 'Upload JPEG logo'),
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                _buildDetailsCard(context),
+                                const SizedBox(height: 20),
+                                _buildLogoCard(context, org.id),
+                                const SizedBox(height: 20),
+                                _buildLivePreviewCard(context),
+                                const SizedBox(height: 20),
+                                _buildPermissionsNoticeCard(context),
+                              ],
+                            ),
                     ),
-                    const SizedBox(height: 20),
-                    Text('Brand colors', style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      key: ValueKey('${org.id}-primary-color'),
-                      initialValue: org.brandColors['primary'] ?? '#2563EB',
-                      textCapitalization: TextCapitalization.characters,
-                      decoration: const InputDecoration(labelText: 'Primary color', hintText: '#2563EB'),
-                      validator: _validHexColor,
-                      onChanged: (value) => _primaryColor = value,
-                    ),
-                    const SizedBox(height: 12),
-                    TextFormField(
-                      key: ValueKey('${org.id}-secondary-color'),
-                      initialValue: org.brandColors['secondary'] ?? '#0F172A',
-                      textCapitalization: TextCapitalization.characters,
-                      decoration: const InputDecoration(labelText: 'Secondary color', hintText: '#0F172A'),
-                      validator: _validHexColor,
-                      onChanged: (value) => _secondaryColor = value,
-                    ),
-                    const SizedBox(height: 12),
-                    TextFormField(
-                      key: ValueKey('${org.id}-accent-color'),
-                      initialValue: org.brandColors['accent'] ?? '#10B981',
-                      textCapitalization: TextCapitalization.characters,
-                      decoration: const InputDecoration(labelText: 'Accent color', hintText: '#10B981'),
-                      validator: _validHexColor,
-                      onChanged: (value) => _accentColor = value,
-                    ),
-                    const SizedBox(height: 20),
-                    FilledButton.icon(
-                      onPressed: _saving ? null : () => _save(org.id),
-                      icon: _saving
-                          ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                          : const Icon(Icons.save_outlined),
-                      label: Text(_saving ? 'Saving…' : 'Save branding'),
-                    ),
-                  ]),
+
+                    const SizedBox(height: 32),
+
+                    // 4. Bottom Sticky Unsaved Changes Banner
+                    if (unsaved || _saving || _uploadingLogo)
+                      _buildUnsavedChangesBanner(context, org),
+                  ],
                 ),
               ),
             ),
@@ -167,15 +207,505 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     );
   }
 
-  String? _primaryColor;
-  String? _secondaryColor;
-  String? _accentColor;
+  // ===========================================================================
+  // CARD 1: ORGANIZATION DETAILS
+  // ===========================================================================
+  Widget _buildDetailsCard(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceWhite,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppTheme.borderLight),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Organization details',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Your public name and a short introduction to your organization.',
+            style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+          ),
+          const SizedBox(height: 24),
 
-  String? _validHexColor(String? value) {
-    final color = (value ?? '').trim();
-    return RegExp(r'^#[0-9a-fA-F]{6}$').hasMatch(color)
-        ? null
-        : 'Enter a six-digit color such as #2563EB.';
+          // Name
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Organization name *', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
+              Text('${_name.text.length} / 100', style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+            ],
+          ),
+          const SizedBox(height: 6),
+          TextFormField(
+            controller: _name,
+            maxLength: 100,
+            textCapitalization: TextCapitalization.words,
+            decoration: const InputDecoration(
+              hintText: 'e.g. Acme Corporation',
+              counterText: '',
+            ),
+            validator: (value) {
+              final name = value?.trim() ?? '';
+              return name.length < 3 ? 'Use at least 3 characters.' : null;
+            },
+          ),
+          const SizedBox(height: 20),
+
+          // Description
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Description', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
+              Text('${_description.text.length} / 500', style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+            ],
+          ),
+          const SizedBox(height: 6),
+          TextFormField(
+            controller: _description,
+            maxLength: 500,
+            maxLines: 4,
+            decoration: const InputDecoration(
+              hintText: 'Brief summary of your organization or department...',
+              counterText: '',
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            'A short introduction shown on your organization profile.',
+            style: TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+          ),
+          const SizedBox(height: 20),
+
+          // Website
+          const Text('Website (optional)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
+          const SizedBox(height: 6),
+          TextFormField(
+            controller: _website,
+            keyboardType: TextInputType.url,
+            decoration: const InputDecoration(
+              hintText: 'https://example.org',
+            ),
+            validator: (value) => _validOptionalHttps(value) ? null : 'Enter a valid HTTPS URL.',
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ===========================================================================
+  // CARD 2: ORGANIZATION LOGO
+  // ===========================================================================
+  Widget _buildLogoCard(BuildContext context, String orgId) {
+    final hasLogo = _logoUrl.text.isNotEmpty;
+
+    return Container(
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceWhite,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppTheme.borderLight),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Organization logo',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+              ),
+              Text(
+                hasLogo ? 'Logo active' : 'No logo uploaded',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: hasLogo ? AppTheme.success : AppTheme.textSecondary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          // Dashed Upload Box
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8FAFC),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: AppTheme.borderLight, width: 1.2),
+            ),
+            child: Row(
+              children: [
+                // Logo Preview Box
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: AppTheme.surfaceBlue,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppTheme.borderLight),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: hasLogo
+                      ? Image.network(
+                          FirebaseService.sanitizeStorageUrl(_logoUrl.text),
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => const Center(
+                            child: Icon(Icons.business_rounded, size: 32, color: AppTheme.primaryBlue),
+                          ),
+                        )
+                      : const Center(
+                          child: Icon(Icons.business_rounded, size: 32, color: AppTheme.primaryBlue),
+                        ),
+                ),
+                const SizedBox(width: 20),
+
+                // Upload & Remove Controls
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 12,
+                        runSpacing: 8,
+                        children: [
+                          OutlinedButton.icon(
+                            onPressed: _uploadingLogo || _saving ? null : () => _pickAndUploadLogo(orgId),
+                            icon: _uploadingLogo
+                                ? const SizedBox.square(
+                                    dimension: 16,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  )
+                                : const Icon(Icons.upload_rounded, size: 18),
+                            label: Text(_uploadingLogo ? 'Uploading...' : 'Upload logo'),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            ),
+                          ),
+                          if (hasLogo)
+                            InkWell(
+                              onTap: _uploadingLogo || _saving
+                                  ? null
+                                  : () {
+                                      setState(() {
+                                        _logoUrl.text = '';
+                                      });
+                                    },
+                              borderRadius: BorderRadius.circular(6),
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                child: Text('Remove', style: TextStyle(fontSize: 13, color: AppTheme.textSecondary, fontWeight: FontWeight.bold)),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'PNG, JPEG or WebP · Up to 5 MB\nUse a square image for the best result.',
+                        style: TextStyle(fontSize: 12, color: AppTheme.textSecondary, height: 1.3),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ===========================================================================
+  // SIDEBAR 1: LIVE MEMBER PROFILE PREVIEW
+  // ===========================================================================
+  Widget _buildLivePreviewCard(BuildContext context) {
+    final nameStr = _name.text.trim().isEmpty ? 'Organization Name' : _name.text.trim();
+    final descStr = _description.text.trim().isEmpty ? 'Description will appear here...' : _description.text.trim();
+    final websiteStr = _website.text.trim().isEmpty ? 'No website added' : _website.text.trim();
+    final hasLogo = _logoUrl.text.isNotEmpty;
+
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceWhite,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppTheme.borderLight),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Member profile preview',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'How your organization will appear to members.',
+            style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+          ),
+          const SizedBox(height: 20),
+
+          // Preview Container
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8FAFC),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppTheme.borderLight),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Top Logo Box
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppTheme.surfaceBlue,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: hasLogo
+                      ? Image.network(
+                          FirebaseService.sanitizeStorageUrl(_logoUrl.text),
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => const Center(
+                            child: Icon(Icons.business_rounded, size: 24, color: AppTheme.primaryBlue),
+                          ),
+                        )
+                      : const Center(
+                          child: Icon(Icons.business_rounded, size: 24, color: AppTheme.primaryBlue),
+                        ),
+                ),
+                const SizedBox(height: 16),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        nameStr,
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AppTheme.surfaceBlue,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Text('Member', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+
+                Text(
+                  descStr,
+                  style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary, height: 1.4),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 12),
+
+                Row(
+                  children: [
+                    const Icon(Icons.language_rounded, size: 14, color: AppTheme.textSecondary),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        websiteStr,
+                        style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Divider(height: 1, color: AppTheme.borderLight),
+                const SizedBox(height: 16),
+
+                ElevatedButton.icon(
+                  onPressed: null,
+                  icon: const Text('View events', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white)),
+                  label: const Icon(Icons.arrow_forward_rounded, size: 16, color: Colors.white),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryBlue,
+                    disabledBackgroundColor: AppTheme.primaryBlue,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          const Row(
+            children: [
+              Icon(Icons.info_outline_rounded, size: 14, color: AppTheme.textSecondary),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Preview only. Changes appear to members and voters after you save.',
+                  style: TextStyle(fontSize: 11, color: AppTheme.textSecondary, height: 1.3),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ===========================================================================
+  // SIDEBAR 2: PERMISSIONS NOTICE
+  // ===========================================================================
+  Widget _buildPermissionsNoticeCard(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceWhite,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.borderLight),
+      ),
+      child: const Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.verified_user_outlined, size: 20, color: AppTheme.primaryBlue),
+          SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Branding, not permissions',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'Access control and verification are managed separately. Updating your branding won\'t change either.',
+                  style: TextStyle(fontSize: 12, color: AppTheme.textSecondary, height: 1.4),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ===========================================================================
+  // 4. UNSAVED CHANGES STICKY BANNER
+  // ===========================================================================
+  Widget _buildUnsavedChangesBanner(BuildContext context, Organization org) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceWhite,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.borderLight),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: const BoxDecoration(
+              color: AppTheme.accentGold,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'You have unsaved changes',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  _uploadingLogo ? 'Logo uploaded. Save to publish changes.' : 'Save to publish your branding, or reset to discard your changes.',
+                  style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 16),
+
+          OutlinedButton(
+            onPressed: _saving || _uploadingLogo
+                ? null
+                : () {
+                    setState(() {
+                      _name.text = org.name;
+                      _description.text = org.description;
+                      _website.text = org.website ?? '';
+                      _logoUrl.text = org.logoUrl ?? '';
+                    });
+                  },
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+            ),
+            child: const Text('Reset'),
+          ),
+          const SizedBox(width: 12),
+
+          FilledButton.icon(
+            onPressed: _saving || _uploadingLogo ? null : () => _save(org.id),
+            icon: _saving
+                ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                : const Icon(Icons.check_rounded, size: 18),
+            label: Text(_saving ? 'Saving...' : 'Save branding'),
+            style: FilledButton.styleFrom(
+              backgroundColor: AppTheme.primaryBlue,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _pickAndUploadLogo(String organizationId) async {
@@ -188,8 +718,8 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
       );
       if (image == null || !mounted) return;
       final bytes = await image.readAsBytes();
-      if (bytes.length < 3 || bytes[0] != 0xFF || bytes[1] != 0xD8 || bytes[2] != 0xFF) {
-        throw Exception('Choose a JPEG image for the organization logo.');
+      if (bytes.length > 5242880) {
+        throw Exception('Organization logo exceeds 5MB size limit.');
       }
       setState(() => _uploadingLogo = true);
       final url = await ref.read(organizationRepositoryProvider).uploadOrganizationLogo(
@@ -202,7 +732,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
       ref.invalidate(activeOrganizationContextProvider);
       ref.invalidate(userOrganizationsProvider);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Organization logo uploaded.')),
+        const SnackBar(content: Text('Organization logo uploaded successfully.')),
       );
     } catch (error) {
       if (mounted) {
@@ -232,16 +762,18 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
         'description': _description.text.trim(),
         'website': _website.text.trim(),
         'logoUrl': _logoUrl.text.trim(),
-        'brandColors': {
-          'primary': (_primaryColor ?? '#2563EB').trim(),
-          'secondary': (_secondaryColor ?? '#0F172A').trim(),
-          'accent': (_accentColor ?? '#10B981').trim(),
-        },
       });
       ref.read(organizationRepositoryProvider).clearCache();
       ref.invalidate(activeOrganizationContextProvider);
       ref.invalidate(userOrganizationsProvider);
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Organization branding saved.')));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Organization branding saved.'),
+            backgroundColor: AppTheme.success,
+          ),
+        );
+      }
     } on FirebaseFunctionsException catch (error) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message ?? 'Could not save branding.')));
     } catch (_) {

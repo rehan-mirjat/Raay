@@ -1,82 +1,58 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
-import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { getFirestore } from "firebase-admin/firestore";
+import {
+  CALLABLE_OPTIONS,
+  enforceRateLimit, failWith, loadDraftEventForChild, requireAdminMember, requireAuth,
+  requireId, requireOperationalOrg, writeAudit,
+} from "./votingCommon";
 
-export const deletePollOption = onCall(async (request) => {
-  if (!request.auth || !request.auth.uid) {
-    throw new HttpsError("unauthenticated", "Authentication required.");
-  }
-
-  const uid = request.auth.uid;
-  const { optionId } = request.data || {};
-
-  if (!optionId || typeof optionId !== "string" || optionId.trim().length === 0) {
-    throw new HttpsError("invalid-argument", "Valid optionId is required.");
-  }
+export const deletePollOption = onCall(CALLABLE_OPTIONS, async (request) => {
+  const uid = requireAuth(request);
+  const optionId = requireId((request.data || {}).optionId, "optionId");
 
   const db = getFirestore();
+  await enforceRateLimit(db, uid, "deletePollOption");
   const optionRef = db.collection("pollOptions").doc(optionId);
 
   try {
-    await db.runTransaction(async (transaction) => {
-      const optSnap = await transaction.get(optionRef);
-      if (!optSnap.exists) {
-        throw new HttpsError("not-found", "Poll option not found.");
-      }
+    await db.runTransaction(async (tx) => {
+      const snap = await tx.get(optionRef);
+      if (!snap.exists) throw new HttpsError("not-found", "Poll option not found.");
+      const opt = snap.data()!;
+      const organizationId = opt.organizationId as string;
+      const votingEventId = opt.votingEventId as string;
 
-      const optData = optSnap.data()!;
-      const organizationId = optData.organizationId;
-      const votingEventId = optData.votingEventId;
+      await requireAdminMember(tx, db, organizationId, uid, "delete poll options");
+      await requireOperationalOrg(tx, db, organizationId);
 
-      // YES_NO_POLL Generated Option Protection: Rejects deletion of generated options
-      if (optionId.endsWith("_YES") || optionId.endsWith("_NO")) {
+      // Generated YES/NO options are protected.
+      if (optionId === `${votingEventId}_YES` || optionId === `${votingEventId}_NO`) {
         throw new HttpsError("failed-precondition", "Generated YES/NO poll options cannot be individually deleted.");
       }
+      await loadDraftEventForChild(tx, db, organizationId, votingEventId, "Poll options");
 
-      // Validate Parent Event Status
-      const eventSnap = await transaction.get(db.collection("votingEvents").doc(votingEventId));
-      if (!eventSnap.exists) {
-        throw new HttpsError("not-found", "Voting event not found.");
-      }
+      // Defence in depth with the real ballot field names.
+      const votesCheck = await tx.get(
+        db.collection("votes")
+          .where("votingEventId", "==", votingEventId)
+          .where("choiceId", "==", optionId)
+          .limit(1)
+      );
+      if (!votesCheck.empty) throw new HttpsError("failed-precondition", "Cannot delete a poll option that has cast votes.");
 
-      const eventStatus = eventSnap.data()?.status;
-      if (eventStatus !== "DRAFT") {
-        throw new HttpsError("failed-precondition", `Poll options can be deleted ONLY in DRAFT events. Current status: '${eventStatus}'`);
-      }
-
-      // Validate Caller Role
-      const callerRef = db.collection("organizationMembers").doc(`${organizationId}_${uid}`);
-      const callerSnap = await transaction.get(callerRef);
-
-      if (!callerSnap.exists || callerSnap.data()?.status !== "active" ||
-          callerSnap.data()?.organizationId !== organizationId || callerSnap.data()?.userId !== uid) {
-        throw new HttpsError("permission-denied", "You are not an active member of this organization.");
-      }
-
-      const role = callerSnap.data()?.role;
-      if (role !== "owner" && role !== "admin") {
-        throw new HttpsError("permission-denied", "Only Organization Owners or Admins can delete poll options.");
-      }
-
-      transaction.delete(optionRef);
-
-      // Audit Log
-      const auditRef = db.collection("auditLogs").doc();
-      transaction.set(auditRef, {
-        organizationId: organizationId,
+      tx.delete(optionRef);
+      writeAudit(tx, db, {
+        organizationId,
         actorUid: uid,
         action: "DELETE_POLL_OPTION",
         resourceType: "pollOption",
         resourceId: optionId,
-        metadata: {
-          label: optData.label,
-        },
-        timestamp: FieldValue.serverTimestamp(),
+        metadata: { label: opt.label, votingEventId },
       });
     });
 
     return { status: "success" };
-  } catch (error: any) {
-    if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to delete poll option.", error);
+  } catch (error) {
+    failWith("deletePollOption", error, "Failed to delete poll option.");
   }
 });

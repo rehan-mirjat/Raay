@@ -27,27 +27,49 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
   bool _isLoading = false;
 
   Future<void> _performAction(Future<void> Function() action, String successMessage) async {
+    // Capture before awaiting: the dialog may be dismissed while the request runs.
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
     setState(() => _isLoading = true);
     try {
       await action();
-      if (mounted) {
-        Navigator.pop(context);
-        widget.onChanged();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(successMessage), backgroundColor: AppTheme.success),
-        );
-      }
+      widget.onChanged();
+      messenger.showSnackBar(
+        SnackBar(content: Text(successMessage), backgroundColor: AppTheme.success),
+      );
+      if (mounted) navigator.pop();
     } catch (e) {
-      if (mounted) {
-        setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString().replaceAll('Exception: ', '')),
-            backgroundColor: AppTheme.error,
-          ),
-        );
-      }
+      if (mounted) setState(() => _isLoading = false);
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(e.toString().replaceAll('Exception: ', '')),
+          backgroundColor: AppTheme.error,
+        ),
+      );
     }
+  }
+
+  Future<bool> _confirm({
+    required String title,
+    required String message,
+    required String confirmLabel,
+  }) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: AppTheme.error),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(confirmLabel),
+          ),
+        ],
+      ),
+    );
+    return ok == true && mounted;
   }
 
   @override
@@ -86,7 +108,7 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(displayName, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text(displayName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 Text(email, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
               ],
             ),
@@ -144,10 +166,19 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
             ),
           if (canRemove)
             TextButton(
-              onPressed: () => _performAction(
-                () => repo.removeMember(organizationId: widget.organizationId, targetUid: targetUid),
-                'Removed member permanently.',
-              ),
+              onPressed: () async {
+                final confirmed = await _confirm(
+                  title: 'Remove $displayName?',
+                  message: 'They will lose access to this organization immediately. This cannot be undone from here.',
+                  confirmLabel: 'Remove',
+                );
+                if (confirmed) {
+                  await _performAction(
+                    () => repo.removeMember(organizationId: widget.organizationId, targetUid: targetUid),
+                    'Member removed from the organization.',
+                  );
+                }
+              },
               child: const Text('Remove', style: TextStyle(color: AppTheme.error)),
             ),
         ],

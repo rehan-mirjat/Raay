@@ -1,126 +1,77 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import {
+  CALLABLE_OPTIONS, LIMITS,
+  enforceRateLimit, failWith, loadDraftEventForChild, optionalString, parseSortOrder,
+  rejectUnknownKeys, requireAdminMember, requireAuth, requireId, requireOperationalOrg,
+  requiredString, writeAudit,
+} from "./votingCommon";
 
-export const createCandidate = onCall(async (request) => {
-  if (!request.auth || !request.auth.uid) {
-    throw new HttpsError("unauthenticated", "Authentication required.");
-  }
-
-  const uid = request.auth.uid;
+export const createCandidate = onCall(CALLABLE_OPTIONS, async (request) => {
+  const uid = requireAuth(request);
   const data = request.data || {};
+  rejectUnknownKeys(data, ["organizationId", "votingEventId", "name", "position", "party", "bio", "displayOrder"], "createCandidate");
 
-  // Strict Schema Whitelisting
-  const allowedKeys = ["organizationId", "votingEventId", "name", "party", "bio"];
-  for (const key of Object.keys(data)) {
-    if (!allowedKeys.includes(key)) {
-      throw new HttpsError("invalid-argument", `Unpermitted parameter '${key}' in createCandidate payload.`);
-    }
-  }
-
-  const { organizationId, votingEventId, name, party, bio } = data;
-
-  if (!organizationId || typeof organizationId !== "string" || organizationId.trim().length === 0) {
-    throw new HttpsError("invalid-argument", "Valid organizationId is required.");
-  }
-
-  if (!votingEventId || typeof votingEventId !== "string" || votingEventId.trim().length === 0) {
-    throw new HttpsError("invalid-argument", "Valid votingEventId is required.");
-  }
-
-  if (!name || typeof name !== "string" || name.trim().length < 3 || name.trim().length > 100) {
-    throw new HttpsError("invalid-argument", "Candidate name must be between 3 and 100 characters.");
-  }
-
-  const cleanParty = party && typeof party === "string" ? party.trim() : "";
-  if (cleanParty.length > 100) {
-    throw new HttpsError("invalid-argument", "Party name cannot exceed 100 characters.");
-  }
-
-  const cleanBio = bio && typeof bio === "string" ? bio.trim() : "";
-  if (cleanBio.length > 1000) {
-    throw new HttpsError("invalid-argument", "Bio cannot exceed 1000 characters.");
-  }
+  const organizationId = requireId(data.organizationId, "organizationId");
+  const votingEventId = requireId(data.votingEventId, "votingEventId");
+  const name = requiredString(data.name, "Candidate name", 2, 100);
+  const position = optionalString(data.position, "Position", 100);
+  const party = optionalString(data.party, "Party name", 100);
+  const bio = optionalString(data.bio, "Bio", 1000);
+  const displayOrder = data.displayOrder === undefined ? 0 : parseSortOrder(data.displayOrder);
 
   const db = getFirestore();
+  await enforceRateLimit(db, uid, "createCandidate");
+
+  const candidateRef = db.collection("candidates").doc();
+  const candidateId = candidateRef.id;
+  const expectedPhotoPath = `organizations/${organizationId}/events/${votingEventId}/candidates/${candidateId}/photo.jpg`;
 
   try {
-    const candidateRef = db.collection("candidates").doc();
-    const candidateId = candidateRef.id;
-    const expectedPhotoPath = `organizations/${organizationId}/events/${votingEventId}/candidates/${candidateId}/photo.jpg`;
+    await db.runTransaction(async (tx) => {
+      await requireAdminMember(tx, db, organizationId, uid, "create candidates");
+      await requireOperationalOrg(tx, db, organizationId);
+      await loadDraftEventForChild(tx, db, organizationId, votingEventId, "Candidates", "CANDIDATE_ELECTION");
 
-    await db.runTransaction(async (transaction) => {
-      // 1. Verify parent event
-      const eventRef = db.collection("votingEvents").doc(votingEventId);
-      const eventSnap = await transaction.get(eventRef);
-
-      if (!eventSnap.exists) {
-        throw new HttpsError("not-found", "Target voting event not found.");
+      const siblings = await tx.get(
+        db.collection("candidates")
+          .where("organizationId", "==", organizationId)
+          .where("votingEventId", "==", votingEventId)
+      );
+      if (siblings.size >= LIMITS.MAX_CANDIDATES) {
+        throw new HttpsError("failed-precondition", `An event cannot have more than ${LIMITS.MAX_CANDIDATES} candidates.`);
+      }
+      const lower = name.toLowerCase();
+      if (siblings.docs.some((d) => String(d.data().name || "").trim().toLowerCase() === lower)) {
+        throw new HttpsError("already-exists", "A candidate with this name already exists in this event.");
       }
 
-      const eventData = eventSnap.data()!;
-      if (eventData.organizationId !== organizationId) {
-        throw new HttpsError("permission-denied", "Voting event belongs to a different organization.");
-      }
-
-      if (eventData.status !== "DRAFT") {
-        throw new HttpsError("failed-precondition", `Candidates can be created ONLY for DRAFT events. Current status: '${eventData.status}'`);
-      }
-
-      if (eventData.votingType !== "CANDIDATE_ELECTION") {
-        throw new HttpsError("failed-precondition", `Candidates can be created ONLY for CANDIDATE_ELECTION events. Event type: '${eventData.votingType}'`);
-      }
-
-      // 2. Verify caller role
-      const callerRef = db.collection("organizationMembers").doc(`${organizationId}_${uid}`);
-      const callerSnap = await transaction.get(callerRef);
-
-      if (!callerSnap.exists || callerSnap.data()?.status !== "active" ||
-          callerSnap.data()?.organizationId !== organizationId || callerSnap.data()?.userId !== uid) {
-        throw new HttpsError("permission-denied", "You are not an active member of this organization.");
-      }
-
-      const role = callerSnap.data()?.role;
-      if (role !== "owner" && role !== "admin") {
-        throw new HttpsError("permission-denied", "Only Organization Owners or Admins can create candidates.");
-      }
-
-      // 3. Create Candidate Document (photoUrl & photoPath set to null initially)
-      transaction.set(candidateRef, {
+      tx.set(candidateRef, {
         id: candidateId,
-        organizationId: organizationId,
-        votingEventId: votingEventId,
-        name: name.trim(),
-        party: cleanParty,
-        bio: cleanBio,
-        photoUrl: null,
-        photoPath: null,
+        organizationId,
+        votingEventId,
+        name,
+        position,
+        party,
+        bio,
+        displayOrder,
+        photoPath: null, // photos are referenced by Storage path only (no permanent token URLs)
         createdAt: FieldValue.serverTimestamp(),
         updatedAt: FieldValue.serverTimestamp(),
       });
 
-      // 4. Atomic Audit Log Creation
-      const auditRef = db.collection("auditLogs").doc();
-      transaction.set(auditRef, {
-        organizationId: organizationId,
+      writeAudit(tx, db, {
+        organizationId,
         actorUid: uid,
         action: "CREATE_CANDIDATE",
         resourceType: "candidate",
         resourceId: candidateId,
-        metadata: {
-          candidateName: name.trim(),
-          votingEventId: votingEventId,
-        },
-        timestamp: FieldValue.serverTimestamp(),
+        metadata: { candidateName: name, votingEventId },
       });
     });
 
-    return {
-      status: "success",
-      candidateId: candidateId,
-      expectedPhotoPath: expectedPhotoPath,
-    };
-  } catch (error: any) {
-    if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to create candidate.", error);
+    return { status: "success", candidateId, expectedPhotoPath };
+  } catch (error) {
+    failWith("createCandidate", error, "Failed to create candidate.");
   }
 });

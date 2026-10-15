@@ -1,6 +1,7 @@
 import { getAuth, UserRecord } from "firebase-admin/auth";
 import { FieldValue, getFirestore } from "firebase-admin/firestore";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
+import { requireActiveMembership } from "../utils/authorization";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -56,13 +57,12 @@ export const addMember = onCall(async (request) => {
         targetMemberRef,
       );
 
-      const caller = callerSnap.data();
-      if (!callerSnap.exists || caller?.status !== "active" ||
-          caller?.organizationId !== organizationId || caller?.userId !== callerUid ||
-          (caller.role !== "owner" && caller.role !== "admin")) {
-        throw new HttpsError("permission-denied", "Only active Organization Owners or Admins can add members.");
-      }
+      await requireActiveMembership(
+        db, organizationId, callerUid, ["owner", "admin"], { preFetchedSnap: callerSnap }
+      );
 
+      // NOTE: intentionally NOT OPERATIONAL_ORG_STATUSES - "pending" orgs may run
+      // their own elections, but may not accept new members until verified.
       if (!organizationSnap.exists || !["verified", "active"].includes(organizationSnap.data()?.status)) {
         throw new HttpsError("failed-precondition", "This organization cannot accept new members right now.");
       }

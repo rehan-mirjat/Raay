@@ -54,7 +54,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
       final repo = ref.read(organizationRepositoryProvider);
       final result = await repo.inviteMember(
         organizationId: widget.organizationId,
-        email: _emailController.text,
+        email: _emailController.text.trim(),
         role: widget.isOwner ? _selectedRole : 'member',
       );
 
@@ -104,7 +104,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
             ),
             const SizedBox(height: 16),
             const Text(
-              'The invitee will see it in SecureVote Notifications after creating or signing into a verified account with this email address. They can accept or decline it there.',
+              'The invitee will see it in Kivora Notifications after creating or signing into a verified account with this email address. They can accept or decline it there.',
               style: TextStyle(
                   fontSize: 13, color: AppTheme.textSecondary, height: 1.45),
             ),
@@ -144,7 +144,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
               IconButton(
                 icon: const Icon(Icons.close,
                     color: AppTheme.textSecondary, size: 20),
-                onPressed: () => Navigator.pop(context),
+                onPressed: _isLoading ? null : () => Navigator.pop(context),
               ),
             ],
           ),
@@ -180,6 +180,8 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                     prefixIcon: Icon(Icons.email_outlined, size: 20),
                   ),
                   keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (_) => _submit(),
                   validator: Validators.email,
                 ),
                 const SizedBox(height: 20),
@@ -268,7 +270,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: _isLoading ? null : () => Navigator.pop(context),
           child: const Text('Cancel'),
         ),
         ElevatedButton.icon(

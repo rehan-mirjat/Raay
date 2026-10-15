@@ -12,7 +12,7 @@ final pendingInvitationsProvider =
       .getPendingInvitations(organizationId);
 });
 
-class PendingInvitationsWidget extends ConsumerWidget {
+class PendingInvitationsWidget extends ConsumerStatefulWidget {
   const PendingInvitationsWidget({
     super.key,
     required this.organizationId,
@@ -22,29 +22,84 @@ class PendingInvitationsWidget extends ConsumerWidget {
   final String organizationId;
   final bool isOwner;
 
+  @override
+  ConsumerState<PendingInvitationsWidget> createState() =>
+      _PendingInvitationsWidgetState();
+}
+
+class _PendingInvitationsWidgetState
+    extends ConsumerState<PendingInvitationsWidget> {
+  String? _revokingId;
+
   String _formatExpiry(String? isoDate) {
     if (isoDate == null || isoDate.isEmpty) return '';
+    final expires = DateTime.tryParse(isoDate);
+    if (expires == null) return '';
+    final diff = expires.difference(DateTime.now());
+    if (diff.isNegative) return 'Expired';
+    if (diff.inDays >= 1) {
+      return 'Expires in ${diff.inDays} ${diff.inDays == 1 ? "day" : "days"}';
+    } else if (diff.inHours >= 1) {
+      return 'Expires in ${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"}';
+    } else if (diff.inMinutes >= 1) {
+      return 'Expires in ${diff.inMinutes} ${diff.inMinutes == 1 ? "minute" : "minutes"}';
+    }
+    return 'Expiring soon';
+  }
+
+  Future<void> _revoke(String invitationId, String email) async {
+    if (invitationId.isEmpty || _revokingId != null) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Revoke this invitation?'),
+        content: Text(
+          '${email.isEmpty ? 'The recipient' : email} will no longer be able to accept it. You can invite them again later.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Keep'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: AppTheme.error),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Revoke'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _revokingId = invitationId);
     try {
-      final expires = DateTime.parse(isoDate);
-      final diff = expires.difference(DateTime.now());
-      if (diff.inDays >= 1) {
-        return 'Expires in ${diff.inDays} ${diff.inDays == 1 ? "day" : "days"}';
-      } else if (diff.inHours >= 1) {
-        return 'Expires in ${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"}';
-      } else if (diff.inMinutes >= 1) {
-        return 'Expires in ${diff.inMinutes} ${diff.inMinutes == 1 ? "minute" : "minutes"}';
-      } else {
-        return 'Expiring soon';
-      }
-    } catch (_) {
-      return '';
+      await ref.read(organizationRepositoryProvider).revokeInvitation(invitationId);
+      ref.invalidate(pendingInvitationsProvider(widget.organizationId));
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text('Invitation revoked successfully.'),
+          backgroundColor: AppTheme.success,
+        ),
+      );
+    } catch (e) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+              'Failed to revoke invitation: ${e.toString().replaceAll("Exception: ", "")}'),
+          backgroundColor: AppTheme.error,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _revokingId = null);
     }
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final invitationsAsync =
-        ref.watch(pendingInvitationsProvider(organizationId));
+        ref.watch(pendingInvitationsProvider(widget.organizationId));
     final compact = MediaQuery.sizeOf(context).width < 500;
 
     return Card(
@@ -71,8 +126,8 @@ class PendingInvitationsWidget extends ConsumerWidget {
                 IconButton(
                   icon: const Icon(Icons.refresh, size: 20),
                   tooltip: 'Refresh Invitations',
-                  onPressed: () => ref
-                      .invalidate(pendingInvitationsProvider(organizationId)),
+                  onPressed: () => ref.invalidate(
+                      pendingInvitationsProvider(widget.organizationId)),
                 ),
               ],
             ),
@@ -94,7 +149,7 @@ class PendingInvitationsWidget extends ConsumerWidget {
                     const SizedBox(height: 8),
                     TextButton.icon(
                       onPressed: () => ref.invalidate(
-                          pendingInvitationsProvider(organizationId)),
+                          pendingInvitationsProvider(widget.organizationId)),
                       icon: const Icon(Icons.refresh_rounded),
                       label: const Text('Try again'),
                     ),
@@ -121,13 +176,13 @@ class PendingInvitationsWidget extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     final item = invitations[index];
                     final email = item['email'] as String? ?? '';
-                    final role = item['role'] as String? ?? 'member';
+                    final role = (item['role'] as String? ?? 'member').toLowerCase();
                     final invitationId = item['invitationId'] as String? ?? '';
-                    final expiresAtIso = item['expiresAt'] as String?;
-                    final expiryText = _formatExpiry(expiresAtIso);
-
-                    final isAdminRole = role.toLowerCase() == 'admin';
-                    final canRevoke = isOwner || !isAdminRole;
+                    final expiryText = _formatExpiry(item['expiresAt'] as String?);
+                    final isExpired = expiryText == 'Expired';
+                    final isAdminRole = role == 'admin';
+                    final canRevoke = widget.isOwner || !isAdminRole;
+                    final isWorking = _revokingId == invitationId;
 
                     return ListTile(
                       contentPadding: const EdgeInsets.symmetric(vertical: 4),
@@ -151,7 +206,7 @@ class PendingInvitationsWidget extends ConsumerWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: role.toLowerCase() == 'admin'
+                              color: isAdminRole
                                   ? AppTheme.primaryBlue.withValues(alpha: 0.1)
                                   : Colors.grey.shade100,
                               borderRadius: BorderRadius.circular(10),
@@ -161,7 +216,7 @@ class PendingInvitationsWidget extends ConsumerWidget {
                               style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
-                                  color: role.toLowerCase() == 'admin'
+                                  color: isAdminRole
                                       ? AppTheme.primaryBlue
                                       : AppTheme.secondaryNavy),
                             ),
@@ -170,43 +225,28 @@ class PendingInvitationsWidget extends ConsumerWidget {
                       ),
                       subtitle: expiryText.isNotEmpty
                           ? Text(expiryText,
-                              style: const TextStyle(
-                                  fontSize: 12, color: AppTheme.textSecondary))
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: isExpired
+                                      ? AppTheme.error
+                                      : AppTheme.textSecondary))
                           : null,
                       trailing: canRevoke
                           ? OutlinedButton(
-                              onPressed: () async {
-                                try {
-                                  await ref
-                                      .read(organizationRepositoryProvider)
-                                      .revokeInvitation(invitationId);
-                                  ref.invalidate(pendingInvitationsProvider(
-                                      organizationId));
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              'Invitation revoked successfully.'),
-                                          backgroundColor: AppTheme.success),
-                                    );
-                                  }
-                                } catch (e) {
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                            'Failed to revoke invitation: ${e.toString().replaceAll("Exception: ", "")}'),
-                                        backgroundColor: AppTheme.error,
-                                      ),
-                                    );
-                                  }
-                                }
-                              },
+                              onPressed: _revokingId != null
+                                  ? null
+                                  : () => _revoke(invitationId, email),
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: AppTheme.error,
                                 side: const BorderSide(color: AppTheme.error),
                               ),
-                              child: const Text('Revoke'),
+                              child: isWorking
+                                  ? const SizedBox.square(
+                                      dimension: 16,
+                                      child: CircularProgressIndicator(
+                                          strokeWidth: 2),
+                                    )
+                                  : Text(isExpired ? 'Remove' : 'Revoke'),
                             )
                           : const Tooltip(
                               message:

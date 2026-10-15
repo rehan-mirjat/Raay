@@ -1,173 +1,80 @@
-import { onCall, HttpsError } from "firebase-functions/v2/https";
+import { onCall } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
+import {
+  CALLABLE_OPTIONS, ELIGIBILITY_TYPES, EVENT_STATUS, VOTING_TYPES,
+  assertActiveMembers, assertDepartmentsInOrg, assertEligibilityShape, assertEndInFuture,
+  assertStartAcceptable, assertWindow, enforceRateLimit, failWith, oneOf, optionalString,
+  parseMillis, parsePrivacyMode, rejectUnknownKeys, requireAdminMember, requireAuth, requireId,
+  requireOperationalOrg, requiredString, validateIdArray, writeAudit,
+} from "./votingCommon";
 
-export const createVotingEvent = onCall(async (request) => {
-  if (!request.auth || !request.auth.uid) {
-    throw new HttpsError("unauthenticated", "Authentication required.");
-  }
-
-  const uid = request.auth.uid;
+export const createVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
+  const uid = requireAuth(request);
   const data = request.data || {};
 
-  // Strict Schema Whitelisting: Reject any unapproved keys
-  const allowedKeys = [
+  rejectUnknownKeys(data, [
     "organizationId", "title", "description", "votingType",
     "eligibilityType", "eligibilityDepartmentIds", "eligibilityUserIds",
-    "startAt", "endAt", "privacyMode"
-  ];
-  for (const key of Object.keys(data)) {
-    if (!allowedKeys.includes(key)) {
-      throw new HttpsError("invalid-argument", `Unpermitted parameter: '${key}'`);
-    }
-  }
+    "startAt", "endAt", "privacyMode",
+  ], "createVotingEvent");
 
-  const {
-    organizationId, title, description, votingType,
-    eligibilityType, eligibilityDepartmentIds, eligibilityUserIds,
-    startAt, endAt, privacyMode
-  } = data;
+  // ---- Input validation (no database access yet) ----
+  const organizationId = requireId(data.organizationId, "organizationId");
+  const title = requiredString(data.title, "Title", 3, 100);
+  const description = optionalString(data.description, "Description", 1000);
+  const votingType = oneOf(data.votingType, VOTING_TYPES, "votingType");
+  const eligibilityType = oneOf(data.eligibilityType, ELIGIBILITY_TYPES, "eligibilityType");
+  const privacyMode = data.privacyMode === undefined || data.privacyMode === null
+    ? "ANONYMOUS"
+    : parsePrivacyMode(data.privacyMode);
 
-  if (!organizationId || typeof organizationId !== "string" || organizationId.trim().length === 0) {
-    throw new HttpsError("invalid-argument", "Valid organizationId is required.");
-  }
-
-  if (!title || typeof title !== "string" || title.trim().length < 3 || title.trim().length > 100) {
-    throw new HttpsError("invalid-argument", "Title must be between 3 and 100 characters.");
-  }
-
-  const cleanDescription = description && typeof description === "string" ? description.trim() : "";
-  if (cleanDescription.length > 1000) {
-    throw new HttpsError("invalid-argument", "Description cannot exceed 1000 characters.");
-  }
-
-  if (!["CANDIDATE_ELECTION", "SINGLE_CHOICE_POLL", "YES_NO_POLL"].includes(votingType)) {
-    throw new HttpsError("invalid-argument", "Invalid votingType.");
-  }
-
-  if (!["ALL_MEMBERS", "SELECTED_MEMBERS", "SELECTED_DEPARTMENTS"].includes(eligibilityType)) {
-    throw new HttpsError("invalid-argument", "Invalid eligibilityType.");
-  }
-
-  if (!startAt || !endAt) {
-    throw new HttpsError("invalid-argument", "startAt and endAt timestamps are required.");
-  }
-
-  const startMillis = new Date(startAt).getTime();
-  const endMillis = new Date(endAt).getTime();
-
-  if (isNaN(startMillis) || isNaN(endMillis)) {
-    throw new HttpsError("invalid-argument", "Invalid startAt or endAt timestamp format.");
-  }
-
+  const startMillis = parseMillis(data.startAt, "startAt");
+  const endMillis = parseMillis(data.endAt, "endAt");
   const trustedNow = Timestamp.now().toMillis();
+  assertStartAcceptable(startMillis, trustedNow);
+  assertEndInFuture(endMillis, trustedNow);
+  assertWindow(startMillis, endMillis);
 
-  // startAt >= trustedNow - 60s
-  if (startMillis < trustedNow - 60000) {
-    throw new HttpsError("invalid-argument", "startAt cannot be in the past.");
-  }
-
-  // endAt > trustedNow
-  if (endMillis <= trustedNow) {
-    throw new HttpsError("invalid-argument", "endAt must be in the future.");
-  }
-
-  // endAt - startAt >= 5 mins (300,000 ms)
-  if (endMillis - startMillis < 300000) {
-    throw new HttpsError("invalid-argument", "Voting window (endAt - startAt) must be at least 5 minutes.");
-  }
-
-  const cleanPrivacyMode = privacyMode && typeof privacyMode === "string" ? privacyMode.trim().toUpperCase() : "ANONYMOUS";
-  if (!["ANONYMOUS", "IDENTIFIABLE"].includes(cleanPrivacyMode)) {
-    throw new HttpsError("invalid-argument", "Invalid privacyMode.");
-  }
+  // DRAFT creation: empty rosters are allowed; they are enforced again at publish.
+  const departmentIds = data.eligibilityDepartmentIds === undefined ? [] : validateIdArray(data.eligibilityDepartmentIds, "eligibilityDepartmentIds");
+  const userIds = data.eligibilityUserIds === undefined ? [] : validateIdArray(data.eligibilityUserIds, "eligibilityUserIds");
+  assertEligibilityShape(eligibilityType, departmentIds, userIds);
 
   const db = getFirestore();
-
-  // Validate Caller Membership & Role
-  const callerMemberRef = db.collection("organizationMembers").doc(`${organizationId}_${uid}`);
-  const callerMemberSnap = await callerMemberRef.get();
-
-  if (!callerMemberSnap.exists || callerMemberSnap.data()?.status !== "active" ||
-      callerMemberSnap.data()?.organizationId !== organizationId || callerMemberSnap.data()?.userId !== uid) {
-    throw new HttpsError("permission-denied", "You are not an active member of this organization.");
-  }
-
-  const callerRole = callerMemberSnap.data()?.role;
-  if (callerRole !== "owner" && callerRole !== "admin") {
-    throw new HttpsError("permission-denied", "Only Organization Owners or Admins can create voting events.");
-  }
-
-  const organizationSnap = await db.collection("organizations").doc(organizationId).get();
-  if (!organizationSnap.exists || !["verified", "active"].includes(organizationSnap.data()?.status)) {
-    throw new HttpsError("failed-precondition", "The organization must be verified before creating voting events.");
-  }
-
-  // Validate Eligibility References & Deterministic Arrays
-  if (eligibilityType === "ALL_MEMBERS") {
-    if (Array.isArray(eligibilityDepartmentIds) && eligibilityDepartmentIds.length > 0) {
-      throw new HttpsError("invalid-argument", "eligibilityDepartmentIds must be empty when eligibilityType is ALL_MEMBERS.");
-    }
-    if (Array.isArray(eligibilityUserIds) && eligibilityUserIds.length > 0) {
-      throw new HttpsError("invalid-argument", "eligibilityUserIds must be empty when eligibilityType is ALL_MEMBERS.");
-    }
-  }
-
-  if (eligibilityType === "SELECTED_DEPARTMENTS") {
-    if (Array.isArray(eligibilityUserIds) && eligibilityUserIds.length > 0) {
-      throw new HttpsError("invalid-argument", "eligibilityUserIds must be empty when eligibilityType is SELECTED_DEPARTMENTS.");
-    }
-    // DRAFT creation logic: Do NOT enforce array > 0 length at creation.
-    // An admin must be able to create a DRAFT event even if 0 departments currently exist.
-    if (!Array.isArray(eligibilityDepartmentIds)) {
-      throw new HttpsError("invalid-argument", "eligibilityDepartmentIds must be an array for SELECTED_DEPARTMENTS.");
-    }
-    for (const deptId of eligibilityDepartmentIds) {
-      const deptSnap = await db.collection("departments").doc(deptId).get();
-      if (!deptSnap.exists || deptSnap.data()?.organizationId !== organizationId) {
-        throw new HttpsError("invalid-argument", `Department '${deptId}' does not exist in this organization.`);
-      }
-    }
-  }
-
-  if (eligibilityType === "SELECTED_MEMBERS") {
-    if (Array.isArray(eligibilityDepartmentIds) && eligibilityDepartmentIds.length > 0) {
-      throw new HttpsError("invalid-argument", "eligibilityDepartmentIds must be empty when eligibilityType is SELECTED_MEMBERS.");
-    }
-    // DRAFT creation logic: Do NOT enforce array > 0 length at creation.
-    // An admin must be able to create a DRAFT event even if 0 members currently exist.
-    if (!Array.isArray(eligibilityUserIds)) {
-      throw new HttpsError("invalid-argument", "eligibilityUserIds must be an array for SELECTED_MEMBERS.");
-    }
-    for (const targetUid of eligibilityUserIds) {
-      const targetMemberSnap = await db.collection("organizationMembers").doc(`${organizationId}_${targetUid}`).get();
-      if (!targetMemberSnap.exists || targetMemberSnap.data()?.status !== "active") {
-        throw new HttpsError("invalid-argument", `User '${targetUid}' is not an active member in this organization.`);
-      }
-    }
-  }
+  await enforceRateLimit(db, uid, "createVotingEvent");
 
   const eventRef = db.collection("votingEvents").doc();
   const eventId = eventRef.id;
 
   try {
-    await db.runTransaction(async (transaction) => {
-      transaction.set(eventRef, {
+    await db.runTransaction(async (tx) => {
+      // Authorization first, then everything else (all reads happen before any write).
+      await requireAdminMember(tx, db, organizationId, uid, "create voting events");
+      await requireOperationalOrg(tx, db, organizationId);
+
+      if (eligibilityType === "SELECTED_DEPARTMENTS") {
+        await assertDepartmentsInOrg(tx, db, organizationId, departmentIds, "invalid-argument");
+      } else if (eligibilityType === "SELECTED_MEMBERS") {
+        await assertActiveMembers(tx, db, organizationId, userIds, "invalid-argument");
+      }
+
+      // The event document is readable by members, so it holds NO roster.
+      tx.set(eventRef, {
         id: eventId,
-        organizationId: organizationId,
-        title: title.trim(),
-        description: cleanDescription,
-        votingType: votingType,
-        privacyMode: cleanPrivacyMode, // Dynamically accept ANONYMOUS or IDENTIFIABLE
-        maxSelections: 1,        // Forced V1 Single Selection Contract
-        eligibilityType: eligibilityType,
-        eligibilityDepartmentIds: eligibilityType === "SELECTED_DEPARTMENTS" ? eligibilityDepartmentIds : [],
-        eligibilityUserIds: eligibilityType === "SELECTED_MEMBERS" ? eligibilityUserIds : [],
-        status: "DRAFT",
+        organizationId,
+        title,
+        description,
+        votingType,
+        privacyMode,
+        maxSelections: 1, // V1: single selection contract
+        eligibilityType,
+        status: EVENT_STATUS.DRAFT,
         startAt: Timestamp.fromMillis(startMillis),
         endAt: Timestamp.fromMillis(endMillis),
         createdBy: uid,
         createdAt: FieldValue.serverTimestamp(),
         updatedAt: FieldValue.serverTimestamp(),
+        activatedAt: null,
         closedAt: null,
         closedBy: null,
         cancelledAt: null,
@@ -176,59 +83,51 @@ export const createVotingEvent = onCall(async (request) => {
         archivedBy: null,
       });
 
-      // Step 2 Integration Extension: Auto-provision YES/NO options if YES_NO_POLL
+      // Roster configuration is stored in an admin-only document.
+      tx.set(db.collection("votingEventEligibility").doc(eventId), {
+        organizationId,
+        votingEventId: eventId,
+        eligibilityDepartmentIds: eligibilityType === "SELECTED_DEPARTMENTS" ? departmentIds : [],
+        eligibilityUserIds: eligibilityType === "SELECTED_MEMBERS" ? userIds : [],
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+
       if (votingType === "YES_NO_POLL") {
-        const yesOptRef = db.collection("pollOptions").doc(`${eventId}_YES`);
-        const noOptRef = db.collection("pollOptions").doc(`${eventId}_NO`);
-
-        transaction.set(yesOptRef, {
-          id: `${eventId}_YES`,
-          organizationId: organizationId,
-          votingEventId: eventId,
-          label: "Yes",
-          description: "",
-          sortOrder: 1,
-          createdAt: FieldValue.serverTimestamp(),
-          updatedAt: FieldValue.serverTimestamp(),
-        });
-
-        transaction.set(noOptRef, {
-          id: `${eventId}_NO`,
-          organizationId: organizationId,
-          votingEventId: eventId,
-          label: "No",
-          description: "",
-          sortOrder: 2,
-          createdAt: FieldValue.serverTimestamp(),
-          updatedAt: FieldValue.serverTimestamp(),
-        });
+        for (const [suffix, label, order] of [["YES", "Yes", 1], ["NO", "No", 2]] as const) {
+          const id = `${eventId}_${suffix}`;
+          tx.set(db.collection("pollOptions").doc(id), {
+            id,
+            organizationId,
+            votingEventId: eventId,
+            label,
+            description: "",
+            sortOrder: order,
+            createdAt: FieldValue.serverTimestamp(),
+            updatedAt: FieldValue.serverTimestamp(),
+          });
+        }
       }
 
-      // Audit Log
-      const auditRef = db.collection("auditLogs").doc();
-      transaction.set(auditRef, {
-        organizationId: organizationId,
+      writeAudit(tx, db, {
+        organizationId,
         actorUid: uid,
         action: "CREATE_VOTING_EVENT",
         resourceType: "votingEvent",
         resourceId: eventId,
         metadata: {
-          title: title.trim(),
-          votingType: votingType,
-          privacyMode: cleanPrivacyMode,
-          eligibilityType: eligibilityType,
+          title,
+          votingType,
+          privacyMode,
+          eligibilityType,
+          eligibilityDepartmentCount: departmentIds.length,
+          eligibilityUserCount: userIds.length,
         },
-        timestamp: FieldValue.serverTimestamp(),
       });
     });
 
-    return { status: "success", eventId: eventId };
-  } catch (error: any) {
-    if (error instanceof HttpsError) throw error;
-    console.error("createVotingEvent failed to save the draft", error);
-    const details = process.env.FUNCTIONS_EMULATOR === "true"
-      ? { message: error instanceof Error ? error.message : String(error) }
-      : undefined;
-    throw new HttpsError("internal", "Failed to create voting event.", details);
+    return { status: "success", eventId };
+  } catch (error) {
+    failWith("createVotingEvent", error, "Failed to create voting event.");
   }
 });

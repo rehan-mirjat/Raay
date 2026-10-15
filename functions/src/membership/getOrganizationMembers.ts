@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore } from "firebase-admin/firestore";
+import { requireActiveMembership } from "../utils/authorization";
 
 export const getOrganizationMembers = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
@@ -18,17 +19,7 @@ export const getOrganizationMembers = onCall(async (request) => {
   const db = getFirestore();
 
   // 1. Verify caller is an active member
-  const callerMemberRef = db.collection("organizationMembers").doc(`${cleanOrganizationId}_${uid}`);
-  const callerSnap = await callerMemberRef.get();
-
-  const callerData = callerSnap.data();
-  if (!callerSnap.exists || callerData?.status !== "active" ||
-      callerData?.organizationId !== cleanOrganizationId || callerData?.userId !== uid) {
-    throw new HttpsError("permission-denied", "You must be an active member to view the directory.");
-  }
-  if (callerData.role !== "owner" && callerData.role !== "admin") {
-    throw new HttpsError("permission-denied", "Only Organization Owners or Admins can view the member directory.");
-  }
+  await requireActiveMembership(db, cleanOrganizationId, uid, ["owner", "admin"]);
 
   // 2. Fetch Paginated Members
   let membersQuery = db.collection("organizationMembers")
@@ -46,45 +37,44 @@ export const getOrganizationMembers = onCall(async (request) => {
 
   const membersSnap = await membersQuery.get();
 
-  // 3. Resolve Sanitize Users and Departments
-  const directory = [];
+  // 3. Resolve & Sanitize Users and Departments (batched, not one round-trip per member)
+  const directory: any[] = [];
   let nextToken = null;
 
   if (!membersSnap.empty) {
     nextToken = membersSnap.docs[membersSnap.docs.length - 1].id;
 
-    for (const memberDoc of membersSnap.docs) {
-      const memberData = memberDoc.data();
+    const memberRows = membersSnap.docs.map((doc) => doc.data());
+    const userIds = [...new Set(memberRows.map((m) => m.userId as string).filter(Boolean))];
+    const deptIds = [...new Set(memberRows.map((m) => m.departmentId as string).filter(Boolean))];
+
+    const [userSnaps, deptSnaps] = await Promise.all([
+      userIds.length
+        ? db.getAll(...userIds.map((id) => db.collection("users").doc(id)))
+        : Promise.resolve([]),
+      deptIds.length
+        ? db.getAll(...deptIds.map((id) => db.collection("departments").doc(id)))
+        : Promise.resolve([]),
+    ]);
+
+    const usersById = new Map(userSnaps.map((snap) => [snap.id, snap.exists ? snap.data()! : null]));
+    const deptsById = new Map(deptSnaps.map((snap) => [snap.id, snap.exists ? snap.data()! : null]));
+
+    for (const memberData of memberRows) {
       const targetUserId = memberData.userId;
       const deptId = memberData.departmentId;
 
-      let firstName = "Unknown";
-      let lastName = "User";
-      let email = "";
-      let photoUrl = null;
-
-      try {
-        const userSnap = await db.collection("users").doc(targetUserId).get();
-        if (userSnap.exists) {
-          const uData = userSnap.data()!;
-          firstName = uData.firstName || firstName;
-          lastName = uData.lastName || lastName;
-          email = uData.email || email;
-          photoUrl = uData.photoUrl || null;
-        }
-      } catch (e) {
-        // Ignore individual user fetch failures
-      }
+      const uData = usersById.get(targetUserId);
+      const firstName = uData?.firstName || "Unknown";
+      const lastName = uData?.lastName || "User";
+      const email = uData?.email || "";
+      const photoUrl = uData?.photoUrl || null;
 
       let departmentName = null;
       if (deptId) {
-        try {
-          const deptSnap = await db.collection("departments").doc(deptId).get();
-          if (deptSnap.exists && deptSnap.data()?.organizationId === cleanOrganizationId) {
-            departmentName = deptSnap.data()?.name;
-          }
-        } catch (e) {
-          // Ignore individual dept fetch failures
+        const dData = deptsById.get(deptId);
+        if (dData && dData.organizationId === cleanOrganizationId) {
+          departmentName = dData.name;
         }
       }
 

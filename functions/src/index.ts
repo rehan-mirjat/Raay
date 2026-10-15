@@ -4,14 +4,12 @@ import * as admin from "firebase-admin";
 
 admin.initializeApp();
 
-// Set global options to minimize Cloud Run CPU quota requirements on new projects.
-setGlobalOptions({ maxInstances: 1 });
+setGlobalOptions({
+  maxInstances: 10,
+  memory: "256MiB",
+  cpu: "gcf_gen1",
+});
 
-/**
- * Milestone 1: Diagnostics Ping
- * A simple callable function to verify that the Flutter client
- * can successfully communicate with Firebase Cloud Functions (or Emulator).
- */
 export const ping = onCall((request) => {
   return {
     status: "success",
@@ -21,8 +19,13 @@ export const ping = onCall((request) => {
 });
 
 export * from "./auth/completeRegistration";
+export * from "./auth/onUserDeleted";
+export * from "./auth/deleteAccount";
 export * from "./organizations/createOrganization";
 export * from "./organizations/updateOrganization";
+export * from "./organizations/deleteOrganization";
+export * from "./organizations/suspendOrganization";
+export * from "./organizations/verifyOrganization";
 export * from "./membership/createJoiningCode";
 export * from "./membership/addMember";
 export * from "./membership/joinOrganizationWithCode";

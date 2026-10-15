@@ -42,8 +42,8 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Voting Event Published Successfully!',
                 style: TextStyle(color: AppTheme.success))));
-        // Navigate back to management dashboard (route to be defined)
-        context.go('/org/${widget.orgId}');
+        // Navigate back to admin events dashboard
+        context.go('/admin/events');
       }
     } catch (e) {
       if (mounted) {

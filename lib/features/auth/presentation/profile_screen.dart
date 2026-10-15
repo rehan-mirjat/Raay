@@ -14,9 +14,10 @@ import '../domain/app_user.dart';
 import 'widgets/change_password_section.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
-  const ProfileScreen({super.key, required this.uid, this.onSignOut});
+  const ProfileScreen({super.key, required this.uid, this.initialTab = 0, this.onSignOut});
 
   final String uid;
+  final int initialTab;
   final VoidCallback? onSignOut;
 
   @override
@@ -27,7 +28,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
 
+  late int _selectedIndex;
   bool _isEditing = false;
   bool _isSaving = false;
   bool _isUploadingPhoto = false;
@@ -37,9 +40,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   String? _uploadedPhotoUrl;
 
   @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialTab;
+  }
+
+  @override
+  void didUpdateWidget(covariant ProfileScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialTab != widget.initialTab) {
+      _selectedIndex = widget.initialTab;
+    }
+  }
+
+  @override
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
+    _phoneNumberController.dispose();
     super.dispose();
   }
 
@@ -47,6 +65,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     if (!_initialized && !_isEditing) {
       _firstNameController.text = user.firstName;
       _lastNameController.text = user.lastName;
+      _phoneNumberController.text = user.phoneNumber ?? '';
       _initialized = true;
     }
   }
@@ -127,6 +146,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             uid: widget.uid,
             firstName: _firstNameController.text,
             lastName: _lastNameController.text,
+            phoneNumber: _phoneNumberController.text,
           );
 
       if (mounted) {
@@ -202,6 +222,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
   }
 
+  Future<void> _toggle2FA(BuildContext context, bool enable) async {
+    // For now, simply show a snackbar indicating that the feature is coming soon
+    // or if the backend implementation requires a specific flow.
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(enable 
+            ? 'Two-Factor Authentication enrollment flow will be implemented shortly.' 
+            : 'Disabling Two-Factor Authentication requires admin verification.'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final userAsync = ref.watch(userProfileProvider(widget.uid));
@@ -216,7 +248,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Profile Settings',
+                  'Account Settings',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppTheme.secondaryNavy,
@@ -226,14 +258,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 userAsync.when(
                   loading: () =>
                       const LoadingView(message: 'Loading user profile...'),
-                  error: (err, stack) => ErrorView(
+                  error: (err, stack) => ErrorView(type: ErrorViewType.generic, 
                     message: 'Error loading profile: $err',
                     onRetry: () =>
                         ref.invalidate(userProfileProvider(widget.uid)),
                   ),
                   data: (user) {
                     if (user == null) {
-                      return const ErrorView(message: 'User profile not found.');
+                      return const ErrorView(type: ErrorViewType.generic, message: 'User profile not found.');
                     }
 
                     _populateControllers(user);
@@ -244,14 +276,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       return Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            flex: 3,
-                            child: _buildLeftColumn(context, user),
+                          SizedBox(
+                            width: 240,
+                            child: _buildSidebar(context),
                           ),
-                          const SizedBox(width: 24),
+                          const SizedBox(width: 32),
                           Expanded(
-                            flex: 2,
-                            child: _buildRightColumn(context),
+                            child: _selectedIndex == 0
+                                ? _buildProfileView(context, user)
+                                : _buildSecurityView(context, user),
                           ),
                         ],
                       );
@@ -260,9 +293,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        _buildLeftColumn(context, user),
-                        const SizedBox(height: 20),
-                        _buildRightColumn(context),
+                        _buildMobileTabs(context),
+                        const SizedBox(height: 24),
+                        _selectedIndex == 0
+                            ? _buildProfileView(context, user)
+                            : _buildSecurityView(context, user),
                       ],
                     );
                   },
@@ -275,16 +310,118 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  Widget _buildLeftColumn(BuildContext context, AppUser user) {
+  Widget _buildSidebar(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildSidebarItem(
+          icon: Icons.person_outline_rounded,
+          title: 'Profile',
+          isSelected: _selectedIndex == 0,
+          onTap: () => setState(() => _selectedIndex = 0),
+        ),
+        const SizedBox(height: 8),
+        _buildSidebarItem(
+          icon: Icons.security_outlined,
+          title: 'Security & Settings',
+          isSelected: _selectedIndex == 1,
+          onTap: () => setState(() => _selectedIndex = 1),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSidebarItem({
+    required IconData icon,
+    required String title,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    final color = isSelected ? AppTheme.primaryBlue : AppTheme.secondaryNavy;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected ? AppTheme.primaryBlue.withValues(alpha: 0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: color, size: 20),
+            const SizedBox(width: 12),
+            Text(
+              title,
+              style: TextStyle(
+                color: color,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobileTabs(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceWhite,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.borderLight),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _buildMobileTabItem(
+              title: 'Profile',
+              isSelected: _selectedIndex == 0,
+              onTap: () => setState(() => _selectedIndex = 0),
+            ),
+          ),
+          Container(width: 1, height: 24, color: AppTheme.borderLight),
+          Expanded(
+            child: _buildMobileTabItem(
+              title: 'Security',
+              isSelected: _selectedIndex == 1,
+              onTap: () => setState(() => _selectedIndex = 1),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMobileTabItem({
+    required String title,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        alignment: Alignment.center,
+        child: Text(
+          title,
+          style: TextStyle(
+            color: isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileView(BuildContext context, AppUser user) {
     final authUser = ref.watch(authServiceProvider).currentUser;
     final photoUrl = _uploadedPhotoUrl ?? user.photoUrl ?? authUser?.photoURL;
+    // Live Auth state, not the Firestore `emailVerified` field - that field is only
+    // ever written once at registration and never updated again, so it goes stale
+    // the moment a user actually verifies their email after signing up.
+    final isEmailVerified = authUser?.emailVerified ?? false;
     final dateFormat = DateFormat('MMMM d, yyyy');
-    final hasPasswordProvider = authUser?.providerData
-            .any((info) => info.providerId == 'password') ??
-        false;
-    final hasGoogleProvider = authUser?.providerData
-            .any((info) => info.providerId == 'google.com') ??
-        false;
         
     final sanitizedPhotoUrl = FirebaseService.sanitizeStorageUrl(photoUrl);
 
@@ -376,15 +513,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
-                              color: user.emailVerified
+                              color: isEmailVerified
                                   ? AppTheme.success.withValues(alpha: 0.12)
                                   : AppTheme.warning.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
-                              user.emailVerified ? 'VERIFIED' : 'UNVERIFIED',
+                              isEmailVerified ? 'VERIFIED' : 'UNVERIFIED',
                               style: TextStyle(
-                                color: user.emailVerified
+                                color: isEmailVerified
                                     ? AppTheme.success
                                     : AppTheme.warning,
                                 fontWeight: FontWeight.bold,
@@ -610,6 +747,34 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               fontSize: 15, color: AppTheme.textSecondary)),
                     ],
                   ),
+                  const SizedBox(height: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('PHONE NUMBER',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 11,
+                              color: AppTheme.secondaryNavy,
+                              letterSpacing: 0.5)),
+                      const SizedBox(height: 6),
+                      _isEditing
+                          ? TextFormField(
+                              controller: _phoneNumberController,
+                              decoration: const InputDecoration(
+                                  hintText: '+1 (555) 000-0000'),
+                              keyboardType: TextInputType.phone,
+                            )
+                          : Text(
+                              user.phoneNumber?.isNotEmpty == true
+                                  ? user.phoneNumber!
+                                  : 'Not provided',
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: user.phoneNumber?.isNotEmpty == true ? AppTheme.secondaryNavy : AppTheme.textSecondary,
+                                  fontWeight: FontWeight.w500)),
+                    ],
+                  ),
                   if (_isEditing) ...[
                     const SizedBox(height: 24),
                     Row(
@@ -621,6 +786,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               _isEditing = false;
                               _firstNameController.text = user.firstName;
                               _lastNameController.text = user.lastName;
+                              _phoneNumberController.text = user.phoneNumber ?? '';
                             });
                           },
                           child: const Text('Cancel'),
@@ -646,6 +812,75 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ],
                 ],
               ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSecurityView(BuildContext context, AppUser user) {
+    final authUser = ref.watch(authServiceProvider).currentUser;
+    final hasPasswordProvider = authUser?.providerData
+            .any((info) => info.providerId == 'password') ??
+        false;
+    final hasGoogleProvider = authUser?.providerData
+            .any((info) => info.providerId == 'google.com') ??
+        false;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Card(
+          color: AppTheme.surfaceBlue,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(
+              color: AppTheme.primaryBlue.withValues(alpha: 0.2),
+              width: 1.2,
+            ),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.shield_outlined,
+                        color: AppTheme.primaryBlue, size: 20),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Account Security',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.secondaryNavy,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 12),
+                Text(
+                  'Your Kivora account controls access to your organizations and voting administration features.',
+                  style: TextStyle(
+                    fontSize: 13,
+                    height: 1.45,
+                    color: AppTheme.secondaryNavy,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Voting choices and cryptographic ballot receipts are NOT displayed or editable from your profile to maintain absolute secrecy.',
+                  style: TextStyle(
+                    fontSize: 13,
+                    height: 1.45,
+                    color: AppTheme.textSecondary,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -700,67 +935,61 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   const Text('Managed securely through Google Sign-In.',
                       style: TextStyle(
                           color: AppTheme.textSecondary, fontSize: 13)),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRightColumn(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Card(
-          color: AppTheme.surfaceBlue,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: BorderSide(
-              color: AppTheme.primaryBlue.withValues(alpha: 0.2),
-              width: 1.2,
-            ),
-          ),
-          child: const Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.shield_outlined,
-                        color: AppTheme.primaryBlue, size: 20),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Account Security',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.secondaryNavy,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12),
-                Text(
-                  'Your SecureVote account controls access to your organizations and voting administration features.',
-                  style: TextStyle(
-                    fontSize: 13,
-                    height: 1.45,
-                    color: AppTheme.secondaryNavy,
+                          
+                const SizedBox(height: 24),
+                const Divider(height: 1),
+                const SizedBox(height: 24),
+                
+                // Two-Factor Authentication
+                const Text('TWO-FACTOR AUTHENTICATION (2FA)',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 11,
+                        color: AppTheme.secondaryNavy,
+                        letterSpacing: 0.5)),
+                const SizedBox(height: 12),
+                if (authUser != null)
+                  FutureBuilder<List<dynamic>>(
+                    future: authUser.multiFactor.getEnrolledFactors(),
+                    builder: (context, snapshot) {
+                      final is2FAEnabled = snapshot.hasData && snapshot.data!.isNotEmpty;
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  is2FAEnabled ? 'Enabled' : 'Disabled',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      color: is2FAEnabled ? AppTheme.success : AppTheme.textSecondary),
+                                ),
+                                const SizedBox(height: 4),
+                                const Text(
+                                  'Add an extra layer of security to your account.',
+                                  style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (snapshot.connectionState == ConnectionState.waiting)
+                            const SizedBox(
+                              width: 32,
+                              height: 32,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          else
+                            Switch(
+                              value: is2FAEnabled,
+                              onChanged: (value) => _toggle2FA(context, value),
+                            ),
+                        ],
+                      );
+                    },
                   ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'Voting choices and cryptographic ballot receipts are NOT displayed or editable from your profile to maintain absolute secrecy.',
-                  style: TextStyle(
-                    fontSize: 13,
-                    height: 1.45,
-                    color: AppTheme.textSecondary,
-                  ),
-                ),
               ],
             ),
           ),
@@ -782,30 +1011,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       color: AppTheme.error),
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  'Sign out from this SecureVote account on the current device.',
-                  style: TextStyle(
-                      fontSize: 13,
-                      color: AppTheme.textSecondary,
-                      height: 1.4),
-                ),
-                const SizedBox(height: 10),
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.logout_rounded, size: 16),
-                  label: const Text('Sign Out'),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppTheme.error,
-                    side: const BorderSide(color: AppTheme.error),
-                    minimumSize: const Size(0, 38),
-                  ),
-                  onPressed: () async {
-                    if (widget.onSignOut != null) {
-                      widget.onSignOut!();
-                    }
-                    await ref.read(authServiceProvider).signOut();
-                  },
-                ),
-                const Divider(height: 28),
                 const Text(
                   'Permanently delete your user account and profile data.',
                   style: TextStyle(

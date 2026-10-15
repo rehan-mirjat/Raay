@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore } from "firebase-admin/firestore";
+import { requireActiveMembership } from "../utils/authorization";
 
 export const getPendingInvitations = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
@@ -16,17 +17,7 @@ export const getPendingInvitations = onCall(async (request) => {
   const db = getFirestore();
 
   // Verify caller is active Org Owner or Admin
-  const memberRef = db.collection("organizationMembers").doc(`${organizationId}_${uid}`);
-  const memberSnap = await memberRef.get();
-
-  if (!memberSnap.exists || memberSnap.data()?.status !== "active") {
-    throw new HttpsError("permission-denied", "You are not an active member of this organization.");
-  }
-
-  const role = memberSnap.data()?.role;
-  if (role !== "owner" && role !== "admin") {
-    throw new HttpsError("permission-denied", "Only Organization Owners or Admins can view pending invitations.");
-  }
+  await requireActiveMembership(db, organizationId, uid, ["owner", "admin"]);
 
   // Fetch pending invitations for organization
   const querySnap = await db.collection("organizationInvitations")

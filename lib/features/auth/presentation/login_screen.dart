@@ -91,6 +91,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> _googleSignIn() async {
+    if (_isLoading) return;
     setState(() {
       _isLoading = true;
       _error = null;
@@ -100,11 +101,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final authService = ref.read(authServiceProvider);
       final cred = await authService.signInWithGoogle();
 
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+      // cred == null means the user cancelled: stay on the screen silently.
+      if (cred != null) widget.onAuthenticated?.call();
+    } on FirebaseAuthException catch (e) {
       if (mounted) {
-        setState(() => _isLoading = false);
-        if (cred != null && widget.onAuthenticated != null) {
-          widget.onAuthenticated!();
-        }
+        setState(() {
+          _error = mapFirebaseAuthError(e);
+          _isLoading = false;
+        });
       }
     } catch (e) {
       if (mounted) {
@@ -164,16 +170,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     children: [
                       Center(
                         child: Container(
-                          width: 64,
-                          height: 64,
-                          padding: const EdgeInsets.all(12),
+                          width: 80,
+                          height: 80,
+                          padding: const EdgeInsets.all(0), // Removed padding to let the icon fill the space
                           decoration: BoxDecoration(
                             color: AppTheme.primaryBlue.withValues(alpha: 0.08),
-                            shape: BoxShape.circle,
+                            borderRadius: BorderRadius.circular(18), // Match standard app icon squircle
                           ),
+                          clipBehavior: Clip.antiAlias, // Ensure image conforms to the shape
                           child: Image.asset(
-                            'assets/icon/app_icon_transparent.png',
-                            fit: BoxFit.contain,
+                            'assets/icon/app_icon.png', // Switched to the main square icon for the card logo
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),

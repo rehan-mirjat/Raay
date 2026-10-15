@@ -1,125 +1,85 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
-import * as crypto from "crypto";
+import {
+  CALLABLE_OPTIONS, LIMITS,
+  enforceRateLimit, failWith, loadDraftEventForChild, requireAdminMember, requireAuth,
+  requireId, requireOperationalOrg, writeAudit,
+} from "./votingCommon";
 
-export const finalizeCandidatePhoto = onCall(async (request) => {
-  if (!request.auth || !request.auth.uid) {
-    throw new HttpsError("unauthenticated", "Authentication required.");
-  }
-
-  const uid = request.auth.uid;
-  const { candidateId } = request.data || {};
-
-  if (!candidateId || typeof candidateId !== "string" || candidateId.trim().length === 0) {
-    throw new HttpsError("invalid-argument", "Valid candidateId is required.");
-  }
+export const finalizeCandidatePhoto = onCall(CALLABLE_OPTIONS, async (request) => {
+  const uid = requireAuth(request);
+  const candidateId = requireId((request.data || {}).candidateId, "candidateId");
 
   const db = getFirestore();
+  await enforceRateLimit(db, uid, "finalizeCandidatePhoto");
   const candRef = db.collection("candidates").doc(candidateId);
 
   try {
-    // 1. Fetch Candidate & Event Info inside Transaction
-    const candidateData = await db.runTransaction(async (transaction) => {
-      const candSnap = await transaction.get(candRef);
-      if (!candSnap.exists) {
-        throw new HttpsError("not-found", "Candidate not found.");
-      }
-
-      const candData = candSnap.data()!;
-      const organizationId = candData.organizationId;
-      const votingEventId = candData.votingEventId;
-
-      // Validate Caller Membership & Role
-      const callerRef = db.collection("organizationMembers").doc(`${organizationId}_${uid}`);
-      const callerSnap = await transaction.get(callerRef);
-
-      if (!callerSnap.exists || callerSnap.data()?.status !== "active" ||
-          callerSnap.data()?.organizationId !== organizationId || callerSnap.data()?.userId !== uid) {
-        throw new HttpsError("permission-denied", "You are not an active member of this organization.");
-      }
-
-      const role = callerSnap.data()?.role;
-      if (role !== "owner" && role !== "admin") {
-        throw new HttpsError("permission-denied", "Only Organization Owners or Admins can finalize candidate photos.");
-      }
-
-      // Validate Parent Event Status
-      const eventSnap = await transaction.get(db.collection("votingEvents").doc(votingEventId));
-      if (!eventSnap.exists || eventSnap.data()?.status !== "DRAFT") {
-        throw new HttpsError("failed-precondition", "Candidate photo can be finalized ONLY for DRAFT events.");
-      }
-
-      return candData;
+    // 1. Authorize and validate state
+    const cand = await db.runTransaction(async (tx) => {
+      const snap = await tx.get(candRef);
+      if (!snap.exists) throw new HttpsError("not-found", "Candidate not found.");
+      const c = snap.data()!;
+      await requireAdminMember(tx, db, c.organizationId, uid, "finalize candidate photos");
+      await requireOperationalOrg(tx, db, c.organizationId);
+      await loadDraftEventForChild(tx, db, c.organizationId, c.votingEventId, "Candidate photos");
+      return c;
     });
 
-    const organizationId = candidateData.organizationId;
-    const votingEventId = candidateData.votingEventId;
+    const organizationId = cand.organizationId as string;
+    const votingEventId = cand.votingEventId as string;
     const expectedPhotoPath = `organizations/${organizationId}/events/${votingEventId}/candidates/${candidateId}/photo.jpg`;
 
-    // 2. Storage Bucket File Verification
-    const storage = getStorage();
-    const bucket = storage.bucket();
-    const file = bucket.file(expectedPhotoPath);
-
+    // 2. Verify the uploaded object
+    const file = getStorage().bucket().file(expectedPhotoPath);
     const [exists] = await file.exists();
     if (!exists) {
-      throw new HttpsError(
-        "failed-precondition",
-        `Storage file '${expectedPhotoPath}' does not exist. Upload photo before finalization.`
-      );
+      throw new HttpsError("failed-precondition", "Candidate photo has not been uploaded. Upload the photo before finalization.");
     }
 
     const [metadata] = await file.getMetadata();
     if (metadata.contentType !== "image/jpeg") {
       throw new HttpsError("invalid-argument", "Candidate photo must be a valid 'image/jpeg'.");
     }
-
-    const fileSize = Number(metadata.size) || 0;
-    if (fileSize <= 0 || fileSize > 5 * 1024 * 1024) {
+    const size = Number(metadata.size) || 0;
+    if (size <= 0 || size > LIMITS.MAX_PHOTO_BYTES) {
       throw new HttpsError("invalid-argument", "Candidate photo size must be between 1 byte and 5MB.");
     }
 
-    // Firebase download tokens provide a stable URL for Flutter's image widgets.
-    const downloadToken = crypto.randomUUID();
-    await file.setMetadata({ metadata: { firebaseStorageDownloadTokens: downloadToken } });
-    const photoUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(expectedPhotoPath)}?alt=media&token=${downloadToken}`;
+    // contentType is client-supplied metadata, so also verify the JPEG signature (FF D8 FF).
+    const [head] = await file.download({ start: 0, end: 2 });
+    if (head.length < 3 || head[0] !== 0xff || head[1] !== 0xd8 || head[2] !== 0xff) {
+      await file.delete({ ignoreNotFound: true }); // do not keep a non-JPEG object under this path
+      throw new HttpsError("invalid-argument", "Candidate photo is not a valid JPEG image.");
+    }
 
-    // 3. Transactionally Set photoPath & photoUrl as Atomic Pair
-    await db.runTransaction(async (transaction) => {
-      const freshCandidate = await transaction.get(candRef);
-      const freshEvent = await transaction.get(db.collection("votingEvents").doc(votingEventId));
-      if (!freshCandidate.exists || !freshEvent.exists || freshEvent.data()?.status !== "DRAFT" ||
-          freshEvent.data()?.organizationId !== organizationId) {
-        throw new HttpsError("failed-precondition", "Candidate photos can only be finalized for candidates in a draft event.");
-      }
-      transaction.update(candRef, {
+    // 3. Store ONLY the storage path. Reads are authorized by Storage security rules;
+    //    no permanent, shareable token URL is created.
+    await db.runTransaction(async (tx) => {
+      const snap = await tx.get(candRef);
+      if (!snap.exists) throw new HttpsError("not-found", "Candidate not found.");
+      await requireAdminMember(tx, db, organizationId, uid, "finalize candidate photos");
+      await requireOperationalOrg(tx, db, organizationId);
+      await loadDraftEventForChild(tx, db, organizationId, votingEventId, "Candidate photos");
+
+      tx.update(candRef, {
         photoPath: expectedPhotoPath,
-        photoUrl: photoUrl,
+        photoUrl: FieldValue.delete(), // removes the legacy token-URL field if present
         updatedAt: FieldValue.serverTimestamp(),
       });
-
-      const auditRef = db.collection("auditLogs").doc();
-      transaction.set(auditRef, {
-        organizationId: organizationId,
+      writeAudit(tx, db, {
+        organizationId,
         actorUid: uid,
         action: "FINALIZE_CANDIDATE_PHOTO",
         resourceType: "candidate",
         resourceId: candidateId,
-        metadata: {
-          photoPath: expectedPhotoPath,
-        },
-        timestamp: FieldValue.serverTimestamp(),
+        metadata: { photoPath: expectedPhotoPath },
       });
     });
 
-    return {
-      status: "success",
-      photoPath: expectedPhotoPath,
-      photoUrl: photoUrl,
-    };
-  } catch (error: any) {
-    if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to finalize candidate photo.", error);
+    return { status: "success", photoPath: expectedPhotoPath };
+  } catch (error) {
+    failWith("finalizeCandidatePhoto", error, "Failed to finalize candidate photo.");
   }
 });

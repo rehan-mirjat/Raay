@@ -1,207 +1,134 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
+import {
+  CALLABLE_OPTIONS, ELIGIBILITY_TYPES, EVENT_STATUS,
+  assertActiveMembers, assertDepartmentsInOrg, assertEligibilityShape, assertEndInFuture,
+  assertStartAcceptable, assertWindow, enforceRateLimit, failWith, loadEventAsAdmin, oneOf,
+  optionalString, parseMillis, parsePrivacyMode, readEligibilityConfig, rejectUnknownKeys,
+  requireAuth, requireId, requiredString, validateIdArray, writeAudit,
+} from "./votingCommon";
 
-export const updateVotingEvent = onCall(async (request) => {
-  if (!request.auth || !request.auth.uid) {
-    throw new HttpsError("unauthenticated", "Authentication required.");
-  }
-
-  const uid = request.auth.uid;
+export const updateVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
+  const uid = requireAuth(request);
   const data = request.data || {};
 
-  // Strict Schema Whitelisting: Reject any unapproved keys
-  const allowedKeys = [
+  rejectUnknownKeys(data, [
     "eventId", "title", "description", "votingType", "privacyMode",
     "eligibilityType", "eligibilityDepartmentIds", "eligibilityUserIds",
-    "startAt", "endAt"
-  ];
-  for (const key of Object.keys(data)) {
-    if (!allowedKeys.includes(key)) {
-      throw new HttpsError("invalid-argument", `Unpermitted parameter: '${key}'`);
-    }
-  }
+    "startAt", "endAt",
+  ], "updateVotingEvent");
 
-  const {
-    eventId, title, description, votingType, privacyMode,
-    eligibilityType, eligibilityDepartmentIds, eligibilityUserIds,
-    startAt, endAt
-  } = data;
+  const eventId = requireId(data.eventId, "eventId");
 
-  if (!eventId || typeof eventId !== "string" || eventId.trim().length === 0) {
-    throw new HttpsError("invalid-argument", "Valid eventId is required.");
+  // ---- Validate only what the client actually sent ----
+  const newTitle = data.title !== undefined ? requiredString(data.title, "Title", 3, 100) : undefined;
+  const newDescription = data.description !== undefined ? optionalString(data.description, "Description", 1000) : undefined;
+  const newPrivacy = data.privacyMode !== undefined ? parsePrivacyMode(data.privacyMode) : undefined;
+  const newType = data.eligibilityType !== undefined ? oneOf(data.eligibilityType, ELIGIBILITY_TYPES, "eligibilityType") : undefined;
+  const newDepts = data.eligibilityDepartmentIds !== undefined ? validateIdArray(data.eligibilityDepartmentIds, "eligibilityDepartmentIds") : undefined;
+  const newUsers = data.eligibilityUserIds !== undefined ? validateIdArray(data.eligibilityUserIds, "eligibilityUserIds") : undefined;
+  const newStart = data.startAt !== undefined ? parseMillis(data.startAt, "startAt") : undefined;
+  const newEnd = data.endAt !== undefined ? parseMillis(data.endAt, "endAt") : undefined;
+  if (data.votingType !== undefined && typeof data.votingType !== "string") {
+    throw new HttpsError("invalid-argument", "Invalid votingType.");
   }
 
   const db = getFirestore();
-  const eventRef = db.collection("votingEvents").doc(eventId);
+  await enforceRateLimit(db, uid, "updateVotingEvent");
 
   try {
-    await db.runTransaction(async (transaction) => {
-      const eventSnap = await transaction.get(eventRef);
-      if (!eventSnap.exists) {
-        throw new HttpsError("not-found", "Voting event not found.");
+    await db.runTransaction(async (tx) => {
+      // Authorization -> organization state -> event state (never the other way round).
+      const { ref: eventRef, data: ev, organizationId } =
+        await loadEventAsAdmin(tx, db, eventId, uid, "update voting events");
+
+      if (ev.status !== EVENT_STATUS.DRAFT) {
+        throw new HttpsError("failed-precondition",
+          `Voting event in status '${ev.status}' is strictly immutable and cannot be updated.`);
       }
 
-      const eventData = eventSnap.data()!;
-      const organizationId = eventData.organizationId;
-      const currentStatus = eventData.status;
-
-      const organizationSnap = await transaction.get(db.collection("organizations").doc(organizationId));
-      if (!organizationSnap.exists || !["verified", "active"].includes(organizationSnap.data()?.status)) {
-        throw new HttpsError("failed-precondition", "The organization must be verified to manage voting events.");
+      // votingType is immutable: children (candidates / YES-NO options) depend on it.
+      if (data.votingType !== undefined && data.votingType !== ev.votingType) {
+        throw new HttpsError("failed-precondition",
+          "votingType cannot be changed after creation. Create a new event instead.");
       }
 
-      // 1. Strict Immutability Guard: Permitted ONLY when status == "DRAFT"
-      if (currentStatus !== "DRAFT") {
-        throw new HttpsError(
-          "failed-precondition",
-          `Voting event in status '${currentStatus}' is strictly immutable and cannot be updated.`
-        );
+      const updates: Record<string, unknown> = {};
+      const auditExtra: Record<string, unknown> = {};
+
+      if (newTitle !== undefined && newTitle !== ev.title) updates.title = newTitle;
+      if (newDescription !== undefined && newDescription !== ev.description) updates.description = newDescription;
+      if (newPrivacy !== undefined && newPrivacy !== ev.privacyMode) {
+        updates.privacyMode = newPrivacy;
+        auditExtra.previousPrivacyMode = ev.privacyMode;
+        auditExtra.newPrivacyMode = newPrivacy;
       }
 
-      // 2. Validate Caller Membership & Role
-      const callerMemberRef = db.collection("organizationMembers").doc(`${organizationId}_${uid}`);
-      const callerMemberSnap = await transaction.get(callerMemberRef);
-
-      if (!callerMemberSnap.exists || callerMemberSnap.data()?.status !== "active" ||
-          callerMemberSnap.data()?.organizationId !== organizationId || callerMemberSnap.data()?.userId !== uid) {
-        throw new HttpsError("permission-denied", "You are not an active member of this organization.");
+      // ---- Time window ----
+      if (newStart !== undefined || newEnd !== undefined) {
+        const trustedNow = Timestamp.now().toMillis();
+        const effStart = newStart ?? (ev.startAt ? ev.startAt.toMillis() : trustedNow);
+        const effEnd = newEnd ?? (ev.endAt ? ev.endAt.toMillis() : trustedNow + 5 * 60 * 1000);
+        if (newStart !== undefined) assertStartAcceptable(newStart, trustedNow);
+        if (newEnd !== undefined) assertEndInFuture(newEnd, trustedNow);
+        assertWindow(effStart, effEnd);
+        if (newStart !== undefined) updates.startAt = Timestamp.fromMillis(newStart);
+        if (newEnd !== undefined) updates.endAt = Timestamp.fromMillis(newEnd);
       }
 
-      const callerRole = callerMemberSnap.data()?.role;
-      if (callerRole !== "owner" && callerRole !== "admin") {
-        throw new HttpsError("permission-denied", "Only Organization Owners or Admins can update voting events.");
+      // ---- Eligibility: always evaluated against the EFFECTIVE type ----
+      const eligRef = db.collection("votingEventEligibility").doc(eventId);
+      const eligSnap = await tx.get(eligRef);
+      let eligWrite: Record<string, unknown> | null = null;
+
+      if (newType !== undefined || newDepts !== undefined || newUsers !== undefined) {
+        const existing = readEligibilityConfig(eligSnap, ev);
+        const effType = newType ?? ev.eligibilityType;
+        const typeChanged = newType !== undefined && newType !== ev.eligibilityType;
+        const depts = newDepts ?? (typeChanged ? [] : existing.departmentIds);
+        const users = newUsers ?? (typeChanged ? [] : existing.userIds);
+
+        assertEligibilityShape(effType, depts, users);
+        if (effType === "SELECTED_DEPARTMENTS") await assertDepartmentsInOrg(tx, db, organizationId, depts, "invalid-argument");
+        if (effType === "SELECTED_MEMBERS") await assertActiveMembers(tx, db, organizationId, users, "invalid-argument");
+
+        if (typeChanged) updates.eligibilityType = effType;
+        eligWrite = {
+          organizationId,
+          votingEventId: eventId,
+          eligibilityDepartmentIds: effType === "SELECTED_DEPARTMENTS" ? depts : [],
+          eligibilityUserIds: effType === "SELECTED_MEMBERS" ? users : [],
+          updatedAt: FieldValue.serverTimestamp(),
+        };
+        auditExtra.eligibilityType = effType;
       }
 
-      const updates: any = {
-        updatedAt: FieldValue.serverTimestamp(),
-      };
-
-      if (title !== undefined) {
-        if (typeof title !== "string" || title.trim().length < 3 || title.trim().length > 100) {
-          throw new HttpsError("invalid-argument", "Title must be between 3 and 100 characters.");
-        }
-        updates.title = title.trim();
+      if (Object.keys(updates).length === 0 && !eligWrite) {
+        throw new HttpsError("invalid-argument", "No changes provided.");
       }
 
-      if (description !== undefined) {
-        const cleanDesc = typeof description === "string" ? description.trim() : "";
-        if (cleanDesc.length > 1000) {
-          throw new HttpsError("invalid-argument", "Description cannot exceed 1000 characters.");
-        }
-        updates.description = cleanDesc;
-      }
+      // ---- Writes (all reads are finished) ----
+      const changedFields = [...Object.keys(updates), ...(eligWrite ? ["eligibility"] : [])];
+      tx.update(eventRef, { ...updates, updatedAt: FieldValue.serverTimestamp() });
+      if (eligWrite) tx.set(eligRef, eligWrite, { merge: true });
 
-      if (votingType !== undefined) {
-        if (!["CANDIDATE_ELECTION", "SINGLE_CHOICE_POLL", "YES_NO_POLL"].includes(votingType)) {
-          throw new HttpsError("invalid-argument", "Invalid votingType.");
-        }
-        updates.votingType = votingType;
-      }
-
-      if (privacyMode !== undefined) {
-        if (privacyMode !== "ANONYMOUS" && privacyMode !== "IDENTIFIABLE") {
-          throw new HttpsError("invalid-argument", "Invalid privacyMode.");
-        }
-        updates.privacyMode = privacyMode;
-      }
-
-      const trustedNow = Timestamp.now().toMillis();
-      let effectiveStartMillis = eventData.startAt ? eventData.startAt.toMillis() : trustedNow;
-      let effectiveEndMillis = eventData.endAt ? eventData.endAt.toMillis() : trustedNow + 300000;
-
-      if (startAt !== undefined) {
-        const parsedStart = new Date(startAt).getTime();
-        if (isNaN(parsedStart)) throw new HttpsError("invalid-argument", "Invalid startAt timestamp.");
-        if (parsedStart < trustedNow - 60000) {
-          throw new HttpsError("invalid-argument", "startAt cannot be in the past.");
-        }
-        effectiveStartMillis = parsedStart;
-        updates.startAt = Timestamp.fromMillis(parsedStart);
-      }
-
-      if (endAt !== undefined) {
-        const parsedEnd = new Date(endAt).getTime();
-        if (isNaN(parsedEnd)) throw new HttpsError("invalid-argument", "Invalid endAt timestamp.");
-        if (parsedEnd <= trustedNow) {
-          throw new HttpsError("invalid-argument", "endAt must be in the future.");
-        }
-        effectiveEndMillis = parsedEnd;
-        updates.endAt = Timestamp.fromMillis(parsedEnd);
-      }
-
-      if (effectiveEndMillis - effectiveStartMillis < 300000) {
-        throw new HttpsError("invalid-argument", "Voting window (endAt - startAt) must be at least 5 minutes.");
-      }
-
-      if (eligibilityType !== undefined) {
-        if (!["ALL_MEMBERS", "SELECTED_MEMBERS", "SELECTED_DEPARTMENTS"].includes(eligibilityType)) {
-          throw new HttpsError("invalid-argument", "Invalid eligibilityType.");
-        }
-        updates.eligibilityType = eligibilityType;
-
-        if (eligibilityType === "ALL_MEMBERS") {
-          if (Array.isArray(eligibilityDepartmentIds) && eligibilityDepartmentIds.length > 0) {
-            throw new HttpsError("invalid-argument", "eligibilityDepartmentIds must be empty when eligibilityType is ALL_MEMBERS.");
-          }
-          if (Array.isArray(eligibilityUserIds) && eligibilityUserIds.length > 0) {
-            throw new HttpsError("invalid-argument", "eligibilityUserIds must be empty when eligibilityType is ALL_MEMBERS.");
-          }
-          updates.eligibilityDepartmentIds = [];
-          updates.eligibilityUserIds = [];
-        } else if (eligibilityType === "SELECTED_DEPARTMENTS") {
-          if (Array.isArray(eligibilityUserIds) && eligibilityUserIds.length > 0) {
-            throw new HttpsError("invalid-argument", "eligibilityUserIds must be empty when eligibilityType is SELECTED_DEPARTMENTS.");
-          }
-          if (!Array.isArray(eligibilityDepartmentIds)) {
-            throw new HttpsError("invalid-argument", "eligibilityDepartmentIds must be an array for SELECTED_DEPARTMENTS.");
-          }
-          for (const deptId of eligibilityDepartmentIds) {
-            const deptSnap = await transaction.get(db.collection("departments").doc(deptId));
-            if (!deptSnap.exists || deptSnap.data()?.organizationId !== organizationId) {
-              throw new HttpsError("invalid-argument", `Department '${deptId}' does not exist in this organization.`);
-            }
-          }
-          updates.eligibilityDepartmentIds = eligibilityDepartmentIds;
-          updates.eligibilityUserIds = [];
-        } else if (eligibilityType === "SELECTED_MEMBERS") {
-          if (Array.isArray(eligibilityDepartmentIds) && eligibilityDepartmentIds.length > 0) {
-            throw new HttpsError("invalid-argument", "eligibilityDepartmentIds must be empty when eligibilityType is SELECTED_MEMBERS.");
-          }
-          if (!Array.isArray(eligibilityUserIds)) {
-            throw new HttpsError("invalid-argument", "eligibilityUserIds must be an array for SELECTED_MEMBERS.");
-          }
-          for (const targetUid of eligibilityUserIds) {
-            const targetMemberSnap = await transaction.get(db.collection("organizationMembers").doc(`${organizationId}_${targetUid}`));
-            if (!targetMemberSnap.exists || targetMemberSnap.data()?.status !== "active") {
-              throw new HttpsError("invalid-argument", `User '${targetUid}' is not an active member in this organization.`);
-            }
-          }
-          updates.eligibilityUserIds = eligibilityUserIds;
-          updates.eligibilityDepartmentIds = [];
-        }
-      }
-
-      transaction.update(eventRef, updates);
-
-      // Audit Log
-      const auditRef = db.collection("auditLogs").doc();
-      transaction.set(auditRef, {
-        organizationId: organizationId,
+      writeAudit(tx, db, {
+        organizationId,
         actorUid: uid,
         action: "UPDATE_VOTING_EVENT",
         resourceType: "votingEvent",
         resourceId: eventId,
         metadata: {
-          title: updates.title || eventData.title,
-          previousStatus: currentStatus,
+          title: (updates.title as string) || ev.title,
+          previousStatus: ev.status,
+          changedFields,
+          ...auditExtra,
         },
-        timestamp: FieldValue.serverTimestamp(),
       });
     });
 
     return { status: "success" };
-  } catch (error: any) {
-    if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to update voting event.", error);
+  } catch (error) {
+    failWith("updateVotingEvent", error, "Failed to update voting event.");
   }
 });

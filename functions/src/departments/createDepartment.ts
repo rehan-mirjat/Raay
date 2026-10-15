@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { requireActiveMembership, requireOperationalOrganization } from "../utils/authorization";
 
 export const createDepartment = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
@@ -20,17 +21,9 @@ export const createDepartment = onCall(async (request) => {
   const db = getFirestore();
 
   // Validate Caller Membership & Role
-  const callerMemberRef = db.collection("organizationMembers").doc(`${organizationId}_${uid}`);
-  const callerMemberSnap = await callerMemberRef.get();
+  await requireActiveMembership(db, organizationId, uid, ["owner", "admin"]);
 
-  if (!callerMemberSnap.exists || callerMemberSnap.data()?.status !== "active") {
-    throw new HttpsError("permission-denied", "You are not an active member of this organization.");
-  }
-
-  const callerRole = callerMemberSnap.data()?.role;
-  if (callerRole !== "owner" && callerRole !== "admin") {
-    throw new HttpsError("permission-denied", "Only Organization Owners or Admins can manage departments.");
-  }
+  await requireOperationalOrganization(db, organizationId);
 
   // Canonical Formatting & Normalization
   // Trim leading/trailing and collapse consecutive internal spaces

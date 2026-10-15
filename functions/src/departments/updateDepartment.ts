@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { requireActiveMembership, requireOperationalOrganization } from "../utils/authorization";
 
 export const updateDepartment = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
@@ -33,17 +34,9 @@ export const updateDepartment = onCall(async (request) => {
       const oldNormalizedName = deptData.normalizedName;
 
       // 2. Validate Caller Membership & Role
-      const callerMemberRef = db.collection("organizationMembers").doc(`${organizationId}_${uid}`);
-      const callerMemberSnap = await transaction.get(callerMemberRef);
+      await requireActiveMembership(db, organizationId, uid, ["owner", "admin"], { tx: transaction });
 
-      if (!callerMemberSnap.exists || callerMemberSnap.data()?.status !== "active") {
-        throw new HttpsError("permission-denied", "You are not an active member of this organization.");
-      }
-
-      const callerRole = callerMemberSnap.data()?.role;
-      if (callerRole !== "owner" && callerRole !== "admin") {
-        throw new HttpsError("permission-denied", "Only Organization Owners or Admins can manage departments.");
-      }
+      await requireOperationalOrganization(db, organizationId, transaction);
 
       const updates: any = {
         updatedAt: FieldValue.serverTimestamp(),

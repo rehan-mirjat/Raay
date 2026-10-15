@@ -21,19 +21,26 @@ class UserRepository {
     required String uid,
     required String firstName,
     required String lastName,
+    String? phoneNumber,
   }) async {
     final trimmedFirst = firstName.trim();
     final trimmedLast = lastName.trim();
     final displayName = '$trimmedFirst $trimmedLast';
 
-    await _firebase.firestore
-        .collection(AppConstants.usersCollection)
-        .doc(uid)
-        .update({
+    final data = <String, dynamic>{
       'firstName': trimmedFirst,
       'lastName': trimmedLast,
       'displayName': displayName,
-    });
+    };
+    
+    if (phoneNumber != null) {
+      data['phoneNumber'] = phoneNumber.trim();
+    }
+
+    await _firebase.firestore
+        .collection(AppConstants.usersCollection)
+        .doc(uid)
+        .update(data);
   }
 
   Future<String> uploadProfilePhoto({

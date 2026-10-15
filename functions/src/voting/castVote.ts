@@ -1,6 +1,9 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, Timestamp } from "firebase-admin/firestore";
+import { getAuth } from "firebase-admin/auth";
 import { generateVoteReceipt } from "./generateReceipt";
+import { checkRateLimit, RATE_LIMIT_VOTE } from "../utils/rateLimiter";
+import { OPERATIONAL_ORG_STATUSES } from "../voting_events/votingCommon";
 import { checkVoterEligibility } from "../utils/checkVoterEligibility";
 import { validateChoiceReference } from "../utils/choiceValidation";
 import { validateAnonymousBallotPayload, validateIdentifiableBallotPayload } from "../utils/privacyValidation";
@@ -20,6 +23,16 @@ export const castVote = onCall({ cors: true }, async (request) => {
   const uid = request.auth?.uid;
   if (!uid) {
     throw new HttpsError("unauthenticated", "Authentication is required to cast a vote.");
+  }
+
+  await checkRateLimit(uid, RATE_LIMIT_VOTE);
+
+  // Server-authoritative email verification check (the `users.status` Firestore field is
+  // set to "active" at registration, before verification, so it cannot be used for this).
+  const authUser = await getAuth().getUser(uid);
+  const isGoogleUser = authUser.providerData.some((p) => p.providerId === "google.com");
+  if (!authUser.emailVerified && !isGoogleUser) {
+    throw new HttpsError("permission-denied", "Your email address must be verified before you can vote.");
   }
 
   const data = request.data as CastVoteRequest;
@@ -44,8 +57,9 @@ export const castVote = onCall({ cors: true }, async (request) => {
       const eventRef = db.collection("votingEvents").doc(cleanEventId);
       const memberRef = db.collection("organizationMembers").doc(`${cleanOrgId}_${uid}`);
       const organizationRef = db.collection("organizations").doc(cleanOrgId);
-      const [userSnap, participationSnap, eventSnap, memberSnap, organizationSnap] =
-        await transaction.getAll(userRef, participationRef, eventRef, memberRef, organizationRef);
+      const eligibilityRef = db.collection("votingEventEligibility").doc(cleanEventId);
+      const [userSnap, participationSnap, eventSnap, memberSnap, organizationSnap, eligibilitySnap] =
+        await transaction.getAll(userRef, participationRef, eventRef, memberRef, organizationRef, eligibilityRef);
 
       // Read 1: User Profile Validation
       if (!userSnap.exists || userSnap.data()?.status !== "active") {
@@ -67,7 +81,7 @@ export const castVote = onCall({ cors: true }, async (request) => {
         throw new HttpsError("permission-denied", "Voting event belongs to a different organization.");
       }
 
-      if (!organizationSnap.exists || !["verified", "active"].includes(organizationSnap.data()?.status)) {
+      if (!organizationSnap.exists || !OPERATIONAL_ORG_STATUSES.includes(organizationSnap.data()?.status)) {
         throw new HttpsError("failed-precondition", "This organization is not currently authorized to run voting events.");
       }
 
@@ -92,7 +106,7 @@ export const castVote = onCall({ cors: true }, async (request) => {
         transaction,
         db,
         { organizationId: cleanOrgId, eventId: cleanEventId, userId: uid },
-        { memberSnap, eventSnap }
+        { memberSnap, eventSnap, eligibilitySnap }
       );
 
       // Read 5: Choice Reference Validation (passes pre-fetched snaps)

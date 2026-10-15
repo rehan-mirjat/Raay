@@ -2,7 +2,6 @@ import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 
 const ALLOWED_TYPES = ["academic", "corporate", "nonProfit", "club", "community", "other"];
-const URL_REGEX = /^https:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(\/.*)?$/;
 const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const UUID_V4_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -80,13 +79,22 @@ export const createOrganization = onCall(async (request) => {
     throw new HttpsError("invalid-argument", "City is required.");
   }
 
-  // Validate Optional URLs (must be valid HTTPS)
-  if (website && (typeof website !== "string" || !URL_REGEX.test(website.trim()))) {
-    throw new HttpsError("invalid-argument", "Website must be a valid HTTPS URL (e.g. https://domain.com).");
+function isValidUrl(input: string): boolean {
+  try {
+    const url = new URL(input.trim());
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+  // Validate Optional URLs (must be valid HTTP/HTTPS)
+  if (website && (typeof website !== "string" || !isValidUrl(website))) {
+    throw new HttpsError("invalid-argument", "Website must be a valid URL (e.g. https://domain.com).");
   }
 
-  if (logoUrl && (typeof logoUrl !== "string" || !URL_REGEX.test(logoUrl.trim()))) {
-    throw new HttpsError("invalid-argument", "Logo URL must be a valid HTTPS URL.");
+  if (logoUrl && (typeof logoUrl !== "string" || !isValidUrl(logoUrl))) {
+    throw new HttpsError("invalid-argument", "Logo URL must be a valid URL.");
   }
 
   const trimmedName = name.trim();

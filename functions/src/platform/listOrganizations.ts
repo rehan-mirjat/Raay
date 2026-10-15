@@ -22,3 +22,5 @@ export const listOrganizationsForPlatformAdmin = onCall(async (request) => {
     }),
   };
 });
+
+export const listOrganizations = listOrganizationsForPlatformAdmin;

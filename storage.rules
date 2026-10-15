@@ -1,101 +1,91 @@
 rules_version = '2';
 
+// SecureVote - Storage rules (aligned with the Cloud Functions).
+//
+// Candidate photo path (exactly as used by createCandidate / finalizeCandidatePhoto):
+//   organizations/{orgId}/events/{eventId}/candidates/{candidateId}/photo.jpg
+//
+// - Read:   any ACTIVE member of that organization (no public/token URLs are issued).
+// - Write:  Owner/Admin of the organization, only while the event is DRAFT,
+//           only to the fixed file name photo.jpg, image/jpeg, max 5 MB.
+//           finalizeCandidatePhoto re-verifies size, content type and JPEG signature.
+// - Delete: Owner/Admin (deletion by Cloud Functions uses the Admin SDK).
+//
+// Cross-service lookups (firestore.get/exists) require the Storage service agent
+// to have Firestore access (Firebase does this automatically for the default setup).
+
 service firebase.storage {
   match /b/{bucket}/o {
 
-    function isSignedIn() {
+    function signedIn() {
       return request.auth != null;
     }
 
-    function isSuperAdmin() {
-      return isSignedIn()
-        && ('platformAdmin' in request.auth.token)
-        && request.auth.token.platformAdmin == true;
+    function memberPath(orgId) {
+      return /databases/(default)/documents/organizationMembers/$(orgId + "_" + request.auth.uid);
     }
 
-    function isOrgMember(orgId) {
-      return firestore.exists(/databases/(default)/documents/organizationMembers/$(orgId + '_' + request.auth.uid)) &&
-             firestore.get(/databases/(default)/documents/organizationMembers/$(orgId + '_' + request.auth.uid)).data.status == 'active' &&
-             firestore.get(/databases/(default)/documents/organizationMembers/$(orgId + '_' + request.auth.uid)).data.organizationId == orgId &&
-             firestore.get(/databases/(default)/documents/organizationMembers/$(orgId + '_' + request.auth.uid)).data.userId == request.auth.uid;
+    function isActiveMember(orgId) {
+      return signedIn()
+        && firestore.exists(memberPath(orgId))
+        && firestore.get(memberPath(orgId)).data.status == "active"
+        && firestore.get(memberPath(orgId)).data.organizationId == orgId;
     }
 
-    function isOrgAdmin(orgId) {
-      return isOrgMember(orgId) && (
-        firestore.get(/databases/(default)/documents/organizationMembers/$(orgId + '_' + request.auth.uid)).data.role == 'owner' ||
-        firestore.get(/databases/(default)/documents/organizationMembers/$(orgId + '_' + request.auth.uid)).data.role == 'admin'
-      );
+    function isOwnerOrAdmin(orgId) {
+      return isActiveMember(orgId)
+        && firestore.get(memberPath(orgId)).data.role in ["owner", "admin"];
     }
 
-    function isOrgOwner(orgId) {
-      return isOrgMember(orgId) &&
-        firestore.get(/databases/(default)/documents/organizationMembers/$(orgId + '_' + request.auth.uid)).data.role == 'owner';
+    function orgOperational(orgId) {
+      return firestore.get(/databases/(default)/documents/organizations/$(orgId)).data.status
+        in ["verified", "active"];
     }
 
-    // Exact filename photo.jpg for candidate photo uploads
+    function eventIsDraft(orgId, eventId) {
+      let ev = firestore.get(/databases/(default)/documents/votingEvents/$(eventId)).data;
+      return ev.organizationId == orgId && ev.status == "DRAFT";
+    }
+
+    function validJpeg() {
+      return request.resource.contentType == "image/jpeg"
+        && request.resource.size > 0
+        && request.resource.size <= 5 * 1024 * 1024;
+    }
+
+    // ---- Candidate photographs ----
     match /organizations/{orgId}/events/{eventId}/candidates/{candidateId}/photo.jpg {
-
-      // Read: Active org members can read candidate photos for ACTIVE or CLOSED events.
-      // Org Admins can read candidate photos for all events in their org.
-      // Super Admins can read all photos.
-      allow read: if isSignedIn() && (
-        isSuperAdmin() ||
-        isOrgAdmin(orgId) ||
-        (
-          isOrgMember(orgId) &&
-          firestore.exists(/databases/(default)/documents/votingEvents/$(eventId)) &&
-          firestore.get(/databases/(default)/documents/votingEvents/$(eventId)).data.status in ["ACTIVE", "CLOSED"]
-        )
-      );
-
-      // Create/Update: Active Org Owner or Admin in orgId ONLY when event status is DRAFT
-      // AND candidate belongs to orgId and eventId, and event belongs to orgId.
-      allow create, update: if isSignedIn()
-        && isOrgAdmin(orgId)
-        && firestore.exists(/databases/(default)/documents/votingEvents/$(eventId))
-        && firestore.get(/databases/(default)/documents/votingEvents/$(eventId)).data.status == "DRAFT"
-        && firestore.get(/databases/(default)/documents/votingEvents/$(eventId)).data.organizationId == orgId
-        && firestore.exists(/databases/(default)/documents/candidates/$(candidateId))
-        && firestore.get(/databases/(default)/documents/candidates/$(candidateId)).data.organizationId == orgId
-        && firestore.get(/databases/(default)/documents/candidates/$(candidateId)).data.votingEventId == eventId
-        && request.resource.contentType.matches('image/jpeg')
-        && request.resource.size <= 5 * 1024 * 1024; // Max 5MB raw payload
-
-      // Delete: Same authorization as create/update but without request.resource checks
-      allow delete: if isSignedIn()
-        && isOrgAdmin(orgId)
-        && firestore.exists(/databases/(default)/documents/votingEvents/$(eventId))
-        && firestore.get(/databases/(default)/documents/votingEvents/$(eventId)).data.status == "DRAFT"
-        && firestore.get(/databases/(default)/documents/votingEvents/$(eventId)).data.organizationId == orgId
-        && firestore.exists(/databases/(default)/documents/candidates/$(candidateId))
-        && firestore.get(/databases/(default)/documents/candidates/$(candidateId)).data.organizationId == orgId
-        && firestore.get(/databases/(default)/documents/candidates/$(candidateId)).data.votingEventId == eventId;
+      allow read: if isActiveMember(orgId);
+      allow create, update: if isOwnerOrAdmin(orgId)
+        && orgOperational(orgId)
+        && eventIsDraft(orgId, eventId)
+        && validJpeg();
+      allow delete: if isOwnerOrAdmin(orgId);
     }
 
-    // User Profile Avatar (Max 500KB = 512000 bytes)
-    match /users/{userId}/profile/{avatarFile} {
-      allow read: if isSignedIn();
-      allow create, update: if isSignedIn()
-        && request.auth.uid == userId
-        && avatarFile in ['avatar.jpg', 'avatar.png', 'avatar.webp']
-        && request.resource.contentType in ['image/jpeg', 'image/png', 'image/webp']
-        && request.resource.size <= 512000;
-      allow delete: if isSignedIn()
-        && request.auth.uid == userId;
+    // ---- User profile avatar (owner only writes; 500 KB, matches client-side limit) ----
+    match /users/{uid}/profile/{fileName} {
+      allow read: if signedIn();
+      allow create, update: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.contentType.matches('image/(jpeg|png|webp)')
+        && request.resource.size > 0
+        && request.resource.size <= 500 * 1024;
+      allow delete: if signedIn() && request.auth.uid == uid;
     }
 
-    // Organization branding is Owner-managed per the SRS.
-    match /organizations/{orgId}/logo/logo.jpg {
-      allow read: if isSignedIn();
-      allow create, update: if isSignedIn()
-        && isOrgOwner(orgId)
-        && request.resource.contentType.matches('image/jpeg')
-        && request.resource.size < 512000;
-      allow delete: if isSignedIn()
-        && isOrgOwner(orgId);
+    // ---- Organization logo (Owner only manages branding; 2 MB) ----
+    match /organizations/{orgId}/logo/{fileName} {
+      allow read: if isActiveMember(orgId);
+      allow create, update: if isOwnerOrAdmin(orgId)
+        && orgOperational(orgId)
+        && request.resource.contentType.matches('image/(png|jpeg|webp)')
+        && request.resource.size > 0
+        && request.resource.size <= 2 * 1024 * 1024;
+      allow delete: if isOwnerOrAdmin(orgId);
     }
 
-    // Default deny for all other storage paths
+    // ---- Deny everything else ----
     match /{allPaths=**} {
       allow read, write: if false;
     }

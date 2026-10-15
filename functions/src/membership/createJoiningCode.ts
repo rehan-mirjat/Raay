@@ -2,6 +2,7 @@ import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import * as crypto from "crypto";
 import { getJoinCodeSecret, JOIN_CODE_SECRET } from "../utils/joinCodeSecret";
+import { requireActiveMembership, requireOperationalOrganization } from "../utils/authorization";
 
 function generateRandomCode(): string {
   // 12-character high-entropy CSPRNG code formatted as JOIN-XXXX-XXXX-XXXX
@@ -45,17 +46,9 @@ export const createJoiningCode = onCall({ secrets: [JOIN_CODE_SECRET] }, async (
   const db = getFirestore();
 
   // Verify caller is Org Owner or Admin
-  const memberRef = db.collection("organizationMembers").doc(`${organizationId}_${uid}`);
-  const memberSnap = await memberRef.get();
+  await requireActiveMembership(db, organizationId, uid, ["owner", "admin"]);
 
-  if (!memberSnap.exists || memberSnap.data()?.status !== "active") {
-    throw new HttpsError("permission-denied", "You are not an active member of this organization.");
-  }
-
-  const role = memberSnap.data()?.role;
-  if (role !== "owner" && role !== "admin") {
-    throw new HttpsError("permission-denied", "Only Organization Owners or Admins can create joining codes.");
-  }
+  await requireOperationalOrganization(db, organizationId);
 
   const expiresAt = new Date();
   expiresAt.setHours(expiresAt.getHours() + expiresInHours);

@@ -1,10 +1,35 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
+import * as crypto from "crypto";
+import { getJoinCodeSecret, JOIN_CODE_SECRET } from "../utils/joinCodeSecret";
+import { requireActiveMembership, requireOperationalOrganization } from "../utils/authorization";
 
 const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
-export const inviteMember = onCall(async (request) => {
+/**
+ * Generates a high-entropy invitation token. Formatted like the joining-code
+ * alphabet (unambiguous charset, dash-grouped) so it can be embedded in an
+ * email link or, if needed, transcribed by hand — acceptInvitation's
+ * normalization (trim/uppercase/strip dashes) accepts either form.
+ */
+function generateInvitationToken(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // 32 unambiguous chars
+  const bytes = crypto.randomBytes(20);
+  let raw = "";
+  for (let i = 0; i < 20; i++) {
+    raw += chars.charAt(bytes[i] % chars.length);
+  }
+  return `INV-${raw.substring(0, 5)}-${raw.substring(5, 10)}-${raw.substring(10, 15)}-${raw.substring(15, 20)}`;
+}
+
+/** Must match acceptInvitation.ts's computeTokenHmac exactly (same normalization, same default secret). */
+function computeTokenHmac(rawToken: string): string {
+  const normalized = rawToken.trim().toUpperCase().replace(/[\s-]/g, "");
+  return crypto.createHmac("sha256", getJoinCodeSecret()).update(normalized).digest("hex");
+}
+
+export const inviteMember = onCall({ secrets: [JOIN_CODE_SECRET] }, async (request) => {
   if (!request.auth || !request.auth.uid) {
     throw new HttpsError("unauthenticated", "Authentication required.");
   }
@@ -32,31 +57,14 @@ export const inviteMember = onCall(async (request) => {
   const db = getFirestore();
 
   // Verify Caller Role & Tenant Authorization
-  const callerMemberRef = db.collection("organizationMembers").doc(`${organizationId}_${uid}`);
-  let callerMemberSnap;
-  try {
-    callerMemberSnap = await callerMemberRef.get();
-  } catch (error) {
-    console.error("inviteMember failed to read caller membership", error);
-    const details = process.env.FUNCTIONS_EMULATOR === "true"
-      ? { message: error instanceof Error ? error.message : String(error) }
-      : undefined;
-    throw new HttpsError("internal", "Could not verify your organization membership.", details);
-  }
-
-  if (!callerMemberSnap.exists || callerMemberSnap.data()?.status !== "active") {
-    throw new HttpsError("permission-denied", "You are not an active member of this organization.");
-  }
-
-  const callerRole = callerMemberSnap.data()?.role;
-  if (callerRole !== "owner" && callerRole !== "admin") {
-    throw new HttpsError("permission-denied", "Only Organization Owners or Admins can issue invitations.");
-  }
+  const { role: callerRole } = await requireActiveMembership(db, organizationId, uid, ["owner", "admin"]);
 
   // Hierarchy Restriction: Only Owner can issue Admin invitations
   if (role === "admin" && callerRole !== "owner") {
     throw new HttpsError("permission-denied", "Only the Organization Owner can issue Admin invitations.");
   }
+
+  await requireOperationalOrganization(db, organizationId);
 
   // Best-effort duplicate-member check. Creating an invitation must not depend
   // on the Auth lookup service; memberInvitations checks membership transactionally.
@@ -86,12 +94,29 @@ export const inviteMember = onCall(async (request) => {
   const invitationId = invitationRef.id;
   const auditRef = db.collection("auditLogs").doc();
 
+  // Generate the one-time acceptance token up front. acceptInvitation.ts,
+  // revokeInvitation.ts, and memberInvitations.ts all resolve/clean up this
+  // token via its HMAC hash, so it must exist before the invitation does.
+  const rawToken = generateInvitationToken();
+  const tokenHash = computeTokenHmac(rawToken);
+  const tokenLookupRef = db.collection("organizationInvitationTokens").doc(tokenHash);
+
   // Transactional Lock Claiming & Invitation Creation
   let txError: { code: any, message: string } | null = null;
 
   try {
     await db.runTransaction(async (transaction) => {
-      const lockSnap = await transaction.get(lockRef);
+      const [lockSnap, tokenCollisionSnap] = await Promise.all([
+        transaction.get(lockRef),
+        transaction.get(tokenLookupRef),
+      ]);
+
+      if (tokenCollisionSnap.exists) {
+        // Astronomically unlikely (20 chars from a 32-symbol alphabet), but
+        // fail loudly rather than silently overwrite someone else's token.
+        txError = { code: "internal", message: "Failed to generate a unique invitation token. Please try again." };
+        return;
+      }
 
       if (lockSnap.exists) {
         const existingInvId = lockSnap.data()?.invitationId;
@@ -126,9 +151,18 @@ export const inviteMember = onCall(async (request) => {
         role: role,
         status: "pending",
         invitedBy: uid,
+        tokenHash: tokenHash,
         expiresAt: Timestamp.fromDate(expiresAt),
         createdAt: FieldValue.serverTimestamp(),
         acceptedAt: null,
+      });
+
+      // Write Token Lookup Mapping (hash -> opaque invitationId only; the raw
+      // token itself is never persisted anywhere, only returned once below).
+      transaction.set(tokenLookupRef, {
+        invitationId: invitationId,
+        organizationId: organizationId,
+        createdAt: FieldValue.serverTimestamp(),
       });
 
       // Write Audit Log Document (resourceId is opaque invitationId; NO raw token, NO tokenHash)
@@ -154,6 +188,7 @@ export const inviteMember = onCall(async (request) => {
       status: "success",
       email: normalizedEmail,
       invitationId: invitationId,
+      rawToken: rawToken, // Returned ONLY ONCE — use it to build the invitation email/link
     };
   } catch (error: any) {
     if (error instanceof HttpsError) throw error;

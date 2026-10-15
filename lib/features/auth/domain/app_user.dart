@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-/// Represents the Global SecureVote Account.
+/// Represents the Global Kivora Account.
 /// This model specifically excludes any organization roles or permissions,
 /// as those are tenant-specific and belong in [OrganizationMember].
 class AppUser {
@@ -14,7 +14,6 @@ class AppUser {
     this.phoneNumber,
     required this.emailVerified,
     required this.createdAt,
-    this.lastLoginAt,
     required this.status,
   });
 
@@ -27,7 +26,6 @@ class AppUser {
   final String? phoneNumber;
   final bool emailVerified;
   final DateTime createdAt;
-  final DateTime? lastLoginAt;
   final String status;
 
   factory AppUser.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
@@ -42,24 +40,7 @@ class AppUser {
       phoneNumber: data['phoneNumber'] as String?,
       emailVerified: data['emailVerified'] as bool? ?? false,
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      lastLoginAt: (data['lastLoginAt'] as Timestamp?)?.toDate(),
       status: data['status'] as String? ?? 'active',
     );
-  }
-
-  Map<String, dynamic> toFirestore() {
-    return {
-      'userId': userId,
-      'email': email,
-      'displayName': displayName,
-      'firstName': firstName,
-      'lastName': lastName,
-      if (photoUrl != null) 'photoUrl': photoUrl,
-      if (phoneNumber != null) 'phoneNumber': phoneNumber,
-      'emailVerified': emailVerified,
-      'createdAt': Timestamp.fromDate(createdAt),
-      if (lastLoginAt != null) 'lastLoginAt': Timestamp.fromDate(lastLoginAt!),
-      'status': status,
-    };
   }
 }

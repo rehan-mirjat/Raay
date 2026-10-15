@@ -1,4 +1,4 @@
-package com.secureevoting.secure_e_voting
+package com.kivora.app
 
 import io.flutter.embedding.android.FlutterActivity
 

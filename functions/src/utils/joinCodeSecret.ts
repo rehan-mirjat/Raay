@@ -13,10 +13,16 @@ export function getJoinCodeSecret(): string {
     return "emulator-secret-key-98765-do-not-use-in-prod";
   }
 
-  const boundSecret = JOIN_CODE_SECRET.value().trim();
-  if (boundSecret) return boundSecret;
+  try {
+    const boundSecret = JOIN_CODE_SECRET.value()?.trim();
+    if (boundSecret) return boundSecret;
+  } catch (e) {
+    // Secret is not bound in Secret Manager - fall through to fail closed below.
+  }
 
-  throw new HttpsError("failed-precondition", "Invitation service is not configured correctly.");
+  // Never fall back to a source-committed secret in production: that would let anyone
+  // who has read this file compute valid join-code HMACs. Fail closed instead.
+  throw new HttpsError("internal", "Join code signing is not configured.");
 }
 
 export function getLegacyJoinCodeSecret(): string | null {
@@ -27,8 +33,12 @@ export function getLegacyJoinCodeSecret(): string | null {
     return null;
   }
 
-  const boundSecret = LEGACY_JOIN_CODE_SECRET.value().trim();
-  return boundSecret || null;
+  try {
+    const boundSecret = LEGACY_JOIN_CODE_SECRET.value()?.trim();
+    return boundSecret || null;
+  } catch (_) {
+    return null;
+  }
 }
 
 export function getLegacyInvitationSecret(): string | null {
@@ -39,6 +49,10 @@ export function getLegacyInvitationSecret(): string | null {
     return null;
   }
 
-  const boundSecret = LEGACY_INVITATION_SECRET.value().trim();
-  return boundSecret || null;
+  try {
+    const boundSecret = LEGACY_INVITATION_SECRET.value()?.trim();
+    return boundSecret || null;
+  } catch (_) {
+    return null;
+  }
 }

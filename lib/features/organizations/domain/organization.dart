@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'organization_enums.dart';
 
-/// Represents an independent tenant within the SecureVote ecosystem.
+/// Represents an independent tenant within the Kivora ecosystem.
 class Organization {
   const Organization({
     required this.id,

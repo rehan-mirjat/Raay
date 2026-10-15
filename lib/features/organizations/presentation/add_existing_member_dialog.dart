@@ -40,7 +40,7 @@ class _AddExistingMemberDialogState
     try {
       await ref.read(organizationRepositoryProvider).addMember(
             organizationId: widget.organizationId,
-            email: _emailController.text,
+            email: _emailController.text.trim(),
           );
       if (mounted) Navigator.of(context).pop(true);
     } catch (error) {
@@ -67,7 +67,7 @@ class _AddExistingMemberDialogState
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Add a verified SecureVote account directly to this organization.',
+                'Add a verified Kivora account directly to this organization.',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: 18),

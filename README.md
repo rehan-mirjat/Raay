@@ -1,4 +1,4 @@
-# SecureVote
+# Kivora
 
 SecureVote is a multi-tenant voting and polling application for organizations. The Flutter client targets Android, iOS, and web. Firebase Authentication handles identity; Cloud Functions enforce sensitive operations; Firestore stores application data; Cloud Storage stores approved images.
 

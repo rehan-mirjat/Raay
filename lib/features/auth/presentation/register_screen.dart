@@ -10,9 +10,12 @@ import '../../../services/auth_service.dart';
 import 'widgets/auth_split_layout.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
-  const RegisterScreen({super.key, this.onBackToLoginTap});
+  const RegisterScreen({super.key, this.onBackToLoginTap, this.onAuthenticated});
 
   final VoidCallback? onBackToLoginTap;
+
+  /// Called after a successful Google sign-in / sign-up (user is already signed in).
+  final VoidCallback? onAuthenticated;
 
   @override
   ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
@@ -85,6 +88,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Future<void> _googleSignIn() async {
+    if (_isLoading) return;
     setState(() {
       _isLoading = true;
       _error = null;
@@ -94,11 +98,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       final authService = ref.read(authServiceProvider);
       final cred = await authService.signInWithGoogle();
 
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+      // The user is now signed in, so send them onward, NOT back to login.
+      // cred == null means the user cancelled: stay on the screen silently.
+      if (cred != null) widget.onAuthenticated?.call();
+    } on FirebaseAuthException catch (e) {
       if (mounted) {
-        setState(() => _isLoading = false);
-        if (cred != null && widget.onBackToLoginTap != null) {
-          widget.onBackToLoginTap!();
-        }
+        setState(() {
+          _error = mapFirebaseAuthError(e);
+          _isLoading = false;
+        });
       }
     } catch (e) {
       if (mounted) {
@@ -128,7 +138,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ),
                 const SizedBox(height: 16),
                 const Text(
-                  'Your SecureVote identity has been securely generated. You may now sign in using your credentials.',
+                  'Your Kivora identity has been securely generated. You may now sign in using your credentials.',
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
@@ -185,22 +195,23 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     children: [
                       Center(
                         child: Container(
-                          width: 64,
-                          height: 64,
-                          padding: const EdgeInsets.all(12),
+                          width: 80,
+                          height: 80,
+                          padding: const EdgeInsets.all(0),
                           decoration: BoxDecoration(
                             color: AppTheme.primaryBlue.withValues(alpha: 0.08),
-                            shape: BoxShape.circle,
+                            borderRadius: BorderRadius.circular(18),
                           ),
+                          clipBehavior: Clip.antiAlias,
                           child: Image.asset(
-                            'assets/icon/app_icon_transparent.png',
-                            fit: BoxFit.contain,
+                            'assets/icon/app_icon.png',
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
                       SizedBox(height: isMobile ? 16 : 20),
                       Text(
-                        'Join SecureVote',
+                        'Join Kivora',
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: AppTheme.secondaryNavy,

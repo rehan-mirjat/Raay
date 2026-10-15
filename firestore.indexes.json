@@ -1,27 +1,19 @@
 {
   "indexes": [
     {
-      "collectionGroup": "elections",
+      "collectionGroup": "votingEvents",
       "queryScope": "COLLECTION",
       "fields": [
         { "fieldPath": "status", "order": "ASCENDING" },
-        { "fieldPath": "startAt", "order": "DESCENDING" }
+        { "fieldPath": "startAt", "order": "ASCENDING" }
       ]
     },
     {
-      "collectionGroup": "votes",
+      "collectionGroup": "votingEvents",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "electionId", "order": "ASCENDING" },
-        { "fieldPath": "castAt", "order": "ASCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "audit_logs",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "electionId", "order": "ASCENDING" },
-        { "fieldPath": "timestamp", "order": "DESCENDING" }
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "endAt", "order": "ASCENDING" }
       ]
     },
     {
@@ -29,7 +21,16 @@
       "queryScope": "COLLECTION",
       "fields": [
         { "fieldPath": "organizationId", "order": "ASCENDING" },
-        { "fieldPath": "startAt", "order": "DESCENDING" }
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "organizationMembers",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organizationId", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "departmentIds", "arrayConfig": "CONTAINS" }
       ]
     },
     {
@@ -41,11 +42,76 @@
       ]
     },
     {
-      "collectionGroup": "departments",
+      "collectionGroup": "organizationMembers",
       "queryScope": "COLLECTION",
       "fields": [
         { "fieldPath": "organizationId", "order": "ASCENDING" },
+        { "fieldPath": "role", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "organizationInvitations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organizationId", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "joiningCodes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organizationId", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "candidates",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "votingEventId", "order": "ASCENDING" },
         { "fieldPath": "name", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "candidates",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organizationId", "order": "ASCENDING" },
+        { "fieldPath": "votingEventId", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "pollOptions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "votingEventId", "order": "ASCENDING" },
+        { "fieldPath": "sortOrder", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "pollOptions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organizationId", "order": "ASCENDING" },
+        { "fieldPath": "votingEventId", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "votes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organizationId", "order": "ASCENDING" },
+        { "fieldPath": "votingEventId", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "participation",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "organizationId", "order": "ASCENDING" },
+        { "fieldPath": "votingEventId", "order": "ASCENDING" }
       ]
     },
     {

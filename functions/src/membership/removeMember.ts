@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { requireActiveMembership, requireOperationalOrganization } from "../utils/authorization";
 
 export const removeMember = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
@@ -30,14 +31,11 @@ export const removeMember = onCall(async (request) => {
 
       const [callerSnap, targetSnap] = await transaction.getAll(callerRef, targetRef);
 
-      if (!callerSnap.exists || callerSnap.data()?.status !== "active") {
-        throw new HttpsError("permission-denied", "You are not an active member of this organization.");
-      }
+      const { role: callerRole } = await requireActiveMembership(
+        db, organizationId, uid, ["owner", "admin"], { preFetchedSnap: callerSnap }
+      );
 
-      const callerRole = callerSnap.data()?.role;
-      if (callerRole !== "owner" && callerRole !== "admin") {
-        throw new HttpsError("permission-denied", "Only Organization Owners or Admins can remove members.");
-      }
+      await requireOperationalOrganization(db, organizationId, transaction);
 
       if (!targetSnap.exists) {
         throw new HttpsError("not-found", "Target user is not a member of this organization.");

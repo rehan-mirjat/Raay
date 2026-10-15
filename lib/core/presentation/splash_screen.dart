@@ -85,7 +85,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                             children: [
                               // Styled Logo Badge using custom shield icon
                               Semantics(
-                                label: 'SecureVote Logo',
+                                label: 'Kivora Logo',
                                 child: Container(
                                   width: 96,
                                   height: 96,
@@ -126,7 +126,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                               Semantics(
                                 header: true,
                                 child: const Text(
-                                  'SecureVote',
+                                  'Kivora',
                                   style: TextStyle(
                                     fontSize: 34,
                                     fontWeight: FontWeight.w800,
@@ -253,7 +253,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           ),
           const SizedBox(height: 6),
           Text(
-            widget.errorMessage ?? 'Failed to connect to SecureVote services.',
+            widget.errorMessage ?? 'Failed to connect to Kivora services.',
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 13,

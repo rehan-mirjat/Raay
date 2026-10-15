@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.secureevoting" "\0"
-            VALUE "FileDescription", "secure_e_voting" "\0"
+            VALUE "CompanyName", "com.kivora" "\0"
+            VALUE "FileDescription", "Kivora" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "secure_e_voting" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.secureevoting. All rights reserved." "\0"
-            VALUE "OriginalFilename", "secure_e_voting.exe" "\0"
-            VALUE "ProductName", "secure_e_voting" "\0"
+            VALUE "InternalName", "kivora" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 com.kivora. All rights reserved." "\0"
+            VALUE "OriginalFilename", "kivora.exe" "\0"
+            VALUE "ProductName", "Kivora" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

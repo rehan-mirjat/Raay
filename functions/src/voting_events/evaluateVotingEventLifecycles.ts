@@ -1,87 +1,172 @@
 import { onSchedule } from "firebase-functions/v2/scheduler";
-import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
+import * as logger from "firebase-functions/logger";
+import { getFirestore, FieldValue, Timestamp, Firestore, Transaction, DocumentData, DocumentReference } from "firebase-admin/firestore";
+import { HttpsError } from "firebase-functions/v2/https";
+import {
+  EVENT_STATUS, OPERATIONAL_ORG_STATUSES, SYSTEM_ACTOR,
+  readEligibilityConfig, resolveEligibleUserIds, writeActivationDocs, writeAudit,
+} from "./votingCommon";
+
+const MAX_EVENTS_PER_RUN = 200;
 
 /**
- * Server-Controlled Automatic Lifecycle Evaluator.
- * Transition SCHEDULED -> ACTIVE (if startAt <= trustedNow)
- * Transition ACTIVE -> CLOSED (if endAt <= trustedNow)
- * Runs periodically under Cloud Scheduler with transactional precondition guards.
+ * Server-controlled lifecycle evaluator.
+ *   SCHEDULED -> ACTIVE     (startAt <= now, org operational, >= 1 eligible voter)
+ *   SCHEDULED -> CANCELLED  (window already elapsed, or no eligible voters)
+ *   ACTIVE    -> CLOSED     (endAt <= now)
+ *
+ * REQUIRES composite indexes: votingEvents(status ASC, startAt ASC) and (status ASC, endAt ASC).
+ * See firestore.indexes.json.
  */
-export const evaluateVotingEventLifecycles = onSchedule("every 1 minutes", async () => {
-  const db = getFirestore();
-  const trustedNow = Timestamp.now();
+export const evaluateVotingEventLifecycles = onSchedule(
+  { schedule: "every 1 minutes", timeoutSeconds: 120 },
+  async () => {
+    const db = getFirestore();
+    const trustedNow = Timestamp.now();
+    const counts = { activated: 0, cancelled: 0, closed: 0, failed: 0 };
 
-  let activatedCount = 0;
-  let closedCount = 0;
-
-  try {
-    // 1. Find SCHEDULED events due for activation
-    const scheduledSnap = await db
-      .collection("votingEvents")
-      .where("status", "==", "SCHEDULED")
+    const scheduled = await db.collection("votingEvents")
+      .where("status", "==", EVENT_STATUS.SCHEDULED)
       .where("startAt", "<=", trustedNow)
+      .limit(MAX_EVENTS_PER_RUN)
       .get();
 
-    for (const eventDoc of scheduledSnap.docs) {
-      await db.runTransaction(async (transaction) => {
-        const freshSnap = await transaction.get(eventDoc.ref);
-        if (!freshSnap.exists || freshSnap.data()?.status !== "SCHEDULED") return;
-        const organizationId = freshSnap.data()?.organizationId as string | undefined;
-        if (!organizationId) return;
-        const organizationSnap = await transaction.get(db.collection("organizations").doc(organizationId));
-        if (!organizationSnap.exists || !["verified", "active"].includes(organizationSnap.data()?.status)) return;
-        transaction.update(eventDoc.ref, {
-          status: "ACTIVE",
-          updatedAt: FieldValue.serverTimestamp(),
-        });
-        activatedCount++;
-      });
+    for (const doc of scheduled.docs) {
+      try {
+        const outcome = await db.runTransaction((tx) => activateOrCancel(tx, db, doc.ref, trustedNow));
+        if (outcome === "activated") counts.activated++;
+        else if (outcome === "cancelled") counts.cancelled++;
+      } catch (error) {
+        counts.failed++;
+        logger.error("Failed to activate event", { eventId: doc.id, error });
+      }
     }
 
-    // 2. Find ACTIVE events due for closure
-    const activeSnap = await db
-      .collection("votingEvents")
-      .where("status", "==", "ACTIVE")
+    const active = await db.collection("votingEvents")
+      .where("status", "==", EVENT_STATUS.ACTIVE)
       .where("endAt", "<=", trustedNow)
+      .limit(MAX_EVENTS_PER_RUN)
       .get();
 
-    for (const eventDoc of activeSnap.docs) {
-      await db.runTransaction(async (transaction) => {
-        const freshSnap = await transaction.get(eventDoc.ref);
-        if (freshSnap.exists && freshSnap.data()?.status === "ACTIVE") {
-          transaction.update(eventDoc.ref, {
-            status: "CLOSED",
-            closedAt: FieldValue.serverTimestamp(),
-            closedBy: "SYSTEM_SCHEDULED_EVALUATOR",
-            updatedAt: FieldValue.serverTimestamp(),
-          });
-
-          // Audit Log
-          const auditRef = db.collection("auditLogs").doc();
-          transaction.set(auditRef, {
-            organizationId: freshSnap.data()?.organizationId,
-            actorUid: "SYSTEM_SCHEDULED_EVALUATOR",
-            action: "CLOSE_VOTING_EVENT",
-            resourceType: "votingEvent",
-            resourceId: eventDoc.id,
-            metadata: {
-              previousStatus: "ACTIVE",
-              newStatus: "CLOSED",
-              reason: "Automatic schedule completion",
-            },
-            timestamp: FieldValue.serverTimestamp(),
-          });
-          closedCount++;
-        }
-      });
+    for (const doc of active.docs) {
+      try {
+        const closed = await db.runTransaction((tx) => closeIfDue(tx, db, doc.ref));
+        if (closed) counts.closed++;
+      } catch (error) {
+        counts.failed++;
+        logger.error("Failed to close event", { eventId: doc.id, error });
+      }
     }
 
-    console.info("Voting event lifecycle evaluation completed.", {
-      activatedCount,
-      closedCount,
-    });
-  } catch (error) {
-    console.error("Failed to evaluate voting event lifecycles.", error);
-    throw error;
+    // Counters are tallied from transaction RESULTS, so transaction retries cannot double count.
+    logger.info("Voting event lifecycle evaluation completed.", counts);
   }
-});
+);
+
+type Outcome = "activated" | "cancelled" | "skipped";
+
+async function activateOrCancel(
+  tx: Transaction,
+  db: Firestore,
+  ref: DocumentReference,
+  now: Timestamp
+): Promise<Outcome> {
+  // ---------- reads ----------
+  const snap = await tx.get(ref);
+  const ev = snap.data() as DocumentData | undefined;
+  if (!snap.exists || !ev || ev.status !== EVENT_STATUS.SCHEDULED) return "skipped";
+
+  const organizationId = ev.organizationId as string | undefined;
+  if (!organizationId) return "skipped";
+
+  const orgSnap = await tx.get(db.collection("organizations").doc(organizationId));
+  const operational = orgSnap.exists && OPERATIONAL_ORG_STATUSES.includes(orgSnap.data()?.status);
+  const endMillis: number = ev.endAt?.toMillis?.() ?? 0;
+
+  let cancelReason: string | null = null;
+  let eligible: string[] = [];
+
+  if (endMillis <= now.toMillis()) {
+    cancelReason = "Voting window elapsed before activation.";
+  } else if (!operational) {
+    // Suspended organization: stay SCHEDULED so it can still start after reactivation.
+    return "skipped";
+  } else {
+    const eligSnap = await tx.get(db.collection("votingEventEligibility").doc(ref.id));
+    const cfg = readEligibilityConfig(eligSnap, ev);
+    try {
+      eligible = await resolveEligibleUserIds(tx, db, organizationId, ev.eligibilityType, cfg);
+      if (eligible.length === 0) cancelReason = "No eligible voters at activation.";
+    } catch (e) {
+      if (e instanceof HttpsError) cancelReason = e.message;
+      else throw e;
+    }
+  }
+
+  // ---------- writes ----------
+  if (cancelReason) {
+    tx.update(ref, {
+      status: EVENT_STATUS.CANCELLED,
+      cancelledAt: FieldValue.serverTimestamp(),
+      cancelledBy: SYSTEM_ACTOR,
+      cancelReason,
+      updatedAt: FieldValue.serverTimestamp(),
+    });
+    writeAudit(tx, db, {
+      organizationId,
+      actorUid: SYSTEM_ACTOR,
+      action: "CANCEL_VOTING_EVENT",
+      resourceType: "votingEvent",
+      resourceId: ref.id,
+      metadata: { previousStatus: EVENT_STATUS.SCHEDULED, newStatus: EVENT_STATUS.CANCELLED, reason: cancelReason },
+    });
+    return "cancelled";
+  }
+
+  tx.update(ref, {
+    status: EVENT_STATUS.ACTIVE,
+    activatedAt: FieldValue.serverTimestamp(),
+    updatedAt: FieldValue.serverTimestamp(),
+  });
+  writeActivationDocs(tx, db, organizationId, ref.id, eligible); // frozen voter roll + turnout counter
+  writeAudit(tx, db, {
+    organizationId,
+    actorUid: SYSTEM_ACTOR,
+    action: "ACTIVATE_VOTING_EVENT",
+    resourceType: "votingEvent",
+    resourceId: ref.id,
+    metadata: {
+      previousStatus: EVENT_STATUS.SCHEDULED,
+      newStatus: EVENT_STATUS.ACTIVE,
+      eligibleCount: eligible.length,
+      reason: "Automatic schedule start",
+    },
+  });
+  return "activated";
+}
+
+async function closeIfDue(tx: Transaction, db: Firestore, ref: DocumentReference): Promise<boolean> {
+  const snap = await tx.get(ref);
+  const ev = snap.data();
+  if (!snap.exists || !ev || ev.status !== EVENT_STATUS.ACTIVE) return false;
+
+  tx.update(ref, {
+    status: EVENT_STATUS.CLOSED,
+    closedAt: FieldValue.serverTimestamp(),
+    closedBy: SYSTEM_ACTOR,
+    updatedAt: FieldValue.serverTimestamp(),
+  });
+  writeAudit(tx, db, {
+    organizationId: ev.organizationId,
+    actorUid: SYSTEM_ACTOR,
+    action: "CLOSE_VOTING_EVENT",
+    resourceType: "votingEvent",
+    resourceId: ref.id,
+    metadata: {
+      previousStatus: EVENT_STATUS.ACTIVE,
+      newStatus: EVENT_STATUS.CLOSED,
+      reason: "Automatic schedule completion",
+    },
+  });
+  return true;
+}

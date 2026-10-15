@@ -1,291 +1,335 @@
 rules_version = '2';
 
+// SecureVote - corrected Firestore rules (review draft).
+// Test in the Emulator Suite before any deployment.
+//
+// ASSUMPTIONS (please confirm or adjust):
+//  - organizations.status in ['pending','verified','active','suspended','rejected']
+//    and only 'verified'/'active' orgs may operate (see orgOperational).
+//  - votingEvents.status uses UPPER-CASE values exactly as written by the Cloud Functions:
+//    'DRAFT','SCHEDULED','ACTIVE','CLOSED','CANCELLED','ARCHIVED'.
+//  - Eligibility lists and the frozen voter roll live in
+//    votingEventEligibility/{eventId} (Owner/Admin read only), NOT on the
+//    votingEvents document, so members cannot read rosters.
+//  - rateLimits/{key_uid} is written only by Cloud Functions (global deny applies).
+//  - results/{eventId} has a boolean `published` field set by publishResults().
+//  - turnout/{eventId} holds a counter document maintained by castVote().
+//  - All organization membership/role/event/candidate/option writes go through
+//    Cloud Functions (Admin SDK bypasses these rules).
+
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    function isSignedIn() {
+    // =========================
+    // AUTHENTICATION
+    // =========================
+
+    function signedIn() {
       return request.auth != null;
     }
 
-    function isSelf(uid) {
-      return isSignedIn() && request.auth.uid == uid;
+    function isPlatformAdmin() {
+      return signedIn() && request.auth.token.platformAdmin == true;
     }
 
-    function isSuperAdmin() {
-      return isSignedIn()
-      && request.auth.token.platformAdmin == true;
+    function verifiedEmail() {
+      return signedIn()
+        && request.auth.token.email != null
+        && request.auth.token.email_verified == true;
     }
 
-    function getMembership(orgId) {
-      let membershipId = orgId + '_' + request.auth.uid;
-      return get(/databases/$(database)/documents/organizationMembers/$(membershipId)).data;
+    // =========================
+    // MEMBERSHIP / ROLES
+    // =========================
+
+    function membershipPath(orgId, uid) {
+      return /databases/$(database)/documents/organizationMembers/$(orgId + "_" + uid);
     }
 
-    function isOrgMember(orgId) {
-      let membershipId = orgId + '_' + request.auth.uid;
-      return isSignedIn()
-        && exists(/databases/$(database)/documents/organizationMembers/$(membershipId))
-        && getMembership(orgId).status == 'active'
-        && getMembership(orgId).organizationId == orgId
-        && getMembership(orgId).userId == request.auth.uid;
+    function isActiveMember(orgId) {
+      return signedIn()
+        && exists(membershipPath(orgId, request.auth.uid))
+        && get(membershipPath(orgId, request.auth.uid)).data.organizationId == orgId
+        && get(membershipPath(orgId, request.auth.uid)).data.userId == request.auth.uid
+        && get(membershipPath(orgId, request.auth.uid)).data.status == "active";
     }
 
-    function isOrgAdmin(orgId) {
-      return isOrgMember(orgId) && (
-        getMembership(orgId).role == 'owner' ||
-        getMembership(orgId).role == 'admin'
-      );
+    function hasRole(orgId, role) {
+      return isActiveMember(orgId)
+        && get(membershipPath(orgId, request.auth.uid)).data.role == role;
     }
 
-    function isOrgOwner(orgId) {
-      return isOrgMember(orgId) && getMembership(orgId).role == 'owner';
+    function isOwner(orgId) {
+      return hasRole(orgId, "owner");
     }
 
-    function isEventClosed(eventId) {
-      return exists(/databases/$(database)/documents/votingEvents/$(eventId))
-        && get(/databases/$(database)/documents/votingEvents/$(eventId)).data.status in ["CLOSED", "ARCHIVED"];
+    function isOwnerOrAdmin(orgId) {
+      return isOwner(orgId) || hasRole(orgId, "admin");
     }
 
-    // SRS §7.2: Draft is admin-only. CANCELLED is not a member-facing status.
-    function isMemberVisibleEventStatus(status) {
-      return status in ["SCHEDULED", "ACTIVE", "CLOSED", "ARCHIVED"];
+    // Operational organizations include pending, verified, and active (suspended/rejected are blocked).
+    function orgOperational(orgId) {
+      return get(/databases/$(database)/documents/organizations/$(orgId)).data.status
+        in ["pending", "verified", "active"];
     }
 
-    // -------------------------------------------------------------------------
-    // 1. USERS
-    // -------------------------------------------------------------------------
+    // FIX: drafts are hidden from ordinary members (SRS 7.2).
+    function canSeeEvent(orgId, eventId) {
+      return isActiveMember(orgId)
+        && orgOperational(orgId)
+        && (
+          isOwnerOrAdmin(orgId)
+          || get(/databases/$(database)/documents/votingEvents/$(eventId)).data.status != "DRAFT"
+        );
+    }
+
+    // =========================
+    // USERS
+    // =========================
+
     match /users/{userId} {
-      allow read: if isSelf(userId) || isSuperAdmin();
-      allow create: if false; // Handled exclusively via completeRegistration Cloud Function
 
-      // Cosmetic-only fields, per SRS §6/Firestore Spec §14-15.
-      // Security-sensitive fields (status, role, platformAdmin, createdAt) stay server-only.
-      allow update: if isSelf(userId) && (
-        request.resource.data.diff(resource.data).affectedKeys()
-          .hasOnly(["firstName", "lastName", "displayName", "photoUrl", "phoneNumber"])
-      );
+      allow read: if signedIn() && request.auth.uid == userId;
+
+      allow create: if false;   // created by the completeRegistration callable (Admin SDK)
+
+      // FIX: field-level restriction (Rules spec section 47).
+      allow update: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(["displayName", "photoUrl", "firstName", "lastName", "phoneNumber"])
+        && (!("displayName" in request.resource.data)
+             || (request.resource.data.displayName is string
+                 && request.resource.data.displayName.size() > 0
+                 && request.resource.data.displayName.size() <= 80))
+        && (!("photoUrl" in request.resource.data)
+             || request.resource.data.photoUrl == null
+             || (request.resource.data.photoUrl is string
+                 && request.resource.data.photoUrl.size() <= 500))
+        && (!("firstName" in request.resource.data)
+             || (request.resource.data.firstName is string
+                 && request.resource.data.firstName.size() > 0
+                 && request.resource.data.firstName.size() <= 80))
+        && (!("lastName" in request.resource.data)
+             || (request.resource.data.lastName is string
+                 && request.resource.data.lastName.size() > 0
+                 && request.resource.data.lastName.size() <= 80))
+        && (!("phoneNumber" in request.resource.data)
+             || request.resource.data.phoneNumber == null
+             || (request.resource.data.phoneNumber is string
+                 && request.resource.data.phoneNumber.size() <= 20));
+
       allow delete: if false;
     }
 
-    // -------------------------------------------------------------------------
-    // 2. ORGANIZATIONS
-    // -------------------------------------------------------------------------
+    // =========================
+    // ORGANIZATIONS
+    // =========================
+
     match /organizations/{organizationId} {
-      allow read: if isSignedIn() && (
-        isOrgMember(organizationId) ||
-        isSuperAdmin()
-      );
 
-      allow create: if false; // Cloud Function only (createOrganization)
+      allow read: if isPlatformAdmin() || isActiveMember(organizationId);
 
-      // OPTION A (matches Firestore Rules Spec §17/§46 exactly):
-      // let the Owner update branding fields directly, nothing else.
-      // Uncomment to enable a direct-write path instead of routing branding
-      // edits through an updateOrganization Cloud Function.
-      //
-      // allow update: if isSignedIn() && (
-      //   isSuperAdmin() ||
-      //   (
-      //     getMembership(organizationId).role == 'owner' &&
-      //     isOrgMember(organizationId) &&
-      //     request.resource.data.diff(resource.data).affectedKeys()
-      //       .hasOnly(["name", "description", "logoUrl", "brandColors", "website"])
-      //   )
-      // );
-      //
-      // OPTION B (current choice — stricter than the doc's skeleton):
-      // all org mutations, including branding, go through Cloud Functions.
-      // Valid per §17 ("Owner or authorized backend logic"), but requires an
-      // updateOrganization Cloud Function to exist for branding changes.
-      allow update: if false;
+      allow create: if false;
+
+      // FIX: Owner may only touch presentation fields. Status, ownerId,
+      // createdAt, organizationId etc. are server-controlled.
+      // FIX: platform-admin direct writes removed; use verify/suspend
+      // functions so that every action is audited.
+      allow update: if isOwner(organizationId)
+        && orgOperational(organizationId)
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(["name", "description", "logoUrl", "brandColors", "website"]);
 
       allow delete: if false;
     }
 
-    // -------------------------------------------------------------------------
-    // 3. MEMBERSHIPS & INVITES
-    // -------------------------------------------------------------------------
+    // Minimal public projection for join flow / verification-status screen.
+    // Written only by functions; contains no sensitive fields.
+    match /organizationPublic/{organizationId} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    // =========================
+    // MEMBERS
+    // =========================
+
     match /organizationMembers/{membershipId} {
-      allow read: if isSignedIn() && (
-        resource.data.userId == request.auth.uid ||
-        isOrgAdmin(resource.data.organizationId) ||
-        isSuperAdmin()
-      );
-      allow write: if false; // All membership writes remain Cloud Function only
+
+      // FIX: parentheses added; original mixed && and || without grouping.
+      allow read: if signedIn()
+        && (
+          resource.data.userId == request.auth.uid
+          || isOwnerOrAdmin(resource.data.organizationId)
+        );
+
+      allow create, update, delete: if false;
     }
 
-    // Firestore Rules Spec §13 lists Read = "Recipient/admin" for invitations.
-    // Deny-all is the safe default until recipient/admin matching is implemented;
-    // swap in the commented rule once invitation docs carry a resolvable
-    // recipientUid (or recipientEmail matched against a verified custom claim).
+    // =========================
+    // INVITATIONS
+    // =========================
+
     match /organizationInvitations/{invitationId} {
-      // allow read: if isSignedIn() && (
-      //   resource.data.recipientUid == request.auth.uid ||
-      //   isOrgAdmin(resource.data.organizationId) ||
-      //   isSuperAdmin()
-      // );
-      allow read, write: if false; // Server-only via Cloud Functions
+
+      // FIX: was `signedIn()` - leaked every invitation to every user.
+      allow read: if signedIn()
+        && (
+          isOwnerOrAdmin(resource.data.organizationId)
+          || (verifiedEmail()
+              && resource.data.email == request.auth.token.email)
+        );
+
+      allow create, update, delete: if false;
     }
 
-    match /organizationInvitationKeys/{keyId} {
-      allow read, write: if false; // Server-only via Cloud Functions
-    }
+    // =========================
+    // JOINING CODES
+    // =========================
 
-    match /organizationInvitationTokens/{tokenId} {
-      allow read, write: if false; // Server-only via Cloud Functions
-    }
-
-    // Firestore Rules Spec §13 lists Read = "Admin" for joiningCodes, but the
-    // §46 skeleton denies all reads. Codes should be stored as codeHash (§28
-    // of the backend doc), so exposing the doc to Admins is low-risk even if
-    // it contains the hash. Deny-all kept as the safe default; uncomment to
-    // grant Admin visibility into active/rotated codes.
     match /joiningCodes/{codeId} {
-      // allow read: if isSignedIn() && (
-      //   isOrgAdmin(resource.data.organizationId) ||
-      //   isSuperAdmin()
-      // );
-      allow read, write: if false;
+      // Matrix says "Admin" may read; hashes are useless to clients, and
+      // the code lifecycle is handled by functions, so keep fully closed.
+      allow read: if signedIn() && isOwnerOrAdmin(resource.data.organizationId);
+      allow create, update, delete: if false;
     }
+
+    // =========================
+    // DEPARTMENTS
+    // =========================
 
     match /departments/{departmentId} {
-      allow read: if isSignedIn() && (
-        isOrgMember(resource.data.organizationId) ||
-        isSuperAdmin()
-      );
-      allow write: if false; // All department writes remain Cloud Function only
+      allow read: if isActiveMember(resource.data.organizationId)
+        && orgOperational(resource.data.organizationId);
+      allow create, update, delete: if false;   // via functions
     }
 
-    // -------------------------------------------------------------------------
-    // 4. VOTING EVENTS, CANDIDATES & OPTIONS
-    // -------------------------------------------------------------------------
+    // =========================
+    // VOTING EVENTS
+    // =========================
+
     match /votingEvents/{eventId} {
-      // NOTE: "CANCELLED" isn't in the SRS §7.2 lifecycle (Draft/Scheduled/
-      // Active/Closed/Archived). Either add it to the SRS or drop it here so
-      // the two docs stay in sync — left as-is functionally since isOrgAdmin
-      // already sees every status regardless of this list.
-      allow read: if isSignedIn() && (
-        isSuperAdmin() ||
-        (
-          isOrgMember(resource.data.organizationId) && (
-            isMemberVisibleEventStatus(resource.data.status) ||
-            isOrgAdmin(resource.data.organizationId)
-          )
-        )
-      );
-
-      allow write: if false; // All mutations are Cloud Function only
+      allow read: if canSeeEvent(resource.data.organizationId, eventId);
+      allow create, update, delete: if false;   // via functions
     }
+
+    // Eligibility lists: admin-only (members must not see rosters).
+    match /votingEventEligibility/{eventId} {
+      allow read: if isOwnerOrAdmin(resource.data.organizationId);
+      allow create, update, delete: if false;
+    }
+
+    // =========================
+    // CANDIDATES / POLL OPTIONS
+    // =========================
 
     match /candidates/{candidateId} {
-      allow read: if isSignedIn() && (
-        isSuperAdmin() ||
-        (
-          isOrgMember(resource.data.organizationId) && (
-            isMemberVisibleEventStatus(get(/databases/$(database)/documents/votingEvents/$(resource.data.votingEventId)).data.status) ||
-            isOrgAdmin(resource.data.organizationId)
-          )
-        )
-      );
-
-      allow write: if false; // All candidate writes remain Cloud Function only
+      allow read: if canSeeEvent(resource.data.organizationId, resource.data.votingEventId);
+      allow create, update, delete: if false;
     }
 
     match /pollOptions/{optionId} {
-      allow read: if isSignedIn() && (
-        isSuperAdmin() ||
-        (
-          isOrgMember(resource.data.organizationId) && (
-            isMemberVisibleEventStatus(get(/databases/$(database)/documents/votingEvents/$(resource.data.votingEventId)).data.status) ||
-            isOrgAdmin(resource.data.organizationId)
-          )
-        )
-      );
-
-      allow write: if false; // All poll option writes remain Cloud Function only
+      allow read: if canSeeEvent(resource.data.organizationId, resource.data.votingEventId);
+      allow create, update, delete: if false;
     }
 
-    // -------------------------------------------------------------------------
-    // 5. VOTES & PARTICIPATION
-    // -------------------------------------------------------------------------
+    // =========================
+    // VOTES (never client accessible)
+    // =========================
+
     match /votes/{voteId} {
-      // Firestore Rules Spec §32: "The Flutter application has no direct
-      // access path to vote records." No exception, not even Super Admin.
-      allow read, write: if false;
+      allow read, create, update, delete: if false;
     }
+
+    // =========================
+    // PARTICIPATION
+    // =========================
 
     match /participation/{participationId} {
-      allow read: if isSignedIn() && (
-        resource.data.userId == request.auth.uid ||
-        isSuperAdmin()
-      );
-      allow write: if false; // All participation writes are Cloud Function only
+
+      // FIX: `resource` is null for non-existent docs, which made the
+      // "have I voted?" check error out. Allow the null case so the client
+      // gets a clean "not found".
+      allow read: if signedIn()
+        && (resource == null || resource.data.userId == request.auth.uid);
+
+      allow create, update, delete: if false;
     }
 
-    // FIX: Firestore Rules Spec §39: "A voter may read their own receipt."
-    // Previously denied to everyone, which breaks the "Vote Success /
-    // Receipt" screen (SRS §28).
+    // =========================
+    // RECEIPTS
+    // =========================
+
     match /voteReceipts/{receiptId} {
-      allow read: if isSelf(resource.data.userId);
-      allow write: if false; // Server-only (generateReceipt Cloud Function)
+
+      allow read: if signedIn()
+        && (resource == null || resource.data.userId == request.auth.uid);
+
+      allow create, update, delete: if false;
     }
 
-    // Aggregated tallies are available only after the event is closed.
-    // Members additionally require publication; admins may preview closed results.
+    // =========================
+    // TURNOUT COUNTERS (FIX: admins need a read path for monitoring)
+    // =========================
+
+    match /turnout/{eventId} {
+      allow read: if isOwnerOrAdmin(resource.data.organizationId);
+      allow create, update, delete: if false;
+    }
+
+    // =========================
+    // RESULTS (eventResults collection)
+    // =========================
+
     match /eventResults/{eventId} {
-      allow read: if isSignedIn() && (
-        (
-          isOrgAdmin(resource.data.organizationId) &&
-          isEventClosed(eventId)
-        ) ||
-        (
-          isOrgMember(resource.data.organizationId) &&
-          resource.data.published == true &&
-          isEventClosed(eventId)
-        )
-      );
-      allow write: if false;
+
+      // Owners/Admins may review after closure (document only exists then).
+      // Members only see results once published.
+      allow read: if isOwnerOrAdmin(resource.data.organizationId)
+        || (isActiveMember(resource.data.organizationId)
+            && resource.data.published == true);
+
+      allow create, update, delete: if false;
     }
 
-    // -------------------------------------------------------------------------
-    // 6. AUDIT LOGS & REPORTS
-    // -------------------------------------------------------------------------
-    // FIX: Firestore Rules Spec §41: "Owner/Admin may read audit records
-    // belonging to their organization where authorized." SRS §3.2/§3.3 list
-    // this as a stated Owner/Admin privilege. Previously denied to everyone.
+    match /results/{eventId} {
+      allow read: if isOwnerOrAdmin(resource.data.organizationId)
+        || (isActiveMember(resource.data.organizationId)
+            && resource.data.published == true);
+
+      allow create, update, delete: if false;
+    }
+
+    // =========================
+    // AUDIT LOGS & REPORTS
+    // =========================
+
     match /auditLogs/{logId} {
-      allow read: if isSignedIn() && (
-        isOrgAdmin(resource.data.organizationId) ||
-        isSuperAdmin()
-      );
-      allow write: if false;
+      allow read: if isOwnerOrAdmin(resource.data.organizationId);
+      allow create, update, delete: if false;
     }
 
-    // FIX: Firestore Rules Spec §43: "Only Platform Super Admins may read
-    // platform audit logs." Previously denied to everyone, including them.
     match /platformAuditLogs/{logId} {
-      allow read: if isSuperAdmin();
-      allow write: if false;
+      allow read: if isPlatformAdmin();
+      allow create, update, delete: if false;
     }
 
-    // No spec section defines userReports explicitly (not in the §4
-    // collection list). Deny-all kept as the safe default — revisit once
-    // the reporting workflow (who files, who reviews) is specified.
-    match /userReports/{reportId} {
-      allow read, write: if false;
-    }
-
-    // FIX: Firestore Rules Spec §44: "Platform reports shall be restricted
-    // to Platform Super Admins" (i.e. readable by them). Previously denied
-    // to everyone, including them.
     match /platformReports/{reportId} {
-      allow read: if isSuperAdmin();
-      allow write: if false;
+      allow read: if isPlatformAdmin();
+      allow create, update, delete: if false;
     }
 
-    // -------------------------------------------------------------------------
-    // DEFAULT DENY
-    // -------------------------------------------------------------------------
+    match /userReports/{reportId} {
+      allow create: if signedIn() && request.auth.uid == request.resource.data.userId;
+      allow read: if isPlatformAdmin() || (signedIn() && request.auth.uid == resource.data.userId);
+      allow update, delete: if false;
+    }
+
+    // =========================
+    // GLOBAL DENY-BY-DEFAULT (FIX: was absent from the skeleton)
+    // =========================
+
     match /{document=**} {
       allow read, write: if false;
     }

@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { requireActiveMembership, requireOperationalOrganization } from "../utils/authorization";
 
 export const revokeInvitation = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
@@ -15,17 +16,9 @@ export const revokeInvitation = onCall(async (request) => {
 
   const db = getFirestore();
 
-  // Find invitation document by opaque invitationId
-  const querySnap = await db.collection("organizationInvitations")
-    .where("id", "==", invitationId.trim())
-    .get();
-
-  if (querySnap.empty) {
-    throw new HttpsError("not-found", "Invitation document not found.");
-  }
-
-  const invitationDoc = querySnap.docs[0];
-  const invitationRef = invitationDoc.ref;
+  // Invitations are keyed by their own opaque id (see inviteMember.ts), so a
+  // direct doc lookup is both cheaper and more robust than a query.
+  const invitationRef = db.collection("organizationInvitations").doc(invitationId.trim());
 
   await db.runTransaction(async (transaction) => {
     const invSnap = await transaction.get(invitationRef);
@@ -39,18 +32,16 @@ export const revokeInvitation = onCall(async (request) => {
     const targetEmail = invData.email;
     const tokenHash = invData.tokenHash;
 
+    if (invData.status !== "pending") {
+      throw new HttpsError("failed-precondition", `This invitation is already ${invData.status} and cannot be revoked.`);
+    }
+
     // Verify caller's membership in target organization
-    const callerMemberRef = db.collection("organizationMembers").doc(`${orgId}_${uid}`);
-    const callerMemberSnap = await transaction.get(callerMemberRef);
+    const { role: callerRole } = await requireActiveMembership(
+      db, orgId, uid, ["owner", "admin"], { tx: transaction }
+    );
 
-    if (!callerMemberSnap.exists || callerMemberSnap.data()?.status !== "active") {
-      throw new HttpsError("permission-denied", "Access denied: You are not an active member of this organization.");
-    }
-
-    const callerRole = callerMemberSnap.data()?.role;
-    if (callerRole !== "owner" && callerRole !== "admin") {
-      throw new HttpsError("permission-denied", "Access denied: Only Owners or Admins can revoke invitations.");
-    }
+    await requireOperationalOrganization(db, orgId, transaction);
 
     // Role Revocation Hierarchy: Only Owner can revoke an Admin-level invitation
     if (invRole === "admin" && callerRole !== "owner") {
@@ -60,6 +51,7 @@ export const revokeInvitation = onCall(async (request) => {
     // Update Invitation Status
     transaction.update(invitationRef, {
       status: "revoked",
+      revokedAt: FieldValue.serverTimestamp(),
     });
 
     // Delete Duplicate Lock Document so a new invitation can be re-issued

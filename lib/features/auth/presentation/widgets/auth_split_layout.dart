@@ -106,13 +106,13 @@ class AuthSplitLayout extends StatelessWidget {
                           children: [
                             Image.asset(
                               'assets/icon/app_icon_transparent.png',
-                              width: 34,
-                              height: 34,
+                              width: 44, // Increased from 34
+                              height: 44, // Increased from 34
                               fit: BoxFit.contain,
                             ),
                             const SizedBox(width: 16),
                             const Text(
-                              'SECUREVOTE',
+                              'KIVORA',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
@@ -148,7 +148,7 @@ class AuthSplitLayout extends StatelessWidget {
                         ),
                         const Spacer(),
                         const Text(
-                          'Secure, private\nvoting for every\norganization.',
+                          'Your Voice,\nYour Choice.',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 40,
@@ -181,7 +181,7 @@ class AuthSplitLayout extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'SecureVote',
+                              'Kivora',
                               style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 12),
                             ),
                             Text(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/validators.dart';
@@ -28,6 +29,14 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
   String? _error;
 
   @override
+  void initState() {
+    super.initState();
+    _codeController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
   void dispose() {
     _codeController.dispose();
     super.dispose();
@@ -43,14 +52,15 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
 
     try {
       final repo = ref.read(organizationRepositoryProvider);
-      final result = await repo.joinOrganizationWithCode(_codeController.text);
+      final activeOrg = ref.read(activeOrgIdProvider.notifier);
+      final result = await repo
+          .joinOrganizationWithCode(_codeController.text.trim().toUpperCase());
 
-      // Refresh Riverpod memberships and organizations from server
       ref.invalidate(userMembershipsProvider);
       ref.invalidate(userOrganizationsProvider);
+      ref.invalidate(activeOrganizationContextProvider);
 
-      // Select newly joined organization context
-      await ref.read(activeOrgIdProvider.notifier).selectOrganization(result.organizationId);
+      await activeOrg.selectOrganization(result.organizationId);
 
       if (mounted) {
         setState(() => _isLoading = false);
@@ -62,6 +72,8 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
         );
         if (widget.onJoined != null) {
           widget.onJoined!(result.organizationId, result.organizationName);
+        } else {
+          context.go('/orgs');
         }
       }
     } catch (e) {
@@ -74,96 +86,204 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
     }
   }
 
+  void _handleCancel() {
+    if (widget.onCancelTap != null) {
+      widget.onCancelTap!();
+    } else if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    } else {
+      context.go('/orgs');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final canSubmit = _codeController.text.trim().isNotEmpty && !_isLoading;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Join Organization'),
-        leading: widget.onCancelTap != null
-            ? IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: widget.onCancelTap,
-              )
-            : null,
-      ),
+      backgroundColor: AppTheme.backgroundLight,
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 480),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Icon(
-                    Icons.qr_code_scanner_rounded,
-                    size: 64,
-                    color: AppTheme.primaryBlue,
+            constraints: const BoxConstraints(maxWidth: 520),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppTheme.surfaceWhite,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppTheme.borderLight),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 16,
+                    offset: const Offset(0, 4),
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Join an Organization',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.secondaryNavy,
+                ],
+              ),
+              padding: const EdgeInsets.all(28),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: AppTheme.surfaceBlue,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: const Icon(
+                            Icons.key_outlined,
+                            size: 24,
+                            color: AppTheme.primaryBlue,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close_rounded, color: AppTheme.textSecondary),
+                          onPressed: _handleCancel,
+                        ),
+                      ],
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Enter the 12-character joining code provided by your organization administrator.',
-                    style: TextStyle(color: AppTheme.textSecondary),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 28),
-
-                  TextFormField(
-                    controller: _codeController,
-                    textCapitalization: TextCapitalization.characters,
-                    decoration: const InputDecoration(
-                      labelText: 'Joining Code *',
-                      prefixIcon: Icon(Icons.vpn_key_outlined),
-                      hintText: 'e.g. JOIN-7K9P-X4M2',
-                    ),
-                    validator: (v) => Validators.required(v, 'Joining Code'),
-                  ),
-
-                  if (_error != null) ...[
                     const SizedBox(height: 20),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppTheme.error.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: AppTheme.error.withValues(alpha: 0.3)),
+
+                    Text(
+                      'Join organization with code',
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.secondaryNavy,
+                          ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Enter the joining code shared by your organization\'s owner to find your workspace.',
+                      style: TextStyle(color: AppTheme.textSecondary, fontSize: 14, height: 1.4),
+                    ),
+                    const SizedBox(height: 24),
+
+                    const Text(
+                      'JOINING CODE',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.secondaryNavy,
+                        letterSpacing: 0.5,
                       ),
-                      child: Row(
+                    ),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: _codeController,
+                      textCapitalization: TextCapitalization.characters,
+                      autocorrect: false,
+                      enableSuggestions: false,
+                      textInputAction: TextInputAction.done,
+                      onFieldSubmitted: (_) => _submit(),
+                      decoration: const InputDecoration(
+                        hintText: 'Enter your joining code',
+                      ),
+                      validator: (v) => Validators.required(v, 'Joining Code'),
+                    ),
+                    const SizedBox(height: 6),
+                    const Text(
+                      'Paste the complete code exactly as it was shared with you.',
+                      style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Info Callout Box
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF0F5FF),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(Icons.error_outline, color: AppTheme.error),
-                          const SizedBox(width: 12),
+                          Icon(Icons.info_outline_rounded, color: AppTheme.primaryBlue, size: 18),
+                          SizedBox(width: 10),
                           Expanded(
-                            child: Text(_error!, style: const TextStyle(color: AppTheme.error)),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Don\'t have a code?',
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.secondaryNavy),
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  'Ask your organization\'s owner for one. If a code is invalid or expired, request a new code.',
+                                  style: TextStyle(fontSize: 12, color: AppTheme.textSecondary, height: 1.4),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
+                    const SizedBox(height: 16),
+
+                    const Text(
+                      'You\'ll review the organization before confirming that you want to join.',
+                      style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                    ),
+
+                    if (_error != null) ...[
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppTheme.error.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: AppTheme.error.withValues(alpha: 0.3)),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.error_outline, color: AppTheme.error, size: 18),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(_error!, style: const TextStyle(color: AppTheme.error, fontSize: 13)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+
+                    const SizedBox(height: 28),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        OutlinedButton(
+                          onPressed: _handleCancel,
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          ),
+                          child: const Text('Cancel'),
+                        ),
+                        const SizedBox(width: 12),
+                        FilledButton(
+                          onPressed: canSubmit ? _submit : null,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: AppTheme.primaryBlue,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          ),
+                          child: _isLoading
+                              ? const SizedBox(
+                                  height: 16,
+                                  width: 16,
+                                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                )
+                              : const Text('Find organization'),
+                        ),
+                      ],
+                    ),
                   ],
-
-                  const SizedBox(height: 28),
-
-                  ElevatedButton(
-                    onPressed: _isLoading ? null : _submit,
-                    child: _isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                          )
-                        : const Text('Join Organization'),
-                  ),
-                ],
+                ),
               ),
             ),
           ),

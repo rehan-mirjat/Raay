@@ -1,7 +1,11 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/support/presentation/help_support_screen.dart';
+import '../../features/landing/presentation/landing_page_screen.dart';
+import '../../features/onboarding/presentation/mobile_onboarding_screen.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
 import '../../features/auth/presentation/forgot_password_screen.dart';
@@ -93,7 +97,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: '/home',
+    initialLocation: kIsWeb ? '/' : '/welcome',
     refreshListenable: notifier,
     redirect: (context, state) {
       final isAuth = notifier.isAuth;
@@ -106,20 +110,22 @@ final goRouterProvider = Provider<GoRouter>((ref) {
          return '/splash';
       }
 
-      final isUnauthRoute = location == '/login' || location == '/register' || location == '/forgot-password';
+      final isWelcomeRoute = location == '/welcome';
+      final isUnauthRoute = location == '/login' || location == '/register' || location == '/forgot-password' || isWelcomeRoute;
+      final isPublicLanding = location == '/';
       final isVerifyRoute = location == '/verify-email';
       final isSplashRoute = location == '/splash';
       final isAdminRoute = location.startsWith('/admin');
 
       if (!isAuth) {
-        return isUnauthRoute ? null : '/login';
+        return (isUnauthRoute || isPublicLanding) ? null : (kIsWeb ? '/' : '/welcome');
       }
 
       if (!isVerified) {
         return isVerifyRoute ? null : '/verify-email';
       }
 
-      if (isUnauthRoute || isVerifyRoute || isSplashRoute || location == '/') {
+      if (isUnauthRoute || isVerifyRoute || isSplashRoute || isPublicLanding) {
         return '/home';
       }
 
@@ -135,6 +141,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const LandingPageScreen(),
+      ),
+      GoRoute(
+        path: '/welcome',
+        builder: (context, state) => const MobileOnboardingScreen(),
+      ),
       GoRoute(
         path: '/splash',
         builder: (context, state) => const SplashScreen(),
@@ -194,7 +208,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/home',
-                builder: (context, state) => const HomeScreen(),
+                builder: (context, state) => const HomeScreen(key: ValueKey('home_screen')),
               ),
               GoRoute(
                 path: '/elections/:eventId',
@@ -284,15 +298,21 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/settings',
                 builder: (context, state) {
+                  final extra = state.extra as Map<String, dynamic>? ?? {};
                   final user = ref.watch(authServiceProvider).currentUser;
                   if (user == null) return const Scaffold(body: Center(child: CircularProgressIndicator()));
                   return ProfileScreen(
                     uid: user.uid,
+                    initialTab: extra['initialTab'] as int? ?? 0,
                     onSignOut: () {
                        ref.read(activeOrgIdProvider.notifier).clearSelection();
                     },
                   );
                 },
+              ),
+              GoRoute(
+                path: '/help',
+                builder: (context, state) => const HelpSupportScreen(),
               ),
             ],
           ),

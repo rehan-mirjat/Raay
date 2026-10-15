@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace "com.secureevoting.secure_e_voting"
+    namespace "com.kivora.app"
     compileSdk 36
     ndkVersion "28.2.13676358"
 
@@ -21,7 +21,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.secureevoting.secure_e_voting"
+        applicationId "com.kivora.app"
         minSdk 24
         targetSdk 35
         versionCode flutter.versionCode

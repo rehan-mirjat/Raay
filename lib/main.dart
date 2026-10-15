@@ -3,16 +3,24 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
 import 'core/presentation/splash_screen.dart';
 import 'features/organizations/presentation/providers/organization_providers.dart';
+import 'features/onboarding/providers/onboarding_providers.dart';
 import 'firebase_options.dart';
 import 'services/firebase_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Fix Flutter Web debug assertion when Google Fonts finish downloading during frame microtasks
+  if (kIsWeb) {
+    GoogleFonts.config.allowRuntimeFetching = true;
+  }
 
   // Linux Desktop is not officially supported by firebase_core native plugins natively in this project.
   if (!kIsWeb && Platform.isLinux) {
@@ -30,7 +38,10 @@ Future<void> main() async {
     initError = e.toString();
   }
 
+  final prefs = await SharedPreferences.getInstance();
+
   runApp(ProviderScope(
+    overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
     child: SecureEVotingApp(initializationError: initError),
   ));
 }
@@ -80,7 +91,7 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp> {
   Widget build(BuildContext context) {
     if (_initError != null || _isRetrying) {
       return MaterialApp(
-        title: 'SecureVote',
+        title: 'Kivora',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         themeMode: ThemeMode.light,
@@ -100,7 +111,7 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp> {
         .brandColors;
 
     return MaterialApp.router(
-      title: 'SecureVote',
+      title: 'Kivora',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.withOrganizationBranding(AppTheme.lightTheme, brandColors),
       themeMode: ThemeMode.light,
@@ -115,7 +126,7 @@ class UnsupportedPlatformApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'SecureVote',
+      title: 'Kivora',
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
