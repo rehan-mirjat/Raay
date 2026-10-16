@@ -60,6 +60,7 @@ export * from "./voting_events/deleteCandidatePhoto";
 export * from "./voting_events/deleteCandidate";
 export * from "./voting_events/createPollOption";
 export * from "./voting_events/updatePollOption";
+export * from "./storage/getSignedDownloadUrl";
 export * from "./voting_events/deletePollOption";
 export * from "./voting/castVote";
 export * from "./voting/calculateResults";
