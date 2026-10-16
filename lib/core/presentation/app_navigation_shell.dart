@@ -23,10 +23,14 @@ class AppNavigationShell extends ConsumerWidget {
     final isDesktop = ResponsiveLayout.isWide(context);
     final keyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0;
 
-    final activeOrgContext = ref.watch(activeOrganizationContextProvider).valueOrNull?.context;
+    final activeOrgContext =
+        ref.watch(activeOrganizationContextProvider).valueOrNull?.context;
     final memberRole = activeOrgContext?.member.role;
     final canCreateEvent = activeOrgContext != null &&
-        (memberRole == OrganizationRole.owner || memberRole == OrganizationRole.admin);
+        (memberRole == OrganizationRole.owner ||
+            memberRole == OrganizationRole.admin);
+    final isManager = memberRole == OrganizationRole.owner ||
+        memberRole == OrganizationRole.admin;
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundLight,
@@ -36,15 +40,40 @@ class AppNavigationShell extends ConsumerWidget {
           children: [
             const _TopHeader(),
             if (!isDesktop) ...[
-              // Mobile specific: The Organization Context Switcher goes right below the header
+              // Mobile specific: The Organization Context Switcher goes right below the header,
+              // plus quick-access to Directory/Departments (desktop-only nav links otherwise,
+              // leaving managers with no way to reach them on mobile at all).
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: const BoxDecoration(
                   color: AppTheme.surfaceWhite,
-                  border: Border(bottom: BorderSide(color: AppTheme.borderLight, width: 1)),
+                  border: Border(
+                      bottom:
+                          BorderSide(color: AppTheme.borderLight, width: 1)),
                 ),
-                child: const OrganizationContextSwitcher(),
+                child: Row(
+                  children: [
+                    const Expanded(child: OrganizationContextSwitcher()),
+                    if (isManager) ...[
+                      const SizedBox(width: 8),
+                      _MobileQuickNavButton(
+                        navKey: TourKeys.directoryKey,
+                        icon: Icons.groups_outlined,
+                        tooltip: 'Directory',
+                        route: '/orgs/members',
+                      ),
+                      const SizedBox(width: 6),
+                      _MobileQuickNavButton(
+                        navKey: TourKeys.departmentsKey,
+                        icon: Icons.apartment_outlined,
+                        tooltip: 'Departments',
+                        route: '/orgs/departments',
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ],
             Expanded(child: navigationShell),
@@ -58,6 +87,46 @@ class AppNavigationShell extends ConsumerWidget {
               showCreateEventButton: canCreateEvent,
               onCreateEvent: () => context.go('/admin/events/new'),
             ),
+    );
+  }
+}
+
+class _MobileQuickNavButton extends StatelessWidget {
+  final Key navKey;
+  final IconData icon;
+  final String tooltip;
+  final String route;
+
+  const _MobileQuickNavButton({
+    required this.navKey,
+    required this.icon,
+    required this.tooltip,
+    required this.route,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: Semantics(
+        button: true,
+        label: tooltip,
+        child: Material(
+          key: navKey,
+          color: AppTheme.backgroundLight,
+          shape: const CircleBorder(
+              side: BorderSide(color: AppTheme.borderLight, width: 1.2)),
+          child: InkWell(
+            onTap: () => context.go(route),
+            customBorder: const CircleBorder(),
+            child: SizedBox(
+              width: 38,
+              height: 38,
+              child: Icon(icon, size: 18, color: AppTheme.secondaryNavy),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -79,7 +148,8 @@ class _FloatingMobileNavBar extends StatelessWidget {
     final currentIndex = navigationShell.currentIndex;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(16, 0, 16, bottomPadding > 0 ? bottomPadding + 4 : 12),
+      padding: EdgeInsets.fromLTRB(
+          16, 0, 16, bottomPadding > 0 ? bottomPadding + 4 : 12),
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.center,
@@ -94,7 +164,9 @@ class _FloatingMobileNavBar extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppTheme.surfaceWhite.withValues(alpha: 0.85),
                   borderRadius: BorderRadius.circular(28),
-                  border: Border.all(color: AppTheme.borderLight.withValues(alpha: 0.8), width: 1.2),
+                  border: Border.all(
+                      color: AppTheme.borderLight.withValues(alpha: 0.8),
+                      width: 1.2),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.05),
@@ -108,14 +180,18 @@ class _FloatingMobileNavBar extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _navItem(context, 0, Icons.home_outlined, Icons.home_rounded, 'Home', currentIndex),
-                      _navItem(context, 1, Icons.business_outlined, Icons.business_rounded, 'Orgs', currentIndex),
+                      _navItem(context, 0, Icons.home_outlined,
+                          Icons.home_rounded, 'Home', currentIndex),
+                      _navItem(context, 1, Icons.business_outlined,
+                          Icons.business_rounded, 'Orgs', currentIndex),
                       if (showCreateEventButton) ...[
                         // Spacer for central floating + button
                         const SizedBox(width: 52),
                       ],
-                      _navItem(context, 3, Icons.inventory_2_outlined, Icons.inventory_2_rounded, 'Events', currentIndex),
-                      _navItem(context, 2, Icons.person_outline_rounded, Icons.person_rounded, 'Profile', currentIndex),
+                      _navItem(context, 3, Icons.inventory_2_outlined,
+                          Icons.inventory_2_rounded, 'Events', currentIndex),
+                      _navItem(context, 2, Icons.person_outline_rounded,
+                          Icons.person_rounded, 'Profile', currentIndex),
                     ],
                   ),
                 ),
@@ -149,7 +225,8 @@ class _FloatingMobileNavBar extends StatelessWidget {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: AppTheme.accentGold.withValues(alpha: 0.45),
+                              color:
+                                  AppTheme.accentGold.withValues(alpha: 0.45),
                               blurRadius: 14,
                               offset: const Offset(0, 4),
                             ),
@@ -201,12 +278,15 @@ class _FloatingMobileNavBar extends StatelessWidget {
                 vertical: 4,
               ),
               decoration: BoxDecoration(
-                color: isSelected ? AppTheme.primaryBlue.withValues(alpha: 0.12) : Colors.transparent,
+                color: isSelected
+                    ? AppTheme.primaryBlue.withValues(alpha: 0.12)
+                    : Colors.transparent,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(
                 isSelected ? iconFilled : iconOutlined,
-                color: isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
+                color:
+                    isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
                 size: 22,
               ),
             ),
@@ -216,7 +296,8 @@ class _FloatingMobileNavBar extends StatelessWidget {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                color: isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
+                color:
+                    isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -235,10 +316,12 @@ class _TopHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDesktop = ResponsiveLayout.isWide(context);
     final user = ref.watch(authServiceProvider).currentUser;
-    final appUserAsync = user != null ? ref.watch(userProfileProvider(user.uid)) : null;
+    final appUserAsync =
+        user != null ? ref.watch(userProfileProvider(user.uid)) : null;
     final photoUrlToUse = appUserAsync?.valueOrNull?.photoUrl ?? user?.photoURL;
 
-    final activeOrgContext = ref.watch(activeOrganizationContextProvider).valueOrNull?.context;
+    final activeOrgContext =
+        ref.watch(activeOrganizationContextProvider).valueOrNull?.context;
     final isManager = activeOrgContext != null &&
         (activeOrgContext.member.role == OrganizationRole.owner ||
             activeOrgContext.member.role == OrganizationRole.admin);
@@ -271,19 +354,31 @@ class _TopHeader extends ConsumerWidget {
               children: [
                 // Logo & Wordmark with Hover State
                 const _BrandLogoLink(),
-                
+
                 if (isDesktop) ...[
                   const SizedBox(width: 16),
                   Container(width: 1, height: 20, color: AppTheme.borderLight),
                   const SizedBox(width: 16),
-                  _DesktopNavLink(label: 'Events', route: '/admin/events', navKey: TourKeys.eventsKey),
+                  _DesktopNavLink(
+                      label: 'Events',
+                      route: '/admin/events',
+                      navKey: TourKeys.eventsKey),
                   const SizedBox(width: 4),
-                  _DesktopNavLink(label: 'Organization', route: '/orgs', navKey: TourKeys.organizationKey),
+                  _DesktopNavLink(
+                      label: 'Organization',
+                      route: '/orgs',
+                      navKey: TourKeys.organizationKey),
                   if (isManager) ...[
                     const SizedBox(width: 4),
-                    _DesktopNavLink(label: 'Directory', route: '/orgs/members', navKey: TourKeys.directoryKey),
+                    _DesktopNavLink(
+                        label: 'Directory',
+                        route: '/orgs/members',
+                        navKey: TourKeys.directoryKey),
                     const SizedBox(width: 4),
-                    _DesktopNavLink(label: 'Departments', route: '/orgs/departments', navKey: TourKeys.departmentsKey),
+                    _DesktopNavLink(
+                        label: 'Departments',
+                        route: '/orgs/departments',
+                        navKey: TourKeys.departmentsKey),
                   ],
                 ],
 
@@ -377,7 +472,9 @@ class _DesktopNavLinkState extends State<_DesktopNavLink> {
     final location = GoRouterState.of(context).matchedLocation;
     final isActive = widget.route == '/orgs'
         ? (location == '/orgs' || location == '/orgs/dashboard')
-        : (location == widget.route || (widget.route != '/home' && location.startsWith('${widget.route}/')));
+        : (location == widget.route ||
+            (widget.route != '/home' &&
+                location.startsWith('${widget.route}/')));
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -393,12 +490,16 @@ class _DesktopNavLinkState extends State<_DesktopNavLink> {
           decoration: BoxDecoration(
             color: isActive
                 ? AppTheme.surfaceBlue
-                : (_isHovered ? AppTheme.surfaceBlue.withValues(alpha: 0.6) : Colors.transparent),
+                : (_isHovered
+                    ? AppTheme.surfaceBlue.withValues(alpha: 0.6)
+                    : Colors.transparent),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isActive
                   ? AppTheme.primaryBlue.withValues(alpha: 0.3)
-                  : (_isHovered ? AppTheme.primaryBlue.withValues(alpha: 0.2) : Colors.transparent),
+                  : (_isHovered
+                      ? AppTheme.primaryBlue.withValues(alpha: 0.2)
+                      : Colors.transparent),
               width: 1.0,
             ),
           ),
@@ -407,8 +508,11 @@ class _DesktopNavLinkState extends State<_DesktopNavLink> {
             style: TextStyle(
               color: isActive
                   ? AppTheme.primaryBlue
-                  : (_isHovered ? AppTheme.primaryBlue : AppTheme.secondaryNavy),
-              fontWeight: (isActive || _isHovered) ? FontWeight.bold : FontWeight.w500,
+                  : (_isHovered
+                      ? AppTheme.primaryBlue
+                      : AppTheme.secondaryNavy),
+              fontWeight:
+                  (isActive || _isHovered) ? FontWeight.bold : FontWeight.w500,
               fontSize: 13,
             ),
           ),
@@ -422,7 +526,8 @@ class _NotificationDropdown extends ConsumerStatefulWidget {
   const _NotificationDropdown();
 
   @override
-  ConsumerState<_NotificationDropdown> createState() => _NotificationDropdownState();
+  ConsumerState<_NotificationDropdown> createState() =>
+      _NotificationDropdownState();
 }
 
 class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
@@ -455,7 +560,9 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
           decoration: BoxDecoration(
             color: hasUnread
                 ? AppTheme.surfaceBlue
-                : (_isHovered ? AppTheme.surfaceBlue.withValues(alpha: 0.6) : AppTheme.backgroundLight),
+                : (_isHovered
+                    ? AppTheme.surfaceBlue.withValues(alpha: 0.6)
+                    : AppTheme.backgroundLight),
             shape: BoxShape.circle,
             border: Border.all(
               color: (hasUnread || _isHovered)
@@ -469,9 +576,13 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
             clipBehavior: Clip.none,
             children: [
               Icon(
-                hasUnread ? Icons.notifications_active_rounded : Icons.notifications_none_rounded,
+                hasUnread
+                    ? Icons.notifications_active_rounded
+                    : Icons.notifications_none_rounded,
                 size: 18,
-                color: (hasUnread || _isHovered) ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
+                color: (hasUnread || _isHovered)
+                    ? AppTheme.primaryBlue
+                    : AppTheme.secondaryNavy,
               ),
               if (hasUnread)
                 Positioned(
@@ -483,7 +594,8 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                       color: AppTheme.error,
                       shape: BoxShape.circle,
                     ),
-                    constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                    constraints:
+                        const BoxConstraints(minWidth: 16, minHeight: 16),
                     child: Center(
                       child: Text(
                         unreadCount > 9 ? '9+' : unreadCount.toString(),
@@ -550,14 +662,16 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                   child: Center(
                     child: Text(
                       'No new notifications',
-                      style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                      style: TextStyle(
+                          color: AppTheme.textSecondary, fontSize: 13),
                     ),
                   ),
                 ),
               )
             else
               ...items.take(4).map((item) {
-                final orgName = item['organizationName'] as String? ?? 'Organization';
+                final orgName =
+                    item['organizationName'] as String? ?? 'Organization';
                 final role = item['role'] as String? ?? 'member';
 
                 return PopupMenuItem<String>(
@@ -656,7 +770,8 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    final sanitizedPhotoUrl = FirebaseService.sanitizeStorageUrl(widget.photoUrl);
+    final sanitizedPhotoUrl =
+        FirebaseService.sanitizeStorageUrl(widget.photoUrl);
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -675,10 +790,14 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
           duration: const Duration(milliseconds: 180),
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
-            color: _isHovered ? AppTheme.surfaceBlue.withValues(alpha: 0.6) : AppTheme.backgroundLight,
+            color: _isHovered
+                ? AppTheme.surfaceBlue.withValues(alpha: 0.6)
+                : AppTheme.backgroundLight,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: _isHovered ? AppTheme.primaryBlue.withValues(alpha: 0.4) : AppTheme.borderLight,
+              color: _isHovered
+                  ? AppTheme.primaryBlue.withValues(alpha: 0.4)
+                  : AppTheme.borderLight,
               width: 1.2,
             ),
           ),
@@ -693,7 +812,9 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                     : null,
                 child: sanitizedPhotoUrl.isEmpty
                     ? Text(
-                        widget.displayName.isNotEmpty ? widget.displayName[0].toUpperCase() : 'U',
+                        widget.displayName.isNotEmpty
+                            ? widget.displayName[0].toUpperCase()
+                            : 'U',
                         style: const TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
@@ -713,15 +834,25 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: _isHovered ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
+                      color: _isHovered
+                          ? AppTheme.primaryBlue
+                          : AppTheme.secondaryNavy,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Consumer(
                     builder: (context, ref, child) {
-                      final role = ref.watch(activeOrganizationContextProvider).valueOrNull?.context?.member.role.value;
-                      final roleLabel = role != null ? 'Account ${role.toLowerCase()}' : 'Account user';
+                      final role = ref
+                          .watch(activeOrganizationContextProvider)
+                          .valueOrNull
+                          ?.context
+                          ?.member
+                          .role
+                          .value;
+                      final roleLabel = role != null
+                          ? 'Account ${role.toLowerCase()}'
+                          : 'Account user';
                       return Text(
                         roleLabel,
                         style: const TextStyle(
@@ -738,7 +869,8 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
               Icon(
                 Icons.keyboard_arrow_down_rounded,
                 size: 14,
-                color: _isHovered ? AppTheme.primaryBlue : AppTheme.textSecondary,
+                color:
+                    _isHovered ? AppTheme.primaryBlue : AppTheme.textSecondary,
               ),
             ],
           ),
@@ -762,9 +894,17 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                 CircleAvatar(
                   radius: 20,
                   backgroundColor: AppTheme.surfaceBlue,
-                  backgroundImage: sanitizedPhotoUrl.isNotEmpty ? NetworkImage(sanitizedPhotoUrl) : null,
+                  backgroundImage: sanitizedPhotoUrl.isNotEmpty
+                      ? NetworkImage(sanitizedPhotoUrl)
+                      : null,
                   child: sanitizedPhotoUrl.isEmpty
-                      ? Text(widget.displayName.isNotEmpty ? widget.displayName[0].toUpperCase() : 'U', style: const TextStyle(color: AppTheme.primaryBlue, fontWeight: FontWeight.bold))
+                      ? Text(
+                          widget.displayName.isNotEmpty
+                              ? widget.displayName[0].toUpperCase()
+                              : 'U',
+                          style: const TextStyle(
+                              color: AppTheme.primaryBlue,
+                              fontWeight: FontWeight.bold))
                       : null,
                 ),
                 const SizedBox(width: 12),
@@ -773,8 +913,15 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(widget.displayName, style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy, fontSize: 14)),
-                      Text(widget.email, style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12), overflow: TextOverflow.ellipsis),
+                      Text(widget.displayName,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.secondaryNavy,
+                              fontSize: 14)),
+                      Text(widget.email,
+                          style: const TextStyle(
+                              color: AppTheme.textSecondary, fontSize: 12),
+                          overflow: TextOverflow.ellipsis),
                     ],
                   ),
                 ),
@@ -782,16 +929,20 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
             ),
           ),
           const PopupMenuDivider(),
-          _buildMenuItem('settings', Icons.settings_outlined, 'Account settings'),
+          _buildMenuItem(
+              'settings', Icons.settings_outlined, 'Account settings'),
           _buildMenuItem('help', Icons.help_outline, 'Help & support'),
           const PopupMenuDivider(),
-          _buildMenuItem('logout', Icons.logout_rounded, 'Log out', isDestructive: true),
+          _buildMenuItem('logout', Icons.logout_rounded, 'Log out',
+              isDestructive: true),
         ],
       ),
     );
   }
 
-  PopupMenuItem<String> _buildMenuItem(String value, IconData icon, String label, {bool isDestructive = false}) {
+  PopupMenuItem<String> _buildMenuItem(
+      String value, IconData icon, String label,
+      {bool isDestructive = false}) {
     final color = isDestructive ? AppTheme.error : AppTheme.secondaryNavy;
     return PopupMenuItem<String>(
       value: value,
@@ -800,7 +951,9 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
         children: [
           Icon(icon, size: 18, color: color),
           const SizedBox(width: 12),
-          Text(label, style: TextStyle(color: color, fontSize: 13, fontWeight: FontWeight.w500)),
+          Text(label,
+              style: TextStyle(
+                  color: color, fontSize: 13, fontWeight: FontWeight.w500)),
         ],
       ),
     );

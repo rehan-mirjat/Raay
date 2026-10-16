@@ -3,16 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../providers/onboarding_providers.dart';
 
 class MobileOnboardingScreen extends ConsumerStatefulWidget {
   const MobileOnboardingScreen({super.key});
 
   @override
-  ConsumerState<MobileOnboardingScreen> createState() => _MobileOnboardingScreenState();
+  ConsumerState<MobileOnboardingScreen> createState() =>
+      _MobileOnboardingScreenState();
 }
 
-class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen> {
+class _MobileOnboardingScreenState
+    extends ConsumerState<MobileOnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
@@ -118,9 +119,11 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
               onPressed: _skipToWelcome,
               style: TextButton.styleFrom(
                 foregroundColor: AppTheme.primaryBlue,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
-              child: const Text('Skip', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+              child: const Text('Skip',
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
             ),
         ],
       ),
@@ -145,24 +148,40 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Your organization', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
+                    const Text('Your organization',
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.secondaryNavy)),
                     Container(
                       padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(color: AppTheme.surfaceBlue, borderRadius: BorderRadius.circular(6)),
-                      child: const Icon(Icons.corporate_fare_outlined, size: 14, color: AppTheme.primaryBlue),
+                      decoration: BoxDecoration(
+                          color: AppTheme.surfaceBlue,
+                          borderRadius: BorderRadius.circular(6)),
+                      child: const Icon(Icons.corporate_fare_outlined,
+                          size: 14, color: AppTheme.primaryBlue),
                     ),
                   ],
                 ),
                 const SizedBox(height: 12),
-                _illustrationActionRow(Icons.add_rounded, 'Create an organization', 'Start a space for your community'),
+                _illustrationActionRow(
+                    Icons.add_rounded,
+                    'Create an organization',
+                    'Start a space for your community'),
                 const SizedBox(height: 8),
-                _illustrationActionRow(Icons.person_add_outlined, 'Join an organization', 'Use your code or invitation'),
+                _illustrationActionRow(Icons.person_add_outlined,
+                    'Join an organization', 'Use your code or invitation'),
                 const SizedBox(height: 12),
                 const Row(
                   children: [
-                    Icon(Icons.key_outlined, size: 12, color: AppTheme.primaryBlue),
+                    Icon(Icons.key_outlined,
+                        size: 12, color: AppTheme.primaryBlue),
                     SizedBox(width: 6),
-                    Text('An invitation brings you right in.', style: TextStyle(fontSize: 10, color: AppTheme.primaryBlue, fontWeight: FontWeight.bold)),
+                    Text('An invitation brings you right in.',
+                        style: TextStyle(
+                            fontSize: 10,
+                            color: AppTheme.primaryBlue,
+                            fontWeight: FontWeight.bold)),
                   ],
                 ),
               ],
@@ -175,7 +194,8 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
           _buildTextContent(
             tag: 'YOUR COMMUNITY, CONNECTED',
             title: 'Create or join\nan organization',
-            subtitle: 'Bring your people together. Create a home for your elections and polls, or join with an invitation code.',
+            subtitle:
+                'Bring your people together. Create a home for your elections and polls, or join with an invitation code.',
           ),
 
           const SizedBox(height: 16),
@@ -184,7 +204,8 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
           _buildCalloutBox(
             icon: Icons.groups_outlined,
             title: 'One home for shared decisions',
-            text: 'Connect your members, elections and polls in one organization.',
+            text:
+                'Connect your members, elections and polls in one organization.',
           ),
 
           const Spacer(),
@@ -219,38 +240,66 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('EXAMPLE BALLOT', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppTheme.textSecondary)),
+                    const Text('EXAMPLE BALLOT',
+                        style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.textSecondary)),
                     Container(
                       padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(color: AppTheme.surfaceBlue, borderRadius: BorderRadius.circular(6)),
-                      child: const Icon(Icons.how_to_vote_outlined, size: 14, color: AppTheme.primaryBlue),
+                      decoration: BoxDecoration(
+                          color: AppTheme.surfaceBlue,
+                          borderRadius: BorderRadius.circular(6)),
+                      child: const Icon(Icons.how_to_vote_outlined,
+                          size: 14, color: AppTheme.primaryBlue),
                     ),
                   ],
                 ),
                 const SizedBox(height: 8),
-                const Text('Student council 2026', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
-                const Text('President · Choose one candidate', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+                const Text('Student council 2026',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.secondaryNavy)),
+                const Text('President · Choose one candidate',
+                    style:
+                        TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
                 const SizedBox(height: 12),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(color: AppTheme.surfaceBlue, borderRadius: BorderRadius.circular(8), border: Border.all(color: AppTheme.primaryBlue)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                      color: AppTheme.surfaceBlue,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppTheme.primaryBlue)),
                   child: const Row(
                     children: [
-                      Icon(Icons.radio_button_checked_rounded, size: 14, color: AppTheme.primaryBlue),
+                      Icon(Icons.radio_button_checked_rounded,
+                          size: 14, color: AppTheme.primaryBlue),
                       SizedBox(width: 8),
-                      Text('Alex Morgan', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue)),
+                      Text('Alex Morgan',
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.primaryBlue)),
                     ],
                   ),
                 ),
                 const SizedBox(height: 6),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(color: AppTheme.backgroundLight, borderRadius: BorderRadius.circular(8)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                      color: AppTheme.backgroundLight,
+                      borderRadius: BorderRadius.circular(8)),
                   child: const Row(
                     children: [
-                      Icon(Icons.radio_button_unchecked_rounded, size: 14, color: AppTheme.textSecondary),
+                      Icon(Icons.radio_button_unchecked_rounded,
+                          size: 14, color: AppTheme.textSecondary),
                       SizedBox(width: 8),
-                      Text('Jordan Lee', style: TextStyle(fontSize: 12, color: AppTheme.secondaryNavy)),
+                      Text('Jordan Lee',
+                          style: TextStyle(
+                              fontSize: 12, color: AppTheme.secondaryNavy)),
                     ],
                   ),
                 ),
@@ -262,9 +311,11 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
                     style: FilledButton.styleFrom(
                       backgroundColor: AppTheme.primaryBlue,
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
                     ),
-                    child: const Text('Review vote', style: TextStyle(fontSize: 12)),
+                    child: const Text('Review vote',
+                        style: TextStyle(fontSize: 12)),
                   ),
                 ),
               ],
@@ -277,7 +328,8 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
           _buildTextContent(
             tag: 'EVERY VOICE MATTERS',
             title: 'Vote with confidence',
-            subtitle: 'Make your voice count in elections and polls. Review your options, choose, and submit your vote.',
+            subtitle:
+                'Make your voice count in elections and polls. Review your options, choose, and submit your vote.',
           ),
 
           const SizedBox(height: 16),
@@ -286,7 +338,8 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
           _buildCalloutBox(
             icon: Icons.lock_outline_rounded,
             title: 'Your choice stays private',
-            text: 'Private ballots protect your choices while keeping the process accountable.',
+            text:
+                'Private ballots protect your choices while keeping the process accountable.',
           ),
 
           const Spacer(),
@@ -322,34 +375,54 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Organization settings', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
+                    const Text('Organization settings',
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.secondaryNavy)),
                     Container(
                       padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(color: AppTheme.surfaceBlue, borderRadius: BorderRadius.circular(6)),
-                      child: const Icon(Icons.tune_rounded, size: 14, color: AppTheme.primaryBlue),
+                      decoration: BoxDecoration(
+                          color: AppTheme.surfaceBlue,
+                          borderRadius: BorderRadius.circular(6)),
+                      child: const Icon(Icons.tune_rounded,
+                          size: 14, color: AppTheme.primaryBlue),
                     ),
                   ],
                 ),
                 const SizedBox(height: 10),
                 Container(
                   padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(color: AppTheme.surfaceBlue, borderRadius: BorderRadius.circular(8)),
+                  decoration: BoxDecoration(
+                      color: AppTheme.surfaceBlue,
+                      borderRadius: BorderRadius.circular(8)),
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Member verification', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
-                          Text('Approval required', style: TextStyle(fontSize: 9, color: AppTheme.textSecondary)),
+                          Text('Member verification',
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.secondaryNavy)),
+                          Text('Approval required',
+                              style: TextStyle(
+                                  fontSize: 9, color: AppTheme.textSecondary)),
                         ],
                       ),
-                      Icon(Icons.toggle_on_rounded, color: AppTheme.primaryBlue, size: 22),
+                      Icon(Icons.toggle_on_rounded,
+                          color: AppTheme.primaryBlue, size: 22),
                     ],
                   ),
                 ),
                 const SizedBox(height: 12),
-                const Text('Activity log', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
+                const Text('Activity log',
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.secondaryNavy)),
                 const SizedBox(height: 4),
                 _miniLogItem('Member approved', '09:32'),
                 _miniLogItem('Election created', '09:15'),
@@ -363,7 +436,8 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
           _buildTextContent(
             tag: 'CLEAR RULES. CLEAR RECORDS.',
             title: 'Stay in control',
-            subtitle: 'Set clear rules for your organization. Manage member verification and follow important actions in the activity log.',
+            subtitle:
+                'Set clear rules for your organization. Manage member verification and follow important actions in the activity log.',
           ),
 
           const SizedBox(height: 16),
@@ -372,7 +446,8 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
           _buildCalloutBox(
             icon: Icons.shield_outlined,
             title: 'Private choices. Accountable actions.',
-            text: 'Verification controls who can take part. Activity logs keep administrative actions on record.',
+            text:
+                'Verification controls who can take part. Activity logs keep administrative actions on record.',
           ),
 
           const Spacer(),
@@ -409,15 +484,24 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
                   children: [
                     Container(
                       padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(color: AppTheme.surfaceBlue, borderRadius: BorderRadius.circular(10)),
-                      child: const Icon(Icons.people_outline_rounded, color: AppTheme.primaryBlue, size: 20),
+                      decoration: BoxDecoration(
+                          color: AppTheme.surfaceBlue,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: const Icon(Icons.people_outline_rounded,
+                          color: AppTheme.primaryBlue, size: 20),
                     ),
                     const SizedBox(width: 10),
                     const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Your community', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
-                        Text('A shared place to decide', style: TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
+                        Text('Your community',
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.secondaryNavy)),
+                        Text('A shared place to decide',
+                            style: TextStyle(
+                                fontSize: 10, color: AppTheme.textSecondary)),
                       ],
                     ),
                   ],
@@ -428,12 +512,19 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
                     Expanded(
                       child: Container(
                         padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(color: AppTheme.backgroundLight, borderRadius: BorderRadius.circular(10)),
+                        decoration: BoxDecoration(
+                            color: AppTheme.backgroundLight,
+                            borderRadius: BorderRadius.circular(10)),
                         child: const Column(
                           children: [
-                            Icon(Icons.how_to_vote_outlined, size: 18, color: AppTheme.primaryBlue),
+                            Icon(Icons.how_to_vote_outlined,
+                                size: 18, color: AppTheme.primaryBlue),
                             SizedBox(height: 4),
-                            Text('Elections', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
+                            Text('Elections',
+                                style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.secondaryNavy)),
                           ],
                         ),
                       ),
@@ -442,12 +533,19 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
                     Expanded(
                       child: Container(
                         padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(color: AppTheme.backgroundLight, borderRadius: BorderRadius.circular(10)),
+                        decoration: BoxDecoration(
+                            color: AppTheme.backgroundLight,
+                            borderRadius: BorderRadius.circular(10)),
                         child: const Column(
                           children: [
-                            Icon(Icons.bar_chart_rounded, size: 18, color: AppTheme.primaryBlue),
+                            Icon(Icons.bar_chart_rounded,
+                                size: 18, color: AppTheme.primaryBlue),
                             SizedBox(height: 4),
-                            Text('Polls', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
+                            Text('Polls',
+                                style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.secondaryNavy)),
                           ],
                         ),
                       ),
@@ -455,7 +553,11 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
                   ],
                 ),
                 const SizedBox(height: 12),
-                const Text('Better decisions, together.', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue)),
+                const Text('Better decisions, together.',
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.primaryBlue)),
               ],
             ),
           ),
@@ -491,50 +593,50 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
           SizedBox(
             width: double.infinity,
             child: FilledButton(
-              onPressed: () {
-                ref.read(onboardingProvider.notifier).completeTour();
-                context.go('/register');
-              },
+              onPressed: () => context.go('/register'),
               style: FilledButton.styleFrom(
                 backgroundColor: AppTheme.primaryBlue,
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
-              child: const Text('Get started', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              child: const Text('Get started',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
             ),
           ),
           const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
             child: OutlinedButton(
-              onPressed: () {
-                ref.read(onboardingProvider.notifier).completeTour();
-                context.go('/login');
-              },
+              onPressed: () => context.go('/login'),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppTheme.primaryBlue,
                 side: const BorderSide(color: AppTheme.borderLight, width: 1.5),
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
-              child: const Text('I already have an account', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+              child: const Text('I already have an account',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
             ),
           ),
           const SizedBox(height: 12),
 
           InkWell(
-            onTap: () {
-              ref.read(onboardingProvider.notifier).completeTour();
-              context.go('/login');
-            },
+            onTap: () => context.go('/login'),
             borderRadius: BorderRadius.circular(6),
             child: const Padding(
               padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Join an organization ', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue)),
-                  Icon(Icons.arrow_forward_rounded, size: 14, color: AppTheme.primaryBlue),
+                  Text('Join an organization ',
+                      style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.primaryBlue)),
+                  Icon(Icons.arrow_forward_rounded,
+                      size: 14, color: AppTheme.primaryBlue),
                 ],
               ),
             ),
@@ -585,12 +687,16 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
   Widget _illustrationActionRow(IconData icon, String title, String subtitle) {
     return Container(
       padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(color: AppTheme.backgroundLight, borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(
+          color: AppTheme.backgroundLight,
+          borderRadius: BorderRadius.circular(10)),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(color: AppTheme.surfaceBlue, borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(
+                color: AppTheme.surfaceBlue,
+                borderRadius: BorderRadius.circular(8)),
             child: Icon(icon, size: 16, color: AppTheme.primaryBlue),
           ),
           const SizedBox(width: 10),
@@ -598,12 +704,19 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
-                Text(subtitle, style: const TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
+                Text(title,
+                    style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.secondaryNavy)),
+                Text(subtitle,
+                    style: const TextStyle(
+                        fontSize: 10, color: AppTheme.textSecondary)),
               ],
             ),
           ),
-          const Icon(Icons.chevron_right_rounded, size: 16, color: AppTheme.textSecondary),
+          const Icon(Icons.chevron_right_rounded,
+              size: 16, color: AppTheme.textSecondary),
         ],
       ),
     );
@@ -617,23 +730,36 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
         children: [
           Row(
             children: [
-              Container(width: 6, height: 6, decoration: const BoxDecoration(color: AppTheme.primaryBlue, shape: BoxShape.circle)),
+              Container(
+                  width: 6,
+                  height: 6,
+                  decoration: const BoxDecoration(
+                      color: AppTheme.primaryBlue, shape: BoxShape.circle)),
               const SizedBox(width: 8),
-              Text(title, style: const TextStyle(fontSize: 10, color: AppTheme.secondaryNavy)),
+              Text(title,
+                  style: const TextStyle(
+                      fontSize: 10, color: AppTheme.secondaryNavy)),
             ],
           ),
-          Text(time, style: const TextStyle(fontSize: 9, color: AppTheme.textSecondary)),
+          Text(time,
+              style:
+                  const TextStyle(fontSize: 9, color: AppTheme.textSecondary)),
         ],
       ),
     );
   }
 
-  Widget _buildTextContent({required String tag, required String title, required String subtitle}) {
+  Widget _buildTextContent(
+      {required String tag, required String title, required String subtitle}) {
     return Column(
       children: [
         Text(
           tag,
-          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue, letterSpacing: 0.8),
+          style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.primaryBlue,
+              letterSpacing: 0.8),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
@@ -662,7 +788,8 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
     );
   }
 
-  Widget _buildCalloutBox({required IconData icon, required String title, required String text}) {
+  Widget _buildCalloutBox(
+      {required IconData icon, required String title, required String text}) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -674,7 +801,9 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
         children: [
           Container(
             padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(color: AppTheme.surfaceBlue, borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(
+                color: AppTheme.surfaceBlue,
+                borderRadius: BorderRadius.circular(8)),
             child: Icon(icon, color: AppTheme.primaryBlue, size: 16),
           ),
           const SizedBox(width: 10),
@@ -682,8 +811,16 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
-                Text(text, style: const TextStyle(fontSize: 10, color: AppTheme.textSecondary, height: 1.3)),
+                Text(title,
+                    style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.secondaryNavy)),
+                Text(text,
+                    style: const TextStyle(
+                        fontSize: 10,
+                        color: AppTheme.textSecondary,
+                        height: 1.3)),
               ],
             ),
           ),
@@ -718,7 +855,9 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
           }),
         ),
         const SizedBox(height: 4),
-        Text('$pageIndex of 3', style: const TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
+        Text('$pageIndex of 3',
+            style:
+                const TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
         const SizedBox(height: 16),
 
         // Action Buttons Row
@@ -730,11 +869,14 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
                   onPressed: onBack,
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppTheme.secondaryNavy,
-                    side: const BorderSide(color: AppTheme.borderLight, width: 1.5),
+                    side: const BorderSide(
+                        color: AppTheme.borderLight, width: 1.5),
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text('Back', style: TextStyle(fontWeight: FontWeight.bold)),
+                  child: const Text('Back',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
               const SizedBox(width: 12),
@@ -745,9 +887,12 @@ class _MobileOnboardingScreenState extends ConsumerState<MobileOnboardingScreen>
                 style: FilledButton.styleFrom(
                   backgroundColor: AppTheme.primaryBlue,
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                 ),
-                child: Text(primaryLabel, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                child: Text(primaryLabel,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 15)),
               ),
             ),
           ],

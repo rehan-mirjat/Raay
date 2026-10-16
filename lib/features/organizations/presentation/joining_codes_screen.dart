@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
@@ -39,17 +40,19 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
     final maxUses = int.tryParse(_maxUsesController.text.trim());
     if (maxUses == null || maxUses < 0 || maxUses > 100000) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enter a maximum use count from 0 to 100,000.')),
+        const SnackBar(
+            content: Text('Enter a maximum use count from 0 to 100,000.')),
       );
       return;
     }
     setState(() => _creating = true);
     try {
-      final result = await ref.read(organizationRepositoryProvider).createJoiningCode(
-            organizationId: orgId,
-            expiresInHours: _expiryHours,
-            maxUses: maxUses,
-          );
+      final result =
+          await ref.read(organizationRepositoryProvider).createJoiningCode(
+                organizationId: orgId,
+                expiresInHours: _expiryHours,
+                maxUses: maxUses,
+              );
       ref.invalidate(organizationJoiningCodesProvider(orgId));
       if (!mounted) return;
       await showDialog<void>(
@@ -65,7 +68,8 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text('This code is shown once. Share it only with people you want to join this organization.'),
+                  const Text(
+                      'This code is shown once. Share it only with people you want to join this organization.'),
                   const SizedBox(height: 16),
                   SelectableText(
                     result.rawCode,
@@ -80,7 +84,8 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
               actions: [
                 TextButton.icon(
                   onPressed: () async {
-                    await Clipboard.setData(ClipboardData(text: result.rawCode));
+                    await Clipboard.setData(
+                        ClipboardData(text: result.rawCode));
                     // In-dialog feedback: a SnackBar would render behind the modal barrier.
                     if (context.mounted) setDialogState(() => copied = true);
                   },
@@ -115,10 +120,15 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Revoke this code?'),
-        content: Text('Anyone who has this code will no longer be able to use it. (${code['displayId'] ?? 'Joining code'})'),
+        content: Text(
+            'Anyone who has this code will no longer be able to use it. (${code['displayId'] ?? 'Joining code'})'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: const Text('Cancel')),
-          FilledButton.tonal(onPressed: () => Navigator.pop(dialogContext, true), child: const Text('Revoke code')),
+          TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('Cancel')),
+          FilledButton.tonal(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: const Text('Revoke code')),
         ],
       ),
     );
@@ -166,7 +176,8 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
             tooltip: 'Refresh joining codes',
             onPressed: () {
               final orgId = contextState.valueOrNull?.context?.organization.id;
-              if (orgId != null) ref.invalidate(organizationJoiningCodesProvider(orgId));
+              if (orgId != null)
+                ref.invalidate(organizationJoiningCodesProvider(orgId));
             },
             icon: const Icon(Icons.refresh_rounded),
           ),
@@ -174,7 +185,8 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
       ),
       body: contextState.when(
         loading: () => const LoadingView(message: 'Loading organization…'),
-        error: (error, _) => ErrorView(type: ErrorViewType.generic, 
+        error: (error, _) => ErrorView(
+          type: ErrorViewType.generic,
           message: 'Could not load organization access: $error',
           onRetry: () => ref.invalidate(activeOrganizationContextProvider),
         ),
@@ -189,15 +201,17 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
           }
           final role = orgContext.member.role;
           if (!role.isAdmin) {
-            return const ErrorView(type: ErrorViewType.generic, 
+            return const ErrorView(
+              type: ErrorViewType.generic,
               title: 'Administrator access required',
-              message: 'Only this organization’s Owner and Admins can manage joining codes.',
+              message:
+                  'Only this organization’s Owner and Admins can manage joining codes.',
             );
           }
 
           final orgId = orgContext.organization.id;
           final codes = ref.watch(organizationJoiningCodesProvider(orgId));
-          final compact = MediaQuery.sizeOf(context).width < 600;
+          final compact = ResponsiveLayout.isCompact(context);
           return Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 900),
@@ -207,30 +221,34 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
                   Text(orgContext.organization.name,
                       style: Theme.of(context).textTheme.headlineSmall),
                   const SizedBox(height: 6),
-                  const Text('Create and revoke codes that let people request membership.'),
+                  const Text(
+                      'Create and revoke codes that let people request membership.'),
                   const SizedBox(height: 20),
                   _buildCreateCard(compact, orgId),
                   const SizedBox(height: 20),
-                  Text('Existing codes', style: Theme.of(context).textTheme.titleLarge),
+                  Text('Existing codes',
+                      style: Theme.of(context).textTheme.titleLarge),
                   const SizedBox(height: 8),
                   codes.when(
-                    loading: () => const Padding(
-                      padding: EdgeInsets.all(24),
-                      child: Center(child: CircularProgressIndicator()),
-                    ),
-                    error: (error, _) => ErrorView(type: ErrorViewType.generic, 
+                    loading: () => const LoadingView(),
+                    error: (error, _) => ErrorView(
+                      type: ErrorViewType.generic,
                       message: 'Could not load joining codes: $error',
-                      onRetry: () => ref.invalidate(organizationJoiningCodesProvider(orgId)),
+                      onRetry: () => ref
+                          .invalidate(organizationJoiningCodesProvider(orgId)),
                     ),
                     data: (items) => items.isEmpty
                         ? const Card(
                             child: Padding(
                               padding: EdgeInsets.all(20),
-                              child: Text('There are no joining codes for this organization.'),
+                              child: Text(
+                                  'There are no joining codes for this organization.'),
                             ),
                           )
                         : Column(
-                            children: items.map((item) => _codeCard(orgId, item)).toList(),
+                            children: items
+                                .map((item) => _codeCard(orgId, item))
+                                .toList(),
                           ),
                   ),
                 ],
@@ -248,9 +266,11 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Create a joining code', style: Theme.of(context).textTheme.titleMedium),
+              Text('Create a joining code',
+                  style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 6),
-              const Text('A code is shown once. It is stored as a secure hash and cannot be retrieved later.'),
+              const Text(
+                  'A code is shown once. It is stored as a secure hash and cannot be retrieved later.'),
               const SizedBox(height: 16),
               if (compact)
                 Column(
@@ -272,7 +292,9 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
               FilledButton.icon(
                 onPressed: _creating ? null : () => _create(orgId),
                 icon: _creating
-                    ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                    ? const SizedBox.square(
+                        dimension: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2))
                     : const Icon(Icons.add_link_rounded),
                 label: Text(_creating ? 'Creating…' : 'Create code'),
               ),
@@ -320,14 +342,17 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
         status = 'exhausted';
       }
     }
-    final expiryLabel = expiry == null ? 'Expiry unavailable' : 'Expires ${_dateFormat.format(expiry.toLocal())}';
+    final expiryLabel = expiry == null
+        ? 'Expiry unavailable'
+        : 'Expires ${_dateFormat.format(expiry.toLocal())}';
     final active = rawStatus == 'active';
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
         leading: const CircleAvatar(child: Icon(Icons.key_outlined)),
         title: Text('Code • ${code['displayId'] ?? '••••••••'}'),
-        subtitle: Text('$status • $uses${maxUses == 0 ? '' : ' of $maxUses'} uses\n$expiryLabel'),
+        subtitle: Text(
+            '$status • $uses${maxUses == 0 ? '' : ' of $maxUses'} uses\n$expiryLabel'),
         isThreeLine: true,
         trailing: active
             ? TextButton(

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/loading_view.dart';
 import '../../../services/firebase_service.dart';
 import 'providers/organization_providers.dart';
 
@@ -10,16 +12,17 @@ class OrganizationContextSwitcher extends ConsumerWidget {
   const OrganizationContextSwitcher({super.key});
 
   void _showSwitcherModal(BuildContext context, WidgetRef ref) {
-    final isDesktop = MediaQuery.of(context).size.width >= 650;
+    final isDesktop = ResponsiveLayout.isWide(context);
 
     Widget contentBuilder(BuildContext context) {
       return Consumer(
         builder: (context, ref, child) {
-          
           final orgsAsync = ref.watch(userOrganizationsProvider);
-          final activeOrgStateAsync = ref.watch(activeOrganizationContextProvider);
+          final activeOrgStateAsync =
+              ref.watch(activeOrganizationContextProvider);
 
-          final activeOrgId = activeOrgStateAsync.valueOrNull?.context?.organization.id;
+          final activeOrgId =
+              activeOrgStateAsync.valueOrNull?.context?.organization.id;
           final organizations = orgsAsync.valueOrNull ?? [];
           final orgsLoading = orgsAsync.isLoading && !orgsAsync.hasValue;
           final orgsError = orgsAsync.hasError && !orgsAsync.hasValue;
@@ -42,12 +45,16 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                         children: [
                           Text(
                             'Switch organization',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.secondaryNavy),
                           ),
                           SizedBox(height: 2),
                           Text(
                             'Choose the workspace you want to work in.',
-                            style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                            style: TextStyle(
+                                fontSize: 12, color: AppTheme.textSecondary),
                           ),
                         ],
                       ),
@@ -62,12 +69,8 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-
                   if (orgsLoading) ...[
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 32),
-                      child: Center(child: CircularProgressIndicator()),
-                    ),
+                    const LoadingView(),
                   ] else if (orgsError) ...[
                     Column(
                       children: [
@@ -78,7 +81,8 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                         ),
                         const SizedBox(height: 8),
                         TextButton.icon(
-                          onPressed: () => ref.invalidate(userOrganizationsProvider),
+                          onPressed: () =>
+                              ref.invalidate(userOrganizationsProvider),
                           icon: const Icon(Icons.refresh_rounded, size: 18),
                           label: const Text('Try again'),
                         ),
@@ -109,7 +113,9 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                                   org: org,
                                   isSelected: isSelected,
                                   onTap: () {
-                                    ref.read(activeOrgIdProvider.notifier).selectOrganization(org.id);
+                                    ref
+                                        .read(activeOrgIdProvider.notifier)
+                                        .selectOrganization(org.id);
                                     Navigator.pop(context);
                                   },
                                 );
@@ -123,7 +129,6 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                   const SizedBox(height: 16),
                   const Divider(height: 1, color: AppTheme.borderLight),
                   const SizedBox(height: 12),
-
                   _buildMenuItem(
                     context,
                     icon: Icons.key_outlined,
@@ -188,7 +193,10 @@ class OrganizationContextSwitcher extends ConsumerWidget {
     }
   }
 
-  Widget _buildMenuItem(BuildContext context, {required IconData icon, required String label, required VoidCallback onTap}) {
+  Widget _buildMenuItem(BuildContext context,
+      {required IconData icon,
+      required String label,
+      required VoidCallback onTap}) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
@@ -200,7 +208,10 @@ class OrganizationContextSwitcher extends ConsumerWidget {
             const SizedBox(width: 12),
             Text(
               label,
-              style: const TextStyle(fontSize: 13, color: AppTheme.secondaryNavy, fontWeight: FontWeight.w500),
+              style: const TextStyle(
+                  fontSize: 13,
+                  color: AppTheme.secondaryNavy,
+                  fontWeight: FontWeight.w500),
             ),
           ],
         ),
@@ -231,7 +242,8 @@ class OrganizationContextSwitcher extends ConsumerWidget {
           decoration: BoxDecoration(
             color: AppTheme.surfaceBlue,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.3)),
+            border:
+                Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.3)),
           ),
           child: Material(
             color: Colors.transparent,
@@ -239,11 +251,13 @@ class OrganizationContextSwitcher extends ConsumerWidget {
               borderRadius: BorderRadius.circular(12),
               onTap: () => _showSwitcherModal(context, ref),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.business_rounded, color: AppTheme.primaryBlue, size: 16),
+                    const Icon(Icons.business_rounded,
+                        color: AppTheme.primaryBlue, size: 16),
                     const SizedBox(width: 8),
                     Column(
                       mainAxisSize: MainAxisSize.min,
@@ -271,7 +285,8 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(width: 8),
-                    const Icon(Icons.unfold_more_rounded, color: AppTheme.textSecondary, size: 16),
+                    const Icon(Icons.unfold_more_rounded,
+                        color: AppTheme.textSecondary, size: 16),
                   ],
                 ),
               ),
@@ -318,12 +333,16 @@ class _SwitcherOrgItemState extends State<_SwitcherOrgItem> {
           decoration: BoxDecoration(
             color: widget.isSelected
                 ? const Color(0xFFF0F5FF)
-                : (_isHovered ? AppTheme.surfaceBlue.withValues(alpha: 0.5) : AppTheme.surfaceWhite),
+                : (_isHovered
+                    ? AppTheme.surfaceBlue.withValues(alpha: 0.5)
+                    : AppTheme.surfaceWhite),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: widget.isSelected
                   ? AppTheme.primaryBlue.withValues(alpha: 0.4)
-                  : (_isHovered ? AppTheme.primaryBlue.withValues(alpha: 0.2) : AppTheme.borderLight),
+                  : (_isHovered
+                      ? AppTheme.primaryBlue.withValues(alpha: 0.2)
+                      : AppTheme.borderLight),
               width: 1.0,
             ),
           ),
@@ -339,23 +358,32 @@ class _SwitcherOrgItemState extends State<_SwitcherOrgItem> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 clipBehavior: Clip.antiAlias,
-                child: (widget.org.logoUrl != null && widget.org.logoUrl!.isNotEmpty)
+                child: (widget.org.logoUrl != null &&
+                        widget.org.logoUrl!.isNotEmpty)
                     ? Image.network(
                         FirebaseService.sanitizeStorageUrl(widget.org.logoUrl),
                         fit: BoxFit.cover,
                         errorBuilder: (ctx, err, stack) => Center(
                           child: Icon(
-                            widget.org.type == 'academic' ? Icons.school_outlined : Icons.business_outlined,
+                            widget.org.type == 'academic'
+                                ? Icons.school_outlined
+                                : Icons.business_outlined,
                             size: 20,
-                            color: widget.isSelected ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
+                            color: widget.isSelected
+                                ? AppTheme.primaryBlue
+                                : AppTheme.secondaryNavy,
                           ),
                         ),
                       )
                     : Center(
                         child: Icon(
-                          widget.org.type == 'academic' ? Icons.school_outlined : Icons.business_outlined,
+                          widget.org.type == 'academic'
+                              ? Icons.school_outlined
+                              : Icons.business_outlined,
                           size: 20,
-                          color: widget.isSelected ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
+                          color: widget.isSelected
+                              ? AppTheme.primaryBlue
+                              : AppTheme.secondaryNavy,
                         ),
                       ),
               ),
@@ -369,18 +397,26 @@ class _SwitcherOrgItemState extends State<_SwitcherOrgItem> {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
-                        color: widget.isSelected ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
+                        color: widget.isSelected
+                            ? AppTheme.primaryBlue
+                            : AppTheme.secondaryNavy,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      widget.isSelected ? 'Current organization' : 'Switch to this organization',
+                      widget.isSelected
+                          ? 'Current organization'
+                          : 'Switch to this organization',
                       style: TextStyle(
                         fontSize: 11,
-                        color: widget.isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
-                        fontWeight: widget.isSelected ? FontWeight.w600 : FontWeight.normal,
+                        color: widget.isSelected
+                            ? AppTheme.primaryBlue
+                            : AppTheme.textSecondary,
+                        fontWeight: widget.isSelected
+                            ? FontWeight.w600
+                            : FontWeight.normal,
                       ),
                     ),
                   ],
@@ -393,7 +429,9 @@ class _SwitcherOrgItemState extends State<_SwitcherOrgItem> {
                 duration: const Duration(milliseconds: 150),
                 child: Icon(
                   widget.isSelected ? Icons.check_rounded : Icons.east_rounded,
-                  color: widget.isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
+                  color: widget.isSelected
+                      ? AppTheme.primaryBlue
+                      : AppTheme.textSecondary,
                   size: 18,
                 ),
               ),

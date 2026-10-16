@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/layout/responsive.dart';
+import '../../../core/widgets/loading_view.dart';
 import '../../../services/auth_service.dart';
 import '../../voting_events/data/candidate_repository.dart';
 import '../../voting_events/data/poll_option_repository.dart';
@@ -14,15 +15,18 @@ import '../../voting_events/domain/voting_event.dart';
 import '../data/voting_repository.dart';
 import 'vote_receipt_screen.dart';
 
-final eventCandidatesProvider = StreamProvider.family<List<Candidate>, String>((ref, eventId) {
+final eventCandidatesProvider =
+    StreamProvider.family<List<Candidate>, String>((ref, eventId) {
   return ref.watch(candidateRepositoryProvider).watchEventCandidates(eventId);
 });
 
-final eventPollOptionsProvider = StreamProvider.family<List<PollOption>, String>((ref, eventId) {
+final eventPollOptionsProvider =
+    StreamProvider.family<List<PollOption>, String>((ref, eventId) {
   return ref.watch(pollOptionRepositoryProvider).watchEventPollOptions(eventId);
 });
 
-final singleVotingEventProvider = StreamProvider.family<VotingEvent?, String>((ref, eventId) {
+final singleVotingEventProvider =
+    StreamProvider.family<VotingEvent?, String>((ref, eventId) {
   return ref.watch(votingEventRepositoryProvider).watchVotingEvent(eventId);
 });
 
@@ -48,7 +52,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
   Future<void> _submitBallot(VotingEvent event) async {
     if (_selectedCandidateId == null && _selectedPollOptionId == null) {
-      setState(() => _errorMessage = 'Please select an option before casting your ballot.');
+      setState(() => _errorMessage =
+          'Please select an option before casting your ballot.');
       return;
     }
 
@@ -70,40 +75,49 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
         ),
         content: SingleChildScrollView(
           child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (isIdentifiable)
-              const Text(
-                'This voting event records your selected choice against your account. Your selection will be associated with your identity and cannot be changed after submission.',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.deepOrange),
-              )
-            else
-              const Text(
-                'The ballot is anonymous and cannot be changed after submission.',
-                style: TextStyle(fontSize: 14),
-              ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppTheme.primaryBlue.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.2)),
-              ),
-              child: Row(
-                children: [
-                  const Text('Selection: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                  Expanded(
-                    child: Text(
-                      _selectedChoiceName ?? 'Selected Choice',
-                      style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primaryBlue, fontSize: 13),
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (isIdentifiable)
+                const Text(
+                  'This voting event records your selected choice against your account. Your selection will be associated with your identity and cannot be changed after submission.',
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.deepOrange),
+                )
+              else
+                const Text(
+                  'The ballot is anonymous and cannot be changed after submission.',
+                  style: TextStyle(fontSize: 14),
+                ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryBlue.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                      color: AppTheme.primaryBlue.withValues(alpha: 0.2)),
+                ),
+                child: Row(
+                  children: [
+                    const Text('Selection: ',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 13)),
+                    Expanded(
+                      child: Text(
+                        _selectedChoiceName ?? 'Selected Choice',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.primaryBlue,
+                            fontSize: 13),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
           ),
         ),
         actions: [
@@ -113,7 +127,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryBlue),
+            style:
+                ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryBlue),
             child: const Text('Confirm & Cast Ballot'),
           ),
         ],
@@ -167,11 +182,12 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
         title: const Text('Cast Your Ballot'),
       ),
       body: eventAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const LoadingView(),
         error: (err, stack) => Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
-            child: Text('Error loading voting event: $err', style: const TextStyle(color: AppTheme.error)),
+            child: Text('Error loading voting event: $err',
+                style: const TextStyle(color: AppTheme.error)),
           ),
         ),
         data: (event) {
@@ -193,7 +209,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
           ));
 
           return participationAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const LoadingView(),
             error: (err, stack) => _buildBallotView(context, event),
             data: (hasVoted) {
               if (hasVoted) {
@@ -207,7 +223,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
     );
   }
 
-  Widget _buildAlreadyVotedView(BuildContext context, VotingEvent event, String userId) {
+  Widget _buildAlreadyVotedView(
+      BuildContext context, VotingEvent event, String userId) {
     return SingleChildScrollView(
       padding: ResponsiveLayout.pagePadding(context),
       child: Center(
@@ -215,7 +232,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
           constraints: const BoxConstraints(maxWidth: 500),
           child: Column(
             children: [
-              const Icon(Icons.check_circle_outline, size: 72, color: AppTheme.success),
+              const Icon(Icons.check_circle_outline,
+                  size: 72, color: AppTheme.success),
               const SizedBox(height: 20),
               Text(
                 'You Have Already Voted',
@@ -228,17 +246,19 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
               const SizedBox(height: 12),
               Text(
                 'Your ballot for "${event.title}" has already been cast and accepted into the anonymous tally.',
-                style: const TextStyle(color: AppTheme.textSecondary, height: 1.4),
+                style:
+                    const TextStyle(color: AppTheme.textSecondary, height: 1.4),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
               ElevatedButton.icon(
                 onPressed: () async {
-                  final receipt = await ref.read(votingRepositoryProvider).getUserReceipt(
-                        organizationId: event.organizationId,
-                        eventId: event.id,
-                        userId: userId,
-                      );
+                  final receipt =
+                      await ref.read(votingRepositoryProvider).getUserReceipt(
+                            organizationId: event.organizationId,
+                            eventId: event.id,
+                            userId: userId,
+                          );
                   if (context.mounted && receipt != null) {
                     Navigator.push(
                       context,
@@ -298,7 +318,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                         runSpacing: 8,
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
                               color: AppTheme.success.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
@@ -315,11 +336,15 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.timer_outlined, size: 16, color: AppTheme.textSecondary),
+                              const Icon(Icons.timer_outlined,
+                                  size: 16, color: AppTheme.textSecondary),
                               const SizedBox(width: 4),
                               Text(
                                 _getTimeRemaining(event.endAt),
-                                style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary, fontWeight: FontWeight.w600),
+                                style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppTheme.textSecondary,
+                                    fontWeight: FontWeight.w600),
                               ),
                             ],
                           ),
@@ -328,13 +353,17 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                       const SizedBox(height: 12),
                       Text(
                         event.title,
-                        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+                        style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.secondaryNavy),
                       ),
                       if (event.description.isNotEmpty) ...[
                         const SizedBox(height: 8),
                         Text(
                           event.description,
-                          style: const TextStyle(color: AppTheme.textSecondary, height: 1.4),
+                          style: const TextStyle(
+                              color: AppTheme.textSecondary, height: 1.4),
                         ),
                       ],
                     ],
@@ -354,13 +383,17 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                       Expanded(
                         child: Text(
                           'Identifiable ballot: your selected choice will be associated with your account.',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(fontWeight: FontWeight.w600),
                         ),
                       ),
                     ]),
                   ),
                 ),
-              if (event.privacyMode == PrivacyMode.identifiable) const SizedBox(height: 16),
+              if (event.privacyMode == PrivacyMode.identifiable)
+                const SizedBox(height: 16),
 
               if (_errorMessage != null) ...[
                 Container(
@@ -368,14 +401,16 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                   decoration: BoxDecoration(
                     color: AppTheme.error.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppTheme.error.withValues(alpha: 0.3)),
+                    border: Border.all(
+                        color: AppTheme.error.withValues(alpha: 0.3)),
                   ),
                   child: Row(
                     children: [
                       const Icon(Icons.error_outline, color: AppTheme.error),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: Text(_errorMessage!, style: const TextStyle(color: AppTheme.error)),
+                        child: Text(_errorMessage!,
+                            style: const TextStyle(color: AppTheme.error)),
                       ),
                     ],
                   ),
@@ -385,7 +420,11 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
               const Text(
                 'MAKE YOUR SELECTION',
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.textSecondary, letterSpacing: 1.1),
+                style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.textSecondary,
+                    letterSpacing: 1.1),
               ),
               const SizedBox(height: 12),
 
@@ -408,10 +447,13 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                     ? const SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                        child: CircularProgressIndicator(
+                            color: Colors.white, strokeWidth: 2),
                       )
                     : const Icon(Icons.send_rounded),
-                label: Text(_isSubmitting ? 'Submitting Ballot...' : 'Submit Official Ballot'),
+                label: Text(_isSubmitting
+                    ? 'Submitting Ballot...'
+                    : 'Submit Official Ballot'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: AppTheme.primaryBlue,
@@ -428,8 +470,9 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
     final candidatesAsync = ref.watch(eventCandidatesProvider(event.id));
 
     return candidatesAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, stack) => Text('Error loading candidates: $err', style: const TextStyle(color: AppTheme.error)),
+      loading: () => const LoadingView(),
+      error: (err, stack) => Text('Error loading candidates: $err',
+          style: const TextStyle(color: AppTheme.error)),
       data: (candidates) {
         if (candidates.isEmpty) {
           return const Center(child: Text('No candidates available.'));
@@ -444,7 +487,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
                 side: BorderSide(
-                  color: isSelected ? AppTheme.primaryBlue : AppTheme.borderLight,
+                  color:
+                      isSelected ? AppTheme.primaryBlue : AppTheme.borderLight,
                   width: isSelected ? 2.0 : 1.0,
                 ),
               ),
@@ -462,19 +506,30 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                   child: Row(
                     children: [
                       Icon(
-                        isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                        color: isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
+                        isSelected
+                            ? Icons.radio_button_checked
+                            : Icons.radio_button_unchecked,
+                        color: isSelected
+                            ? AppTheme.primaryBlue
+                            : AppTheme.textSecondary,
                       ),
                       const SizedBox(width: 12),
                       CircleAvatar(
                         radius: 24,
-                        backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.1),
-                        backgroundImage: cand.photoUrl != null && cand.photoUrl!.isNotEmpty
-                            ? NetworkImage(cand.photoUrl!)
-                            : null,
+                        backgroundColor:
+                            AppTheme.primaryBlue.withValues(alpha: 0.1),
+                        backgroundImage:
+                            cand.photoUrl != null && cand.photoUrl!.isNotEmpty
+                                ? NetworkImage(cand.photoUrl!)
+                                : null,
                         child: cand.photoUrl == null || cand.photoUrl!.isEmpty
-                            ? Text(cand.name.isNotEmpty ? cand.name[0].toUpperCase() : 'C',
-                                style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primaryBlue))
+                            ? Text(
+                                cand.name.isNotEmpty
+                                    ? cand.name[0].toUpperCase()
+                                    : 'C',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.primaryBlue))
                             : null,
                       ),
                       const SizedBox(width: 16),
@@ -482,12 +537,25 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(cand.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
+                            Text(cand.name,
+                                style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.secondaryNavy)),
                             if (cand.party.isNotEmpty)
-                              Text(cand.party, style: const TextStyle(fontSize: 13, color: AppTheme.primaryBlue, fontWeight: FontWeight.w500)),
+                              Text(cand.party,
+                                  style: const TextStyle(
+                                      fontSize: 13,
+                                      color: AppTheme.primaryBlue,
+                                      fontWeight: FontWeight.w500)),
                             if (cand.bio.isNotEmpty) ...[
                               const SizedBox(height: 4),
-                              Text(cand.bio, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary), maxLines: 2, overflow: TextOverflow.ellipsis),
+                              Text(cand.bio,
+                                  style: const TextStyle(
+                                      fontSize: 12,
+                                      color: AppTheme.textSecondary),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis),
                             ],
                           ],
                         ),
@@ -507,8 +575,9 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
     final optionsAsync = ref.watch(eventPollOptionsProvider(event.id));
 
     return optionsAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, stack) => Text('Error loading options: $err', style: const TextStyle(color: AppTheme.error)),
+      loading: () => const LoadingView(),
+      error: (err, stack) => Text('Error loading options: $err',
+          style: const TextStyle(color: AppTheme.error)),
       data: (options) {
         if (options.isEmpty) {
           return const Center(child: Text('No poll options available.'));
@@ -523,7 +592,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
                 side: BorderSide(
-                  color: isSelected ? AppTheme.primaryBlue : AppTheme.borderLight,
+                  color:
+                      isSelected ? AppTheme.primaryBlue : AppTheme.borderLight,
                   width: isSelected ? 2.0 : 1.0,
                 ),
               ),
@@ -541,18 +611,29 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                   child: Row(
                     children: [
                       Icon(
-                        isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                        color: isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
+                        isSelected
+                            ? Icons.radio_button_checked
+                            : Icons.radio_button_unchecked,
+                        color: isSelected
+                            ? AppTheme.primaryBlue
+                            : AppTheme.textSecondary,
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(opt.label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
+                            Text(opt.label,
+                                style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.secondaryNavy)),
                             if (opt.description.isNotEmpty) ...[
                               const SizedBox(height: 4),
-                              Text(opt.description, style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+                              Text(opt.description,
+                                  style: const TextStyle(
+                                      fontSize: 13,
+                                      color: AppTheme.textSecondary)),
                             ],
                           ],
                         ),
@@ -624,7 +705,9 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
           child: Row(
             children: [
               Icon(
-                isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                isSelected
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_unchecked,
                 color: isSelected ? color : AppTheme.textSecondary,
               ),
               const SizedBox(width: 12),
@@ -633,8 +716,14 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color)),
-                  Text(subtitle, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                  Text(title,
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: color)),
+                  Text(subtitle,
+                      style: const TextStyle(
+                          fontSize: 12, color: AppTheme.textSecondary)),
                 ],
               ),
             ],

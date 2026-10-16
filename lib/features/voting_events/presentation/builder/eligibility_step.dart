@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/widgets/loading_view.dart';
 import '../../../departments/presentation/providers/department_providers.dart';
 import '../../../organizations/presentation/membership_directory_screen.dart';
 import '../../domain/voting_event.dart';
@@ -104,10 +105,7 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
           _buildDepartmentSelector(isDraft),
         if (_type == EligibilityType.selectedMembers)
           _buildMemberSelector(isDraft),
-        if (draftState.isLoading)
-          const Padding(
-              padding: EdgeInsets.all(24),
-              child: Center(child: CircularProgressIndicator())),
+        if (draftState.isLoading) const LoadingView(),
         if (draftState.error != null) ...[
           const SizedBox(height: 16),
           Container(
@@ -152,7 +150,7 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
   Widget _buildDepartmentSelector(bool isDraft) {
     final deptsAsync = ref.watch(activeOrganizationDepartmentsProvider);
     return deptsAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const LoadingView(),
       error: (e, _) => Text('Error: $e'),
       data: (depts) {
         if (depts.isEmpty) {
@@ -188,7 +186,7 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
     final membersAsync =
         ref.watch(organizationMembersDirectoryProvider(widget.orgId));
     return membersAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const LoadingView(),
       error: (e, _) => Text('Error: $e'),
       data: (members) {
         final activeMembers =

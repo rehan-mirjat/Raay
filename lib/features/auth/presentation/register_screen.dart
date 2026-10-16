@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/error_utils.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/google_g_logo.dart';
+import '../../../core/widgets/inline_error_banner.dart';
 import '../../../services/auth_service.dart';
 import 'widgets/auth_split_layout.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
-  const RegisterScreen({super.key, this.onBackToLoginTap, this.onAuthenticated});
+  const RegisterScreen(
+      {super.key, this.onBackToLoginTap, this.onAuthenticated});
 
   final VoidCallback? onBackToLoginTap;
 
@@ -60,7 +63,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             firstName: _firstNameController.text,
             lastName: _lastNameController.text,
           );
-          
+
       // Immediately sign out to prevent auto-login bypass of verification/profile fetching
       await ref.read(authServiceProvider).signOut();
 
@@ -130,7 +133,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.check_circle, color: AppTheme.success, size: 64),
+                const Icon(Icons.check_circle,
+                    color: AppTheme.success, size: 64),
                 const SizedBox(height: 24),
                 Text(
                   'Registration Successful',
@@ -166,9 +170,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       );
     }
 
-    final isMobile = MediaQuery.sizeOf(context).width < 600;
+    final isMobile = ResponsiveLayout.isCompact(context);
 
     return AuthSplitLayout(
+      onMobileBackTap: widget.onBackToLoginTap,
       child: Center(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(
@@ -212,16 +217,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       SizedBox(height: isMobile ? 16 : 20),
                       Text(
                         'Join Kivora',
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.secondaryNavy,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.secondaryNavy,
+                                ),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 6),
                       const Text(
                         'Create your platform identity to vote securely.',
-                        style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+                        style: TextStyle(
+                            color: AppTheme.textSecondary, fontSize: 14),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: isMobile ? 20 : 28),
@@ -234,50 +241,93 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 final firstName = Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text('FIRST NAME', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppTheme.secondaryNavy, letterSpacing: 0.5)),
+                                    const Text('FIRST NAME',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 11,
+                                            color: AppTheme.secondaryNavy,
+                                            letterSpacing: 0.5)),
                                     const SizedBox(height: 6),
                                     TextFormField(
                                       controller: _firstNameController,
                                       textInputAction: TextInputAction.next,
-                                      autofillHints: const [AutofillHints.givenName],
-                                      decoration: const InputDecoration(hintText: 'First', prefixIcon: Icon(Icons.person_outline, size: 20)),
-                                      validator: (v) => Validators.required(v, 'First Name'),
+                                      autofillHints: const [
+                                        AutofillHints.givenName
+                                      ],
+                                      decoration: const InputDecoration(
+                                          hintText: 'First',
+                                          prefixIcon: Icon(Icons.person_outline,
+                                              size: 20)),
+                                      validator: (v) =>
+                                          Validators.required(v, 'First Name'),
                                     ),
                                   ],
                                 );
                                 final lastName = Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text('LAST NAME', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppTheme.secondaryNavy, letterSpacing: 0.5)),
+                                    const Text('LAST NAME',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 11,
+                                            color: AppTheme.secondaryNavy,
+                                            letterSpacing: 0.5)),
                                     const SizedBox(height: 6),
                                     TextFormField(
                                       controller: _lastNameController,
                                       textInputAction: TextInputAction.next,
-                                      autofillHints: const [AutofillHints.familyName],
-                                      decoration: const InputDecoration(hintText: 'Last', prefixIcon: Icon(Icons.person_outline, size: 20)),
-                                      validator: (v) => Validators.required(v, 'Last Name'),
+                                      autofillHints: const [
+                                        AutofillHints.familyName
+                                      ],
+                                      decoration: const InputDecoration(
+                                          hintText: 'Last',
+                                          prefixIcon: Icon(Icons.person_outline,
+                                              size: 20)),
+                                      validator: (v) =>
+                                          Validators.required(v, 'Last Name'),
                                     ),
                                   ],
                                 );
                                 if (constraints.maxWidth < 400) {
-                                  return Column(children: [firstName, const SizedBox(height: 14), lastName]);
+                                  return Column(children: [
+                                    firstName,
+                                    const SizedBox(height: 14),
+                                    lastName
+                                  ]);
                                 }
-                                return Row(children: [Expanded(child: firstName), const SizedBox(width: 12), Expanded(child: lastName)]);
+                                return Row(children: [
+                                  Expanded(child: firstName),
+                                  const SizedBox(width: 12),
+                                  Expanded(child: lastName)
+                                ]);
                               },
                             ),
                             const SizedBox(height: 16),
-                            const Text('EMAIL ADDRESS', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppTheme.secondaryNavy, letterSpacing: 0.5)),
+                            const Text('EMAIL ADDRESS',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 11,
+                                    color: AppTheme.secondaryNavy,
+                                    letterSpacing: 0.5)),
                             const SizedBox(height: 6),
                             TextFormField(
                               controller: _emailController,
                               textInputAction: TextInputAction.next,
                               autofillHints: const [AutofillHints.email],
-                              decoration: const InputDecoration(hintText: 'user@email.com', prefixIcon: Icon(Icons.email_outlined, size: 20)),
+                              decoration: const InputDecoration(
+                                  hintText: 'user@email.com',
+                                  prefixIcon:
+                                      Icon(Icons.email_outlined, size: 20)),
                               keyboardType: TextInputType.emailAddress,
                               validator: Validators.email,
                             ),
                             const SizedBox(height: 16),
-                            const Text('PASSWORD', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppTheme.secondaryNavy, letterSpacing: 0.5)),
+                            const Text('PASSWORD',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 11,
+                                    color: AppTheme.secondaryNavy,
+                                    letterSpacing: 0.5)),
                             const SizedBox(height: 6),
                             TextFormField(
                               controller: _passwordController,
@@ -286,16 +336,30 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               autofillHints: const [AutofillHints.newPassword],
                               decoration: InputDecoration(
                                 hintText: '••••••••',
-                                prefixIcon: const Icon(Icons.lock_outline, size: 20),
+                                prefixIcon:
+                                    const Icon(Icons.lock_outline, size: 20),
                                 suffixIcon: IconButton(
-                                  icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility, size: 20),
-                                  onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                                  icon: Icon(
+                                      _obscurePassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      size: 20),
+                                  tooltip: _obscurePassword
+                                      ? 'Show password'
+                                      : 'Hide password',
+                                  onPressed: () => setState(() =>
+                                      _obscurePassword = !_obscurePassword),
                                 ),
                               ),
                               validator: Validators.password,
                             ),
                             const SizedBox(height: 16),
-                            const Text('CONFIRM PASSWORD', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppTheme.secondaryNavy, letterSpacing: 0.5)),
+                            const Text('CONFIRM PASSWORD',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 11,
+                                    color: AppTheme.secondaryNavy,
+                                    letterSpacing: 0.5)),
                             const SizedBox(height: 6),
                             TextFormField(
                               controller: _confirmPasswordController,
@@ -305,36 +369,31 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               autofillHints: const [AutofillHints.newPassword],
                               decoration: InputDecoration(
                                 hintText: '••••••••',
-                                prefixIcon: const Icon(Icons.lock_outline, size: 20),
+                                prefixIcon:
+                                    const Icon(Icons.lock_outline, size: 20),
                                 suffixIcon: IconButton(
-                                  icon: Icon(_obscureConfirmPassword ? Icons.visibility_off : Icons.visibility, size: 20),
-                                  onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                                  icon: Icon(
+                                      _obscureConfirmPassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      size: 20),
+                                  tooltip: _obscureConfirmPassword
+                                      ? 'Show password'
+                                      : 'Hide password',
+                                  onPressed: () => setState(() =>
+                                      _obscureConfirmPassword =
+                                          !_obscureConfirmPassword),
                                 ),
                               ),
-                              validator: (v) => Validators.confirmPassword(v, _passwordController.text),
+                              validator: (v) => Validators.confirmPassword(
+                                  v, _passwordController.text),
                             ),
                           ],
                         ),
                       ),
                       if (_error != null) ...[
                         const SizedBox(height: 18),
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: AppTheme.error.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: AppTheme.error.withValues(alpha: 0.3)),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.error_outline, color: AppTheme.error, size: 20),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(_error!, style: const TextStyle(color: AppTheme.error, fontSize: 13)),
-                              ),
-                            ],
-                          ),
-                        ),
+                        InlineErrorBanner(message: _error!),
                       ],
                       SizedBox(height: isMobile ? 20 : 28),
                       ElevatedButton.icon(
@@ -343,10 +402,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             ? const SizedBox(
                                 height: 16,
                                 width: 16,
-                                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                child: CircularProgressIndicator(
+                                    color: Colors.white, strokeWidth: 2),
                               )
                             : const Icon(Icons.shield_outlined, size: 18),
-                        label: Text(_isLoading ? 'Creating Identity...' : 'Create Identity Securely'),
+                        label: Text(_isLoading
+                            ? 'Creating Identity...'
+                            : 'Create Identity Securely'),
                       ),
                       SizedBox(height: isMobile ? 16 : 20),
                       const Row(
@@ -354,7 +416,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           Expanded(child: Divider()),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: Text('OR', style: TextStyle(color: AppTheme.textSecondary, fontSize: 12, fontWeight: FontWeight.bold)),
+                            child: Text('OR',
+                                style: TextStyle(
+                                    color: AppTheme.textSecondary,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold)),
                           ),
                           Expanded(child: Divider()),
                         ],
@@ -363,7 +429,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       OutlinedButton.icon(
                         onPressed: _isLoading ? null : _googleSignIn,
                         icon: const GoogleGLogo(size: 18),
-                        label: const Text('Continue with Google', style: TextStyle(color: AppTheme.secondaryNavy)),
+                        label: const Text('Continue with Google',
+                            style: TextStyle(color: AppTheme.secondaryNavy)),
                       ),
                       SizedBox(height: isMobile ? 20 : 28),
                       Center(
@@ -373,7 +440,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           children: [
                             const Text(
                               "Already have an account? ",
-                              style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                              style: TextStyle(
+                                  color: AppTheme.textSecondary, fontSize: 13),
                             ),
                             GestureDetector(
                               onTap: widget.onBackToLoginTap,

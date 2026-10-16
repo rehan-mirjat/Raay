@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/loading_view.dart';
 import '../data/organization_repository.dart';
 import '../domain/organization_enums.dart';
 
@@ -20,13 +21,15 @@ class MemberProfileDialog extends ConsumerStatefulWidget {
   final VoidCallback onChanged;
 
   @override
-  ConsumerState<MemberProfileDialog> createState() => _MemberProfileDialogState();
+  ConsumerState<MemberProfileDialog> createState() =>
+      _MemberProfileDialogState();
 }
 
 class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
   bool _isLoading = false;
 
-  Future<void> _performAction(Future<void> Function() action, String successMessage) async {
+  Future<void> _performAction(
+      Future<void> Function() action, String successMessage) async {
     // Capture before awaiting: the dialog may be dismissed while the request runs.
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
@@ -35,7 +38,8 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
       await action();
       widget.onChanged();
       messenger.showSnackBar(
-        SnackBar(content: Text(successMessage), backgroundColor: AppTheme.success),
+        SnackBar(
+            content: Text(successMessage), backgroundColor: AppTheme.success),
       );
       if (mounted) navigator.pop();
     } catch (e) {
@@ -60,7 +64,9 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
         title: Text(title),
         content: Text(message),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel')),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: AppTheme.error),
             onPressed: () => Navigator.pop(ctx, true),
@@ -90,8 +96,10 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
     final isCallerAdmin = widget.callerRole == OrganizationRole.admin;
 
     final canManageRole = isCallerOwner && !isTargetOwner;
-    final canManageStatus = (isCallerOwner && !isTargetOwner) || (isCallerAdmin && isTargetMember);
-    final canRemove = (isCallerOwner && !isTargetOwner) || (isCallerAdmin && isTargetMember);
+    final canManageStatus =
+        (isCallerOwner && !isTargetOwner) || (isCallerAdmin && isTargetMember);
+    final canRemove =
+        (isCallerOwner && !isTargetOwner) || (isCallerAdmin && isTargetMember);
 
     final repo = ref.read(organizationRepositoryProvider);
 
@@ -101,15 +109,25 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
         children: [
           CircleAvatar(
             backgroundColor: AppTheme.primaryBlue,
-            child: Text(displayName.isNotEmpty ? displayName[0].toUpperCase() : 'U', style: const TextStyle(color: Colors.white)),
+            child: Text(
+                displayName.isNotEmpty ? displayName[0].toUpperCase() : 'U',
+                style: const TextStyle(color: Colors.white)),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(displayName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                Text(email, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                Text(displayName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold)),
+                Text(email,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        fontSize: 12, color: AppTheme.textSecondary)),
               ],
             ),
           ),
@@ -125,8 +143,7 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
           _infoRow('Status', statusStr.toUpperCase()),
           _infoRow('Department', deptName),
           if (_isLoading) ...[
-            const SizedBox(height: 16),
-            const Center(child: CircularProgressIndicator()),
+            const LoadingView(),
           ],
         ],
       ),
@@ -135,7 +152,10 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
           if (canManageRole && isTargetMember)
             TextButton(
               onPressed: () => _performAction(
-                () => repo.updateMemberRole(organizationId: widget.organizationId, targetUid: targetUid, newRole: 'admin'),
+                () => repo.updateMemberRole(
+                    organizationId: widget.organizationId,
+                    targetUid: targetUid,
+                    newRole: 'admin'),
                 'Promoted to Admin successfully.',
               ),
               child: const Text('Promote to Admin'),
@@ -143,7 +163,10 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
           if (canManageRole && isTargetAdmin)
             TextButton(
               onPressed: () => _performAction(
-                () => repo.updateMemberRole(organizationId: widget.organizationId, targetUid: targetUid, newRole: 'member'),
+                () => repo.updateMemberRole(
+                    organizationId: widget.organizationId,
+                    targetUid: targetUid,
+                    newRole: 'member'),
                 'Demoted to Member successfully.',
               ),
               child: const Text('Demote to Member'),
@@ -151,35 +174,47 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
           if (canManageStatus && isTargetActive)
             TextButton(
               onPressed: () => _performAction(
-                () => repo.updateMemberStatus(organizationId: widget.organizationId, targetUid: targetUid, newStatus: 'inactive'),
+                () => repo.updateMemberStatus(
+                    organizationId: widget.organizationId,
+                    targetUid: targetUid,
+                    newStatus: 'inactive'),
                 'Deactivated member successfully.',
               ),
-              child: const Text('Deactivate', style: TextStyle(color: Colors.orange)),
+              child: const Text('Deactivate',
+                  style: TextStyle(color: Colors.orange)),
             ),
           if (canManageStatus && !isTargetActive)
             TextButton(
               onPressed: () => _performAction(
-                () => repo.updateMemberStatus(organizationId: widget.organizationId, targetUid: targetUid, newStatus: 'active'),
+                () => repo.updateMemberStatus(
+                    organizationId: widget.organizationId,
+                    targetUid: targetUid,
+                    newStatus: 'active'),
                 'Reactivated member successfully.',
               ),
-              child: const Text('Reactivate', style: TextStyle(color: AppTheme.success)),
+              child: const Text('Reactivate',
+                  style: TextStyle(color: AppTheme.success)),
             ),
           if (canRemove)
             TextButton(
               onPressed: () async {
                 final confirmed = await _confirm(
                   title: 'Remove $displayName?',
-                  message: 'They will lose access to this organization immediately. This cannot be undone from here.',
+                  message:
+                      'They will lose access to this organization immediately. This cannot be undone from here.',
                   confirmLabel: 'Remove',
                 );
                 if (confirmed) {
                   await _performAction(
-                    () => repo.removeMember(organizationId: widget.organizationId, targetUid: targetUid),
+                    () => repo.removeMember(
+                        organizationId: widget.organizationId,
+                        targetUid: targetUid),
                     'Member removed from the organization.',
                   );
                 }
               },
-              child: const Text('Remove', style: TextStyle(color: AppTheme.error)),
+              child:
+                  const Text('Remove', style: TextStyle(color: AppTheme.error)),
             ),
         ],
         TextButton(
@@ -196,8 +231,14 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
-          Expanded(child: Text(value, textAlign: TextAlign.end, softWrap: true, style: const TextStyle(color: AppTheme.textSecondary))),
+          Text(label,
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
+          Expanded(
+              child: Text(value,
+                  textAlign: TextAlign.end,
+                  softWrap: true,
+                  style: const TextStyle(color: AppTheme.textSecondary))),
         ],
       ),
     );

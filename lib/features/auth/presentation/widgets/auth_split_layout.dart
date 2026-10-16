@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
+import '../../../../core/layout/responsive.dart';
 import '../../../../core/theme/app_theme.dart';
 
 class AuthSplitLayout extends StatelessWidget {
   final Widget child;
-  final bool showMobileBranding;
   final VoidCallback? onMobileBackTap;
 
   const AuthSplitLayout({
-    super.key, 
+    super.key,
     required this.child,
-    this.showMobileBranding = false,
     this.onMobileBackTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = MediaQuery.of(context).size.width >= 900;
+    final isDesktop = ResponsiveLayout.isWide(context);
 
     if (!isDesktop) {
       return Scaffold(
@@ -25,7 +24,8 @@ class AuthSplitLayout extends StatelessWidget {
                 backgroundColor: AppTheme.backgroundLight,
                 elevation: 0,
                 leading: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: AppTheme.secondaryNavy),
+                  icon: const Icon(Icons.arrow_back,
+                      color: AppTheme.secondaryNavy),
                   onPressed: onMobileBackTap,
                 ),
               )
@@ -63,7 +63,8 @@ class AuthSplitLayout extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Color(0xFF24324D), // Lighter Slate Navy for high logo visibility
+                    Color(
+                        0xFF24324D), // Lighter Slate Navy for high logo visibility
                     Color(0xFF1E293B), // Slate Navy
                     Color(0xFF0F172A), // Deep Slate Navy
                   ],
@@ -98,7 +99,8 @@ class AuthSplitLayout extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 48),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 48, vertical: 48),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -124,7 +126,8 @@ class AuthSplitLayout extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             color: AppTheme.accentTeal.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(4),
@@ -132,7 +135,8 @@ class AuthSplitLayout extends StatelessWidget {
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.circle, size: 8, color: AppTheme.accentTeal),
+                              Icon(Icons.circle,
+                                  size: 8, color: AppTheme.accentTeal),
                               SizedBox(width: 8),
                               Text(
                                 'PRIVACY-AWARE VOTING',
@@ -160,19 +164,22 @@ class AuthSplitLayout extends StatelessWidget {
                         _buildFeatureItem(
                           icon: Icons.lock_outline,
                           title: 'Server-authorized voting',
-                          description: 'Ballots are validated and recorded by trusted backend services.',
+                          description:
+                              'Ballots are validated and recorded by trusted backend services.',
                         ),
                         const SizedBox(height: 32),
                         _buildFeatureItem(
                           icon: Icons.fingerprint,
                           title: 'Privacy-aware ballots',
-                          description: 'Anonymous ballots are separated from participation records.',
+                          description:
+                              'Anonymous ballots are separated from participation records.',
                         ),
                         const SizedBox(height: 32),
                         _buildFeatureItem(
                           icon: Icons.check_circle_outline,
                           title: 'Clear participation receipts',
-                          description: 'Voters can confirm participation without revealing their selection.',
+                          description:
+                              'Voters can confirm participation without revealing their selection.',
                         ),
                         const Spacer(),
                         const Divider(color: Color(0xFF334155)), // Slate 700
@@ -182,11 +189,15 @@ class AuthSplitLayout extends StatelessWidget {
                           children: [
                             Text(
                               'Kivora',
-                              style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 12),
+                              style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.5),
+                                  fontSize: 12),
                             ),
                             Text(
                               'Android • iOS • Web',
-                              style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 12),
+                              style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.5),
+                                  fontSize: 12),
                             ),
                           ],
                         ),
@@ -210,7 +221,10 @@ class AuthSplitLayout extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureItem({required IconData icon, required String title, required String description}) {
+  Widget _buildFeatureItem(
+      {required IconData icon,
+      required String title,
+      required String description}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

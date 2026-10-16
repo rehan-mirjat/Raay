@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/loading_view.dart';
 import '../data/organization_repository.dart';
 
 final pendingInvitationsProvider =
@@ -75,7 +76,9 @@ class _PendingInvitationsWidgetState
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _revokingId = invitationId);
     try {
-      await ref.read(organizationRepositoryProvider).revokeInvitation(invitationId);
+      await ref
+          .read(organizationRepositoryProvider)
+          .revokeInvitation(invitationId);
       ref.invalidate(pendingInvitationsProvider(widget.organizationId));
       messenger.showSnackBar(
         const SnackBar(
@@ -100,6 +103,9 @@ class _PendingInvitationsWidgetState
   Widget build(BuildContext context) {
     final invitationsAsync =
         ref.watch(pendingInvitationsProvider(widget.organizationId));
+    // Intentionally narrower than ResponsiveLayout.compactBreakpoint: this is
+    // an embedded card (not a full page), so it has far less width to work
+    // with than the screen it sits on.
     final compact = MediaQuery.sizeOf(context).width < 500;
 
     return Card(
@@ -133,10 +139,7 @@ class _PendingInvitationsWidgetState
             ),
             const Divider(height: 20),
             invitationsAsync.when(
-              loading: () => const Padding(
-                padding: EdgeInsets.all(16),
-                child: Center(child: CircularProgressIndicator()),
-              ),
+              loading: () => const LoadingView(),
               error: (err, stack) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Column(
@@ -176,9 +179,11 @@ class _PendingInvitationsWidgetState
                   itemBuilder: (context, index) {
                     final item = invitations[index];
                     final email = item['email'] as String? ?? '';
-                    final role = (item['role'] as String? ?? 'member').toLowerCase();
+                    final role =
+                        (item['role'] as String? ?? 'member').toLowerCase();
                     final invitationId = item['invitationId'] as String? ?? '';
-                    final expiryText = _formatExpiry(item['expiresAt'] as String?);
+                    final expiryText =
+                        _formatExpiry(item['expiresAt'] as String?);
                     final isExpired = expiryText == 'Expired';
                     final isAdminRole = role == 'admin';
                     final canRevoke = widget.isOwner || !isAdminRole;

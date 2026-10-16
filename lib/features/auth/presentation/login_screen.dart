@@ -2,10 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/error_utils.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/google_g_logo.dart';
+import '../../../core/widgets/inline_error_banner.dart';
 import '../../../services/auth_service.dart';
 import 'email_verification_screen.dart';
 import 'widgets/auth_split_layout.dart';
@@ -141,7 +143,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       );
     }
 
-    final isMobile = MediaQuery.sizeOf(context).width < 600;
+    final isMobile = ResponsiveLayout.isCompact(context);
 
     return AuthSplitLayout(
       child: Center(
@@ -172,12 +174,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         child: Container(
                           width: 80,
                           height: 80,
-                          padding: const EdgeInsets.all(0), // Removed padding to let the icon fill the space
+                          padding: const EdgeInsets.all(
+                              0), // Removed padding to let the icon fill the space
                           decoration: BoxDecoration(
                             color: AppTheme.primaryBlue.withValues(alpha: 0.08),
-                            borderRadius: BorderRadius.circular(18), // Match standard app icon squircle
+                            borderRadius: BorderRadius.circular(
+                                18), // Match standard app icon squircle
                           ),
-                          clipBehavior: Clip.antiAlias, // Ensure image conforms to the shape
+                          clipBehavior: Clip
+                              .antiAlias, // Ensure image conforms to the shape
                           child: Image.asset(
                             'assets/icon/app_icon.png', // Switched to the main square icon for the card logo
                             fit: BoxFit.cover,
@@ -187,16 +192,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       SizedBox(height: isMobile ? 16 : 20),
                       Text(
                         'Welcome Back',
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.secondaryNavy,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.secondaryNavy,
+                                ),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 6),
                       const Text(
                         'Access your account and start voting',
-                        style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+                        style: TextStyle(
+                            color: AppTheme.textSecondary, fontSize: 14),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: isMobile ? 20 : 28),
@@ -204,13 +211,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            const Text('EMAIL ADDRESS', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppTheme.secondaryNavy, letterSpacing: 0.5)),
+                            const Text('EMAIL ADDRESS',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 11,
+                                    color: AppTheme.secondaryNavy,
+                                    letterSpacing: 0.5)),
                             const SizedBox(height: 6),
                             TextFormField(
                               controller: _emailController,
                               decoration: const InputDecoration(
                                 hintText: 'user@email.com',
-                                prefixIcon: Icon(Icons.email_outlined, size: 20),
+                                prefixIcon:
+                                    Icon(Icons.email_outlined, size: 20),
                               ),
                               keyboardType: TextInputType.emailAddress,
                               textInputAction: TextInputAction.next,
@@ -218,7 +231,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               validator: Validators.email,
                             ),
                             const SizedBox(height: 16),
-                            const Text('PASSWORD', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppTheme.secondaryNavy, letterSpacing: 0.5)),
+                            const Text('PASSWORD',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 11,
+                                    color: AppTheme.secondaryNavy,
+                                    letterSpacing: 0.5)),
                             const SizedBox(height: 6),
                             TextFormField(
                               controller: _passwordController,
@@ -228,10 +246,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               autofillHints: const [AutofillHints.password],
                               decoration: InputDecoration(
                                 hintText: '••••••••',
-                                prefixIcon: const Icon(Icons.lock_outline, size: 20),
+                                prefixIcon:
+                                    const Icon(Icons.lock_outline, size: 20),
                                 suffixIcon: IconButton(
-                                  icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility, size: 20),
-                                  onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                                  icon: Icon(
+                                      _obscurePassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      size: 20),
+                                  tooltip: _obscurePassword
+                                      ? 'Show password'
+                                      : 'Hide password',
+                                  onPressed: () => setState(() =>
+                                      _obscurePassword = !_obscurePassword),
                                 ),
                               ),
                               validator: Validators.password,
@@ -248,28 +275,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             padding: EdgeInsets.zero,
                             minimumSize: const Size(0, 0),
                           ),
-                          child: const Text('Forgot Password?', style: TextStyle(fontSize: 13)),
+                          child: const Text('Forgot Password?',
+                              style: TextStyle(fontSize: 13)),
                         ),
                       ),
                       if (_error != null) ...[
                         const SizedBox(height: 16),
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: AppTheme.error.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: AppTheme.error.withValues(alpha: 0.3)),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.error_outline, color: AppTheme.error, size: 20),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(_error!, style: const TextStyle(color: AppTheme.error, fontSize: 13)),
-                              ),
-                            ],
-                          ),
-                        ),
+                        InlineErrorBanner(message: _error!),
                       ],
                       SizedBox(height: isMobile ? 20 : 24),
                       ElevatedButton.icon(
@@ -278,10 +290,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ? const SizedBox(
                                 height: 16,
                                 width: 16,
-                                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                child: CircularProgressIndicator(
+                                    color: Colors.white, strokeWidth: 2),
                               )
                             : const Icon(Icons.shield_outlined, size: 18),
-                        label: Text(_isLoading ? 'Signing In...' : 'Sign In Securely'),
+                        label: Text(
+                            _isLoading ? 'Signing In...' : 'Sign In Securely'),
                       ),
                       SizedBox(height: isMobile ? 16 : 20),
                       const Row(
@@ -289,7 +303,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           Expanded(child: Divider()),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: Text('OR', style: TextStyle(color: AppTheme.textSecondary, fontSize: 12, fontWeight: FontWeight.bold)),
+                            child: Text('OR',
+                                style: TextStyle(
+                                    color: AppTheme.textSecondary,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold)),
                           ),
                           Expanded(child: Divider()),
                         ],
@@ -298,7 +316,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       OutlinedButton.icon(
                         onPressed: _isLoading ? null : _googleSignIn,
                         icon: const GoogleGLogo(size: 18),
-                        label: const Text('Continue with Google', style: TextStyle(color: AppTheme.secondaryNavy)),
+                        label: const Text('Continue with Google',
+                            style: TextStyle(color: AppTheme.secondaryNavy)),
                       ),
                       SizedBox(height: isMobile ? 20 : 28),
                       Center(
@@ -308,7 +327,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           children: [
                             const Text(
                               "New User? ",
-                              style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                              style: TextStyle(
+                                  color: AppTheme.textSecondary, fontSize: 13),
                             ),
                             GestureDetector(
                               onTap: widget.onRegisterTap,

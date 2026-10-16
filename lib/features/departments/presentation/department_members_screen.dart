@@ -20,10 +20,12 @@ class DepartmentMembersScreen extends ConsumerStatefulWidget {
   final String departmentId;
 
   @override
-  ConsumerState<DepartmentMembersScreen> createState() => _DepartmentMembersScreenState();
+  ConsumerState<DepartmentMembersScreen> createState() =>
+      _DepartmentMembersScreenState();
 }
 
-class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScreen> {
+class _DepartmentMembersScreenState
+    extends ConsumerState<DepartmentMembersScreen> {
   final TextEditingController _searchCtrl = TextEditingController();
   String _searchQuery = '';
   String _selectedMemberFilter = 'all'; // 'all', 'unassigned', 'assigned'
@@ -64,11 +66,13 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
     return 'M';
   }
 
-  void _showDeleteConfirmation(BuildContext context, Department dept, String orgId) {
+  void _showDeleteConfirmation(
+      BuildContext context, Department dept, String orgId) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Department', style: TextStyle(color: AppTheme.error)),
+        title: const Text('Delete Department',
+            style: TextStyle(color: AppTheme.error)),
         content: Text(
           'Are you sure you want to delete "${dept.name}"?\n\nThis permanently deletes the department.',
         ),
@@ -81,10 +85,13 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
             onPressed: () async {
               Navigator.pop(ctx);
               try {
-                await ref.read(departmentRepositoryProvider).deleteDepartment(dept.id);
+                await ref
+                    .read(departmentRepositoryProvider)
+                    .deleteDepartment(dept.id);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Department deleted successfully.')),
+                    const SnackBar(
+                        content: Text('Department deleted successfully.')),
                   );
                   context.go('/orgs/departments');
                 }
@@ -92,7 +99,8 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Failed to delete: ${e.toString().replaceAll("Exception: ", "")}'),
+                      content: Text(
+                          'Failed to delete: ${e.toString().replaceAll("Exception: ", "")}'),
                       backgroundColor: AppTheme.error,
                     ),
                   );
@@ -134,7 +142,8 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Successfully assigned $successCount member(s) to ${dept.name}.'),
+            content: Text(
+                'Successfully assigned $successCount member(s) to ${dept.name}.'),
             backgroundColor: AppTheme.success,
           ),
         );
@@ -143,7 +152,8 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to assign members: ${e.toString().replaceAll("Exception: ", "")}'),
+            content: Text(
+                'Failed to assign members: ${e.toString().replaceAll("Exception: ", "")}'),
             backgroundColor: AppTheme.error,
           ),
         );
@@ -153,7 +163,34 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
     }
   }
 
-  Future<void> _handleRemoveMember(String orgId, String targetUid, String memberName) async {
+  void _showRemoveMemberConfirmation(
+      BuildContext context, String orgId, String targetUid, String memberName) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Remove from department',
+            style: TextStyle(color: AppTheme.error)),
+        content: Text('Remove "$memberName" from this department?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
+            onPressed: () {
+              Navigator.pop(ctx);
+              _handleRemoveMember(orgId, targetUid, memberName);
+            },
+            child: const Text('Remove'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handleRemoveMember(
+      String orgId, String targetUid, String memberName) async {
     try {
       final repo = ref.read(departmentRepositoryProvider);
       await repo.removeMemberFromDepartment(
@@ -172,7 +209,8 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to remove member: ${e.toString().replaceAll("Exception: ", "")}'),
+            content: Text(
+                'Failed to remove member: ${e.toString().replaceAll("Exception: ", "")}'),
             backgroundColor: AppTheme.error,
           ),
         );
@@ -190,7 +228,8 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
         body: ErrorView(
           type: ErrorViewType.generic,
           title: 'No Active Organization',
-          message: 'Please select an organization context to view department members.',
+          message:
+              'Please select an organization context to view department members.',
         ),
       );
     }
@@ -216,18 +255,22 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
     return Scaffold(
       backgroundColor: AppTheme.backgroundLight,
       body: membersAsync.when(
-        loading: () => const LoadingView(message: 'Loading department roster...'),
+        loading: () =>
+            const LoadingView(message: 'Loading department roster...'),
         error: (err, stack) => ErrorView(
           type: ErrorViewType.generic,
           message: 'Failed to load roster: $err',
-          onRetry: () => ref.invalidate(organizationMembersDirectoryProvider(orgId)),
+          onRetry: () =>
+              ref.invalidate(organizationMembersDirectoryProvider(orgId)),
         ),
         data: (allMembers) {
           // Identify members assigned to THIS department
           final assignedMembers = allMembers.where((m) {
-            final deptIds = List<String>.from(m['departmentIds'] as List? ?? []);
+            final deptIds =
+                List<String>.from(m['departmentIds'] as List? ?? []);
             final singleDept = m['departmentId'] as String?;
-            return deptIds.contains(widget.departmentId) || singleDept == widget.departmentId;
+            return deptIds.contains(widget.departmentId) ||
+                singleDept == widget.departmentId;
           }).toList();
 
           return SingleChildScrollView(
@@ -246,15 +289,20 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                       onTap: () => context.go('/orgs/departments'),
                       borderRadius: BorderRadius.circular(6),
                       child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 4, horizontal: 2),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.arrow_back_rounded, size: 16, color: AppTheme.primaryBlue),
+                            Icon(Icons.arrow_back_rounded,
+                                size: 16, color: AppTheme.primaryBlue),
                             SizedBox(width: 6),
                             Text(
                               'Departments',
-                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue),
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.primaryBlue),
                             ),
                           ],
                         ),
@@ -273,24 +321,36 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                             children: [
                               Row(
                                 children: [
-                                  Text(
-                                    department.name,
-                                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: AppTheme.secondaryNavy,
-                                        ),
+                                  Flexible(
+                                    child: Text(
+                                      department.name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: AppTheme.secondaryNavy,
+                                          ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                   const SizedBox(width: 12),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 4),
                                     decoration: BoxDecoration(
                                       color: AppTheme.surfaceWhite,
                                       borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(color: AppTheme.borderLight),
+                                      border: Border.all(
+                                          color: AppTheme.borderLight),
                                     ),
                                     child: Text(
                                       '${assignedMembers.length} assigned members',
-                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.textSecondary),
+                                      style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppTheme.textSecondary),
                                     ),
                                   ),
                                 ],
@@ -298,7 +358,9 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                               const SizedBox(height: 6),
                               const Text(
                                 'Members in this department can be chosen as eligible voters for events.',
-                                style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+                                style: TextStyle(
+                                    color: AppTheme.textSecondary,
+                                    fontSize: 14),
                               ),
                             ],
                           ),
@@ -311,7 +373,8 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                                 onPressed: () {
                                   showDialog(
                                     context: context,
-                                    builder: (context) => CreateEditDepartmentDialog(
+                                    builder: (context) =>
+                                        CreateEditDepartmentDialog(
                                       organizationId: orgId,
                                       departmentToEdit: department,
                                     ),
@@ -320,17 +383,23 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                                 icon: const Icon(Icons.edit_outlined, size: 16),
                                 label: const Text('Rename'),
                                 style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 12),
                                 ),
                               ),
                               const SizedBox(width: 10),
                               OutlinedButton.icon(
-                                onPressed: () => _showDeleteConfirmation(context, department, orgId),
-                                icon: const Icon(Icons.delete_outline_rounded, size: 16, color: AppTheme.error),
-                                label: const Text('Delete', style: TextStyle(color: AppTheme.error)),
+                                onPressed: () => _showDeleteConfirmation(
+                                    context, department, orgId),
+                                icon: const Icon(Icons.delete_outline_rounded,
+                                    size: 16, color: AppTheme.error),
+                                label: const Text('Delete',
+                                    style: TextStyle(color: AppTheme.error)),
                                 style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: AppTheme.borderLight),
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                  side: const BorderSide(
+                                      color: AppTheme.borderLight),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 12),
                                 ),
                               ),
                             ],
@@ -437,7 +506,10 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
               children: [
                 Text(
                   'Members in ${dept.name}',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.secondaryNavy),
                 ),
                 Container(
                   width: 28,
@@ -449,7 +521,10 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                   child: Center(
                     child: Text(
                       '${assignedMembers.length}',
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue),
+                      style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.primaryBlue),
                     ),
                   ),
                 ),
@@ -471,23 +546,31 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                       color: AppTheme.surfaceBlue,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.people_outline_rounded, size: 28, color: AppTheme.primaryBlue),
+                    child: const Icon(Icons.people_outline_rounded,
+                        size: 28, color: AppTheme.primaryBlue),
                   ),
                   const SizedBox(height: 16),
                   const Text(
                     'No members assigned yet',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.secondaryNavy),
                   ),
                   const SizedBox(height: 6),
                   const Text(
                     'Choose people from the list to add them to this department. You can change it at any time.',
-                    style: TextStyle(fontSize: 13, color: AppTheme.textSecondary, height: 1.4),
+                    style: TextStyle(
+                        fontSize: 13,
+                        color: AppTheme.textSecondary,
+                        height: 1.4),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
                   const Text(
                     'Assigned members will appear here.',
-                    style: TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+                    style:
+                        TextStyle(fontSize: 11, color: AppTheme.textSecondary),
                   ),
                 ],
               ),
@@ -498,7 +581,8 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
               physics: const NeverScrollableScrollPhysics(),
               padding: const EdgeInsets.symmetric(vertical: 8),
               itemCount: assignedMembers.length,
-              separatorBuilder: (_, __) => const Divider(height: 1, color: AppTheme.borderLight),
+              separatorBuilder: (_, __) =>
+                  const Divider(height: 1, color: AppTheme.borderLight),
               itemBuilder: (context, idx) {
                 final member = assignedMembers[idx];
                 final name = member['displayName'] as String? ?? 'Member';
@@ -508,20 +592,29 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                 final color = _avatarColors[idx % _avatarColors.length];
 
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   child: Row(
                     children: [
                       CircleAvatar(
                         radius: 18,
                         backgroundColor: color,
-                        child: Text(initials, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                        child: Text(initials,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold)),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
+                            Text(name,
+                                style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.secondaryNavy)),
                           ],
                         ),
                       ),
@@ -529,9 +622,11 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                       if (isManager) ...[
                         const SizedBox(width: 8),
                         IconButton(
-                          icon: const Icon(Icons.close_rounded, size: 18, color: AppTheme.textSecondary),
+                          icon: const Icon(Icons.close_rounded,
+                              size: 18, color: AppTheme.textSecondary),
                           tooltip: 'Remove from department',
-                          onPressed: () => _handleRemoveMember(orgId, userId, name),
+                          onPressed: () => _showRemoveMemberConfirmation(
+                              context, orgId, userId, name),
                         ),
                       ],
                     ],
@@ -547,12 +642,16 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                const Icon(Icons.info_outline_rounded, size: 15, color: AppTheme.textSecondary),
+                const Icon(Icons.info_outline_rounded,
+                    size: 15, color: AppTheme.textSecondary),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     'Pending selections are not members yet. Confirm with "Assign ${_pendingSelectedUids.length} members" to add them to ${dept.name}.',
-                    style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary, height: 1.3),
+                    style: const TextStyle(
+                        fontSize: 11,
+                        color: AppTheme.textSecondary,
+                        height: 1.3),
                   ),
                 ),
               ],
@@ -581,14 +680,16 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
 
       // Search query filter
       if (_searchQuery.isNotEmpty) {
-        if (!name.contains(_searchQuery) && !email.contains(_searchQuery)) return false;
+        if (!name.contains(_searchQuery) && !email.contains(_searchQuery))
+          return false;
       }
 
       // Filter tabs filter ('all', 'unassigned', 'assigned')
       final deptIds = List<String>.from(m['departmentIds'] as List? ?? []);
       final singleDept = m['departmentId'] as String?;
       final inThisDept = deptIds.contains(dept.id) || singleDept == dept.id;
-      final hasNoDept = (singleDept == null || singleDept.isEmpty) && deptIds.isEmpty;
+      final hasNoDept =
+          (singleDept == null || singleDept.isEmpty) && deptIds.isEmpty;
 
       if (_selectedMemberFilter == 'unassigned') {
         if (!hasNoDept) return false;
@@ -625,12 +726,16 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
               children: [
                 const Text(
                   'Add members',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.secondaryNavy),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   'Select people to assign to ${dept.name}.',
-                  style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                  style: const TextStyle(
+                      fontSize: 12, color: AppTheme.textSecondary),
                 ),
                 const SizedBox(height: 16),
 
@@ -639,8 +744,10 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                   controller: _searchCtrl,
                   decoration: InputDecoration(
                     hintText: 'Search by name',
-                    prefixIcon: const Icon(Icons.search_rounded, color: AppTheme.textSecondary, size: 20),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    prefixIcon: const Icon(Icons.search_rounded,
+                        color: AppTheme.textSecondary, size: 20),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: const BorderSide(color: AppTheme.borderLight),
@@ -651,7 +758,8 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: AppTheme.primaryBlue, width: 1.5),
+                      borderSide: const BorderSide(
+                          color: AppTheme.primaryBlue, width: 1.5),
                     ),
                     fillColor: AppTheme.surfaceWhite,
                     filled: true,
@@ -659,17 +767,22 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                 ),
                 const SizedBox(height: 12),
 
-                // Filter Tabs Row
-                Row(
-                  children: [
-                    const Icon(Icons.filter_list_rounded, size: 18, color: AppTheme.textSecondary),
-                    const SizedBox(width: 8),
-                    _buildFilterPill('all', 'All members'),
-                    const SizedBox(width: 6),
-                    _buildFilterPill('unassigned', 'No department'),
-                    const SizedBox(width: 6),
-                    _buildFilterPill('assigned', dept.name),
-                  ],
+                // Filter Tabs Row (horizontally scrollable - a long department
+                // name can otherwise overflow narrow screens)
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      const Icon(Icons.filter_list_rounded,
+                          size: 18, color: AppTheme.textSecondary),
+                      const SizedBox(width: 8),
+                      _buildFilterPill('all', 'All members'),
+                      const SizedBox(width: 6),
+                      _buildFilterPill('unassigned', 'No department'),
+                      const SizedBox(width: 6),
+                      _buildFilterPill('assigned', dept.name),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -681,7 +794,9 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 40),
               child: Center(
-                child: Text('No members match your search.', style: TextStyle(color: AppTheme.textSecondary, fontSize: 13)),
+                child: Text('No members match your search.',
+                    style:
+                        TextStyle(color: AppTheme.textSecondary, fontSize: 13)),
               ),
             )
           else
@@ -699,14 +814,20 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                 final color = _avatarColors[idx % _avatarColors.length];
 
                 final singleDept = member['departmentId'] as String?;
-                final deptIds = List<String>.from(member['departmentIds'] as List? ?? []);
-                final inThisDept = deptIds.contains(dept.id) || singleDept == dept.id;
+                final deptIds =
+                    List<String>.from(member['departmentIds'] as List? ?? []);
+                final inThisDept =
+                    deptIds.contains(dept.id) || singleDept == dept.id;
 
-                final currentDeptName = singleDept != null && deptMap.containsKey(singleDept)
-                    ? 'In ${deptMap[singleDept]}'
-                    : (deptIds.isNotEmpty ? 'In ${deptMap[deptIds.first] ?? 'department'}' : 'No department');
+                final currentDeptName =
+                    singleDept != null && deptMap.containsKey(singleDept)
+                        ? 'In ${deptMap[singleDept]}'
+                        : (deptIds.isNotEmpty
+                            ? 'In ${deptMap[deptIds.first] ?? 'department'}'
+                            : 'No department');
 
-                final isChecked = inThisDept || _pendingSelectedUids.contains(userId);
+                final isChecked =
+                    inThisDept || _pendingSelectedUids.contains(userId);
 
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 6),
@@ -725,12 +846,17 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                     borderRadius: BorderRadius.circular(12),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 150),
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 10),
                       decoration: BoxDecoration(
-                        color: isChecked ? AppTheme.surfaceBlue.withValues(alpha: 0.6) : AppTheme.surfaceWhite,
+                        color: isChecked
+                            ? AppTheme.surfaceBlue.withValues(alpha: 0.6)
+                            : AppTheme.surfaceWhite,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: isChecked ? AppTheme.primaryBlue : AppTheme.borderLight,
+                          color: isChecked
+                              ? AppTheme.primaryBlue
+                              : AppTheme.borderLight,
                           width: isChecked ? 1.4 : 1.0,
                         ),
                       ),
@@ -741,15 +867,20 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                             width: 20,
                             height: 20,
                             decoration: BoxDecoration(
-                              color: isChecked ? AppTheme.primaryBlue : AppTheme.surfaceWhite,
+                              color: isChecked
+                                  ? AppTheme.primaryBlue
+                                  : AppTheme.surfaceWhite,
                               borderRadius: BorderRadius.circular(6),
                               border: Border.all(
-                                color: isChecked ? AppTheme.primaryBlue : AppTheme.borderLight,
+                                color: isChecked
+                                    ? AppTheme.primaryBlue
+                                    : AppTheme.borderLight,
                                 width: 1.5,
                               ),
                             ),
                             child: isChecked
-                                ? const Icon(Icons.check_rounded, size: 14, color: Colors.white)
+                                ? const Icon(Icons.check_rounded,
+                                    size: 14, color: Colors.white)
                                 : null,
                           ),
                           const SizedBox(width: 12),
@@ -758,7 +889,11 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                           CircleAvatar(
                             radius: 16,
                             backgroundColor: color,
-                            child: Text(initials, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+                            child: Text(initials,
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold)),
                           ),
                           const SizedBox(width: 12),
 
@@ -771,13 +906,21 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                                   name,
                                   style: TextStyle(
                                     fontSize: 13,
-                                    fontWeight: isChecked ? FontWeight.bold : FontWeight.w600,
-                                    color: isChecked ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
+                                    fontWeight: isChecked
+                                        ? FontWeight.bold
+                                        : FontWeight.w600,
+                                    color: isChecked
+                                        ? AppTheme.primaryBlue
+                                        : AppTheme.secondaryNavy,
                                   ),
                                 ),
                                 Text(
-                                  inThisDept ? 'Assigned to ${dept.name}' : currentDeptName,
-                                  style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+                                  inThisDept
+                                      ? 'Assigned to ${dept.name}'
+                                      : currentDeptName,
+                                  style: const TextStyle(
+                                      fontSize: 11,
+                                      color: AppTheme.textSecondary),
                                 ),
                               ],
                             ),
@@ -808,7 +951,10 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                       children: [
                         Text(
                           '${_pendingSelectedUids.length} selected',
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.secondaryNavy),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              color: AppTheme.secondaryNavy),
                         ),
                         if (_pendingSelectedUids.isNotEmpty) ...[
                           const SizedBox(width: 8),
@@ -818,7 +964,11 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                                 _pendingSelectedUids.clear();
                               });
                             },
-                            child: const Text('Clear', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue)),
+                            child: const Text('Clear',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.primaryBlue)),
                           ),
                         ],
                       ],
@@ -826,11 +976,11 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                     const SizedBox(height: 2),
                     Text(
                       'Pending assignment to ${dept.name}',
-                      style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+                      style: const TextStyle(
+                          fontSize: 11, color: AppTheme.textSecondary),
                     ),
                   ],
                 ),
-
                 if (isManager)
                   FilledButton.icon(
                     onPressed: _pendingSelectedUids.isEmpty || _isAssigning
@@ -839,14 +989,19 @@ class _DepartmentMembersScreenState extends ConsumerState<DepartmentMembersScree
                     icon: _isAssigning
                         ? const SizedBox.square(
                             dimension: 16,
-                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                            child: CircularProgressIndicator(
+                                color: Colors.white, strokeWidth: 2),
                           )
                         : const Icon(Icons.person_add_alt_1_rounded, size: 16),
-                    label: Text(_isAssigning ? 'Assigning...' : 'Assign ${_pendingSelectedUids.length} members'),
+                    label: Text(_isAssigning
+                        ? 'Assigning...'
+                        : 'Assign ${_pendingSelectedUids.length} members'),
                     style: FilledButton.styleFrom(
                       backgroundColor: AppTheme.primaryBlue,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
               ],

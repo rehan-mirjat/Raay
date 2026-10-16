@@ -50,7 +50,8 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Thank you for your feedback! We have received your message.'),
+            content: Text(
+                'Thank you for your feedback! We have received your message.'),
             backgroundColor: AppTheme.success,
           ),
         );
@@ -60,8 +61,9 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to send feedback: $e'),
+          const SnackBar(
+            content: Text(
+                'Failed to send feedback. Please check your connection and try again.'),
             backgroundColor: AppTheme.error,
           ),
         );
@@ -92,7 +94,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                       ),
                 ),
                 const SizedBox(height: 20),
-                
+
                 // FAQ Section
                 const Text(
                   'Frequently Asked Questions',
@@ -105,19 +107,22 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                 const SizedBox(height: 16),
                 _buildFaqItem(
                   question: 'How do I cast my vote?',
-                  answer: 'You can cast your vote by selecting an active election from your organization dashboard and following the on-screen instructions.',
+                  answer:
+                      'You can cast your vote by selecting an active election from your organization dashboard and following the on-screen instructions.',
                 ),
                 _buildFaqItem(
                   question: 'Are my votes anonymous?',
-                  answer: 'Yes, Kivora uses cryptographic receipts to ensure that all votes are completely anonymous and tamper-evident.',
+                  answer:
+                      'Yes, Kivora uses cryptographic receipts to ensure that all votes are completely anonymous and tamper-evident.',
                 ),
                 _buildFaqItem(
                   question: 'How can I change my profile information?',
-                  answer: 'Navigate to the Account Settings page from the top-right profile dropdown menu to update your personal details.',
+                  answer:
+                      'Navigate to the Account Settings page from the top-right profile dropdown menu to update your personal details.',
                 ),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Getting Started
                 const Text(
                   'Help & Guidance',
@@ -129,17 +134,21 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                 ),
                 const SizedBox(height: 16),
                 ListTile(
-                  leading: const Icon(Icons.route_outlined, color: AppTheme.primaryBlue),
-                  title: const Text('Restart Product Tour', style: TextStyle(fontWeight: FontWeight.w600)),
-                  subtitle: const Text('Replay the introductory walkthrough of the application features.'),
-                  trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14),
+                  leading: const Icon(Icons.route_outlined,
+                      color: AppTheme.primaryBlue),
+                  title: const Text('Restart Product Tour',
+                      style: TextStyle(fontWeight: FontWeight.w600)),
+                  subtitle: const Text(
+                      'Replay the introductory walkthrough of the application features.'),
+                  trailing:
+                      const Icon(Icons.arrow_forward_ios_rounded, size: 14),
                   onTap: () {
                     ref.read(onboardingProvider.notifier).restartTour();
                     context.go('/home');
                   },
                 ),
                 const SizedBox(height: 32),
-                
+
                 // Feedback Form
                 const Text(
                   'Send Feedback or Contact Support',
@@ -178,7 +187,8 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                             decoration: const InputDecoration(
                               hintText: 'What is this regarding?',
                             ),
-                            validator: (value) => Validators.required(value, 'Subject'),
+                            validator: (value) =>
+                                Validators.required(value, 'Subject'),
                           ),
                           const SizedBox(height: 20),
                           const Text(
@@ -195,24 +205,30 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                             controller: _messageController,
                             maxLines: 5,
                             decoration: const InputDecoration(
-                              hintText: 'Please describe your issue or share your feedback...',
+                              hintText:
+                                  'Please describe your issue or share your feedback...',
                             ),
-                            validator: (value) => Validators.required(value, 'Message'),
+                            validator: (value) =>
+                                Validators.required(value, 'Message'),
                           ),
                           const SizedBox(height: 24),
                           Align(
                             alignment: Alignment.centerRight,
                             child: ElevatedButton.icon(
                               onPressed: _isSubmitting ? null : _submitFeedback,
-                              icon: _isSubmitting 
+                              icon: _isSubmitting
                                   ? const SizedBox(
-                                      width: 16, height: 16, 
-                                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
-                                    )
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(
+                                          color: Colors.white, strokeWidth: 2))
                                   : const Icon(Icons.send_rounded, size: 18),
-                              label: Text(_isSubmitting ? 'Sending...' : 'Send Message'),
+                              label: Text(_isSubmitting
+                                  ? 'Sending...'
+                                  : 'Send Message'),
                               style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 12),
                               ),
                             ),
                           ),
@@ -238,11 +254,15 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
         border: Border.all(color: AppTheme.borderLight),
       ),
       child: ExpansionTile(
-        shape: const RoundedRectangleBorder(side: BorderSide.none), // removes the top/bottom line when expanded
+        shape: const RoundedRectangleBorder(
+            side: BorderSide.none), // removes the top/bottom line when expanded
         collapsedShape: const RoundedRectangleBorder(side: BorderSide.none),
         title: Text(
           question,
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: AppTheme.secondaryNavy),
+          style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
+              color: AppTheme.secondaryNavy),
         ),
         iconColor: AppTheme.primaryBlue,
         collapsedIconColor: AppTheme.textSecondary,
@@ -251,7 +271,8 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Text(
               answer,
-              style: const TextStyle(color: AppTheme.textSecondary, height: 1.5, fontSize: 14),
+              style: const TextStyle(
+                  color: AppTheme.textSecondary, height: 1.5, fontSize: 14),
             ),
           ),
         ],

@@ -44,11 +44,13 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
     super.dispose();
   }
 
-  void _showDeleteConfirmation(BuildContext context, WidgetRef ref, Department dept) {
+  void _showDeleteConfirmation(
+      BuildContext context, WidgetRef ref, Department dept) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Department', style: TextStyle(color: AppTheme.error)),
+        title: const Text('Delete Department',
+            style: TextStyle(color: AppTheme.error)),
         content: Text(
           'Are you sure you want to delete "${dept.name}"?\n\nThis permanently deletes the department. Existing member records may retain a reference to the deleted department, but the deleted department will no longer be valid for assignment or voting eligibility.',
         ),
@@ -61,17 +63,21 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
             onPressed: () async {
               Navigator.pop(ctx);
               try {
-                await ref.read(departmentRepositoryProvider).deleteDepartment(dept.id);
+                await ref
+                    .read(departmentRepositoryProvider)
+                    .deleteDepartment(dept.id);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Department deleted successfully.')),
+                    const SnackBar(
+                        content: Text('Department deleted successfully.')),
                   );
                 }
               } catch (e) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Failed to delete: ${e.toString().replaceAll("Exception: ", "")}'),
+                      content: Text(
+                          'Failed to delete: ${e.toString().replaceAll("Exception: ", "")}'),
                       backgroundColor: AppTheme.error,
                     ),
                   );
@@ -98,13 +104,17 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
     }).toList();
 
     if (_selectedSort == 'az') {
-      filtered.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      filtered
+          .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
     } else if (_selectedSort == 'za') {
-      filtered.sort((a, b) => b.name.toLowerCase().compareTo(a.name.toLowerCase()));
+      filtered
+          .sort((a, b) => b.name.toLowerCase().compareTo(a.name.toLowerCase()));
     } else if (_selectedSort == 'members') {
       filtered.sort((a, b) {
-        final countA = allMembers.where((m) => m['departmentId'] == a.id).length;
-        final countB = allMembers.where((m) => m['departmentId'] == b.id).length;
+        final countA =
+            allMembers.where((m) => m['departmentId'] == a.id).length;
+        final countB =
+            allMembers.where((m) => m['departmentId'] == b.id).length;
         return countB.compareTo(countA);
       });
     }
@@ -123,7 +133,8 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
         body: EmptyView(
           icon: Icons.business_outlined,
           title: 'Choose an organization to get started',
-          message: 'Departments belong to an organization. Select one to view its departments and manage their details.',
+          message:
+              'Departments belong to an organization. Select one to view its departments and manage their details.',
           actionLabel: 'Select organization',
           onAction: () => context.go('/home'),
         ),
@@ -135,7 +146,9 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
     final isDesktop = ResponsiveLayout.isWide(context);
 
     final membersAsync = ref.watch(organizationMembersDirectoryProvider(orgId));
-    final eventsStream = ref.watch(votingEventRepositoryProvider).watchOrganizationVotingEvents(orgId);
+    final eventsStream = ref
+        .watch(votingEventRepositoryProvider)
+        .watchOrganizationVotingEvents(orgId);
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundLight,
@@ -150,11 +163,14 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
           final userDepts = isManager
               ? allDepartments
               : (orgContext.member.departmentId != null
-                  ? allDepartments.where((d) => d.id == orgContext.member.departmentId).toList()
+                  ? allDepartments
+                      .where((d) => d.id == orgContext.member.departmentId)
+                      .toList()
                   : <Department>[]);
 
           final allMembers = membersAsync.valueOrNull ?? [];
-          final displayDepartments = _filterAndSortDepartments(userDepts, allMembers);
+          final displayDepartments =
+              _filterAndSortDepartments(userDepts, allMembers);
 
           return StreamBuilder<List<VotingEvent>>(
             stream: eventsStream,
@@ -183,7 +199,10 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                 children: [
                                   Text(
                                     'Departments',
-                                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium
+                                        ?.copyWith(
                                           fontWeight: FontWeight.bold,
                                           color: AppTheme.secondaryNavy,
                                         ),
@@ -191,7 +210,9 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                   const SizedBox(height: 6),
                                   const Text(
                                     'Group members into departments to limit who is eligible to vote in an event.',
-                                    style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+                                    style: TextStyle(
+                                        color: AppTheme.textSecondary,
+                                        fontSize: 14),
                                   ),
                                 ],
                               ),
@@ -202,8 +223,10 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                 onPressed: () {
                                   showDialog(
                                     context: context,
-                                    builder: (context) => CreateEditDepartmentDialog(
-                                      organizationId: orgContext.organization.id,
+                                    builder: (context) =>
+                                        CreateEditDepartmentDialog(
+                                      organizationId:
+                                          orgContext.organization.id,
                                     ),
                                   );
                                 },
@@ -211,8 +234,10 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                 label: const Text('New department'),
                                 style: FilledButton.styleFrom(
                                   backgroundColor: AppTheme.primaryBlue,
-                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 14),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
                                 ),
                               ),
                             ],
@@ -228,19 +253,25 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                 controller: _searchCtrl,
                                 decoration: InputDecoration(
                                   hintText: 'Search departments',
-                                  prefixIcon: const Icon(Icons.search_rounded, color: AppTheme.textSecondary, size: 20),
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                  prefixIcon: const Icon(Icons.search_rounded,
+                                      color: AppTheme.textSecondary, size: 20),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 14),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
-                                    borderSide: const BorderSide(color: AppTheme.borderLight),
+                                    borderSide: const BorderSide(
+                                        color: AppTheme.borderLight),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
-                                    borderSide: const BorderSide(color: AppTheme.borderLight),
+                                    borderSide: const BorderSide(
+                                        color: AppTheme.borderLight),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
-                                    borderSide: const BorderSide(color: AppTheme.primaryBlue, width: 1.5),
+                                    borderSide: const BorderSide(
+                                        color: AppTheme.primaryBlue,
+                                        width: 1.5),
                                   ),
                                   fillColor: AppTheme.surfaceWhite,
                                   filled: true,
@@ -255,7 +286,8 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                               offset: const Offset(0, 42),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                side: const BorderSide(color: AppTheme.borderLight),
+                                side: const BorderSide(
+                                    color: AppTheme.borderLight),
                               ),
                               color: AppTheme.surfaceWhite,
                               onSelected: (val) {
@@ -269,23 +301,33 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                 _sortMenuItem('members', 'Sort: Most members'),
                               ],
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 12),
                                 decoration: BoxDecoration(
                                   color: AppTheme.surfaceWhite,
                                   borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: AppTheme.borderLight),
+                                  border:
+                                      Border.all(color: AppTheme.borderLight),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Icon(Icons.swap_vert_rounded, size: 16, color: AppTheme.textSecondary),
+                                    const Icon(Icons.swap_vert_rounded,
+                                        size: 16,
+                                        color: AppTheme.textSecondary),
                                     const SizedBox(width: 8),
                                     Text(
                                       _getSortLabel(_selectedSort),
-                                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.secondaryNavy),
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppTheme.secondaryNavy),
                                     ),
                                     const SizedBox(width: 6),
-                                    const Icon(Icons.keyboard_arrow_down_rounded, size: 16, color: AppTheme.textSecondary),
+                                    const Icon(
+                                        Icons.keyboard_arrow_down_rounded,
+                                        size: 16,
+                                        color: AppTheme.textSecondary),
                                   ],
                                 ),
                               ),
@@ -296,15 +338,24 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
 
                         // 3. Sub-header Counter & Hint
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               '${userDepts.length} ${userDepts.length == 1 ? 'department' : 'departments'}',
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.secondaryNavy),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                  color: AppTheme.secondaryNavy),
                             ),
-                            const Text(
-                              'Manage members directly, or use ••• for more actions',
-                              style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                            const SizedBox(width: 12),
+                            const Expanded(
+                              child: Text(
+                                'Manage members directly, or use ••• for more actions',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: AppTheme.textSecondary),
+                                textAlign: TextAlign.right,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ],
                         ),
@@ -315,18 +366,25 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 48),
                             child: EmptyView(
-                              icon: isManager ? Icons.domain_disabled_outlined : Icons.lock_outline_rounded,
-                              title: isManager ? 'No Departments Found' : 'No Department Assigned',
+                              icon: isManager
+                                  ? Icons.domain_disabled_outlined
+                                  : Icons.lock_outline_rounded,
+                              title: isManager
+                                  ? 'No Departments Found'
+                                  : 'No Department Assigned',
                               message: isManager
                                   ? 'Create departments to organize members and restrict voting eligibility.'
                                   : 'You are not currently assigned to any department in this organization.',
-                              actionLabel: isManager ? 'Create Department' : null,
+                              actionLabel:
+                                  isManager ? 'Create Department' : null,
                               onAction: isManager
                                   ? () {
                                       showDialog(
                                         context: context,
-                                        builder: (context) => CreateEditDepartmentDialog(
-                                          organizationId: orgContext.organization.id,
+                                        builder: (context) =>
+                                            CreateEditDepartmentDialog(
+                                          organizationId:
+                                              orgContext.organization.id,
                                         ),
                                       );
                                     }
@@ -338,16 +396,22 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                             builder: (context, constraints) {
                               final cardWidth = constraints.maxWidth >= 900
                                   ? (constraints.maxWidth - 32) / 3
-                                  : (constraints.maxWidth >= 600 ? (constraints.maxWidth - 16) / 2 : double.infinity);
+                                  : (constraints.maxWidth >= 600
+                                      ? (constraints.maxWidth - 16) / 2
+                                      : double.infinity);
 
                               return Wrap(
                                 spacing: 16,
                                 runSpacing: 16,
                                 children: [
                                   ...displayDepartments.map((dept) {
-                                    final deptMembers = allMembers.where((m) => m['departmentId'] == dept.id).toList();
+                                    final deptMembers = allMembers
+                                        .where(
+                                            (m) => m['departmentId'] == dept.id)
+                                        .toList();
                                     final eventsCount = allEvents.where((e) {
-                                      return e.eligibilityDepartmentIds.contains(dept.id);
+                                      return e.eligibilityDepartmentIds
+                                          .contains(dept.id);
                                     }).length;
 
                                     return SizedBox(
@@ -357,17 +421,21 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                         deptMembers: deptMembers,
                                         eventsCount: eventsCount,
                                         isManager: isManager,
-                                        onManageMembers: () => context.go('/orgs/departments/${dept.id}'),
+                                        onManageMembers: () => context
+                                            .go('/orgs/departments/${dept.id}'),
                                         onEdit: () {
                                           showDialog(
                                             context: context,
-                                            builder: (context) => CreateEditDepartmentDialog(
-                                              organizationId: orgContext.organization.id,
+                                            builder: (context) =>
+                                                CreateEditDepartmentDialog(
+                                              organizationId:
+                                                  orgContext.organization.id,
                                               departmentToEdit: dept,
                                             ),
                                           );
                                         },
-                                        onDelete: () => _showDeleteConfirmation(context, ref, dept),
+                                        onDelete: () => _showDeleteConfirmation(
+                                            context, ref, dept),
                                       ),
                                     );
                                   }),
@@ -380,8 +448,10 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                         onTap: () {
                                           showDialog(
                                             context: context,
-                                            builder: (context) => CreateEditDepartmentDialog(
-                                              organizationId: orgContext.organization.id,
+                                            builder: (context) =>
+                                                CreateEditDepartmentDialog(
+                                              organizationId:
+                                                  orgContext.organization.id,
                                             ),
                                           );
                                         },
@@ -422,7 +492,8 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
       child: Row(
         children: [
           if (isSelected)
-            const Icon(Icons.check_rounded, size: 16, color: AppTheme.primaryBlue)
+            const Icon(Icons.check_rounded,
+                size: 16, color: AppTheme.primaryBlue)
           else
             const SizedBox(width: 16),
           const SizedBox(width: 8),
@@ -492,7 +563,9 @@ class _DepartmentCardState extends State<_DepartmentCard> {
           color: AppTheme.surfaceWhite,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: _isHovered ? AppTheme.primaryBlue.withValues(alpha: 0.4) : AppTheme.borderLight,
+            color: _isHovered
+                ? AppTheme.primaryBlue.withValues(alpha: 0.4)
+                : AppTheme.borderLight,
             width: _isHovered ? 1.4 : 1.0,
           ),
           boxShadow: [
@@ -544,7 +617,8 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                       const SizedBox(height: 2),
                       Text(
                         '$memberCount ${memberCount == 1 ? 'member' : 'members'}',
-                        style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                        style: const TextStyle(
+                            fontSize: 12, color: AppTheme.textSecondary),
                       ),
                     ],
                   ),
@@ -562,7 +636,8 @@ class _DepartmentCardState extends State<_DepartmentCard> {
 
                 // Event Usage Badge
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: widget.eventsCount > 0
                         ? AppTheme.surfaceBlue
@@ -576,7 +651,9 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
-                      color: widget.eventsCount > 0 ? AppTheme.primaryBlue : AppTheme.textSecondary,
+                      color: widget.eventsCount > 0
+                          ? AppTheme.primaryBlue
+                          : AppTheme.textSecondary,
                     ),
                   ),
                 ),
@@ -598,7 +675,8 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.people_outline_rounded, size: 16, color: AppTheme.primaryBlue),
+                        Icon(Icons.people_outline_rounded,
+                            size: 16, color: AppTheme.primaryBlue),
                         SizedBox(width: 6),
                         Text(
                           'Manage members',
@@ -612,7 +690,6 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                     ),
                   ),
                 ),
-
                 if (widget.isManager)
                   PopupMenuButton<String>(
                     tooltip: 'Department actions',
@@ -622,7 +699,8 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                       side: const BorderSide(color: AppTheme.borderLight),
                     ),
                     color: AppTheme.surfaceWhite,
-                    icon: const Icon(Icons.more_horiz_rounded, color: AppTheme.textSecondary),
+                    icon: const Icon(Icons.more_horiz_rounded,
+                        color: AppTheme.textSecondary),
                     onSelected: (value) {
                       if (value == 'edit') {
                         widget.onEdit();
@@ -638,7 +716,10 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                         height: 32,
                         child: Text(
                           widget.dept.name,
-                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
+                          style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.textSecondary),
                         ),
                       ),
                       const PopupMenuDivider(),
@@ -646,9 +727,12 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                         value: 'edit',
                         child: Row(
                           children: [
-                            Icon(Icons.edit_outlined, size: 16, color: AppTheme.secondaryNavy),
+                            Icon(Icons.edit_outlined,
+                                size: 16, color: AppTheme.secondaryNavy),
                             SizedBox(width: 8),
-                            Text('Rename', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                            Text('Rename',
+                                style: TextStyle(
+                                    fontSize: 13, fontWeight: FontWeight.w500)),
                           ],
                         ),
                       ),
@@ -656,9 +740,12 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                         value: 'manage',
                         child: Row(
                           children: [
-                            Icon(Icons.people_outline_rounded, size: 16, color: AppTheme.secondaryNavy),
+                            Icon(Icons.people_outline_rounded,
+                                size: 16, color: AppTheme.secondaryNavy),
                             SizedBox(width: 8),
-                            Text('Manage members', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                            Text('Manage members',
+                                style: TextStyle(
+                                    fontSize: 13, fontWeight: FontWeight.w500)),
                           ],
                         ),
                       ),
@@ -666,16 +753,22 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                       PopupMenuItem<String>(
                         value: 'delete',
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 6),
                           decoration: BoxDecoration(
                             color: AppTheme.error.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Row(
                             children: [
-                              Icon(Icons.delete_outline_rounded, size: 16, color: AppTheme.error),
+                              Icon(Icons.delete_outline_rounded,
+                                  size: 16, color: AppTheme.error),
                               SizedBox(width: 8),
-                              Text('Delete department', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.error)),
+                              Text('Delete department',
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppTheme.error)),
                             ],
                           ),
                         ),
@@ -699,7 +792,8 @@ class _DepartmentCardState extends State<_DepartmentCard> {
           color: AppTheme.surfaceBlue,
           shape: BoxShape.circle,
         ),
-        child: const Icon(Icons.person_outline_rounded, size: 16, color: AppTheme.primaryBlue),
+        child: const Icon(Icons.person_outline_rounded,
+            size: 16, color: AppTheme.primaryBlue),
       );
     }
 
@@ -757,7 +851,10 @@ class _DepartmentCardState extends State<_DepartmentCard> {
               ),
               child: Text(
                 '+$remaining',
-                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue),
+                style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.primaryBlue),
               ),
             ),
           ],
@@ -787,7 +884,8 @@ class _NewDepartmentDashedCard extends StatefulWidget {
   const _NewDepartmentDashedCard({required this.onTap});
 
   @override
-  State<_NewDepartmentDashedCard> createState() => _NewDepartmentDashedCardState();
+  State<_NewDepartmentDashedCard> createState() =>
+      _NewDepartmentDashedCardState();
 }
 
 class _NewDepartmentDashedCardState extends State<_NewDepartmentDashedCard> {
@@ -806,7 +904,9 @@ class _NewDepartmentDashedCardState extends State<_NewDepartmentDashedCard> {
           curve: Curves.easeOutCubic,
           height: 180,
           decoration: BoxDecoration(
-            color: _isHovered ? AppTheme.surfaceBlue.withValues(alpha: 0.5) : const Color(0xFFF8FAFC),
+            color: _isHovered
+                ? AppTheme.surfaceBlue.withValues(alpha: 0.5)
+                : const Color(0xFFF8FAFC),
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
               color: _isHovered ? AppTheme.primaryBlue : AppTheme.borderLight,
@@ -822,9 +922,11 @@ class _NewDepartmentDashedCardState extends State<_NewDepartmentDashedCard> {
                 decoration: BoxDecoration(
                   color: AppTheme.surfaceBlue,
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.3)),
+                  border: Border.all(
+                      color: AppTheme.primaryBlue.withValues(alpha: 0.3)),
                 ),
-                child: const Icon(Icons.add_rounded, color: AppTheme.primaryBlue, size: 22),
+                child: const Icon(Icons.add_rounded,
+                    color: AppTheme.primaryBlue, size: 22),
               ),
               const SizedBox(height: 12),
               const Text(

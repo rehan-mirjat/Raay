@@ -4,26 +4,31 @@ class CandidateTally {
   final String candidateId;
   final String candidateName;
   final int voteCount;
+  final double percent;
 
   CandidateTally({
     required this.candidateId,
     required this.candidateName,
     required this.voteCount,
+    required this.percent,
   });
 
   factory CandidateTally.fromMap(Map<String, dynamic> map) {
     return CandidateTally(
-      candidateId: map['candidateId'] as String? ?? '',
-      candidateName: map['candidateName'] as String? ?? 'Unknown',
-      voteCount: (map['voteCount'] as num?)?.toInt() ?? 0,
+      candidateId: map['choiceId'] as String? ?? '',
+      candidateName: map['name'] as String? ?? 'Unknown',
+      voteCount: (map['votes'] as num?)?.toInt() ?? 0,
+      percent: (map['percent'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'candidateId': candidateId,
-      'candidateName': candidateName,
-      'voteCount': voteCount,
+      'choiceId': candidateId,
+      'choiceType': 'CANDIDATE',
+      'name': candidateName,
+      'votes': voteCount,
+      'percent': percent,
     };
   }
 }
@@ -32,26 +37,31 @@ class OptionTally {
   final String optionId;
   final String title;
   final int voteCount;
+  final double percent;
 
   OptionTally({
     required this.optionId,
     required this.title,
     required this.voteCount,
+    required this.percent,
   });
 
   factory OptionTally.fromMap(Map<String, dynamic> map) {
     return OptionTally(
-      optionId: map['optionId'] as String? ?? '',
-      title: map['title'] as String? ?? 'Option',
-      voteCount: (map['voteCount'] as num?)?.toInt() ?? 0,
+      optionId: map['choiceId'] as String? ?? '',
+      title: map['name'] as String? ?? 'Option',
+      voteCount: (map['votes'] as num?)?.toInt() ?? 0,
+      percent: (map['percent'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'optionId': optionId,
-      'title': title,
-      'voteCount': voteCount,
+      'choiceId': optionId,
+      'choiceType': 'POLL_OPTION',
+      'name': title,
+      'votes': voteCount,
+      'percent': percent,
     };
   }
 }
@@ -59,7 +69,10 @@ class OptionTally {
 class EventResult {
   final String eventId;
   final String organizationId;
-  final int totalBallotsCast;
+  final int totalVotes;
+  final int eligibleCount;
+  final int participationCount;
+  final double turnoutPercent;
   final List<CandidateTally> candidateTallies;
   final List<OptionTally> optionTallies;
   final bool published;
@@ -68,7 +81,10 @@ class EventResult {
   EventResult({
     required this.eventId,
     required this.organizationId,
-    required this.totalBallotsCast,
+    required this.totalVotes,
+    required this.eligibleCount,
+    required this.participationCount,
+    required this.turnoutPercent,
     required this.candidateTallies,
     required this.optionTallies,
     required this.published,
@@ -78,20 +94,30 @@ class EventResult {
   factory EventResult.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>? ?? {};
 
-    final rawCandidates = data['candidateTallies'] as List<dynamic>? ?? [];
-    final candidateList = rawCandidates
-        .map((e) => CandidateTally.fromMap(Map<String, dynamic>.from(e as Map)))
-        .toList();
+    final rawTallies = data['tallies'] as List<dynamic>? ?? [];
+    
+    final candidateList = <CandidateTally>[];
+    final optionList = <OptionTally>[];
 
-    final rawOptions = data['optionTallies'] as List<dynamic>? ?? [];
-    final optionList = rawOptions
-        .map((e) => OptionTally.fromMap(Map<String, dynamic>.from(e as Map)))
-        .toList();
+    for (final t in rawTallies) {
+      if (t is Map) {
+        final map = Map<String, dynamic>.from(t);
+        final choiceType = map['choiceType'] as String?;
+        if (choiceType == 'CANDIDATE') {
+          candidateList.add(CandidateTally.fromMap(map));
+        } else if (choiceType == 'POLL_OPTION') {
+          optionList.add(OptionTally.fromMap(map));
+        }
+      }
+    }
 
     return EventResult(
       eventId: doc.id,
       organizationId: data['organizationId'] as String? ?? '',
-      totalBallotsCast: (data['totalBallotsCast'] as num?)?.toInt() ?? 0,
+      totalVotes: (data['totalVotes'] as num?)?.toInt() ?? 0,
+      eligibleCount: (data['eligibleCount'] as num?)?.toInt() ?? 0,
+      participationCount: (data['participationCount'] as num?)?.toInt() ?? 0,
+      turnoutPercent: (data['turnoutPercent'] as num?)?.toDouble() ?? 0.0,
       candidateTallies: candidateList,
       optionTallies: optionList,
       published: data['published'] as bool? ?? false,
@@ -100,11 +126,18 @@ class EventResult {
   }
 
   Map<String, dynamic> toFirestore() {
+    final tallies = [
+      ...candidateTallies.map((e) => e.toMap()),
+      ...optionTallies.map((e) => e.toMap()),
+    ];
+
     return {
       'organizationId': organizationId,
-      'totalBallotsCast': totalBallotsCast,
-      'candidateTallies': candidateTallies.map((e) => e.toMap()).toList(),
-      'optionTallies': optionTallies.map((e) => e.toMap()).toList(),
+      'totalVotes': totalVotes,
+      'eligibleCount': eligibleCount,
+      'participationCount': participationCount,
+      'turnoutPercent': turnoutPercent,
+      'tallies': tallies,
       'published': published,
       'calculatedAt': Timestamp.fromDate(calculatedAt),
     };

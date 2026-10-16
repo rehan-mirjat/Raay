@@ -28,10 +28,12 @@ class OrganizationAuditScreen extends ConsumerStatefulWidget {
   const OrganizationAuditScreen({super.key});
 
   @override
-  ConsumerState<OrganizationAuditScreen> createState() => _OrganizationAuditScreenState();
+  ConsumerState<OrganizationAuditScreen> createState() =>
+      _OrganizationAuditScreenState();
 }
 
-class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScreen> {
+class _OrganizationAuditScreenState
+    extends ConsumerState<OrganizationAuditScreen> {
   final TextEditingController _searchCtrl = TextEditingController();
   String _searchQuery = '';
   String _selectedCategory = 'all'; // 'all', 'members', 'invitations'
@@ -74,9 +76,14 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
     return '${raw.substring(0, 4)}...${raw.substring(raw.length - 4)}';
   }
 
-  (IconData, Color, Color) _getActionVisuals(String rawAction, String recordType) {
+  (IconData, Color, Color) _getActionVisuals(
+      String rawAction, String recordType) {
     final action = rawAction.toUpperCase();
-    if (action.contains('REMOVE') || action.contains('DELETE') || action.contains('CANCEL') || action.contains('DECLINE') || action.contains('SUSPEND')) {
+    if (action.contains('REMOVE') ||
+        action.contains('DELETE') ||
+        action.contains('CANCEL') ||
+        action.contains('DECLINE') ||
+        action.contains('SUSPEND')) {
       return (
         Icons.person_remove_outlined,
         AppTheme.error,
@@ -90,14 +97,19 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
         AppTheme.surfaceBlue,
       );
     }
-    if (action.contains('ADD') || action.contains('ACCEPT') || action.contains('VERIFY') || action.contains('CREATE')) {
+    if (action.contains('ADD') ||
+        action.contains('ACCEPT') ||
+        action.contains('VERIFY') ||
+        action.contains('CREATE')) {
       return (
         Icons.person_add_alt_1_outlined,
         AppTheme.success,
         AppTheme.success.withValues(alpha: 0.1),
       );
     }
-    if (action.contains('ROLE') || action.contains('UPDATE') || action.contains('STATUS')) {
+    if (action.contains('ROLE') ||
+        action.contains('UPDATE') ||
+        action.contains('STATUS')) {
       return (
         Icons.shield_outlined,
         Colors.purple.shade700,
@@ -117,7 +129,8 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
     final isDesktop = ResponsiveLayout.isWide(context);
 
     if (state.isLoading && !state.hasValue) {
-      return const Scaffold(body: LoadingView(message: 'Loading organization activity…'));
+      return const Scaffold(
+          body: LoadingView(message: 'Loading organization activity…'));
     }
     if (state.hasError && !state.hasValue) {
       return Scaffold(
@@ -144,12 +157,14 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
         body: ErrorView(
           type: ErrorViewType.accessDenied,
           title: 'Access denied',
-          message: 'Only this organization’s Owner and Admins can view its audit history.',
+          message:
+              'Only this organization’s Owner and Admins can view its audit history.',
         ),
       );
     }
 
-    final logsAsync = ref.watch(organizationAuditLogsProvider(orgContext.organization.id));
+    final logsAsync =
+        ref.watch(organizationAuditLogsProvider(orgContext.organization.id));
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundLight,
@@ -170,12 +185,21 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                     InkWell(
                       onTap: () => context.go('/orgs'),
                       borderRadius: BorderRadius.circular(4),
-                      child: const Text('Organization', style: TextStyle(fontSize: 13, color: AppTheme.textSecondary, fontWeight: FontWeight.w500)),
+                      child: const Text('Organization',
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: AppTheme.textSecondary,
+                              fontWeight: FontWeight.w500)),
                     ),
                     const SizedBox(width: 6),
-                    const Icon(Icons.chevron_right_rounded, size: 16, color: AppTheme.textSecondary),
+                    const Icon(Icons.chevron_right_rounded,
+                        size: 16, color: AppTheme.textSecondary),
                     const SizedBox(width: 6),
-                    const Text('Activity', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
+                    const Text('Activity',
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.secondaryNavy)),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -197,18 +221,21 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
 
                 // 3. Search & Filter Bar & Table Content
                 logsAsync.when(
-                  loading: () => const LoadingView(message: 'Loading audit history…'),
+                  loading: () =>
+                      const LoadingView(message: 'Loading audit history…'),
                   error: (error, _) => ErrorView(
                     type: ErrorViewType.generic,
                     message: 'Could not load organization activity: $error',
-                    onRetry: () => ref.invalidate(organizationAuditLogsProvider(orgContext.organization.id)),
+                    onRetry: () => ref.invalidate(organizationAuditLogsProvider(
+                        orgContext.organization.id)),
                   ),
                   data: (snapshot) {
                     return Column(
                       children: [
                         _buildToolbar(context, snapshot.docs, isDesktop),
                         const SizedBox(height: 20),
-                        _buildAuditTableContent(context, snapshot.docs, isDesktop),
+                        _buildAuditTableContent(
+                            context, snapshot.docs, isDesktop),
                       ],
                     );
                   },
@@ -229,7 +256,10 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
     List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
     bool isDesktop,
   ) {
-    final hasActiveFilters = _selectedRecordType != 'all' || _selectedActorUid != 'all' || _selectedDateRange != null || _searchQuery.isNotEmpty;
+    final hasActiveFilters = _selectedRecordType != 'all' ||
+        _selectedActorUid != 'all' ||
+        _selectedDateRange != null ||
+        _searchQuery.isNotEmpty;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -243,10 +273,18 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                   controller: _searchCtrl,
                   decoration: InputDecoration(
                     hintText: 'Search by activity, account ID or record type',
-                    prefixIcon: const Icon(Icons.search_rounded, color: AppTheme.textSecondary, size: 20),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppTheme.borderLight)),
-                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppTheme.borderLight)),
+                    prefixIcon: const Icon(Icons.search_rounded,
+                        color: AppTheme.textSecondary, size: 20),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide:
+                            const BorderSide(color: AppTheme.borderLight)),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide:
+                            const BorderSide(color: AppTheme.borderLight)),
                     fillColor: AppTheme.surfaceWhite,
                     filled: true,
                   ),
@@ -271,7 +309,11 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                       _selectedCategory = 'all';
                     });
                   },
-                  child: const Text('Reset', style: TextStyle(color: AppTheme.error, fontWeight: FontWeight.bold, fontSize: 13)),
+                  child: const Text('Reset',
+                      style: TextStyle(
+                          color: AppTheme.error,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13)),
                 ),
               ],
             ],
@@ -284,8 +326,10 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                 controller: _searchCtrl,
                 decoration: const InputDecoration(
                   hintText: 'Search activity...',
-                  prefixIcon: Icon(Icons.search_rounded, color: AppTheme.textSecondary, size: 20),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  prefixIcon: Icon(Icons.search_rounded,
+                      color: AppTheme.textSecondary, size: 20),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   fillColor: AppTheme.surfaceWhite,
                   filled: true,
                 ),
@@ -310,7 +354,11 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                           _selectedCategory = 'all';
                         });
                       },
-                      child: const Text('Reset', style: TextStyle(color: AppTheme.error, fontWeight: FontWeight.bold, fontSize: 13)),
+                      child: const Text('Reset',
+                          style: TextStyle(
+                              color: AppTheme.error,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13)),
                     ),
                 ],
               ),
@@ -320,16 +368,16 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
     );
   }
 
-  Widget _buildRecordTypeMenu(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs) {
+  Widget _buildRecordTypeMenu(
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> docs) {
     final types = <String>{'all'};
     for (final d in docs) {
       final t = d.data()['resourceType'] as String?;
       if (t != null && t.isNotEmpty) types.add(t);
     }
 
-    final currentLabel = _selectedRecordType == 'all'
-        ? 'All record types'
-        : _selectedRecordType;
+    final currentLabel =
+        _selectedRecordType == 'all' ? 'All record types' : _selectedRecordType;
 
     return PopupMenuButton<String>(
       tooltip: 'Filter by record type',
@@ -352,7 +400,8 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
           child: Row(
             children: [
               if (isSelected)
-                const Icon(Icons.check_rounded, size: 16, color: AppTheme.primaryBlue)
+                const Icon(Icons.check_rounded,
+                    size: 16, color: AppTheme.primaryBlue)
               else
                 const SizedBox(width: 16),
               const SizedBox(width: 8),
@@ -360,7 +409,9 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                 label,
                 style: TextStyle(
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                  color: isSelected ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
+                  color: isSelected
+                      ? AppTheme.primaryBlue
+                      : AppTheme.secondaryNavy,
                   fontSize: 13,
                 ),
               ),
@@ -368,11 +419,13 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
           ),
         );
       }).toList(),
-      child: _filterPillContainer(currentLabel, Icons.tune_rounded, _selectedRecordType != 'all'),
+      child: _filterPillContainer(
+          currentLabel, Icons.tune_rounded, _selectedRecordType != 'all'),
     );
   }
 
-  Widget _buildAccountsMenu(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs) {
+  Widget _buildAccountsMenu(
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> docs) {
     final accounts = <String>{'all'};
     for (final d in docs) {
       final a = d.data()['actorUid'] as String?;
@@ -397,14 +450,16 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
         });
       },
       itemBuilder: (ctx) => accounts.map((a) {
-        final label = a == 'all' ? 'All accounts' : 'Account ${_truncateAccountId(a)}';
+        final label =
+            a == 'all' ? 'All accounts' : 'Account ${_truncateAccountId(a)}';
         final isSelected = _selectedActorUid == a;
         return PopupMenuItem<String>(
           value: a,
           child: Row(
             children: [
               if (isSelected)
-                const Icon(Icons.check_rounded, size: 16, color: AppTheme.primaryBlue)
+                const Icon(Icons.check_rounded,
+                    size: 16, color: AppTheme.primaryBlue)
               else
                 const SizedBox(width: 16),
               const SizedBox(width: 8),
@@ -412,7 +467,9 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                 label,
                 style: TextStyle(
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                  color: isSelected ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
+                  color: isSelected
+                      ? AppTheme.primaryBlue
+                      : AppTheme.secondaryNavy,
                   fontSize: 13,
                 ),
               ),
@@ -420,7 +477,8 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
           ),
         );
       }).toList(),
-      child: _filterPillContainer(currentLabel, Icons.person_outline_rounded, _selectedActorUid != 'all'),
+      child: _filterPillContainer(currentLabel, Icons.person_outline_rounded,
+          _selectedActorUid != 'all'),
     );
   }
 
@@ -474,16 +532,17 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
             context: context,
             firstDate: DateTime(2020),
             lastDate: now.add(const Duration(days: 365)),
-            initialDateRange: _selectedDateRange ?? DateTimeRange(
-              start: now.subtract(const Duration(days: 7)),
-              end: now,
-            ),
+            initialDateRange: _selectedDateRange ??
+                DateTimeRange(
+                  start: now.subtract(const Duration(days: 7)),
+                  end: now,
+                ),
             builder: (context, child) {
               return Theme(
                 data: Theme.of(context).copyWith(
                   colorScheme: Theme.of(context).colorScheme.copyWith(
-                    primary: AppTheme.primaryBlue,
-                  ),
+                        primary: AppTheme.primaryBlue,
+                      ),
                 ),
                 child: child!,
               );
@@ -502,15 +561,20 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
           child: Row(
             children: [
               if (_selectedDateRange == null)
-                const Icon(Icons.check_rounded, size: 16, color: AppTheme.primaryBlue)
+                const Icon(Icons.check_rounded,
+                    size: 16, color: AppTheme.primaryBlue)
               else
                 const SizedBox(width: 16),
               const SizedBox(width: 8),
               Text(
                 'All time',
                 style: TextStyle(
-                  fontWeight: _selectedDateRange == null ? FontWeight.bold : FontWeight.w500,
-                  color: _selectedDateRange == null ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
+                  fontWeight: _selectedDateRange == null
+                      ? FontWeight.bold
+                      : FontWeight.w500,
+                  color: _selectedDateRange == null
+                      ? AppTheme.primaryBlue
+                      : AppTheme.secondaryNavy,
                   fontSize: 13,
                 ),
               ),
@@ -522,7 +586,9 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
           child: Row(
             children: [
               SizedBox(width: 24),
-              Text('Today', style: TextStyle(fontSize: 13, color: AppTheme.secondaryNavy)),
+              Text('Today',
+                  style:
+                      TextStyle(fontSize: 13, color: AppTheme.secondaryNavy)),
             ],
           ),
         ),
@@ -531,7 +597,9 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
           child: Row(
             children: [
               SizedBox(width: 24),
-              Text('Last 7 days', style: TextStyle(fontSize: 13, color: AppTheme.secondaryNavy)),
+              Text('Last 7 days',
+                  style:
+                      TextStyle(fontSize: 13, color: AppTheme.secondaryNavy)),
             ],
           ),
         ),
@@ -540,7 +608,9 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
           child: Row(
             children: [
               SizedBox(width: 24),
-              Text('Last 30 days', style: TextStyle(fontSize: 13, color: AppTheme.secondaryNavy)),
+              Text('Last 30 days',
+                  style:
+                      TextStyle(fontSize: 13, color: AppTheme.secondaryNavy)),
             ],
           ),
         ),
@@ -549,14 +619,20 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
           value: 'custom',
           child: Row(
             children: [
-              Icon(Icons.date_range_rounded, size: 16, color: AppTheme.primaryBlue),
+              Icon(Icons.date_range_rounded,
+                  size: 16, color: AppTheme.primaryBlue),
               SizedBox(width: 8),
-              Text('Custom date range...', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primaryBlue, fontSize: 13)),
+              Text('Custom date range...',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.primaryBlue,
+                      fontSize: 13)),
             ],
           ),
         ),
       ],
-      child: _filterPillContainer(currentLabel, Icons.calendar_today_rounded, _selectedDateRange != null),
+      child: _filterPillContainer(currentLabel, Icons.calendar_today_rounded,
+          _selectedDateRange != null),
     );
   }
 
@@ -574,7 +650,9 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: isActive ? AppTheme.primaryBlue : AppTheme.textSecondary),
+          Icon(icon,
+              size: 16,
+              color: isActive ? AppTheme.primaryBlue : AppTheme.textSecondary),
           const SizedBox(width: 8),
           Text(
             label,
@@ -585,7 +663,9 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
             ),
           ),
           const SizedBox(width: 6),
-          Icon(Icons.keyboard_arrow_down_rounded, size: 16, color: isActive ? AppTheme.primaryBlue : AppTheme.textSecondary),
+          Icon(Icons.keyboard_arrow_down_rounded,
+              size: 16,
+              color: isActive ? AppTheme.primaryBlue : AppTheme.textSecondary),
         ],
       ),
     );
@@ -610,9 +690,11 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
 
       // Category tab filter
       if (_selectedCategory == 'members') {
-        if (!resourceType.toLowerCase().contains('member') && !action.contains('member')) return false;
+        if (!resourceType.toLowerCase().contains('member') &&
+            !action.contains('member')) return false;
       } else if (_selectedCategory == 'invitations') {
-        if (!resourceType.toLowerCase().contains('invitation') && !action.contains('invitation')) return false;
+        if (!resourceType.toLowerCase().contains('invitation') &&
+            !action.contains('invitation')) return false;
       }
 
       // Record type filter
@@ -628,8 +710,15 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
       // Date range filter
       if (_selectedDateRange != null && stamp is Timestamp) {
         final docDate = stamp.toDate().toLocal();
-        final start = DateTime(_selectedDateRange!.start.year, _selectedDateRange!.start.month, _selectedDateRange!.start.day);
-        final end = DateTime(_selectedDateRange!.end.year, _selectedDateRange!.end.month, _selectedDateRange!.end.day, 23, 59, 59);
+        final start = DateTime(_selectedDateRange!.start.year,
+            _selectedDateRange!.start.month, _selectedDateRange!.start.day);
+        final end = DateTime(
+            _selectedDateRange!.end.year,
+            _selectedDateRange!.end.month,
+            _selectedDateRange!.end.day,
+            23,
+            59,
+            59);
         if (docDate.isBefore(start) || docDate.isAfter(end)) {
           return false;
         }
@@ -657,18 +746,22 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
     final membersCount = allDocs.where((doc) {
       final data = doc.data();
       final action = (data['action'] as String? ?? '').toLowerCase();
-      final resourceType = (data['resourceType'] as String? ?? '').toLowerCase();
+      final resourceType =
+          (data['resourceType'] as String? ?? '').toLowerCase();
       return resourceType.contains('member') || action.contains('member');
     }).length;
     final invitationsCount = allDocs.where((doc) {
       final data = doc.data();
       final action = (data['action'] as String? ?? '').toLowerCase();
-      final resourceType = (data['resourceType'] as String? ?? '').toLowerCase();
-      return resourceType.contains('invitation') || action.contains('invitation');
+      final resourceType =
+          (data['resourceType'] as String? ?? '').toLowerCase();
+      return resourceType.contains('invitation') ||
+          action.contains('invitation');
     }).length;
 
     // Grouping by Date
-    final Map<String, List<QueryDocumentSnapshot<Map<String, dynamic>>>> groupedDocs = {};
+    final Map<String, List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+        groupedDocs = {};
     for (final doc in filteredDocs) {
       final data = doc.data();
       final stamp = data['timestamp'];
@@ -680,17 +773,23 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
 
     return Column(
       children: [
-        // Category Filter Tabs & Sort Row
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // Category Filter Tabs & Sort Row (wraps on narrow screens, matching
+        // the toolbar above it instead of risking overflow like a plain Row)
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          alignment:
+              isDesktop ? WrapAlignment.spaceBetween : WrapAlignment.start,
           children: [
-            Row(
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
               children: [
                 _buildCategoryTab('all', 'All records', allCount),
-                const SizedBox(width: 8),
                 _buildCategoryTab('members', 'Members', membersCount),
-                const SizedBox(width: 8),
-                _buildCategoryTab('invitations', 'Invitations', invitationsCount),
+                _buildCategoryTab(
+                    'invitations', 'Invitations', invitationsCount),
               ],
             ),
             InkWell(
@@ -704,11 +803,15 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                 child: Row(
                   children: [
-                    const Icon(Icons.swap_vert_rounded, size: 16, color: AppTheme.textSecondary),
+                    const Icon(Icons.swap_vert_rounded,
+                        size: 16, color: AppTheme.textSecondary),
                     const SizedBox(width: 6),
                     Text(
                       _newestFirst ? 'Newest first' : 'Oldest first',
-                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.textSecondary),
+                      style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.textSecondary),
                     ),
                   ],
                 ),
@@ -737,16 +840,46 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
               // Column Headers Row (Desktop)
               if (isDesktop)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                   decoration: const BoxDecoration(
-                    border: Border(bottom: BorderSide(color: AppTheme.borderLight)),
+                    border:
+                        Border(bottom: BorderSide(color: AppTheme.borderLight)),
                   ),
                   child: const Row(
                     children: [
-                      Expanded(flex: 5, child: Text('ACTIVITY', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textSecondary, letterSpacing: 0.8))),
-                      Expanded(flex: 3, child: Text('RECORD TYPE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textSecondary, letterSpacing: 0.8))),
-                      Expanded(flex: 3, child: Text('ACCOUNT ID', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textSecondary, letterSpacing: 0.8))),
-                      SizedBox(width: 90, child: Text('TIME', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textSecondary, letterSpacing: 0.8))),
+                      Expanded(
+                          flex: 5,
+                          child: Text('ACTIVITY',
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.textSecondary,
+                                  letterSpacing: 0.8))),
+                      Expanded(
+                          flex: 3,
+                          child: Text('RECORD TYPE',
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.textSecondary,
+                                  letterSpacing: 0.8))),
+                      Expanded(
+                          flex: 3,
+                          child: Text('ACCOUNT ID',
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.textSecondary,
+                                  letterSpacing: 0.8))),
+                      SizedBox(
+                          width: 90,
+                          child: Text('TIME',
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.textSecondary,
+                                  letterSpacing: 0.8))),
                       SizedBox(width: 30),
                     ],
                   ),
@@ -756,7 +889,9 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 48),
                   child: Center(
-                    child: Text('No activity records match your criteria.', style: TextStyle(color: AppTheme.textSecondary, fontSize: 14)),
+                    child: Text('No activity records match your criteria.',
+                        style: TextStyle(
+                            color: AppTheme.textSecondary, fontSize: 14)),
                   ),
                 )
               else
@@ -769,18 +904,23 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                       // Date Group Header
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 10),
                         color: const Color(0xFFF8FAFC),
                         child: Row(
                           children: [
                             Text(
                               dayLabel,
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.secondaryNavy),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                  color: AppTheme.secondaryNavy),
                             ),
                             const SizedBox(width: 8),
                             Text(
                               '${dayDocs.length} ${dayDocs.length == 1 ? 'record' : 'records'}',
-                              style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                              style: const TextStyle(
+                                  fontSize: 12, color: AppTheme.textSecondary),
                             ),
                           ],
                         ),
@@ -788,7 +928,8 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                       const Divider(height: 1, color: AppTheme.borderLight),
 
                       // Rows for this Day
-                      ...dayDocs.map((doc) => _buildActivityRow(context, doc, isDesktop)),
+                      ...dayDocs.map(
+                          (doc) => _buildActivityRow(context, doc, isDesktop)),
                     ],
                   );
                 }),
@@ -803,7 +944,8 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
           children: [
             Text(
               '${filteredDocs.length} records shown · Repeated records retained',
-              style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+              style:
+                  const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
             ),
             const Text(
               'Dates and times as recorded',
@@ -830,7 +972,9 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
         decoration: BoxDecoration(
           color: isSelected ? AppTheme.surfaceBlue : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
-          border: isSelected ? Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.3)) : null,
+          border: isSelected
+              ? Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.3))
+              : null,
         ),
         child: Row(
           children: [
@@ -839,7 +983,8 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                color: isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
+                color:
+                    isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
               ),
             ),
             const SizedBox(width: 6),
@@ -848,7 +993,8 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color: isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
+                color:
+                    isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
               ),
             ),
           ],
@@ -871,10 +1017,15 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
     final accountIdTruncated = _truncateAccountId(rawActor);
 
     final stamp = data['timestamp'];
-    final timeStr = stamp is Timestamp ? _timeFormat.format(stamp.toDate().toLocal()) : 'Unavailable';
-    final fullDateStr = stamp is Timestamp ? _fullFormat.format(stamp.toDate().toLocal()) : 'Time unavailable';
+    final timeStr = stamp is Timestamp
+        ? _timeFormat.format(stamp.toDate().toLocal())
+        : 'Unavailable';
+    final fullDateStr = stamp is Timestamp
+        ? _fullFormat.format(stamp.toDate().toLocal())
+        : 'Time unavailable';
 
-    final (iconData, iconColor, iconBg) = _getActionVisuals(rawAction, recordType);
+    final (iconData, iconColor, iconBg) =
+        _getActionVisuals(rawAction, recordType);
     final isExpanded = _expandedDocId == docId;
     final isHovered = _hoveredDocId == docId;
 
@@ -893,7 +1044,9 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
               duration: const Duration(milliseconds: 150),
               color: isExpanded
                   ? const Color(0xFFF1F5F9)
-                  : (isHovered ? AppTheme.surfaceBlue.withValues(alpha: 0.5) : AppTheme.surfaceWhite),
+                  : (isHovered
+                      ? AppTheme.surfaceBlue.withValues(alpha: 0.5)
+                      : AppTheme.surfaceWhite),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: isDesktop
                   ? Row(
@@ -910,13 +1063,17 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                                   color: iconBg,
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: Icon(iconData, size: 18, color: iconColor),
+                                child:
+                                    Icon(iconData, size: 18, color: iconColor),
                               ),
                               const SizedBox(width: 14),
                               Expanded(
                                 child: Text(
                                   actionTitle,
-                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppTheme.secondaryNavy),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: AppTheme.secondaryNavy),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -929,7 +1086,10 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                           flex: 3,
                           child: Text(
                             recordType,
-                            style: const TextStyle(fontSize: 13, fontFamily: 'monospace', color: AppTheme.textSecondary),
+                            style: const TextStyle(
+                                fontSize: 13,
+                                fontFamily: 'monospace',
+                                color: AppTheme.textSecondary),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -939,7 +1099,11 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                           flex: 3,
                           child: Text(
                             accountIdTruncated,
-                            style: const TextStyle(fontSize: 13, fontFamily: 'monospace', color: AppTheme.secondaryNavy, fontWeight: FontWeight.w600),
+                            style: const TextStyle(
+                                fontSize: 13,
+                                fontFamily: 'monospace',
+                                color: AppTheme.secondaryNavy,
+                                fontWeight: FontWeight.w600),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -949,7 +1113,8 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                           width: 90,
                           child: Text(
                             timeStr,
-                            style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+                            style: const TextStyle(
+                                fontSize: 13, color: AppTheme.textSecondary),
                           ),
                         ),
 
@@ -958,10 +1123,18 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             if (isHovered && !isExpanded)
-                              const Text('View details ', style: TextStyle(fontSize: 11, color: AppTheme.primaryBlue, fontWeight: FontWeight.bold)),
+                              const Text('View details ',
+                                  style: TextStyle(
+                                      fontSize: 11,
+                                      color: AppTheme.primaryBlue,
+                                      fontWeight: FontWeight.bold)),
                             Icon(
-                              isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
-                              color: isExpanded ? AppTheme.primaryBlue : AppTheme.textSecondary,
+                              isExpanded
+                                  ? Icons.keyboard_arrow_up_rounded
+                                  : Icons.keyboard_arrow_down_rounded,
+                              color: isExpanded
+                                  ? AppTheme.primaryBlue
+                                  : AppTheme.textSecondary,
                               size: 20,
                             ),
                           ],
@@ -986,13 +1159,21 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                             Expanded(
                               child: Text(
                                 actionTitle,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppTheme.secondaryNavy),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: AppTheme.secondaryNavy),
                               ),
                             ),
-                            Text(timeStr, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                            Text(timeStr,
+                                style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppTheme.textSecondary)),
                             const SizedBox(width: 4),
                             Icon(
-                              isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                              isExpanded
+                                  ? Icons.keyboard_arrow_up_rounded
+                                  : Icons.keyboard_arrow_down_rounded,
                               color: AppTheme.textSecondary,
                               size: 18,
                             ),
@@ -1001,9 +1182,18 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            Text(recordType, style: const TextStyle(fontSize: 11, fontFamily: 'monospace', color: AppTheme.textSecondary)),
+                            Text(recordType,
+                                style: const TextStyle(
+                                    fontSize: 11,
+                                    fontFamily: 'monospace',
+                                    color: AppTheme.textSecondary)),
                             const SizedBox(width: 8),
-                            Text('• $accountIdTruncated', style: const TextStyle(fontSize: 11, fontFamily: 'monospace', color: AppTheme.secondaryNavy, fontWeight: FontWeight.w600)),
+                            Text('• $accountIdTruncated',
+                                style: const TextStyle(
+                                    fontSize: 11,
+                                    fontFamily: 'monospace',
+                                    color: AppTheme.secondaryNavy,
+                                    fontWeight: FontWeight.w600)),
                           ],
                         ),
                       ],
@@ -1032,11 +1222,13 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
                   const SizedBox(height: 12),
                   const Row(
                     children: [
-                      Icon(Icons.info_outline_rounded, size: 14, color: AppTheme.textSecondary),
+                      Icon(Icons.info_outline_rounded,
+                          size: 14, color: AppTheme.textSecondary),
                       SizedBox(width: 6),
                       Text(
                         'Actor identity and change details are not provided in this record.',
-                        style: TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+                        style: TextStyle(
+                            fontSize: 11, color: AppTheme.textSecondary),
                       ),
                     ],
                   ),
@@ -1054,7 +1246,9 @@ class _OrganizationAuditScreenState extends ConsumerState<OrganizationAuditScree
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+        Text(label,
+            style:
+                const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
         const SizedBox(height: 2),
         Text(
           value,

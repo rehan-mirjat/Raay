@@ -64,8 +64,8 @@ class StatusBadge extends StatelessWidget {
     if (cleanMode == 'IDENTIFIABLE') {
       return StatusBadge(
         label: 'IDENTIFIABLE',
-        backgroundColor: Colors.deepOrange.withValues(alpha: 0.12),
-        textColor: Colors.deepOrange.shade800,
+        backgroundColor: AppTheme.identifiable.withValues(alpha: 0.12),
+        textColor: AppTheme.identifiable,
         icon: Icons.account_circle_rounded,
       );
     }
@@ -109,7 +109,8 @@ class StatusBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: textColor.withValues(alpha: 0.25), width: 1.0),
+        border:
+            Border.all(color: textColor.withValues(alpha: 0.25), width: 1.0),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

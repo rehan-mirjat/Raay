@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/error_view.dart';
@@ -14,7 +15,8 @@ import '../domain/app_user.dart';
 import 'widgets/change_password_section.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
-  const ProfileScreen({super.key, required this.uid, this.initialTab = 0, this.onSignOut});
+  const ProfileScreen(
+      {super.key, required this.uid, this.initialTab = 0, this.onSignOut});
 
   final String uid;
   final int initialTab;
@@ -222,18 +224,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
   }
 
-  Future<void> _toggle2FA(BuildContext context, bool enable) async {
-    // For now, simply show a snackbar indicating that the feature is coming soon
-    // or if the backend implementation requires a specific flow.
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(enable 
-            ? 'Two-Factor Authentication enrollment flow will be implemented shortly.' 
-            : 'Disabling Two-Factor Authentication requires admin verification.'),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final userAsync = ref.watch(userProfileProvider(widget.uid));
@@ -258,19 +248,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 userAsync.when(
                   loading: () =>
                       const LoadingView(message: 'Loading user profile...'),
-                  error: (err, stack) => ErrorView(type: ErrorViewType.generic, 
+                  error: (err, stack) => ErrorView(
+                    type: ErrorViewType.generic,
                     message: 'Error loading profile: $err',
                     onRetry: () =>
                         ref.invalidate(userProfileProvider(widget.uid)),
                   ),
                   data: (user) {
                     if (user == null) {
-                      return const ErrorView(type: ErrorViewType.generic, message: 'User profile not found.');
+                      return const ErrorView(
+                          type: ErrorViewType.generic,
+                          message: 'User profile not found.');
                     }
 
                     _populateControllers(user);
 
-                    final isDesktop = MediaQuery.of(context).size.width >= 800;
+                    final isDesktop = ResponsiveLayout.isWide(context);
 
                     if (isDesktop) {
                       return Row(
@@ -344,7 +337,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: isSelected ? AppTheme.primaryBlue.withValues(alpha: 0.1) : Colors.transparent,
+          color: isSelected
+              ? AppTheme.primaryBlue.withValues(alpha: 0.1)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -422,7 +417,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     // the moment a user actually verifies their email after signing up.
     final isEmailVerified = authUser?.emailVerified ?? false;
     final dateFormat = DateFormat('MMMM d, yyyy');
-        
+
     final sanitizedPhotoUrl = FirebaseService.sanitizeStorageUrl(photoUrl);
 
     return Column(
@@ -439,8 +434,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     CircleAvatar(
                       radius: 38,
                       backgroundColor: AppTheme.surfaceBlue,
-                      backgroundImage:
-                          sanitizedPhotoUrl.isNotEmpty ? NetworkImage(sanitizedPhotoUrl) : null,
+                      backgroundImage: sanitizedPhotoUrl.isNotEmpty
+                          ? NetworkImage(sanitizedPhotoUrl)
+                          : null,
                       child: sanitizedPhotoUrl.isEmpty
                           ? Text(
                               user.firstName.isNotEmpty
@@ -615,8 +611,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 Expanded(
                   child: Text(
                     _error!,
-                    style: const TextStyle(
-                        color: AppTheme.error, fontSize: 13),
+                    style: const TextStyle(color: AppTheme.error, fontSize: 13),
                   ),
                 ),
               ],
@@ -771,7 +766,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                   : 'Not provided',
                               style: TextStyle(
                                   fontSize: 15,
-                                  color: user.phoneNumber?.isNotEmpty == true ? AppTheme.secondaryNavy : AppTheme.textSecondary,
+                                  color: user.phoneNumber?.isNotEmpty == true
+                                      ? AppTheme.secondaryNavy
+                                      : AppTheme.textSecondary,
                                   fontWeight: FontWeight.w500)),
                     ],
                   ),
@@ -786,7 +783,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               _isEditing = false;
                               _firstNameController.text = user.firstName;
                               _lastNameController.text = user.lastName;
-                              _phoneNumberController.text = user.phoneNumber ?? '';
+                              _phoneNumberController.text =
+                                  user.phoneNumber ?? '';
                             });
                           },
                           child: const Text('Cancel'),
@@ -821,12 +819,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   Widget _buildSecurityView(BuildContext context, AppUser user) {
     final authUser = ref.watch(authServiceProvider).currentUser;
-    final hasPasswordProvider = authUser?.providerData
-            .any((info) => info.providerId == 'password') ??
-        false;
-    final hasGoogleProvider = authUser?.providerData
-            .any((info) => info.providerId == 'google.com') ??
-        false;
+    final hasPasswordProvider =
+        authUser?.providerData.any((info) => info.providerId == 'password') ??
+            false;
+    final hasGoogleProvider =
+        authUser?.providerData.any((info) => info.providerId == 'google.com') ??
+            false;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -935,24 +933,43 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   const Text('Managed securely through Google Sign-In.',
                       style: TextStyle(
                           color: AppTheme.textSecondary, fontSize: 13)),
-                          
+
                 const SizedBox(height: 24),
                 const Divider(height: 1),
                 const SizedBox(height: 24),
-                
+
                 // Two-Factor Authentication
-                const Text('TWO-FACTOR AUTHENTICATION (2FA)',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 11,
-                        color: AppTheme.secondaryNavy,
-                        letterSpacing: 0.5)),
+                Row(
+                  children: [
+                    const Text('TWO-FACTOR AUTHENTICATION (2FA)',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 11,
+                            color: AppTheme.secondaryNavy,
+                            letterSpacing: 0.5)),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: AppTheme.surfaceBlue,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Text('Coming soon',
+                          style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.primaryBlue)),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 12),
                 if (authUser != null)
                   FutureBuilder<List<dynamic>>(
                     future: authUser.multiFactor.getEnrolledFactors(),
                     builder: (context, snapshot) {
-                      final is2FAEnabled = snapshot.hasData && snapshot.data!.isNotEmpty;
+                      final is2FAEnabled =
+                          snapshot.hasData && snapshot.data!.isNotEmpty;
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -965,26 +982,35 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                   style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
-                                      color: is2FAEnabled ? AppTheme.success : AppTheme.textSecondary),
+                                      color: is2FAEnabled
+                                          ? AppTheme.success
+                                          : AppTheme.textSecondary),
                                 ),
                                 const SizedBox(height: 4),
                                 const Text(
                                   'Add an extra layer of security to your account.',
-                                  style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                                  style: TextStyle(
+                                      color: AppTheme.textSecondary,
+                                      fontSize: 13),
                                 ),
                               ],
                             ),
                           ),
-                          if (snapshot.connectionState == ConnectionState.waiting)
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting)
                             const SizedBox(
                               width: 32,
                               height: 32,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
                           else
-                            Switch(
-                              value: is2FAEnabled,
-                              onChanged: (value) => _toggle2FA(context, value),
+                            Tooltip(
+                              message:
+                                  'Two-factor authentication enrollment is coming soon.',
+                              child: Switch(
+                                value: is2FAEnabled,
+                                onChanged: null,
+                              ),
                             ),
                         ],
                       );
@@ -1014,9 +1040,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 const Text(
                   'Permanently delete your user account and profile data.',
                   style: TextStyle(
-                      fontSize: 13,
-                      color: AppTheme.textSecondary,
-                      height: 1.4),
+                      fontSize: 13, color: AppTheme.textSecondary, height: 1.4),
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton.icon(

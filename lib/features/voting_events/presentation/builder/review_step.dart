@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/layout/responsive.dart';
+import '../../../../core/widgets/loading_view.dart';
 import '../../data/voting_event_repository.dart';
 import '../providers/draft_event_provider.dart';
 import '../../data/candidate_repository.dart';
@@ -132,8 +133,9 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
             ),
             actions: [
               TextButton(
-                onPressed:
-                    isVerifying ? null : () => Navigator.of(dialogContext).pop(false),
+                onPressed: isVerifying
+                    ? null
+                    : () => Navigator.of(dialogContext).pop(false),
                 child: const Text('Cancel'),
               ),
               ElevatedButton(
@@ -184,7 +186,7 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
         stream: countStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const LoadingView();
           }
           if (snapshot.hasError) {
             return Text('Error loading choices: ${snapshot.error}');
