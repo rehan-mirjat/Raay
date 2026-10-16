@@ -1,8 +1,10 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { checkRateLimit, RATE_LIMIT_ORG_CREATION } from "../utils/rateLimiter";
+import { requireNotRevoked } from "../utils/authorization";
 
 const ALLOWED_TYPES = ["academic", "corporate", "nonProfit", "club", "community", "other"];
-const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,24}$/;
 const UUID_V4_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export const createOrganization = onCall(async (request) => {
@@ -11,8 +13,13 @@ export const createOrganization = onCall(async (request) => {
     throw new HttpsError("unauthenticated", "User must be authenticated to create an organization.");
   }
 
+  await requireNotRevoked(request);
+
   const uid = request.auth.uid;
   const db = getFirestore();
+
+  // Table 3-4: 3 organization-creation attempts per user per 24 hours.
+  await checkRateLimit(uid, RATE_LIMIT_ORG_CREATION);
 
   // 2. Validate authenticated user's profile and account state in Firestore
   const userRef = db.collection("users").doc(uid);

@@ -48,7 +48,7 @@ class AdminEventDashboardScreen extends ConsumerWidget {
       return const Scaffold(body: LoadingView(message: 'Verifying administrative access...'));
     }
 
-    final eventsAsync = ref.watch(votingEventRepositoryProvider).watchOrganizationVotingEvents(orgId);
+    final eventsAsync = ref.watch(votingEventRepositoryProvider).watchOrganizationVotingEvents(orgId, includeDrafts: true);
     final lifecycleState = ref.watch(eventLifecycleProvider);
 
     ref.listen<EventLifecycleState>(eventLifecycleProvider, (prev, next) {

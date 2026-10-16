@@ -7,6 +7,7 @@ import { OPERATIONAL_ORG_STATUSES } from "../voting_events/votingCommon";
 import { checkVoterEligibility } from "../utils/checkVoterEligibility";
 import { validateChoiceReference } from "../utils/choiceValidation";
 import { validateAnonymousBallotPayload, validateIdentifiableBallotPayload } from "../utils/privacyValidation";
+import { requireNotRevoked } from "../utils/authorization";
 
 export interface CastVoteRequest {
   organizationId: string;
@@ -24,6 +25,11 @@ export const castVote = onCall({ cors: true }, async (request) => {
   if (!uid) {
     throw new HttpsError("unauthenticated", "Authentication is required to cast a vote.");
   }
+
+  // SEC-08: voting is the single most security-critical action in this app -
+  // a revoked/disabled session must not be able to cast a ballot while its
+  // still-unexpired token is in circulation.
+  await requireNotRevoked(request);
 
   await checkRateLimit(uid, RATE_LIMIT_VOTE);
 

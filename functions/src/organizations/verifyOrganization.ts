@@ -2,12 +2,17 @@ import { onCall } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { createUnauthenticatedError, createPermissionDeniedError, createNotFoundError } from "../utils/errors";
 import { writeAuditLog } from "../security/writeAuditLog";
+import { requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
 
 export const verifyOrganization = onCall(async (request) => {
   if (!request.auth) throw createUnauthenticatedError();
   if (request.auth.token.platformAdmin !== true) {
     throw createPermissionDeniedError("Super Admin privilege required.");
   }
+
+  // FR-10: organization lifecycle changes are an explicitly-named sensitive operation.
+  await requireNotRevoked(request);
+  requireRecentAuthentication(request.auth);
 
   const { organizationId } = request.data || {};
   if (!organizationId) throw new Error("organizationId is required.");

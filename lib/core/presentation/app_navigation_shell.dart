@@ -238,6 +238,11 @@ class _TopHeader extends ConsumerWidget {
     final appUserAsync = user != null ? ref.watch(userProfileProvider(user.uid)) : null;
     final photoUrlToUse = appUserAsync?.valueOrNull?.photoUrl ?? user?.photoURL;
 
+    final activeOrgContext = ref.watch(activeOrganizationContextProvider).valueOrNull?.context;
+    final isManager = activeOrgContext != null &&
+        (activeOrgContext.member.role == OrganizationRole.owner ||
+            activeOrgContext.member.role == OrganizationRole.admin);
+
     return Container(
       color: AppTheme.backgroundLight,
       padding: EdgeInsets.symmetric(
@@ -274,10 +279,12 @@ class _TopHeader extends ConsumerWidget {
                   _DesktopNavLink(label: 'Events', route: '/admin/events', navKey: TourKeys.eventsKey),
                   const SizedBox(width: 4),
                   _DesktopNavLink(label: 'Organization', route: '/orgs', navKey: TourKeys.organizationKey),
-                  const SizedBox(width: 4),
-                  _DesktopNavLink(label: 'Directory', route: '/orgs/members', navKey: TourKeys.directoryKey),
-                  const SizedBox(width: 4),
-                  _DesktopNavLink(label: 'Departments', route: '/orgs/departments', navKey: TourKeys.departmentsKey),
+                  if (isManager) ...[
+                    const SizedBox(width: 4),
+                    _DesktopNavLink(label: 'Directory', route: '/orgs/members', navKey: TourKeys.directoryKey),
+                    const SizedBox(width: 4),
+                    _DesktopNavLink(label: 'Departments', route: '/orgs/departments', navKey: TourKeys.departmentsKey),
+                  ],
                 ],
 
                 const Spacer(),

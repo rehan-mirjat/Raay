@@ -3,24 +3,36 @@ import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
 import * as crypto from "crypto";
 import { getJoinCodeSecret, JOIN_CODE_SECRET } from "../utils/joinCodeSecret";
-import { requireActiveMembership, requireOperationalOrganization } from "../utils/authorization";
+import { requireActiveMembership, requireOperationalOrganization, MAX_CREDENTIAL_EXPIRY_HOURS, requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
+import { checkRateLimit, RATE_LIMIT_INVITATION_ACTION } from "../utils/rateLimiter";
 
-const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,24}$/;
 
 /**
  * Generates a high-entropy invitation token. Formatted like the joining-code
  * alphabet (unambiguous charset, dash-grouped) so it can be embedded in an
  * email link or, if needed, transcribed by hand — acceptInvitation's
  * normalization (trim/uppercase/strip dashes) accepts either form.
+ *
+ * 30 chars from a 32-symbol (5-bit) alphabet = 150 bits of entropy, comfortably
+ * clearing the 128-bit minimum in Table 3-4 (the previous 20-char/100-bit
+ * token did not).
  */
 function generateInvitationToken(): string {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // 32 unambiguous chars
-  const bytes = crypto.randomBytes(20);
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // 32 unambiguous chars, 5 bits/char
+  const GROUPS = 6;
+  const CHARS_PER_GROUP = 5;
+  const totalChars = GROUPS * CHARS_PER_GROUP;
+  const bytes = crypto.randomBytes(totalChars);
   let raw = "";
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < totalChars; i++) {
     raw += chars.charAt(bytes[i] % chars.length);
   }
-  return `INV-${raw.substring(0, 5)}-${raw.substring(5, 10)}-${raw.substring(10, 15)}-${raw.substring(15, 20)}`;
+  const groups: string[] = [];
+  for (let g = 0; g < GROUPS; g++) {
+    groups.push(raw.substring(g * CHARS_PER_GROUP, (g + 1) * CHARS_PER_GROUP));
+  }
+  return `INV-${groups.join("-")}`;
 }
 
 /** Must match acceptInvitation.ts's computeTokenHmac exactly (same normalization, same default secret). */
@@ -34,7 +46,13 @@ export const inviteMember = onCall({ secrets: [JOIN_CODE_SECRET] }, async (reque
     throw new HttpsError("unauthenticated", "Authentication required.");
   }
 
+  // FR-10: bulk issuing of invitations is an explicitly-named sensitive operation.
+  await requireNotRevoked(request);
+  requireRecentAuthentication(request.auth);
+
   const uid = request.auth.uid;
+  // Table 3-4: "Invitation actions 30 per hour" per user.
+  await checkRateLimit(uid, RATE_LIMIT_INVITATION_ACTION);
   const { organizationId, email, role = "member", expiresInHours = 168 } = request.data || {};
 
   if (!organizationId || typeof organizationId !== "string" || organizationId.trim().length === 0) {
@@ -49,8 +67,8 @@ export const inviteMember = onCall({ secrets: [JOIN_CODE_SECRET] }, async (reque
     throw new HttpsError("invalid-argument", "Role must be 'member' or 'admin'.");
   }
 
-  if (!Number.isInteger(expiresInHours) || expiresInHours <= 0 || expiresInHours > 8760) {
-    throw new HttpsError("invalid-argument", "expiresInHours must be an integer between 1 and 8760.");
+  if (!Number.isInteger(expiresInHours) || expiresInHours <= 0 || expiresInHours > MAX_CREDENTIAL_EXPIRY_HOURS) {
+    throw new HttpsError("invalid-argument", `expiresInHours must be an integer between 1 and ${MAX_CREDENTIAL_EXPIRY_HOURS}.`);
   }
 
   const normalizedEmail = email.trim().toLowerCase();

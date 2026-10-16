@@ -1,13 +1,20 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
-import { requireActiveMembership, requireOperationalOrganization } from "../utils/authorization";
+import { requireActiveMembership, requireOperationalOrganization, requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
+import { checkRateLimit, RATE_LIMIT_INVITATION_ACTION } from "../utils/rateLimiter";
 
 export const revokeInvitation = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
     throw new HttpsError("unauthenticated", "Authentication required.");
   }
 
+  // FR-10: revoking an invitation is an explicitly-named sensitive operation.
+  await requireNotRevoked(request);
+  requireRecentAuthentication(request.auth);
+
   const uid = request.auth.uid;
+  // Table 3-4: "Invitation actions 30 per hour" per user.
+  await checkRateLimit(uid, RATE_LIMIT_INVITATION_ACTION);
   const { invitationId } = request.data || {};
 
   if (!invitationId || typeof invitationId !== "string" || invitationId.trim().length === 0) {

@@ -8,6 +8,8 @@ import {
   JOIN_CODE_SECRET,
   LEGACY_JOIN_CODE_SECRET,
 } from "../utils/joinCodeSecret";
+import { requireNotRevoked } from "../utils/authorization";
+import { checkJoinCodeAttempt } from "../utils/joinCodeAttemptLimiter";
 
 function computeCodeHmac(rawCode: string, secret = getJoinCodeSecret()): string {
   const normalized = rawCode.trim().toUpperCase().replace(/[\s-]/g, "");
@@ -20,6 +22,8 @@ export const joinOrganizationWithCode = onCall(
   if (!request.auth || !request.auth.uid) {
     throw new HttpsError("unauthenticated", "Authentication required.");
   }
+
+  await requireNotRevoked(request);
 
   const uid = request.auth.uid;
   const { rawCode } = request.data || {};
@@ -48,36 +52,22 @@ export const joinOrganizationWithCode = onCall(
   }
 
   // 3. Atomic Transactional Rate Limiting Check & Counter Increment
+  // Table 3-4: "5 failed attempts per user per 10 minutes, then a 15-minute
+  // lockout" - see checkJoinCodeAttempt for the (unit-tested) boundary logic.
   const rateLimitRef = db.collection("joinCodeRateLimit").doc(uid);
   const now = Date.now();
 
   await db.runTransaction(async (transaction) => {
     const rateLimitSnap = await transaction.get(rateLimitRef);
-    let attempts = 0;
-    let windowStart = now;
-
-    if (rateLimitSnap.exists) {
-      const rlData = rateLimitSnap.data()!;
-      windowStart = rlData.windowStart || now;
-      attempts = rlData.attempts || 0;
-
-      // 5-minute rolling window
-      if (now - windowStart < 5 * 60 * 1000) {
-        if (attempts >= 5) { // Exactly 5 failed attempts allowed; 6th attempt blocked
-          throw new HttpsError("resource-exhausted", "Too many failed attempts. Please wait 5 minutes before trying again.");
-        }
-      } else {
-        // Reset window
-        windowStart = now;
-        attempts = 0;
-      }
+    const state = rateLimitSnap.exists ? rateLimitSnap.data()! : {};
+    const result = checkJoinCodeAttempt(now, state);
+    transaction.set(rateLimitRef, result.nextState, { merge: true });
+    if (!result.allowed) {
+      throw new HttpsError(
+        "resource-exhausted",
+        `Too many failed attempts. Please wait ${Math.ceil((result.retryAfterMs ?? 0) / 1000)} seconds before trying again.`
+      );
     }
-
-    // Atomically increment failed attempts counter inside transaction
-    transaction.set(rateLimitRef, {
-      windowStart: windowStart,
-      attempts: attempts + 1,
-    }, { merge: true });
   });
 
   let computedHash = computeCodeHmac(rawCode);
@@ -102,6 +92,21 @@ export const joinOrganizationWithCode = onCall(
 
   const codeData = codeSnap.data()!;
   const orgId = codeData.organizationId;
+
+  // Table 3-4: "100 failed attempts per organization per hour trigger an
+  // organization-level throttle" - a separate, coarser control from the
+  // per-user lockout above, so a distributed attack against one org's codes
+  // (many different accounts, each under their own per-user limit) is still caught.
+  const ORG_THROTTLE_WINDOW_MS = 60 * 60 * 1000;
+  const ORG_THROTTLE_MAX = 100;
+  const orgThrottleRef = db.collection("joinCodeOrgThrottle").doc(orgId);
+  const orgThrottleSnap = await orgThrottleRef.get();
+  if (orgThrottleSnap.exists) {
+    const d = orgThrottleSnap.data()!;
+    if (Date.now() - (d.windowStart || 0) < ORG_THROTTLE_WINDOW_MS && (d.failures || 0) >= ORG_THROTTLE_MAX) {
+      throw new HttpsError("resource-exhausted", "This organization is receiving too many failed join attempts. Please try again later.");
+    }
+  }
 
   // 5. Transactional Join
   try {
@@ -194,6 +199,17 @@ export const joinOrganizationWithCode = onCall(
       organizationName: result.organizationName,
     };
   } catch (error: any) {
+    // Count genuine abuse-relevant failures toward the org-level throttle -
+    // "already a member" isn't an attack signal, so it's excluded.
+    if (!(error instanceof HttpsError && error.code === "already-exists")) {
+      await db.runTransaction(async (transaction) => {
+        const snap = await transaction.get(orgThrottleRef);
+        const d = snap.exists ? snap.data()! : {};
+        const windowStart = Date.now() - (d.windowStart || 0) < ORG_THROTTLE_WINDOW_MS ? d.windowStart : Date.now();
+        const failures = windowStart === d.windowStart ? (d.failures || 0) + 1 : 1;
+        transaction.set(orgThrottleRef, { windowStart, failures }, { merge: true });
+      });
+    }
     if (error instanceof HttpsError) throw error;
     throw new HttpsError("internal", "Failed to join organization.", error);
   }

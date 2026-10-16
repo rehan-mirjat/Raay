@@ -74,12 +74,12 @@ service cloud.firestore {
     }
 
     // FIX: drafts are hidden from ordinary members (SRS 7.2).
-    function canSeeEvent(orgId, eventId) {
+    function canSeeEvent(orgId, eventStatus) {
       return isActiveMember(orgId)
         && orgOperational(orgId)
         && (
           isOwnerOrAdmin(orgId)
-          || get(/databases/$(database)/documents/votingEvents/$(eventId)).data.status != "DRAFT"
+          || eventStatus != "DRAFT"
         );
     }
 
@@ -210,7 +210,7 @@ service cloud.firestore {
     // =========================
 
     match /votingEvents/{eventId} {
-      allow read: if canSeeEvent(resource.data.organizationId, eventId);
+      allow read: if canSeeEvent(resource.data.organizationId, resource.data.status);
       allow create, update, delete: if false;   // via functions
     }
 
@@ -224,13 +224,18 @@ service cloud.firestore {
     // CANDIDATES / POLL OPTIONS
     // =========================
 
+    // Mirrors canSeeEvent for the parent votingEvent so a candidate/option can
+    // never be read while its event is still DRAFT, regardless of whether the
+    // caller knows the document ID directly or reaches it via a query.
     match /candidates/{candidateId} {
-      allow read: if canSeeEvent(resource.data.organizationId, resource.data.votingEventId);
+      allow read: if canSeeEvent(resource.data.organizationId,
+        get(/databases/$(database)/documents/votingEvents/$(resource.data.votingEventId)).data.status);
       allow create, update, delete: if false;
     }
 
     match /pollOptions/{optionId} {
-      allow read: if canSeeEvent(resource.data.organizationId, resource.data.votingEventId);
+      allow read: if canSeeEvent(resource.data.organizationId,
+        get(/databases/$(database)/documents/votingEvents/$(resource.data.votingEventId)).data.status);
       allow create, update, delete: if false;
     }
 

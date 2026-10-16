@@ -72,7 +72,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final orgContext = orgState.context!;
         final isDesktop = ResponsiveLayout.isWide(context);
         final isAdmin = orgContext.member.role == OrganizationRole.owner || orgContext.member.role == OrganizationRole.admin;
-        final eventsAsync = ref.watch(votingEventRepositoryProvider).watchOrganizationVotingEvents(orgContext.organization.id);
+        final eventsAsync = ref.watch(votingEventRepositoryProvider).watchOrganizationVotingEvents(
+              orgContext.organization.id,
+              includeDrafts: isAdmin,
+            );
 
         final departmentsAsync = ref.watch(activeOrganizationDepartmentsProvider);
         return RefreshIndicator(

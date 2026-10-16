@@ -66,3 +66,38 @@ export const RATE_LIMIT_SMS = {
   maxRequests: 5,
   windowMs: 60 * 60 * 1000,
 };
+
+/** Table 3-4: 3 organization-creation attempts per user per 24 hours. */
+export const RATE_LIMIT_ORG_CREATION = {
+  keyPrefix: "org_creation",
+  maxRequests: 3,
+  windowMs: 24 * 60 * 60 * 1000,
+};
+
+/** Table 3-4: "Invitation actions 30 per hour" - covers inviteMember, createJoiningCode,
+ * revokeJoiningCode and revokeInvitation as one per-user bucket, per the thesis wording. */
+export const RATE_LIMIT_INVITATION_ACTION = {
+  keyPrefix: "invitation_action",
+  maxRequests: 30,
+  windowMs: 60 * 60 * 1000,
+};
+
+/**
+ * Table 3-4: "5 failed attempts per user per 10 minutes, then a 15-minute lockout."
+ * Approximated as a single 15-minute window capped at 5 attempts (the 6th+ attempt
+ * is denied for the remainder of that window) rather than a separate two-phase
+ * accrual+lockout state machine - noted as an approximation, not an exact match,
+ * since the existing fixed-window primitive doesn't support two distinct durations.
+ */
+export const RATE_LIMIT_JOINING_CODE_ATTEMPT = {
+  keyPrefix: "joining_code_attempt",
+  maxRequests: 5,
+  windowMs: 15 * 60 * 1000,
+};
+
+/** Table 3-4: "sensitive account actions 5 per hour" (e.g. account deletion). */
+export const RATE_LIMIT_SENSITIVE_ACTION = {
+  keyPrefix: "sensitive_action",
+  maxRequests: 5,
+  windowMs: 60 * 60 * 1000,
+};

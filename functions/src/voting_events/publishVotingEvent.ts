@@ -5,10 +5,18 @@ import {
   assertDepartmentsInOrg, enforceRateLimit, failWith, loadEventAsAdmin, readEligibilityConfig,
   requireAuth, requireId, resolveEligibleUserIds, writeActivationDocs, writeAudit,
 } from "./votingCommon";
+import { requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
 
 export const publishVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
   const uid = requireAuth(request);
   const eventId = requireId((request.data || {}).eventId, "eventId");
+
+  // FR-10: publishing a voting event is an explicitly-named sensitive operation.
+  // (MFA is NOT enforced here - see requireMfaEnrolled in utils/authorization.ts
+  // for why: the client has no MFA enrollment flow at all yet, so turning this
+  // on would lock out every current Owner/Admin with no way to comply.)
+  await requireNotRevoked(request);
+  requireRecentAuthentication(request.auth);
 
   const db = getFirestore();
   await enforceRateLimit(db, uid, "publishVotingEvent");

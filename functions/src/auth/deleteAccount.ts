@@ -1,8 +1,8 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
-
-const RECENT_LOGIN_WINDOW_SECONDS = 5 * 60;
+import { requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
+import { checkRateLimit, RATE_LIMIT_SENSITIVE_ACTION } from "../utils/rateLimiter";
 
 /**
  * Deletes the caller's own account. Uses the Admin SDK so it can delete the
@@ -17,15 +17,11 @@ export const deleteAccount = onCall(async (request) => {
     throw new HttpsError("unauthenticated", "Authentication required.");
   }
 
-  // Require a recently-issued ID token for this irreversible action, mirroring the
-  // re-authentication the client SDK would otherwise demand for self-deletion.
-  const authTime = (request.auth?.token?.auth_time as number | undefined) ?? 0;
-  if (Date.now() / 1000 - authTime > RECENT_LOGIN_WINDOW_SECONDS) {
-    throw new HttpsError(
-      "failed-precondition",
-      "For security, please sign out and sign back in before deleting your account."
-    );
-  }
+  // FR-10/DEL-REQ-004: account deletion is an explicitly-named sensitive operation.
+  await requireNotRevoked(request);
+  requireRecentAuthentication(request.auth);
+  // Table 3-4: "sensitive account actions 5 per hour".
+  await checkRateLimit(uid, RATE_LIMIT_SENSITIVE_ACTION);
 
   const db = getFirestore();
   await db.collection("users").doc(uid).delete();

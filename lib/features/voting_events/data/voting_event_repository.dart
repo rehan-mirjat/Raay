@@ -106,10 +106,19 @@ class VotingEventRepository {
     }
   }
 
-  Stream<List<VotingEvent>> watchOrganizationVotingEvents(String organizationId) {
-    return _firebase.firestore
+  Stream<List<VotingEvent>> watchOrganizationVotingEvents(
+    String organizationId, {
+    bool includeDrafts = false,
+  }) {
+    var query = _firebase.firestore
         .collection('votingEvents')
-        .where('organizationId', isEqualTo: organizationId)
+        .where('organizationId', isEqualTo: organizationId);
+
+    if (!includeDrafts) {
+      query = query.where('status', whereIn: ['SCHEDULED', 'ACTIVE', 'CLOSED', 'CANCELLED', 'ARCHIVED']);
+    }
+
+    return query
         .orderBy('startAt', descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs.map((doc) => VotingEvent.fromFirestore(doc)).toList());

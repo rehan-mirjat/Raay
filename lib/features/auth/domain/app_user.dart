@@ -43,4 +43,19 @@ class AppUser {
       status: data['status'] as String? ?? 'active',
     );
   }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'userId': userId,
+      'email': email,
+      'displayName': displayName,
+      'firstName': firstName,
+      'lastName': lastName,
+      if (photoUrl != null) 'photoUrl': photoUrl,
+      if (phoneNumber != null) 'phoneNumber': phoneNumber,
+      'emailVerified': emailVerified,
+      'createdAt': Timestamp.fromDate(createdAt),
+      'status': status,
+    };
+  }
 }

@@ -1,11 +1,13 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
-import { requireActiveMembership, requireOperationalOrganization } from "../utils/authorization";
+import { requireActiveMembership, requireOperationalOrganization, requireNotRevoked } from "../utils/authorization";
 
 export const updateDepartment = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
     throw new HttpsError("unauthenticated", "Authentication required.");
   }
+
+  await requireNotRevoked(request);
 
   const uid = request.auth.uid;
   const { departmentId, name, description } = request.data || {};

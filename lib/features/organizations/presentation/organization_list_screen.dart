@@ -425,19 +425,29 @@ class OrganizationListScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
 
-          // 6 Workspace Action Cards Grid
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: [
-              _buildActionCard(context, 'Dashboard', 'Your workspace at a glance', Icons.grid_view_rounded, () => context.go('/orgs/dashboard')),
-              _buildActionCard(context, 'Directory', 'Find people in your organization', Icons.people_outline_rounded, () => context.go('/orgs/members')),
-              _buildActionCard(context, 'Departments', 'Explore teams and departments', Icons.account_tree_outlined, () => context.go('/orgs/departments')),
-              _buildActionCard(context, 'Joining Codes', 'Manage access to your workspace', Icons.key_outlined, () => context.go('/orgs/joining-codes')),
-              _buildActionCard(context, 'Branding', 'Shape your organization\'s identity', Icons.palette_outlined, () => context.go('/orgs/settings')),
-              _buildActionCard(context, 'Activity', 'See what\'s happening here', Icons.show_chart_rounded, () => context.go('/orgs/audit')),
-            ],
-          ),
+          // Workspace Action Cards Grid
+          if (role == OrganizationRole.owner || role == OrganizationRole.admin)
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: [
+                _buildActionCard(context, 'Dashboard', 'Your workspace at a glance', Icons.grid_view_rounded, () => context.go('/orgs/dashboard')),
+                _buildActionCard(context, 'Directory', 'Find people in your organization', Icons.people_outline_rounded, () => context.go('/orgs/members')),
+                _buildActionCard(context, 'Departments', 'Explore teams and departments', Icons.account_tree_outlined, () => context.go('/orgs/departments')),
+                _buildActionCard(context, 'Joining Codes', 'Manage access to your workspace', Icons.key_outlined, () => context.go('/orgs/joining-codes')),
+                _buildActionCard(context, 'Branding', 'Shape your organization\'s identity', Icons.palette_outlined, () => context.go('/orgs/settings')),
+                _buildActionCard(context, 'Activity', 'See what\'s happening here', Icons.show_chart_rounded, () => context.go('/orgs/audit')),
+              ],
+            )
+          else
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: [
+                _buildActionCard(context, 'Elections & Voting', 'Browse active events & cast your vote', Icons.how_to_vote_rounded, () => context.go('/admin/events')),
+                _buildActionCard(context, 'Invitations', 'Review workspace invitations sent to you', Icons.mail_outline_rounded, () => context.go('/orgs/invitations')),
+              ],
+            ),
         ],
       ),
     );

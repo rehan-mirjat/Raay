@@ -1,11 +1,15 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
-import { requireActiveMembership, requireOperationalOrganization } from "../utils/authorization";
+import { requireActiveMembership, requireOperationalOrganization, requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
 
 export const updateMemberRole = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
     throw new HttpsError("unauthenticated", "Authentication required.");
   }
+
+  // FR-10: role changes are an explicitly-named sensitive operation.
+  await requireNotRevoked(request);
+  requireRecentAuthentication(request.auth);
 
   const uid = request.auth.uid;
   const { organizationId, targetUid, newRole } = request.data || {};

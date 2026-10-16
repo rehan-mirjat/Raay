@@ -2,7 +2,8 @@ import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import * as crypto from "crypto";
 import { getJoinCodeSecret, JOIN_CODE_SECRET } from "../utils/joinCodeSecret";
-import { requireActiveMembership, requireOperationalOrganization } from "../utils/authorization";
+import { requireActiveMembership, requireOperationalOrganization, MAX_CREDENTIAL_EXPIRY_HOURS, requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
+import { checkRateLimit, RATE_LIMIT_INVITATION_ACTION } from "../utils/rateLimiter";
 
 function generateRandomCode(): string {
   // 12-character high-entropy CSPRNG code formatted as JOIN-XXXX-XXXX-XXXX
@@ -26,16 +27,22 @@ export const createJoiningCode = onCall({ secrets: [JOIN_CODE_SECRET] }, async (
     throw new HttpsError("unauthenticated", "Authentication required.");
   }
 
+  // FR-10: bulk issuing of joining codes is an explicitly-named sensitive operation.
+  await requireNotRevoked(request);
+  requireRecentAuthentication(request.auth);
+
   const uid = request.auth.uid;
+  // Table 3-4: "Invitation actions 30 per hour" per user.
+  await checkRateLimit(uid, RATE_LIMIT_INVITATION_ACTION);
   const { organizationId, customCode, expiresInHours = 168, maxUses = 0 } = request.data || {};
 
   if (!organizationId || typeof organizationId !== "string" || organizationId.trim().length === 0) {
     throw new HttpsError("invalid-argument", "Valid organizationId is required.");
   }
 
-  // Strict Duration Validation: Must be integer between 1 and 8760 (max 1 year)
-  if (!Number.isInteger(expiresInHours) || expiresInHours <= 0 || expiresInHours > 8760) {
-    throw new HttpsError("invalid-argument", "expiresInHours must be a positive integer between 1 and 8760.");
+  // Strict Duration Validation: Table 3-4 caps joining-code lifetime at 30 days.
+  if (!Number.isInteger(expiresInHours) || expiresInHours <= 0 || expiresInHours > MAX_CREDENTIAL_EXPIRY_HOURS) {
+    throw new HttpsError("invalid-argument", `expiresInHours must be a positive integer between 1 and ${MAX_CREDENTIAL_EXPIRY_HOURS}.`);
   }
 
   // Strict MaxUses Validation: Must be integer >= 0

@@ -27,6 +27,7 @@ functions/node_modules/
 functions/lib/
 test/node_modules/
 test/storage/node_modules/
+firestore-tests/node_modules/
 
 # Secrets
 google-services.json
