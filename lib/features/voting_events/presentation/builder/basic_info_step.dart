@@ -348,60 +348,67 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
   }) {
     final isSelected = _type == type;
 
-    return InkWell(
-      onTap: enabled ? () => setState(() => _type = type) : null,
-      borderRadius: BorderRadius.circular(12),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        width: width,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isSelected ? AppTheme.surfaceBlue.withValues(alpha: 0.5) : AppTheme.surfaceWhite,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? AppTheme.primaryBlue : AppTheme.borderLight,
-            width: isSelected ? 1.5 : 1.0,
+    return Opacity(
+      // Matches the disabled look TextFormField already gets from `enabled:
+      // isDraft` elsewhere on this screen - without this, a locked (non-draft)
+      // event's cards looked exactly as interactive as an editable one, even
+      // though onTap below is already correctly a no-op.
+      opacity: enabled ? 1.0 : 0.5,
+      child: InkWell(
+        onTap: enabled ? () => setState(() => _type = type) : null,
+        borderRadius: BorderRadius.circular(12),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          width: width,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: isSelected ? AppTheme.surfaceBlue.withValues(alpha: 0.5) : AppTheme.surfaceWhite,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected ? AppTheme.primaryBlue : AppTheme.borderLight,
+              width: isSelected ? 1.5 : 1.0,
+            ),
           ),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              isSelected ? Icons.radio_button_checked_rounded : Icons.radio_button_unchecked_rounded,
-              color: isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
-              size: 18,
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(icon, size: 16, color: AppTheme.primaryBlue),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                            color: isSelected ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
-                          ),
-                          maxLines: 1, overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary, height: 1.3),
-                  ),
-                ],
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                isSelected ? Icons.radio_button_checked_rounded : Icons.radio_button_unchecked_rounded,
+                color: isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
+                size: 18,
               ),
-            ),
-          ],
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(icon, size: 16, color: AppTheme.primaryBlue),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              color: isSelected ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
+                            ),
+                            maxLines: 1, overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary, height: 1.3),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

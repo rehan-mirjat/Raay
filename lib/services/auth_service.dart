@@ -252,6 +252,55 @@ class AuthService {
     }
   }
 
+  /// Re-proves the current user's identity without signing them out, so a
+  /// fresh `auth_time` satisfies the server's recent-authentication window
+  /// (FR-10) after a [RequiresRecentAuthException]. [password] is required
+  /// for email/password accounts and ignored otherwise.
+  Future<void> reauthenticate({String? password}) async {
+    final user = currentUser;
+    if (user == null) throw Exception('No authenticated user found.');
+
+    final isGoogleUser = user.providerData.any((p) => p.providerId == 'google.com');
+    final isPasswordUser = user.providerData.any((p) => p.providerId == 'password');
+
+    try {
+      if (isGoogleUser) {
+        if (kIsWeb) {
+          final provider = GoogleAuthProvider()
+            ..addScope('email')
+            ..setCustomParameters({'prompt': 'select_account'});
+          await user.reauthenticateWithPopup(provider);
+        } else {
+          final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+          if (googleUser == null) {
+            throw Exception('Verification cancelled.');
+          }
+          final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+          final credential = GoogleAuthProvider.credential(
+            accessToken: googleAuth.accessToken,
+            idToken: googleAuth.idToken,
+          );
+          await user.reauthenticateWithCredential(credential);
+        }
+      } else if (isPasswordUser) {
+        if (password == null || password.isEmpty) {
+          throw Exception('Enter your password to continue.');
+        }
+        final credential = EmailAuthProvider.credential(email: user.email!, password: password);
+        await user.reauthenticateWithCredential(credential);
+      } else {
+        throw Exception('Please sign out and sign back in to continue.');
+      }
+
+      await user.getIdToken(true);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
+        throw Exception('Incorrect password.');
+      }
+      throw Exception(e.message ?? 'Verification failed. Please try again.');
+    }
+  }
+
   Future<void> deleteAccount() async {
     final user = currentUser;
     if (user == null) throw Exception('No authenticated user found.');

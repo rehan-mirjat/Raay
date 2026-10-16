@@ -1,6 +1,30 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+/// Thrown by repository methods in place of a generic Exception when the
+/// server rejected a sensitive action (publish/close event, role changes,
+/// account deletion, etc.) because the caller's sign-in is more than 15
+/// minutes old (FR-10's 900-second recent-authentication window). Callers
+/// should catch this specifically and prompt the user to reauthenticate,
+/// then retry - the server's own 900s window makes re-signing-in-fully
+/// (not just a silent token refresh) the only way to satisfy the check.
+class RequiresRecentAuthException implements Exception {
+  const RequiresRecentAuthException();
+  @override
+  String toString() =>
+      'For security, please verify your identity again before continuing.';
+}
+
+/// requireRecentAuthentication() on the server always throws this exact
+/// failed-precondition message - distinct from the many OTHER reasons a
+/// failed-precondition can occur (wrong event status, no eligible voters,
+/// etc.), so message-matching (not just the error code) is required.
+bool isRecentAuthError(dynamic error) {
+  return error is FirebaseFunctionsException &&
+      error.code == 'failed-precondition' &&
+      (error.message?.contains('sign back in') ?? false);
+}
+
 String mapFirebaseAuthError(FirebaseAuthException error) {
   switch (error.code) {
     case 'email-already-in-use':

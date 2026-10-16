@@ -75,6 +75,7 @@ class VotingEventRepository {
       final callable = _firebase.functions.httpsCallable('publishVotingEvent');
       await callable.call({'eventId': eventId});
     } catch (e) {
+      if (isRecentAuthError(e)) throw const RequiresRecentAuthException();
       throw Exception(mapFirebaseFunctionsError(e));
     }
   }
@@ -102,6 +103,7 @@ class VotingEventRepository {
       final callable = _firebase.functions.httpsCallable('closeVotingEvent');
       await callable.call({'eventId': eventId});
     } catch (e) {
+      if (isRecentAuthError(e)) throw const RequiresRecentAuthException();
       throw Exception(mapFirebaseFunctionsError(e));
     }
   }

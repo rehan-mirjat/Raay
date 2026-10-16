@@ -10,6 +10,8 @@ import '../providers/draft_event_provider.dart';
 import '../../data/candidate_repository.dart';
 import '../../data/poll_option_repository.dart';
 import '../../domain/voting_event.dart';
+import '../../../../core/utils/error_utils.dart';
+import '../../../../services/auth_service.dart';
 
 class ReviewStep extends ConsumerStatefulWidget {
   final String orgId;
@@ -45,6 +47,16 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
         // Navigate back to admin events dashboard
         context.go('/admin/events');
       }
+    } on RequiresRecentAuthException {
+      if (!mounted) return;
+      final verified = await _showReauthDialog();
+      if (!mounted) return;
+      if (verified) {
+        // Identity re-verified: retry the publish with the now-fresh session.
+        _publish();
+      } else {
+        setState(() => _isPublishing = false);
+      }
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -53,6 +65,94 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
         });
       }
     }
+  }
+
+  /// Shows a dialog to re-prove identity (password re-entry, or a fresh
+  /// Google sign-in) and returns true once the server would accept a fresh
+  /// `auth_time`. The underlying session/app state is untouched either way -
+  /// this never signs the user out.
+  Future<bool> _showReauthDialog() async {
+    final authService = ref.read(authServiceProvider);
+    final isGoogleUser = authService.currentUser?.providerData
+            .any((p) => p.providerId == 'google.com') ??
+        false;
+    final passwordController = TextEditingController();
+    bool isVerifying = false;
+    String? dialogError;
+
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: !isVerifying,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) {
+          Future<void> verify() async {
+            setDialogState(() {
+              isVerifying = true;
+              dialogError = null;
+            });
+            try {
+              await authService.reauthenticate(
+                password: isGoogleUser ? null : passwordController.text,
+              );
+              if (dialogContext.mounted) Navigator.of(dialogContext).pop(true);
+            } catch (e) {
+              setDialogState(() {
+                isVerifying = false;
+                dialogError = e.toString().replaceAll('Exception: ', '');
+              });
+            }
+          }
+
+          return AlertDialog(
+            title: const Text('Verify it\'s you'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                    'For security, publishing an election requires you to have '
+                    'signed in within the last 15 minutes. Please verify your '
+                    'identity to continue.'),
+                const SizedBox(height: 16),
+                if (!isGoogleUser)
+                  TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    autofocus: true,
+                    enabled: !isVerifying,
+                    decoration: const InputDecoration(labelText: 'Password'),
+                    onSubmitted: (_) => verify(),
+                  ),
+                if (dialogError != null) ...[
+                  const SizedBox(height: 8),
+                  Text(dialogError!,
+                      style: const TextStyle(color: AppTheme.error)),
+                ],
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed:
+                    isVerifying ? null : () => Navigator.of(dialogContext).pop(false),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: isVerifying ? null : verify,
+                child: isVerifying
+                    ? const SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2))
+                    : Text(isGoogleUser ? 'Verify with Google' : 'Verify'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    passwordController.dispose();
+    return result ?? false;
   }
 
   @override
