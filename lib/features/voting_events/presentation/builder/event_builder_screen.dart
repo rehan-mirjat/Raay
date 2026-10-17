@@ -108,7 +108,16 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
           ),
         );
         if (confirm == true && context.mounted) {
-          Navigator.of(context).pop();
+          // Not Navigator.pop(): canPop is pinned to false above, so a pop
+          // here would just re-trigger this same guard (this screen is also
+          // always reached via context.go(), never pushed, so there would be
+          // nothing on the Navigator stack to pop to anyway). Navigate away
+          // directly instead, exactly like the manual back button does.
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go('/admin/events');
+          }
         }
       },
       child: Scaffold(
