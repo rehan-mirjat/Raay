@@ -10,10 +10,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
+import 'core/presentation/session_lock_screen.dart';
 import 'core/presentation/splash_screen.dart';
+import 'core/session/session_lock_provider.dart';
 import 'features/organizations/presentation/providers/organization_providers.dart';
 import 'features/onboarding/providers/onboarding_providers.dart';
 import 'firebase_options.dart';
+import 'services/auth_service.dart';
 import 'services/firebase_service.dart';
 
 Future<void> main() async {
@@ -72,7 +75,8 @@ class SecureEVotingApp extends ConsumerStatefulWidget {
   ConsumerState<SecureEVotingApp> createState() => _SecureEVotingAppState();
 }
 
-class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp> {
+class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
+    with WidgetsBindingObserver {
   String? _initError;
   bool _isRetrying = false;
 
@@ -80,6 +84,30 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp> {
   void initState() {
     super.initState();
     _initError = widget.initializationError;
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // `inactive` is often just a brief transient (e.g. a system dialog or
+    // notification shade on iOS) - only paused/detached mean the app has
+    // actually left the foreground, which is what "closed" means here.
+    switch (state) {
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        ref.read(sessionLockProvider.notifier).recordBackgrounded();
+      case AppLifecycleState.resumed:
+        ref.read(sessionLockProvider.notifier).checkOnResume();
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.hidden:
+        break;
+    }
   }
 
   Future<void> _retryInitialization() async {
@@ -128,12 +156,25 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp> {
         ?.organization
         .brandColors;
 
+    final isLocked = ref.watch(sessionLockProvider);
+    final hasSignedInUser = ref.watch(authStateChangesProvider).valueOrNull != null;
+
     return MaterialApp.router(
       title: 'Kivora',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.withOrganizationBranding(AppTheme.lightTheme, brandColors),
       themeMode: ThemeMode.light,
       routerConfig: goRouter,
+      builder: (context, child) {
+        // The app was backgrounded/closed past the idle timeout - block all
+        // content behind a re-authentication gate until it's cleared. Only
+        // applies when someone is actually signed in; an already-signed-out
+        // user just sees the normal /login redirect.
+        if (isLocked && hasSignedInUser) {
+          return const SessionLockScreen();
+        }
+        return child ?? const SizedBox.shrink();
+      },
     );
   }
 }
