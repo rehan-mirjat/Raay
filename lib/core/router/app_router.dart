@@ -40,6 +40,7 @@ import '../../features/organizations/domain/organization_enums.dart';
 import '../presentation/home_screen.dart';
 import '../presentation/splash_screen.dart';
 import '../presentation/app_navigation_shell.dart';
+import '../../features/onboarding/providers/onboarding_providers.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -91,6 +92,7 @@ class RouterNotifier extends ChangeNotifier {
   bool get isAuth => _isAuth;
   bool get isEmailVerified => _isEmailVerified;
   bool get isOrgLoading => _isOrgLoading;
+  bool get hasSeenIntro => _ref.read(hasSeenIntroProvider);
   bool get isAdmin =>
       _activeRole == OrganizationRole.owner ||
       _activeRole == OrganizationRole.admin;
@@ -129,9 +131,17 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       final isAdminRoute = location.startsWith('/admin');
 
       if (!isAuth) {
-        return (isUnauthRoute || isPublicLanding)
-            ? null
-            : (kIsWeb ? '/' : '/welcome');
+        // Once this install has already shown the pre-login intro carousel,
+        // skip straight past it on every subsequent app open (sign-out,
+        // reopening later, etc.) instead of showing it again - it's a
+        // first-install thing, not a "you're signed out" thing.
+        if (isWelcomeRoute) {
+          return notifier.hasSeenIntro ? '/login' : null;
+        }
+        if (isUnauthRoute || isPublicLanding) return null;
+        return kIsWeb
+            ? '/'
+            : (notifier.hasSeenIntro ? '/login' : '/welcome');
       }
 
       if (!isVerified) {

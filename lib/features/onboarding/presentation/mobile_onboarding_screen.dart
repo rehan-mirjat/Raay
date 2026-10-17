@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../providers/onboarding_providers.dart';
 
 class MobileOnboardingScreen extends ConsumerStatefulWidget {
   const MobileOnboardingScreen({super.key});
@@ -593,7 +594,10 @@ class _MobileOnboardingScreenState
           SizedBox(
             width: double.infinity,
             child: FilledButton(
-              onPressed: () => context.go('/register'),
+              onPressed: () {
+                ref.read(hasSeenIntroProvider.notifier).markSeen();
+                context.go('/register');
+              },
               style: FilledButton.styleFrom(
                 backgroundColor: AppTheme.primaryBlue,
                 padding: const EdgeInsets.symmetric(vertical: 16),
@@ -608,7 +612,10 @@ class _MobileOnboardingScreenState
           SizedBox(
             width: double.infinity,
             child: OutlinedButton(
-              onPressed: () => context.go('/login'),
+              onPressed: () {
+                ref.read(hasSeenIntroProvider.notifier).markSeen();
+                context.go('/login');
+              },
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppTheme.primaryBlue,
                 side: const BorderSide(color: AppTheme.borderLight, width: 1.5),
@@ -623,7 +630,10 @@ class _MobileOnboardingScreenState
           const SizedBox(height: 12),
 
           InkWell(
-            onTap: () => context.go('/login'),
+            onTap: () {
+              ref.read(hasSeenIntroProvider.notifier).markSeen();
+              context.go('/login');
+            },
             borderRadius: BorderRadius.circular(6),
             child: const Padding(
               padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),

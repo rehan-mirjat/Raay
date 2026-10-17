@@ -30,16 +30,21 @@ class OnboardingNotifier extends StateNotifier<OnboardingState> {
   final SharedPreferences _prefs;
   final String? _uid;
 
+  // Tracked strictly per-uid, never device-wide: on a shared device, an
+  // earlier bug here OR'd a no-suffix fallback key into every user's check,
+  // so once any one user completed the tour, every other user who had
+  // never signed in before silently had it marked complete too. A genuinely
+  // new user must always see this on their own first login, regardless of
+  // who else has used the device.
   OnboardingNotifier(this._prefs, this._uid)
       : super(OnboardingState(
-          hasCompletedTour: (_uid != null && (_prefs.getBool('hasCompletedTour_$_uid') ?? false)) ||
-              (_prefs.getBool('hasCompletedTour') ?? false),
-          isChecklistDismissed: (_uid != null && (_prefs.getBool('isChecklistDismissed_$_uid') ?? false)) ||
-              (_prefs.getBool('isChecklistDismissed') ?? false),
+          hasCompletedTour:
+              _uid != null && (_prefs.getBool('hasCompletedTour_$_uid') ?? false),
+          isChecklistDismissed: _uid != null &&
+              (_prefs.getBool('isChecklistDismissed_$_uid') ?? false),
         ));
 
   void completeTour() {
-    _prefs.setBool('hasCompletedTour', true);
     if (_uid != null) {
       _prefs.setBool('hasCompletedTour_$_uid', true);
     }
@@ -47,7 +52,6 @@ class OnboardingNotifier extends StateNotifier<OnboardingState> {
   }
 
   void restartTour() {
-    _prefs.setBool('hasCompletedTour', false);
     if (_uid != null) {
       _prefs.setBool('hasCompletedTour_$_uid', false);
     }
@@ -55,7 +59,6 @@ class OnboardingNotifier extends StateNotifier<OnboardingState> {
   }
 
   void dismissChecklist() {
-    _prefs.setBool('isChecklistDismissed', true);
     if (_uid != null) {
       _prefs.setBool('isChecklistDismissed_$_uid', true);
     }
@@ -68,4 +71,26 @@ final onboardingProvider =
   final prefs = ref.watch(sharedPreferencesProvider);
   final user = ref.watch(authStateChangesProvider).value;
   return OnboardingNotifier(prefs, user?.uid);
+});
+
+/// Whether this device/install has ever seen the pre-login marketing intro
+/// (MobileOnboardingScreen, shown at `/welcome`). Deliberately device-wide,
+/// not per-uid: unlike the post-login tour, this screen runs before anyone
+/// is signed in, so there's no user to scope it to - it tracks "has this
+/// install seen it", matching first-install semantics (cleared by an
+/// uninstall, same as everything else in SharedPreferences).
+class IntroSeenNotifier extends StateNotifier<bool> {
+  final SharedPreferences _prefs;
+
+  IntroSeenNotifier(this._prefs) : super(_prefs.getBool('has_seen_intro') ?? false);
+
+  void markSeen() {
+    _prefs.setBool('has_seen_intro', true);
+    state = true;
+  }
+}
+
+final hasSeenIntroProvider = StateNotifierProvider<IntroSeenNotifier, bool>((ref) {
+  final prefs = ref.watch(sharedPreferencesProvider);
+  return IntroSeenNotifier(prefs);
 });
