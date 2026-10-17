@@ -176,6 +176,7 @@ class EventCard extends ConsumerWidget {
           ],
         );
       case VotingEventStatus.closed:
+      case VotingEventStatus.archived:
         return Wrap(
           alignment: WrapAlignment.end,
           spacing: 8,
@@ -188,7 +189,6 @@ class EventCard extends ConsumerWidget {
           ],
         );
       case VotingEventStatus.cancelled:
-      case VotingEventStatus.archived:
         return Wrap(
           alignment: WrapAlignment.end,
           spacing: 8,
