@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/inline_error_banner.dart';
 import '../../data/poll_option_repository.dart';
 import '../../domain/poll_option.dart';
 
@@ -54,15 +54,13 @@ class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
     try {
       final repo = ref.read(pollOptionRepositoryProvider);
       if (widget.existingOption == null) {
-        // Find max sortOrder to append to the end.
-        // For simplicity in this demo form, we'll pass 0 and let ReorderableListView sort it out,
-        // or we could query the max sort order. We'll default to 0.
+        // sortOrder is left unset: the server appends it after the current
+        // highest sortOrder so new options reliably land at the end.
         await repo.createPollOption(
           organizationId: widget.orgId,
           votingEventId: widget.eventId,
           label: _labelCtrl.text.trim(),
           description: _descCtrl.text.trim(),
-          sortOrder: 0, 
         );
       } else {
         await repo.updatePollOption(
@@ -84,10 +82,11 @@ class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
     return AlertDialog(
       title: Text(widget.existingOption == null ? 'Add Option' : 'Edit Option'),
       content: SizedBox(
-        width: 400,
+        width: (screenWidth - 80).clamp(240.0, 400.0),
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -107,7 +106,7 @@ class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
                 ),
                 if (_error != null) ...[
                   const SizedBox(height: 16),
-                  Text(_error!, style: const TextStyle(color: AppTheme.error)),
+                  InlineErrorBanner(message: _error!),
                 ],
               ],
             ),

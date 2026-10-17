@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/validators.dart';
+import '../../../core/widgets/inline_error_banner.dart';
 import '../data/organization_repository.dart';
 import 'providers/organization_providers.dart';
 
@@ -32,7 +32,6 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
   final _cityController = TextEditingController();
   final _websiteController = TextEditingController();
 
-  Uint8List? _selectedLogoBytes;
   String _selectedType = 'academic';
   bool _isLoading = false;
   String? _error;
@@ -78,24 +77,6 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
         city: _cityController.text.trim(),
         website: website.isNotEmpty ? website : null,
       );
-
-      if (_selectedLogoBytes != null) {
-        try {
-          await repo.uploadOrganizationLogo(
-            organizationId: orgId,
-            imageBytes: _selectedLogoBytes!,
-          );
-        } catch (logoErr) {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Organization created, but logo upload failed: ${logoErr.toString().replaceAll('Exception: ', '')}'),
-                backgroundColor: AppTheme.warning,
-              ),
-            );
-          }
-        }
-      }
 
       ref.invalidate(userMembershipsProvider);
       ref.invalidate(userOrganizationsProvider);
@@ -183,6 +164,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                         ),
                         IconButton(
                           icon: const Icon(Icons.close_rounded, color: AppTheme.textSecondary),
+                          tooltip: 'Close',
                           onPressed: _handleCancel,
                         ),
                       ],
@@ -353,23 +335,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
 
                     if (_error != null) ...[
                       const SizedBox(height: 16),
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: AppTheme.error.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: AppTheme.error.withValues(alpha: 0.3)),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.error_outline, color: AppTheme.error, size: 18),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(_error!, style: const TextStyle(color: AppTheme.error, fontSize: 13)),
-                            ),
-                          ],
-                        ),
-                      ),
+                      InlineErrorBanner(message: _error!),
                     ],
 
                     const SizedBox(height: 28),

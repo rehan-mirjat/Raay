@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/validators.dart';
+import '../../../core/widgets/inline_error_banner.dart';
 import '../data/organization_repository.dart';
 import 'providers/organization_providers.dart';
 
@@ -145,6 +146,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                         ),
                         IconButton(
                           icon: const Icon(Icons.close_rounded, color: AppTheme.textSecondary),
+                          tooltip: 'Close',
                           onPressed: _handleCancel,
                         ),
                       ],
@@ -234,23 +236,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
 
                     if (_error != null) ...[
                       const SizedBox(height: 16),
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: AppTheme.error.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: AppTheme.error.withValues(alpha: 0.3)),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.error_outline, color: AppTheme.error, size: 18),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(_error!, style: const TextStyle(color: AppTheme.error, fontSize: 13)),
-                            ),
-                          ],
-                        ),
-                      ),
+                      InlineErrorBanner(message: _error!),
                     ],
 
                     const SizedBox(height: 28),

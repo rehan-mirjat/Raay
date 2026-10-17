@@ -16,7 +16,7 @@ export const createPollOption = onCall(CALLABLE_OPTIONS, async (request) => {
   const votingEventId = requireId(data.votingEventId, "votingEventId");
   const label = requiredString(data.label, "Poll option label", 1, 100);
   const description = optionalString(data.description, "Description", 500);
-  const sortOrder = data.sortOrder === undefined ? 0 : parseSortOrder(data.sortOrder);
+  const explicitSortOrder = data.sortOrder === undefined ? undefined : parseSortOrder(data.sortOrder);
 
   const db = getFirestore();
   await enforceRateLimit(db, uid, "createPollOption");
@@ -42,6 +42,15 @@ export const createPollOption = onCall(CALLABLE_OPTIONS, async (request) => {
       if (siblings.docs.some((d) => String(d.data().label || "").trim().toLowerCase() === lower)) {
         throw new HttpsError("already-exists", "An option with this label already exists in this poll.");
       }
+
+      // Default to appending after the current highest sortOrder - computed
+      // inside the transaction (not left as a client-supplied constant) so a
+      // freshly-created option reliably lands at the end of the ballot
+      // instead of tying at 0 with every other option and falling back to
+      // Firestore's document-ID ordering.
+      const sortOrder = explicitSortOrder ?? siblings.docs.reduce(
+        (max, d) => Math.max(max, Number(d.data().sortOrder) || 0), -1
+      ) + 1;
 
       tx.set(optionRef, {
         id: optionId,

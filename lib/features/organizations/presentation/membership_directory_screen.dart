@@ -393,19 +393,14 @@ class _MembershipDirectoryScreenState
                                 ),
                                 if (filtered.isEmpty)
                                   SliverToBoxAdapter(
-                                    child: Container(
-                                      height: MediaQuery.sizeOf(context).height * 0.3,
-                                      alignment: Alignment.center,
-                                      padding: EdgeInsets.symmetric(horizontal: hPad),
-                                      child: Text(
-                                        members.isEmpty
-                                            ? 'No members yet\nAdd existing members or invite people to your organization.'
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: hPad, vertical: 24),
+                                      child: EmptyView(
+                                        icon: members.isEmpty ? Icons.people_outline_rounded : Icons.search_off_rounded,
+                                        title: members.isEmpty ? 'No members yet' : 'No matches found',
+                                        message: members.isEmpty
+                                            ? 'Add existing members or invite people to your organization.'
                                             : 'No members match your search or role filter.',
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          color: AppTheme.textSecondary,
-                                          fontSize: 15,
-                                        ),
                                       ),
                                     ),
                                   )

@@ -2,6 +2,8 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../services/auth_service.dart';
@@ -104,6 +106,7 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
   Widget build(BuildContext context) {
     final admin = ref.watch(platformAdminProvider);
     return Scaffold(
+      backgroundColor: AppTheme.backgroundLight,
       appBar: AppBar(title: const Text('Platform organizations'), actions: [IconButton(onPressed: _loading ? null : _load, tooltip: 'Refresh', icon: const Icon(Icons.refresh_rounded))]),
       body: admin.when(
         loading: () => const LoadingView(message: 'Checking platform access…'),
@@ -115,7 +118,11 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
                 : _error != null
                     ? ErrorView(type: ErrorViewType.generic, message: _error!, onRetry: _load)
                     : _organizations.isEmpty
-                        ? const Center(child: Text('No organizations have been registered yet.'))
+                        ? const EmptyView(
+                            icon: Icons.domain_outlined,
+                            title: 'No organizations yet',
+                            message: 'No organizations have been registered on the platform yet.',
+                          )
                         : ListView.builder(
                             padding: const EdgeInsets.all(16),
                             itemCount: _organizations.length,

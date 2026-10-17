@@ -1,8 +1,14 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/error_utils.dart';
+import '../../../core/widgets/inline_error_banner.dart';
 import '../../../services/auth_service.dart';
+
+String _friendlyAuthError(Object e) =>
+    e is FirebaseAuthException ? mapFirebaseAuthError(e) : 'Something went wrong. Please try again.';
 
 class EmailVerificationScreen extends ConsumerStatefulWidget {
   const EmailVerificationScreen({super.key, this.onVerified, this.onSignOut});
@@ -73,7 +79,7 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = 'Error checking status: ${e.toString()}';
+          _error = 'Could not check verification status: ${_friendlyAuthError(e)}';
           _isChecking = false;
         });
       }
@@ -101,7 +107,7 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = 'Failed to resend email: ${e.toString()}';
+          _error = 'Failed to resend email: ${_friendlyAuthError(e)}';
           _isResending = false;
         });
       }
@@ -196,23 +202,7 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
                 ],
 
                 if (_error != null) ...[
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: AppTheme.error.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppTheme.error.withValues(alpha: 0.3)),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.error_outline, color: AppTheme.error),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(_error!, style: const TextStyle(color: AppTheme.error)),
-                        ),
-                      ],
-                    ),
-                  ),
+                  InlineErrorBanner(message: _error!),
                   const SizedBox(height: 16),
                 ],
 

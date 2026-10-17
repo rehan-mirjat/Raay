@@ -23,10 +23,10 @@ class AddDepartmentMemberDialog extends ConsumerStatefulWidget {
 
 class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberDialog> {
   String _searchQuery = '';
-  bool _isLoading = false;
+  String? _loadingUid;
 
   Future<void> _assignMember(String targetUid) async {
-    setState(() => _isLoading = true);
+    setState(() => _loadingUid = targetUid);
     try {
       await ref.read(departmentRepositoryProvider).assignMemberToDepartment(
             organizationId: widget.organizationId,
@@ -42,7 +42,7 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
       }
     } catch (e) {
       if (mounted) {
-        setState(() => _isLoading = false);
+        setState(() => _loadingUid = null);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to assign member: ${e.toString().replaceAll('Exception: ', '')}'), backgroundColor: AppTheme.error),
         );
@@ -73,6 +73,7 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
+              enabled: _loadingUid == null,
               decoration: const InputDecoration(
                 hintText: 'Search active members...',
                 prefixIcon: Icon(Icons.search),
@@ -93,6 +94,14 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
                         final targetUid = member['userId'] as String;
                         final currentDept = member['departmentName'] as String?;
 
+                        final isAssigningThis = _loadingUid == targetUid;
+                        final isDisabled = _loadingUid != null;
+                        const spinner = SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        );
+
                         return ListTile(
                           contentPadding: const EdgeInsets.symmetric(vertical: 8),
                           leading: CircleAvatar(
@@ -104,12 +113,12 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
                           trailing: compact
                               ? IconButton.filledTonal(
                                   tooltip: 'Add member',
-                                  onPressed: _isLoading ? null : () => _assignMember(targetUid),
-                                  icon: const Icon(Icons.person_add_alt_1_rounded),
+                                  onPressed: isDisabled ? null : () => _assignMember(targetUid),
+                                  icon: isAssigningThis ? spinner : const Icon(Icons.person_add_alt_1_rounded),
                                 )
                               : ElevatedButton(
-                                  onPressed: _isLoading ? null : () => _assignMember(targetUid),
-                                  child: const Text('Add member'),
+                                  onPressed: isDisabled ? null : () => _assignMember(targetUid),
+                                  child: isAssigningThis ? spinner : const Text('Add member'),
                                 ),
                         );
                       },

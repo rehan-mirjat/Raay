@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/inline_error_banner.dart';
 import '../../data/candidate_repository.dart';
 import '../../domain/candidate.dart';
 
@@ -109,28 +110,38 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
     return AlertDialog(
       title: Text(widget.existingCandidate == null ? 'Add Candidate' : 'Edit Candidate'),
       content: SizedBox(
-        width: 400,
+        width: (screenWidth - 80).clamp(240.0, 400.0),
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                GestureDetector(
-                  onTap: _pickImage,
-                  child: CircleAvatar(
-                    radius: 40,
-                    backgroundImage: _selectedImageBytes != null
-                        ? MemoryImage(_selectedImageBytes!)
-                        : (widget.existingCandidate?.photoUrl != null
-                            ? NetworkImage(widget.existingCandidate!.photoUrl!) as ImageProvider
-                            : null),
-                    child: _selectedImageBytes == null && widget.existingCandidate?.photoUrl == null
-                        ? const Icon(Icons.camera_alt, size: 40)
-                        : null,
+                Semantics(
+                  button: true,
+                  label: 'Select candidate photo',
+                  child: Material(
+                    color: Colors.transparent,
+                    shape: const CircleBorder(),
+                    clipBehavior: Clip.antiAlias,
+                    child: InkWell(
+                      onTap: _pickImage,
+                      child: CircleAvatar(
+                        radius: 40,
+                        backgroundImage: _selectedImageBytes != null
+                            ? MemoryImage(_selectedImageBytes!)
+                            : (widget.existingCandidate?.photoUrl != null
+                                ? NetworkImage(widget.existingCandidate!.photoUrl!) as ImageProvider
+                                : null),
+                        child: _selectedImageBytes == null && widget.existingCandidate?.photoUrl == null
+                            ? const Icon(Icons.camera_alt, size: 40)
+                            : null,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -155,7 +166,7 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                 ),
                 if (_error != null) ...[
                   const SizedBox(height: 16),
-                  Text(_error!, style: const TextStyle(color: AppTheme.error)),
+                  InlineErrorBanner(message: _error!),
                 ],
               ],
             ),

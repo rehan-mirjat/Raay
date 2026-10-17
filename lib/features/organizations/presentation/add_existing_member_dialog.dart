@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/inline_error_banner.dart';
 import '../data/organization_repository.dart';
 
 class AddExistingMemberDialog extends ConsumerStatefulWidget {
@@ -94,20 +94,7 @@ class _AddExistingMemberDialogState
               ),
               if (_error != null) ...[
                 const SizedBox(height: 14),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppTheme.error.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: AppTheme.error.withValues(alpha: 0.25),
-                    ),
-                  ),
-                  child: Text(
-                    _error!,
-                    style: const TextStyle(color: AppTheme.error),
-                  ),
-                ),
+                InlineErrorBanner(message: _error!),
               ],
             ],
           ),

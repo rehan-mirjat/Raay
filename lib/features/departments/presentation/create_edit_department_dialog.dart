@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/validators.dart';
+import '../../../core/widgets/inline_error_banner.dart';
 import '../data/department_repository.dart';
 import '../domain/department.dart';
 
@@ -126,7 +127,7 @@ class _CreateEditDepartmentDialogState extends ConsumerState<CreateEditDepartmen
                 ),
                 if (_error != null) ...[
                   const SizedBox(height: 16),
-                  Text(_error!, style: const TextStyle(color: AppTheme.error, fontSize: 13)),
+                  InlineErrorBanner(message: _error!),
                 ],
               ],
             ),
