@@ -3,7 +3,14 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
     // START: FlutterFire Configuration
     id "com.google.gms.google-services"
+    id "com.google.firebase.crashlytics"
     // END: FlutterFire Configuration
+}
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
 android {
@@ -28,9 +35,24 @@ android {
         versionName flutter.versionName
     }
 
+    signingConfigs {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                keyAlias keystoreProperties["keyAlias"]
+                keyPassword keystoreProperties["keyPassword"]
+                storeFile file(keystoreProperties["storeFile"])
+                storePassword keystoreProperties["storePassword"]
+            }
+        }
+    }
+
     buildTypes {
         release {
-            signingConfig signingConfigs.debug
+            // Falls back to debug signing only when key.properties is absent
+            // (e.g. a fresh checkout without the release keystore provisioned)
+            // so local/CI builds that don't need a real release signature
+            // still succeed, rather than failing outright.
+            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
         }
     }
 }

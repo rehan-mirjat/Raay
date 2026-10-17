@@ -33,3 +33,8 @@ firestore-tests/node_modules/
 google-services.json
 GoogleService-Info.plist
 .env
+
+# Android release signing - NEVER commit these
+android/app/*.jks
+android/app/*.keystore
+android/key.properties

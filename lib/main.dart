@@ -1,5 +1,7 @@
 import 'dart:io' show Platform;
+import 'dart:ui' show PlatformDispatcher;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,6 +36,7 @@ Future<void> main() async {
       await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     }
     await FirebaseService.initialize();
+    await _initCrashlytics();
   } catch (e) {
     initError = e.toString();
   }
@@ -44,6 +47,20 @@ Future<void> main() async {
     overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
     child: SecureEVotingApp(initializationError: initError),
   ));
+}
+
+/// firebase_crashlytics has no web implementation, so crash reporting is
+/// Android/iOS/macOS only. Routes both Flutter framework errors and
+/// otherwise-uncaught Dart errors to Crashlytics; safe to call more than
+/// once (e.g. after a successful retry) since it only overwrites the
+/// handlers with themselves.
+Future<void> _initCrashlytics() async {
+  if (kIsWeb) return;
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
 }
 
 class SecureEVotingApp extends ConsumerStatefulWidget {
@@ -76,6 +93,7 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp> {
         await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
       }
       await FirebaseService.initialize();
+      await _initCrashlytics();
       setState(() {
         _isRetrying = false;
       });
