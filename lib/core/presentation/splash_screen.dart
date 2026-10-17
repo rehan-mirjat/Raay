@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../layout/responsive.dart';
 import '../theme/app_theme.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -54,11 +55,39 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isWide = ResponsiveLayout.isWide(context);
+
     return Scaffold(
       backgroundColor: AppTheme.backgroundLight,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
+            // Desktop windows are wide and comparatively short, so a tall
+            // mobile-portrait layout (logo near the top, trust badge pinned
+            // to the very bottom edge) reads as disconnected - the footer
+            // ends up floating far away from the content it relates to.
+            // On wide screens, group everything into one vertically
+            // centered, width-capped composition instead.
+            if (isWide) {
+              return Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 480),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0, vertical: 32.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildBrandHero(),
+                        const SizedBox(height: 40),
+                        _buildFooterBadge(),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+
             return SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               child: ConstrainedBox(
@@ -74,112 +103,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const SizedBox(height: 12),
-
-                      // Centered Brand Hero
-                      FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: ScaleTransition(
-                          scale: _scaleAnimation,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // Styled Logo Badge using custom shield icon
-                              Semantics(
-                                label: 'Kivora Logo',
-                                child: Container(
-                                  width: 96,
-                                  height: 96,
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        AppTheme.surfaceBlue,
-                                        AppTheme.surfaceWhite,
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(24),
-                                    border: Border.all(
-                                      color: AppTheme.primaryBlue
-                                          .withValues(alpha: 0.25),
-                                      width: 1.5,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: AppTheme.primaryBlue
-                                            .withValues(alpha: 0.12),
-                                        blurRadius: 24,
-                                        offset: const Offset(0, 10),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Image.asset(
-                                    'assets/icon/app_icon_transparent.png',
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 24),
-
-                              // App Title & Tagline
-                              Semantics(
-                                header: true,
-                                child: const Text(
-                                  'Kivora',
-                                  style: TextStyle(
-                                    fontSize: 34,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: -0.6,
-                                    color: AppTheme.secondaryNavy,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              const Text(
-                                'Enterprise Multi-Tenant E-Voting',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  letterSpacing: 0.2,
-                                  color: AppTheme.textSecondary,
-                                ),
-                              ),
-                              const SizedBox(height: 40),
-
-                              // Dynamic Status / Error State
-                              if (widget.errorMessage != null)
-                                _buildErrorCard(context)
-                              else
-                                _buildLoadingIndicator(),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      // Footer Trust Badge
-                      FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.shield_outlined,
-                              size: 14,
-                              color: AppTheme.textSecondary,
-                            ),
-                            SizedBox(width: 6),
-                            Text(
-                              'Server-Authorized & Tenant-Isolated',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: AppTheme.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      _buildBrandHero(),
+                      _buildFooterBadge(),
                     ],
                   ),
                 ),
@@ -187,6 +112,112 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             );
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildBrandHero() {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Styled Logo Badge using custom shield icon
+            Semantics(
+              label: 'Kivora Logo',
+              child: Container(
+                width: 96,
+                height: 96,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppTheme.surfaceBlue,
+                      AppTheme.surfaceWhite,
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: AppTheme.primaryBlue.withValues(alpha: 0.25),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.primaryBlue.withValues(alpha: 0.12),
+                      blurRadius: 24,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Image.asset(
+                  'assets/icon/app_icon_transparent.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // App Title & Tagline
+            Semantics(
+              header: true,
+              child: const Text(
+                'Kivora',
+                style: TextStyle(
+                  fontSize: 34,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.6,
+                  color: AppTheme.secondaryNavy,
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'Enterprise Multi-Tenant E-Voting',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.2,
+                color: AppTheme.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 40),
+
+            // Dynamic Status / Error State
+            if (widget.errorMessage != null)
+              _buildErrorCard(context)
+            else
+              _buildLoadingIndicator(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFooterBadge() {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.shield_outlined,
+            size: 14,
+            color: AppTheme.textSecondary,
+          ),
+          SizedBox(width: 6),
+          Text(
+            'Server-Authorized & Tenant-Isolated',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: AppTheme.textSecondary,
+            ),
+          ),
+        ],
       ),
     );
   }
