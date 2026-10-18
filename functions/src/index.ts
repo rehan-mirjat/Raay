@@ -24,8 +24,6 @@ export * from "./auth/deleteAccount";
 export * from "./organizations/createOrganization";
 export * from "./organizations/updateOrganization";
 export * from "./organizations/deleteOrganization";
-export * from "./organizations/suspendOrganization";
-export * from "./organizations/verifyOrganization";
 export * from "./membership/createJoiningCode";
 export * from "./membership/addMember";
 export * from "./membership/joinOrganizationWithCode";
