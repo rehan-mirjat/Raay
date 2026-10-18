@@ -1,6 +1,7 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { requireActiveMembership, requireOperationalOrganization, requireNotRevoked } from "../utils/authorization";
+import { sanitizePlainText } from "../utils/sanitize";
 
 export const createDepartment = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
@@ -16,9 +17,18 @@ export const createDepartment = onCall(async (request) => {
     throw new HttpsError("invalid-argument", "Valid organizationId is required.");
   }
 
-  if (!name || typeof name !== "string" || name.trim().length < 2 || name.trim().length > 50) {
+  if (!name || typeof name !== "string") {
+    throw new HttpsError("invalid-argument", "Department name is required.");
+  }
+
+  // Canonical Formatting & Normalization: strips control/bidi-spoofing
+  // characters, trims, and collapses internal whitespace - done before the
+  // length check so it reflects the length actually stored.
+  const canonicalName = sanitizePlainText(name);
+  if (canonicalName.length < 2 || canonicalName.length > 50) {
     throw new HttpsError("invalid-argument", "Department name must be between 2 and 50 characters.");
   }
+  const normalizedName = canonicalName.toLowerCase();
 
   const db = getFirestore();
 
@@ -27,11 +37,9 @@ export const createDepartment = onCall(async (request) => {
 
   await requireOperationalOrganization(db, organizationId);
 
-  // Canonical Formatting & Normalization
-  // Trim leading/trailing and collapse consecutive internal spaces
-  const canonicalName = name.trim().replace(/\s+/g, ' ');
-  const normalizedName = canonicalName.toLowerCase();
-  const cleanDescription = description && typeof description === "string" ? description.trim() : "";
+  const cleanDescription = description && typeof description === "string"
+    ? sanitizePlainText(description, { multiline: true })
+    : "";
 
   const lockKey = `${organizationId}_${normalizedName}`;
   const lockRef = db.collection("departmentKeys").doc(lockKey);

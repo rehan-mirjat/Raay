@@ -1,6 +1,7 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { requireActiveMembership, requireOperationalOrganization, requireNotRevoked } from "../utils/authorization";
+import { sanitizePlainText } from "../utils/sanitize";
 
 export const updateDepartment = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
@@ -16,8 +17,14 @@ export const updateDepartment = onCall(async (request) => {
     throw new HttpsError("invalid-argument", "Valid departmentId is required.");
   }
 
-  if (name && (typeof name !== "string" || name.trim().length < 2 || name.trim().length > 50)) {
-    throw new HttpsError("invalid-argument", "Department name must be between 2 and 50 characters.");
+  if (name !== undefined && name !== null) {
+    if (typeof name !== "string") {
+      throw new HttpsError("invalid-argument", "Department name must be a string.");
+    }
+    const sanitizedLength = sanitizePlainText(name).length;
+    if (sanitizedLength < 2 || sanitizedLength > 50) {
+      throw new HttpsError("invalid-argument", "Department name must be between 2 and 50 characters.");
+    }
   }
 
   const db = getFirestore();
@@ -47,7 +54,7 @@ export const updateDepartment = onCall(async (request) => {
       let canonicalName = deptData.name;
 
       if (name) {
-        canonicalName = name.trim().replace(/\s+/g, ' ');
+        canonicalName = sanitizePlainText(name);
         const newNormalizedName = canonicalName.toLowerCase();
 
         // If name changed, manage deterministic locks
@@ -76,7 +83,9 @@ export const updateDepartment = onCall(async (request) => {
       }
 
       if (description !== undefined) {
-        updates.description = typeof description === "string" ? description.trim() : "";
+        updates.description = typeof description === "string"
+          ? sanitizePlainText(description, { multiline: true })
+          : "";
       }
 
       transaction.update(deptRef, updates);

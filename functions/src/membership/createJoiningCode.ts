@@ -70,7 +70,10 @@ export const createJoiningCode = onCall({ secrets: [JOIN_CODE_SECRET] }, async (
       if (normalizedCustom.length < 8 || !/^[A-Z0-9]+$/.test(normalizedCustom)) {
         throw new HttpsError("invalid-argument", "Custom joining code must contain at least 8 alphanumeric characters.");
       }
-      rawCode = customCode.trim().toUpperCase();
+      // Store/return the fully-normalized form so the code shared with
+      // members never contains stray internal whitespace or dashes beyond
+      // the display grouping the admin intended.
+      rawCode = normalizedCustom;
       codeHash = computeCodeHmac(rawCode);
 
       const codeRef = db.collection("joiningCodes").doc(codeHash);

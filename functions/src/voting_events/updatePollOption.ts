@@ -14,7 +14,7 @@ export const updatePollOption = onCall(CALLABLE_OPTIONS, async (request) => {
 
   const optionId = requireId(data.optionId, "optionId");
   const label = data.label !== undefined ? requiredString(data.label, "Poll option label", 1, 100) : undefined;
-  const description = data.description !== undefined ? optionalString(data.description, "Description", 500) : undefined;
+  const description = data.description !== undefined ? optionalString(data.description, "Description", 500, { multiline: true }) : undefined;
   const sortOrder = data.sortOrder !== undefined ? parseSortOrder(data.sortOrder) : undefined;
 
   const db = getFirestore();

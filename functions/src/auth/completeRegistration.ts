@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { sanitizePlainText } from "../utils/sanitize";
 
 /**
  * Secures the user registration flow.
@@ -18,10 +19,12 @@ export const completeRegistration = onCall(async (request) => {
   // 2. Extract and validate payload
   const { firstName, lastName } = request.data || {};
 
-  const rawFirst = (firstName && typeof firstName === "string") ? firstName.trim() : "";
-  const rawLast = (lastName && typeof lastName === "string") ? lastName.trim() : "";
+  const rawFirst = (firstName && typeof firstName === "string") ? sanitizePlainText(firstName) : "";
+  const rawLast = (lastName && typeof lastName === "string") ? sanitizePlainText(lastName) : "";
 
-  const trimmedFirst = rawFirst.length > 0 ? rawFirst : (request.auth.token.name ? request.auth.token.name.split(" ")[0] : "Google");
+  const trimmedFirst = rawFirst.length > 0
+    ? rawFirst
+    : sanitizePlainText(request.auth.token.name ? request.auth.token.name.split(" ")[0] : "Google");
   const trimmedLast = rawLast.length > 0 ? rawLast : "User";
 
   if (trimmedFirst.length > 50 || trimmedLast.length > 50) {

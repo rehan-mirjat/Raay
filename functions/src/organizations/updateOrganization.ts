@@ -1,5 +1,7 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { normalizeOrganizationName } from "../utils/organizationName";
+import { sanitizePlainText } from "../utils/sanitize";
 
 export const updateOrganization = onCall(async (request) => {
   // 1. Verify authentication
@@ -36,17 +38,43 @@ export const updateOrganization = onCall(async (request) => {
   const updates: Record<string, any> = {};
 
   if (name !== undefined) {
-    if (typeof name !== "string" || name.trim().length < 3 || name.trim().length > 100) {
+    if (typeof name !== "string") {
+      throw new HttpsError("invalid-argument", "Organization name must be a string.");
+    }
+    const trimmedName = sanitizePlainText(name);
+    if (trimmedName.length < 3 || trimmedName.length > 100) {
       throw new HttpsError("invalid-argument", "Organization name must be between 3 and 100 characters.");
     }
-    updates.name = name.trim();
+    const nameNormalized = normalizeOrganizationName(trimmedName);
+
+    const duplicateSnap = await db.collection("organizations")
+      .where("nameNormalized", "==", nameNormalized)
+      .limit(2)
+      .get();
+    const collidesWithAnotherOrg = duplicateSnap.docs.some((doc) => doc.id !== orgId);
+    if (collidesWithAnotherOrg) {
+      const existingName = duplicateSnap.docs.find((doc) => doc.id !== orgId)?.data().name as string;
+      throw new HttpsError(
+        "already-exists",
+        `An organization with a similar name ("${existingName}") already exists. Please choose a different name.`
+      );
+    }
+
+    updates.name = trimmedName;
+    updates.nameNormalized = nameNormalized;
   }
 
   if (description !== undefined) {
-    if (description !== null && (typeof description !== "string" || description.trim().length > 500)) {
+    if (description !== null && typeof description !== "string") {
+      throw new HttpsError("invalid-argument", "Description must be a string.");
+    }
+    const sanitizedDescription = typeof description === "string"
+      ? sanitizePlainText(description, { multiline: true })
+      : "";
+    if (sanitizedDescription.length > 500) {
       throw new HttpsError("invalid-argument", "Description cannot exceed 500 characters.");
     }
-    updates.description = description ? description.trim() : "";
+    updates.description = sanitizedDescription;
   }
 
 function isValidUrl(input: string): boolean {

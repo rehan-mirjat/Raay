@@ -30,9 +30,8 @@ class OrganizationRepository {
     required String name,
     required String type,
     required String description,
-    required String email,
-    required String country,
-    required String city,
+    String? country,
+    String? city,
     String? website,
     String? logoUrl,
   }) async {
@@ -45,9 +44,9 @@ class OrganizationRepository {
         'name': name.trim(),
         'type': type.trim(),
         'description': description.trim(),
-        'email': email.trim(),
-        'country': country.trim(),
-        'city': city.trim(),
+        if (country != null && country.trim().isNotEmpty)
+          'country': country.trim(),
+        if (city != null && city.trim().isNotEmpty) 'city': city.trim(),
         if (website != null && website.trim().isNotEmpty)
           'website': website.trim(),
         if (logoUrl != null && logoUrl.trim().isNotEmpty)

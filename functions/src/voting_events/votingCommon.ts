@@ -8,6 +8,7 @@ import {
   Timestamp,
   Transaction,
 } from "firebase-admin/firestore";
+import { sanitizePlainText } from "../utils/sanitize";
 
 /* ------------------------------------------------------------------ */
 /* Constants (single source of truth)                                  */
@@ -87,19 +88,23 @@ export function rejectUnknownKeys(data: Record<string, unknown>, allowed: string
   }
 }
 
-export function requiredString(value: unknown, label: string, min: number, max: number): string {
+export function requiredString(
+  value: unknown, label: string, min: number, max: number, options: { multiline?: boolean } = {}
+): string {
   if (typeof value !== "string") throw new HttpsError("invalid-argument", `${label} is required.`);
-  const t = value.trim();
+  const t = sanitizePlainText(value, options);
   if (t.length < min || t.length > max) {
     throw new HttpsError("invalid-argument", `${label} must be between ${min} and ${max} characters.`);
   }
   return t;
 }
 
-export function optionalString(value: unknown, label: string, max: number): string {
+export function optionalString(
+  value: unknown, label: string, max: number, options: { multiline?: boolean } = {}
+): string {
   if (value === undefined || value === null) return "";
   if (typeof value !== "string") throw new HttpsError("invalid-argument", `${label} must be a string.`);
-  const t = value.trim();
+  const t = sanitizePlainText(value, options);
   if (t.length > max) throw new HttpsError("invalid-argument", `${label} cannot exceed ${max} characters.`);
   return t;
 }

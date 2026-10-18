@@ -27,7 +27,6 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final _emailController = TextEditingController();
   final _countryController = TextEditingController();
   final _cityController = TextEditingController();
   final _websiteController = TextEditingController();
@@ -49,7 +48,6 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
-    _emailController.dispose();
     _countryController.dispose();
     _cityController.dispose();
     _websiteController.dispose();
@@ -68,13 +66,14 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
       final repo = ref.read(organizationRepositoryProvider);
       final activeOrg = ref.read(activeOrgIdProvider.notifier);
       final website = _websiteController.text.trim();
+      final country = _countryController.text.trim();
+      final city = _cityController.text.trim();
       final orgId = await repo.createOrganization(
         name: _nameController.text.trim(),
         type: _selectedType,
         description: _descriptionController.text.trim(),
-        email: _emailController.text.trim(),
-        country: _countryController.text.trim(),
-        city: _cityController.text.trim(),
+        country: country.isNotEmpty ? country : null,
+        city: city.isNotEmpty ? city : null,
         website: website.isNotEmpty ? website : null,
       );
 
@@ -87,7 +86,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Organization created successfully! Status is pending verification.'),
+            content: Text('Organization created and verified!'),
             backgroundColor: AppTheme.success,
           ),
         );
@@ -312,12 +311,12 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'You\'ll be the organization owner',
+                                  'Verified instantly, you\'ll be the owner',
                                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.secondaryNavy),
                                 ),
                                 SizedBox(height: 2),
                                 Text(
-                                  'Set up your workspace, customize its branding and manage joining codes after creating it.',
+                                  'Since your account email is verified, your organization is created already verified - no manual review needed. Set up your workspace, branding and joining codes right after.',
                                   style: TextStyle(fontSize: 12, color: AppTheme.textSecondary, height: 1.4),
                                 ),
                               ],

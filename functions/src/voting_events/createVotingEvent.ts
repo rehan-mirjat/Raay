@@ -21,7 +21,7 @@ export const createVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
   // ---- Input validation (no database access yet) ----
   const organizationId = requireId(data.organizationId, "organizationId");
   const title = requiredString(data.title, "Title", 3, 100);
-  const description = optionalString(data.description, "Description", 1000);
+  const description = optionalString(data.description, "Description", 1000, { multiline: true });
   const votingType = oneOf(data.votingType, VOTING_TYPES, "votingType");
   const eligibilityType = oneOf(data.eligibilityType, ELIGIBILITY_TYPES, "eligibilityType");
   const privacyMode = data.privacyMode === undefined || data.privacyMode === null

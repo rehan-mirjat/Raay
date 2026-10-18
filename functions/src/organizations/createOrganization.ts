@@ -2,9 +2,10 @@ import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { checkRateLimit, RATE_LIMIT_ORG_CREATION } from "../utils/rateLimiter";
 import { requireNotRevoked } from "../utils/authorization";
+import { normalizeOrganizationName } from "../utils/organizationName";
+import { sanitizePlainText } from "../utils/sanitize";
 
 const ALLOWED_TYPES = ["academic", "corporate", "nonProfit", "club", "community", "other"];
-const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,24}$/;
 const UUID_V4_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export const createOrganization = onCall(async (request) => {
@@ -14,6 +15,18 @@ export const createOrganization = onCall(async (request) => {
   }
 
   await requireNotRevoked(request);
+
+  // Org verification is self-service: a user whose own account email is
+  // confirmed can create an already-verified organization directly, with
+  // no platform-admin review step. The client already gates every route
+  // behind email verification (see RouterNotifier), so this is a
+  // server-side assertion of that same invariant, not new friction.
+  if (request.auth.token.email_verified !== true) {
+    throw new HttpsError(
+      "failed-precondition",
+      "Please verify your email address before you can create an organization."
+    );
+  }
 
   const uid = request.auth.uid;
   const db = getFirestore();
@@ -40,7 +53,6 @@ export const createOrganization = onCall(async (request) => {
     name,
     type,
     description,
-    email,
     country,
     city,
     website,
@@ -54,8 +66,14 @@ export const createOrganization = onCall(async (request) => {
 
   const cleanRequestId = requestId.trim().toLowerCase();
 
-  // Validate Organization Name
-  if (!name || typeof name !== "string" || name.trim().length < 3 || name.trim().length > 100) {
+  // Validate Organization Name (sanitize before measuring length so control/
+  // bidi-spoofing characters don't count toward the limit they won't occupy
+  // in the stored value).
+  if (!name || typeof name !== "string") {
+    throw new HttpsError("invalid-argument", "Organization name is required.");
+  }
+  const sanitizedName = sanitizePlainText(name);
+  if (sanitizedName.length < 3 || sanitizedName.length > 100) {
     throw new HttpsError("invalid-argument", "Organization name must be between 3 and 100 characters.");
   }
 
@@ -68,22 +86,31 @@ export const createOrganization = onCall(async (request) => {
   }
 
   // Validate Description
-  if (description && (typeof description !== "string" || description.trim().length > 500)) {
-    throw new HttpsError("invalid-argument", "Description cannot exceed 500 characters.");
+  if (description !== undefined && description !== null) {
+    if (typeof description !== "string") {
+      throw new HttpsError("invalid-argument", "Description must be a string.");
+    }
+    if (sanitizePlainText(description, { multiline: true }).length > 500) {
+      throw new HttpsError("invalid-argument", "Description cannot exceed 500 characters.");
+    }
   }
 
-  // Validate Contact Email Syntax
-  if (!email || typeof email !== "string" || !EMAIL_REGEX.test(email.trim())) {
-    throw new HttpsError("invalid-argument", "A valid contact email address is required.");
+  // Contact email is the organization creator's own (already-verified)
+  // account email, not a separately-collected field - this is both the
+  // basis for self-service verification and avoids a second, unverified
+  // email address being attached to the organization.
+  const authEmail = request.auth.token.email;
+  if (!authEmail || typeof authEmail !== "string") {
+    throw new HttpsError("failed-precondition", "Your account has no verified email address.");
   }
 
-  // Validate Country and City
-  if (!country || typeof country !== "string" || country.trim().length === 0) {
-    throw new HttpsError("invalid-argument", "Country is required.");
+  // Validate Country and City (optional)
+  if (country !== undefined && country !== null && typeof country !== "string") {
+    throw new HttpsError("invalid-argument", "Country must be a string.");
   }
 
-  if (!city || typeof city !== "string" || city.trim().length === 0) {
-    throw new HttpsError("invalid-argument", "City is required.");
+  if (city !== undefined && city !== null && typeof city !== "string") {
+    throw new HttpsError("invalid-argument", "City must be a string.");
   }
 
 function isValidUrl(input: string): boolean {
@@ -104,16 +131,19 @@ function isValidUrl(input: string): boolean {
     throw new HttpsError("invalid-argument", "Logo URL must be a valid URL.");
   }
 
-  const trimmedName = name.trim();
+  const trimmedName = sanitizedName;
   const trimmedType = type.trim();
-  const trimmedDescription = (description || "").trim();
-  const trimmedEmail = email.trim();
-  const trimmedCountry = country.trim();
-  const trimmedCity = city.trim();
+  const trimmedDescription = typeof description === "string"
+    ? sanitizePlainText(description, { multiline: true })
+    : "";
+  const trimmedEmail = authEmail.trim();
+  const trimmedCountry = typeof country === "string" ? sanitizePlainText(country) : "";
+  const trimmedCity = typeof city === "string" ? sanitizePlainText(city) : "";
   const cleanWebsite = website ? website.trim() : null;
   const cleanLogoUrl = logoUrl ? logoUrl.trim() : null;
+  const nameNormalized = normalizeOrganizationName(trimmedName);
 
-  // 4. Transactional Idempotency Claiming and Document Creation
+  // 4. Transactional Idempotency Claiming, Duplicate-Name Check, and Document Creation
   try {
     const createdOrgId = await db.runTransaction(async (transaction) => {
       const idempotencyRef = db.collection("organizationIdempotency").doc(cleanRequestId);
@@ -130,6 +160,20 @@ function isValidUrl(input: string): boolean {
         return idData?.organizationId as string;
       }
 
+      // Reject near-duplicate names (case/whitespace/punctuation-insensitive)
+      // so two organizations can't collide under slightly different spellings.
+      const duplicateQuery = db.collection("organizations")
+        .where("nameNormalized", "==", nameNormalized)
+        .limit(1);
+      const duplicateSnap = await transaction.get(duplicateQuery);
+      if (!duplicateSnap.empty) {
+        const existingName = duplicateSnap.docs[0].data().name as string;
+        throw new HttpsError(
+          "already-exists",
+          `An organization with a similar name ("${existingName}") already exists. Please choose a different name.`
+        );
+      }
+
       // Generate Firestore Auto-ID for Organization
       const orgRef = db.collection("organizations").doc();
       const orgId = orgRef.id;
@@ -137,10 +181,14 @@ function isValidUrl(input: string): boolean {
       const membershipRef = db.collection("organizationMembers").doc(`${orgId}_${uid}`);
       const auditRef = db.collection("auditLogs").doc();
 
-      // Write 1: Organization Document
+      // Write 1: Organization Document. Verification is self-service: the
+      // creator's account email is already confirmed (checked above), so
+      // the organization is verified immediately - no platform-admin
+      // review step in the common case.
       transaction.set(orgRef, {
         id: orgId,
         name: trimmedName,
+        nameNormalized,
         type: trimmedType,
         description: trimmedDescription,
         email: trimmedEmail,
@@ -148,10 +196,11 @@ function isValidUrl(input: string): boolean {
         logoUrl: cleanLogoUrl,
         country: trimmedCountry,
         city: trimmedCity,
-        status: "pending",
+        status: "verified",
         ownerId: uid,
         createdAt: FieldValue.serverTimestamp(),
-        verifiedAt: null,
+        verifiedAt: FieldValue.serverTimestamp(),
+        verifiedBy: "self-service:email-verification",
         suspendedAt: null,
       });
 
@@ -178,6 +227,7 @@ function isValidUrl(input: string): boolean {
         metadata: {
           organizationName: trimmedName,
           type: trimmedType,
+          verifiedVia: "email-verification",
         },
         timestamp: FieldValue.serverTimestamp(),
       });

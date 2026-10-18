@@ -15,7 +15,7 @@ export const createPollOption = onCall(CALLABLE_OPTIONS, async (request) => {
   const organizationId = requireId(data.organizationId, "organizationId");
   const votingEventId = requireId(data.votingEventId, "votingEventId");
   const label = requiredString(data.label, "Poll option label", 1, 100);
-  const description = optionalString(data.description, "Description", 500);
+  const description = optionalString(data.description, "Description", 500, { multiline: true });
   const explicitSortOrder = data.sortOrder === undefined ? undefined : parseSortOrder(data.sortOrder);
 
   const db = getFirestore();

@@ -16,7 +16,7 @@ export const updateCandidate = onCall(CALLABLE_OPTIONS, async (request) => {
   const name = data.name !== undefined ? requiredString(data.name, "Candidate name", 2, 100) : undefined;
   const position = data.position !== undefined ? optionalString(data.position, "Position", 100) : undefined;
   const party = data.party !== undefined ? optionalString(data.party, "Party name", 100) : undefined;
-  const bio = data.bio !== undefined ? optionalString(data.bio, "Bio", 1000) : undefined;
+  const bio = data.bio !== undefined ? optionalString(data.bio, "Bio", 1000, { multiline: true }) : undefined;
   const displayOrder = data.displayOrder !== undefined ? parseSortOrder(data.displayOrder) : undefined;
 
   const db = getFirestore();

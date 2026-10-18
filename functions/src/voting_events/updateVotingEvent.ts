@@ -22,7 +22,7 @@ export const updateVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
 
   // ---- Validate only what the client actually sent ----
   const newTitle = data.title !== undefined ? requiredString(data.title, "Title", 3, 100) : undefined;
-  const newDescription = data.description !== undefined ? optionalString(data.description, "Description", 1000) : undefined;
+  const newDescription = data.description !== undefined ? optionalString(data.description, "Description", 1000, { multiline: true }) : undefined;
   const newPrivacy = data.privacyMode !== undefined ? parsePrivacyMode(data.privacyMode) : undefined;
   const newType = data.eligibilityType !== undefined ? oneOf(data.eligibilityType, ELIGIBILITY_TYPES, "eligibilityType") : undefined;
   const newDepts = data.eligibilityDepartmentIds !== undefined ? validateIdArray(data.eligibilityDepartmentIds, "eligibilityDepartmentIds") : undefined;
