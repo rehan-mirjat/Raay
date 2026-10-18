@@ -26,6 +26,14 @@ class AppTheme {
   static const Color identifiable =
       Color(0xFFBF360C); // Deep Orange 900 - identifiable-vote indicator
 
+  // Shape scale - a shared vocabulary so hand-styled widgets stay visually
+  // consistent with the Material components that read these from the theme.
+  static const double radiusButton = 14.0;
+  static const double radiusInput = 14.0;
+  static const double radiusCard = 20.0;
+  static const double radiusDialog = 24.0;
+  static const double radiusSheet = 28.0;
+
   static ThemeData withOrganizationBranding(
     ThemeData base,
     Map<String, String>? brandColors,
@@ -49,9 +57,18 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: primary,
           foregroundColor: scheme.onPrimary,
-          minimumSize: const Size(0, 48),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          minimumSize: const Size(0, 50),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(radiusButton)),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: primary,
+          foregroundColor: scheme.onPrimary,
+          minimumSize: const Size(0, 50),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(radiusButton)),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
@@ -59,7 +76,7 @@ class AppTheme {
       ),
       inputDecorationTheme: base.inputDecorationTheme.copyWith(
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(radiusInput),
           borderSide: BorderSide(color: primary, width: 1.8),
         ),
       ),
@@ -131,13 +148,28 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryBlue,
           foregroundColor: Colors.white,
+          disabledBackgroundColor: primaryBlue.withValues(alpha: 0.35),
+          disabledForegroundColor: Colors.white.withValues(alpha: 0.8),
           elevation: 0,
-          minimumSize: const Size(0, 48),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          minimumSize: const Size(0, 50),
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
           textStyle: GoogleFonts.inter(
               fontWeight: FontWeight.w600, fontSize: 14, letterSpacing: 0.2),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(radiusButton),
+          ),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: primaryBlue,
+          foregroundColor: Colors.white,
+          minimumSize: const Size(0, 50),
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+          textStyle: GoogleFonts.inter(
+              fontWeight: FontWeight.w600, fontSize: 14, letterSpacing: 0.2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusButton),
           ),
         ),
       ),
@@ -147,12 +179,12 @@ class AppTheme {
           backgroundColor: surfaceWhite,
           side: const BorderSide(color: borderLight, width: 1.2),
           elevation: 0,
-          minimumSize: const Size(0, 48),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          minimumSize: const Size(0, 50),
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
           textStyle: GoogleFonts.inter(
               fontWeight: FontWeight.w600, fontSize: 14, letterSpacing: 0.2),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(radiusButton),
           ),
         ),
       ),
@@ -163,7 +195,7 @@ class AppTheme {
           textStyle:
               GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 14),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
       ),
@@ -171,25 +203,25 @@ class AppTheme {
         filled: true,
         fillColor: surfaceWhite,
         contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+            const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(radiusInput),
           borderSide: const BorderSide(color: borderLight, width: 1.2),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(radiusInput),
           borderSide: const BorderSide(color: borderLight, width: 1.2),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(radiusInput),
           borderSide: const BorderSide(color: primaryBlue, width: 1.8),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(radiusInput),
           borderSide: const BorderSide(color: error, width: 1.2),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(radiusInput),
           borderSide: const BorderSide(color: error, width: 1.8),
         ),
         hintStyle: GoogleFonts.inter(color: textSecondary, fontSize: 14),
@@ -198,28 +230,35 @@ class AppTheme {
       ),
       cardTheme: CardThemeData(
         color: surfaceWhite,
-        elevation: 0,
+        elevation: 3,
+        // M3's default Card tints elevated surfaces with the primary color;
+        // disabled to keep cards a crisp, brand-neutral white rather than
+        // drifting blue as elevation increases.
+        surfaceTintColor: Colors.transparent,
+        shadowColor: secondaryNavy.withValues(alpha: 0.10),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: borderLight, width: 1.2),
+          borderRadius: BorderRadius.circular(radiusCard),
+          side: BorderSide(color: borderLight.withValues(alpha: 0.7), width: 1),
         ),
         margin: EdgeInsets.zero,
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: surfaceWhite,
-        elevation: 6,
-        shadowColor: Colors.black.withValues(alpha: 0.1),
+        elevation: 8,
+        surfaceTintColor: Colors.transparent,
+        shadowColor: Colors.black.withValues(alpha: 0.12),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(radiusDialog),
         ),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: surfaceWhite,
         elevation: 12,
+        surfaceTintColor: Colors.transparent,
         showDragHandle: true,
         dragHandleColor: borderLight,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(radiusSheet)),
         ),
       ),
       snackBarTheme: SnackBarThemeData(
@@ -228,7 +267,7 @@ class AppTheme {
         contentTextStyle: GoogleFonts.inter(
             color: Colors.white, fontSize: 13, fontWeight: FontWeight.w500),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(radiusInput),
         ),
         elevation: 4,
       ),

@@ -106,11 +106,14 @@ class AuthSplitLayout extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Image.asset(
-                              'assets/icon/app_icon_transparent.png',
-                              width: 44, // Increased from 34
-                              height: 44, // Increased from 34
-                              fit: BoxFit.contain,
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(11),
+                              child: Image.asset(
+                                'assets/icon/app_icon.png',
+                                width: 44,
+                                height: 44,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                             const SizedBox(width: 16),
                             const Text(

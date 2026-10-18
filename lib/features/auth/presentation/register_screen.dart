@@ -183,13 +183,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 440),
             child: Card(
-              elevation: 0,
+              elevation: isMobile ? 0 : 2,
+              shadowColor: AppTheme.secondaryNavy.withValues(alpha: 0.08),
               color: isMobile ? Colors.transparent : null,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                 side: isMobile
                     ? BorderSide.none
-                    : const BorderSide(color: AppTheme.borderLight),
+                    : BorderSide(color: AppTheme.borderLight.withValues(alpha: 0.7)),
               ),
               child: Padding(
                 padding: EdgeInsets.all(isMobile ? 16 : 36),

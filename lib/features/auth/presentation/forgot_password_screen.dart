@@ -125,14 +125,21 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                         child: Container(
                           width: 64,
                           height: 64,
-                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: AppTheme.primaryBlue.withValues(alpha: 0.08),
                             shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppTheme.primaryBlue.withValues(alpha: 0.15),
+                                blurRadius: 16,
+                                offset: const Offset(0, 6),
+                              ),
+                            ],
                           ),
-                          child: Image.asset(
-                            'assets/icon/app_icon_transparent.png',
-                            fit: BoxFit.contain,
+                          child: ClipOval(
+                            child: Image.asset(
+                              'assets/icon/app_icon.png',
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),

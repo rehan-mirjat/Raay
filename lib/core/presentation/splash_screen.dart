@@ -124,38 +124,30 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Styled Logo Badge using custom shield icon
+            // App icon badge - the source artwork already includes its own
+            // rounded corners, background, and glow, so it's shown directly
+            // rather than nested inside another decorative container.
             Semantics(
               label: 'Kivora Logo',
               child: Container(
                 width: 96,
                 height: 96,
-                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppTheme.surfaceBlue,
-                      AppTheme.surfaceWhite,
-                    ],
-                  ),
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(
-                    color: AppTheme.primaryBlue.withValues(alpha: 0.25),
-                    width: 1.5,
-                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.primaryBlue.withValues(alpha: 0.12),
+                      color: AppTheme.primaryBlue.withValues(alpha: 0.18),
                       blurRadius: 24,
                       offset: const Offset(0, 10),
                     ),
                   ],
                 ),
-                child: Image.asset(
-                  'assets/icon/app_icon_transparent.png',
-                  fit: BoxFit.contain,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: Image.asset(
+                    'assets/icon/app_icon.png',
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),

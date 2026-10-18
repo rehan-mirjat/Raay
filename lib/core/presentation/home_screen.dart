@@ -184,7 +184,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           vertical: 64, horizontal: 24),
                                       decoration: BoxDecoration(
                                         color: AppTheme.surfaceWhite,
-                                        borderRadius: BorderRadius.circular(16),
+                                        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                                         border: Border.all(
                                             color: AppTheme.borderLight),
                                       ),
@@ -297,8 +297,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Container(
           decoration: BoxDecoration(
             color: AppTheme.surfaceWhite,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppTheme.borderLight),
+            borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+            border: Border.all(color: AppTheme.borderLight.withValues(alpha: 0.7)),
+            boxShadow: [
+              BoxShadow(
+                color: AppTheme.secondaryNavy.withValues(alpha: 0.05),
+                blurRadius: 20,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -415,8 +422,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: AppTheme.surfaceWhite,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppTheme.borderLight),
+            borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+            border: Border.all(color: AppTheme.borderLight.withValues(alpha: 0.7)),
+            boxShadow: [
+              BoxShadow(
+                color: AppTheme.secondaryNavy.withValues(alpha: 0.05),
+                blurRadius: 20,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -492,8 +506,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppTheme.surfaceWhite,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.borderLight),
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+        border: Border.all(color: AppTheme.borderLight.withValues(alpha: 0.7)),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.secondaryNavy.withValues(alpha: 0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -542,7 +563,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
         side: BorderSide(
           color: isActive
               ? AppTheme.primaryBlue.withValues(alpha: 0.5)
@@ -655,13 +676,13 @@ class _SrsWelcomeOverviewScreen extends StatelessWidget {
                 padding: EdgeInsets.all(isDesktop ? 48 : 32),
                 decoration: BoxDecoration(
                   color: AppTheme.surfaceWhite,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: AppTheme.borderLight),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+                  border: Border.all(color: AppTheme.borderLight.withValues(alpha: 0.7)),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.03),
-                      blurRadius: 16,
-                      offset: const Offset(0, 4),
+                      color: AppTheme.secondaryNavy.withValues(alpha: 0.05),
+                      blurRadius: 20,
+                      offset: const Offset(0, 6),
                     ),
                   ],
                 ),
@@ -815,13 +836,13 @@ class _CapabilityCard extends StatelessWidget {
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
         color: AppTheme.surfaceWhite,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.borderLight),
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+        border: Border.all(color: AppTheme.borderLight.withValues(alpha: 0.7)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            color: AppTheme.secondaryNavy.withValues(alpha: 0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
