@@ -51,28 +51,40 @@ Future<bool> showReauthDialog(
           }
         }
 
-        return AlertDialog(
+        return PopScope(
+          // barrierDismissible: false blocks a tap outside, but not Android's
+          // back button/gesture - block that too while a verify call is in
+          // flight, for the same reason (a completed call shouldn't try to
+          // act on a dialog that's already gone).
+          canPop: !isVerifying,
+          child: AlertDialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          scrollable: true,
           title: const Text('Verify it\'s you'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(reason),
-              const SizedBox(height: 16),
-              if (!isGoogleUser)
-                TextField(
-                  controller: passwordController,
-                  obscureText: true,
-                  autofocus: true,
-                  enabled: !isVerifying,
-                  decoration: const InputDecoration(labelText: 'Password'),
-                  onSubmitted: (_) => verify(),
-                ),
-              if (dialogError != null) ...[
-                const SizedBox(height: 8),
-                Text(dialogError!, style: const TextStyle(color: AppTheme.error)),
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 360),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(reason),
+                const SizedBox(height: 16),
+                if (!isGoogleUser)
+                  TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    autofocus: true,
+                    enabled: !isVerifying,
+                    decoration: const InputDecoration(labelText: 'Password'),
+                    onSubmitted: (_) => verify(),
+                  ),
+                if (dialogError != null) ...[
+                  const SizedBox(height: 8),
+                  Text(dialogError!,
+                      style: const TextStyle(color: AppTheme.error)),
+                ],
               ],
-            ],
+            ),
           ),
           actions: [
             TextButton(
@@ -90,6 +102,7 @@ Future<bool> showReauthDialog(
                   : Text(isGoogleUser ? 'Verify with Google' : 'Verify'),
             ),
           ],
+          ),
         );
       },
     ),

@@ -153,7 +153,15 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PopScope(
+      // On the confirmation step, back should return to code entry (the
+      // screen already exposes that as an explicit button) rather than
+      // exit the whole flow and lose the already-resolved preview.
+      canPop: _preview == null,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) _backToCodeEntry();
+      },
+      child: Scaffold(
       backgroundColor: AppTheme.backgroundLight,
       body: Center(
         child: SingleChildScrollView(
@@ -180,6 +188,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
             ),
           ),
         ),
+      ),
       ),
     );
   }

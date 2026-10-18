@@ -631,11 +631,15 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
           }
         },
         itemBuilder: (context) {
+          // Caps at 320 on normal/wide screens but shrinks to fit narrow
+          // Android phones (down to a 200 floor) instead of overflowing.
+          final menuWidth =
+              (MediaQuery.sizeOf(context).width - 32).clamp(200.0, 320.0);
           return <PopupMenuEntry<String>>[
             PopupMenuItem<String>(
               enabled: false,
               child: SizedBox(
-                width: 320,
+                width: menuWidth,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -692,7 +696,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                 return PopupMenuItem<String>(
                   value: 'view_all',
                   child: SizedBox(
-                    width: 320,
+                    width: menuWidth,
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -745,7 +749,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
               return PopupMenuItem<String>(
                 value: 'reminder:${reminder.id}',
                 child: SizedBox(
-                  width: 320,
+                  width: menuWidth,
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(

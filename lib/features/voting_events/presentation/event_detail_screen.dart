@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/error_view.dart';
+import '../../../core/widgets/fade_through.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../services/auth_service.dart';
@@ -25,10 +26,18 @@ class EventDetailScreen extends ConsumerWidget {
     final eventAsync = ref.watch(singleVotingEventProvider(eventId));
     final currentUser = ref.watch(authServiceProvider).currentUser;
 
+    final stateKey = eventAsync.when(
+      loading: () => 'loading',
+      error: (_, __) => 'error',
+      data: (event) => event == null ? 'not-found' : 'event:${event.id}',
+    );
+
     return Scaffold(
       backgroundColor: AppTheme.backgroundLight,
       body: SafeArea(
-        child: eventAsync.when(
+        child: FadeThrough(
+          stateKey: stateKey,
+          child: eventAsync.when(
           loading: () => const LoadingView(message: 'Loading event details...'),
           error: (err, _) => ErrorView(
             type: ErrorViewType.generic,
@@ -158,6 +167,7 @@ class EventDetailScreen extends ConsumerWidget {
               ),
             );
           },
+          ),
         ),
       ),
     );

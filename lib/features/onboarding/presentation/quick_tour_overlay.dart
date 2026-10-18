@@ -210,14 +210,23 @@ class _QuickTourOverlayState extends ConsumerState<QuickTourOverlay> {
               ),
             ),
           Positioned(
+            // The upper bound (screen size minus the card's footprint) can
+            // fall below the 16.0 lower bound on narrow/short screens -
+            // clamping it to [16.0, infinity) first keeps clamp()'s own
+            // bounds valid instead of throwing ArgumentError on small
+            // devices (budget Android phones under ~352 logical px wide).
             top: rect != null
-                ? (rect.bottom + 16)
-                    .clamp(16.0, MediaQuery.of(context).size.height - 250)
-                : MediaQuery.of(context).size.height / 2 - 100,
+                ? (rect.bottom + 16).clamp(
+                    16.0,
+                    (MediaQuery.sizeOf(context).height - 250)
+                        .clamp(16.0, double.infinity))
+                : MediaQuery.sizeOf(context).height / 2 - 100,
             left: rect != null
-                ? (rect.left + rect.width / 2 - 160)
-                    .clamp(16.0, MediaQuery.of(context).size.width - 336)
-                : (MediaQuery.of(context).size.width - 320) / 2,
+                ? (rect.left + rect.width / 2 - 160).clamp(
+                    16.0,
+                    (MediaQuery.sizeOf(context).width - 336)
+                        .clamp(16.0, double.infinity))
+                : (MediaQuery.sizeOf(context).width - 320) / 2,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               curve: Curves.easeOutCubic,

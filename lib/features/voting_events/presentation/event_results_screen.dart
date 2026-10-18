@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
+import '../../../core/widgets/fade_through.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../services/firebase_service.dart';
 import '../../organizations/presentation/providers/organization_providers.dart';
@@ -83,15 +84,19 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                 builder: (context, snapshot) {
                   final eventTitle = eventAsync.valueOrNull?.title;
 
-                  Widget withBackLink(Widget body) => ListView(
-                        children: [
-                          _BackLink(
-                            label: eventTitle ?? 'Event',
-                            eventId: widget.eventId,
-                          ),
-                          const SizedBox(height: 16),
-                          body,
-                        ],
+                  Widget withBackLink(String stateKey, Widget body) =>
+                      FadeThrough(
+                        stateKey: stateKey,
+                        child: ListView(
+                          children: [
+                            _BackLink(
+                              label: eventTitle ?? 'Event',
+                              eventId: widget.eventId,
+                            ),
+                            const SizedBox(height: 16),
+                            body,
+                          ],
+                        ),
                       );
 
                   if (snapshot.hasError) {
@@ -99,27 +104,27 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                     if (err is FirebaseException &&
                         err.code == 'permission-denied') {
                       if (!canManage) {
-                        return withBackLink(const ErrorView(
+                        return withBackLink('not-available', const ErrorView(
                             type: ErrorViewType.generic,
                             title: 'Results are not available',
                             message:
                                 'Results will appear here after they are published.'));
                       }
                     }
-                    return withBackLink(const ErrorView(
+                    return withBackLink('error', const ErrorView(
                         type: ErrorViewType.generic,
                         title: 'Error loading results',
                         message: 'There was an error trying to load the results.'));
                   }
 
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return withBackLink(
+                    return withBackLink('loading',
                         const LoadingView(message: 'Loading published results…'));
                   }
 
                   final data = snapshot.data?.data();
                   if (data == null) {
-                    return withBackLink(_empty(canManage,
+                    return withBackLink('empty', _empty(canManage,
                         'Results have not been calculated yet.'));
                   }
 
@@ -145,7 +150,9 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                   final votingTypeLabel =
                       eventAsync.valueOrNull?.votingType.label;
 
-                  return ListView(
+                  return FadeThrough(
+                    stateKey: 'data:${rows.length}:$isPublished',
+                    child: ListView(
                     children: [
                       _BackLink(
                         label: eventTitle ?? 'Event',
@@ -278,6 +285,7 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                         ),
                       ],
                     ],
+                    ),
                   );
                 },
               ),

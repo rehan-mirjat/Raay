@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../theme/app_theme.dart';
 import '../layout/responsive.dart';
 import '../../../core/widgets/error_view.dart';
+import '../widgets/fade_through.dart';
 import '../widgets/loading_view.dart';
 import '../widgets/status_badge.dart';
 import '../../features/departments/presentation/providers/department_providers.dart';
@@ -249,8 +250,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     itemCount: memberEvents.length,
                                     itemBuilder: (context, index) {
                                       final event = memberEvents[index];
-                                      return _buildMemberEventCard(
-                                          context, event);
+                                      return FadeSlideIn(
+                                        key: ValueKey(event.id),
+                                        delay: Duration(
+                                            milliseconds:
+                                                40 * index.clamp(0, 8)),
+                                        child: _buildMemberEventCard(
+                                            context, event),
+                                      );
                                     },
                                   );
                                 },

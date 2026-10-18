@@ -102,7 +102,10 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
           }
         }
 
-        return AlertDialog(
+        return PopScope(
+          canPop: !isVerifying,
+          child: AlertDialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
           title: const Text('Set up two-factor authentication'),
           content: SingleChildScrollView(
             child: ConstrainedBox(
@@ -188,6 +191,7 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
                   : const Text('Enable 2FA'),
             ),
           ],
+          ),
         );
       },
     ),

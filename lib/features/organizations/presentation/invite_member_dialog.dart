@@ -140,25 +140,24 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                             fontSize: 12, color: AppTheme.secondaryNavy),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    InkWell(
-                      onTap: () async {
+                    const SizedBox(width: 4),
+                    IconButton(
+                      tooltip: _linkCopied ? 'Copied' : 'Copy link',
+                      onPressed: () async {
                         await Clipboard.setData(
                             ClipboardData(text: _inviteLink!));
                         if (mounted) setState(() => _linkCopied = true);
                       },
-                      borderRadius: BorderRadius.circular(6),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: Icon(
-                          _linkCopied
-                              ? Icons.check_rounded
-                              : Icons.copy_rounded,
-                          size: 18,
-                          color: _linkCopied
-                              ? AppTheme.success
-                              : AppTheme.primaryBlue,
-                        ),
+                      constraints: const BoxConstraints(
+                          minWidth: 44, minHeight: 44),
+                      icon: Icon(
+                        _linkCopied
+                            ? Icons.check_rounded
+                            : Icons.copy_rounded,
+                        size: 18,
+                        color: _linkCopied
+                            ? AppTheme.success
+                            : AppTheme.primaryBlue,
                       ),
                     ),
                   ],

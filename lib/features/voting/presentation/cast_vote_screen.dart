@@ -482,28 +482,18 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
           children: candidates.map((cand) {
             final isSelected = _selectedCandidateId == cand.id;
 
-            return Card(
-              margin: const EdgeInsets.only(bottom: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color:
-                      isSelected ? AppTheme.primaryBlue : AppTheme.borderLight,
-                  width: isSelected ? 2.0 : 1.0,
-                ),
-              ),
-              child: InkWell(
-                onTap: () {
-                  setState(() {
-                    _selectedCandidateId = cand.id;
-                    _selectedPollOptionId = null;
-                    _selectedChoiceName = cand.name;
-                  });
-                },
-                borderRadius: BorderRadius.circular(12),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
+            return _SelectableCard(
+              isSelected: isSelected,
+              onTap: () {
+                setState(() {
+                  _selectedCandidateId = cand.id;
+                  _selectedPollOptionId = null;
+                  _selectedChoiceName = cand.name;
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
                     children: [
                       Icon(
                         isSelected
@@ -562,7 +552,6 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                       ),
                     ],
                   ),
-                ),
               ),
             );
           }).toList(),
@@ -587,59 +576,48 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
           children: options.map((opt) {
             final isSelected = _selectedPollOptionId == opt.id;
 
-            return Card(
-              margin: const EdgeInsets.only(bottom: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color:
-                      isSelected ? AppTheme.primaryBlue : AppTheme.borderLight,
-                  width: isSelected ? 2.0 : 1.0,
-                ),
-              ),
-              child: InkWell(
-                onTap: () {
-                  setState(() {
-                    _selectedPollOptionId = opt.id;
-                    _selectedCandidateId = null;
-                    _selectedChoiceName = opt.label;
-                  });
-                },
-                borderRadius: BorderRadius.circular(12),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      Icon(
-                        isSelected
-                            ? Icons.radio_button_checked
-                            : Icons.radio_button_unchecked,
-                        color: isSelected
-                            ? AppTheme.primaryBlue
-                            : AppTheme.textSecondary,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(opt.label,
+            return _SelectableCard(
+              isSelected: isSelected,
+              onTap: () {
+                setState(() {
+                  _selectedPollOptionId = opt.id;
+                  _selectedCandidateId = null;
+                  _selectedChoiceName = opt.label;
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Icon(
+                      isSelected
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_unchecked,
+                      color: isSelected
+                          ? AppTheme.primaryBlue
+                          : AppTheme.textSecondary,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(opt.label,
+                              style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.secondaryNavy)),
+                          if (opt.description.isNotEmpty) ...[
+                            const SizedBox(height: 4),
+                            Text(opt.description,
                                 style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppTheme.secondaryNavy)),
-                            if (opt.description.isNotEmpty) ...[
-                              const SizedBox(height: 4),
-                              Text(opt.description,
-                                  style: const TextStyle(
-                                      fontSize: 13,
-                                      color: AppTheme.textSecondary)),
-                            ],
+                                    fontSize: 13,
+                                    color: AppTheme.textSecondary)),
                           ],
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             );
@@ -683,51 +661,43 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
   }) {
     final isSelected = _selectedPollOptionId == id;
 
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: isSelected ? color : AppTheme.borderLight,
-          width: isSelected ? 2.0 : 1.0,
-        ),
-      ),
-      child: InkWell(
-        onTap: () {
-          setState(() {
-            _selectedPollOptionId = id;
-            _selectedCandidateId = null;
-            _selectedChoiceName = title;
-          });
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Icon(
-                isSelected
-                    ? Icons.radio_button_checked
-                    : Icons.radio_button_unchecked,
-                color: isSelected ? color : AppTheme.textSecondary,
-              ),
-              const SizedBox(width: 12),
-              Icon(icon, color: color, size: 28),
-              const SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title,
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: color)),
-                  Text(subtitle,
-                      style: const TextStyle(
-                          fontSize: 12, color: AppTheme.textSecondary)),
-                ],
-              ),
-            ],
-          ),
+    return _SelectableCard(
+      isSelected: isSelected,
+      accentColor: color,
+      onTap: () {
+        setState(() {
+          _selectedPollOptionId = id;
+          _selectedCandidateId = null;
+          _selectedChoiceName = title;
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Icon(
+              isSelected
+                  ? Icons.radio_button_checked
+                  : Icons.radio_button_unchecked,
+              color: isSelected ? color : AppTheme.textSecondary,
+            ),
+            const SizedBox(width: 12),
+            Icon(icon, color: color, size: 28),
+            const SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: color)),
+                Text(subtitle,
+                    style: const TextStyle(
+                        fontSize: 12, color: AppTheme.textSecondary)),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -740,5 +710,81 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
     if (diff.inHours > 0) return '${diff.inHours}h left';
     if (diff.inMinutes > 0) return '${diff.inMinutes}m left';
     return 'Closing soon';
+  }
+}
+
+/// A ballot option card with hover-lift and press-scale feedback on desktop
+/// (and no-op elsewhere), matching the established pattern in
+/// organization_list_screen.dart's _ActionCard - this is the single most-used
+/// interactive surface in the app and was previously a plain, static InkWell.
+class _SelectableCard extends StatefulWidget {
+  const _SelectableCard({
+    required this.isSelected,
+    required this.onTap,
+    required this.child,
+    this.accentColor = AppTheme.primaryBlue,
+  });
+
+  final bool isSelected;
+  final VoidCallback onTap;
+  final Widget child;
+  final Color accentColor;
+
+  @override
+  State<_SelectableCard> createState() => _SelectableCardState();
+}
+
+class _SelectableCardState extends State<_SelectableCard> {
+  bool _isHovered = false;
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final isReducedMotion = MediaQuery.of(context).disableAnimations;
+    final highlighted = widget.isSelected || _isHovered;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => _isPressed = true),
+        onTapUp: (_) => setState(() => _isPressed = false),
+        onTapCancel: () => setState(() => _isPressed = false),
+        onTap: widget.onTap,
+        child: AnimatedScale(
+          scale: (_isPressed && !isReducedMotion) ? 0.985 : 1.0,
+          duration: const Duration(milliseconds: 120),
+          curve: Curves.easeOutCubic,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeOutCubic,
+            margin: const EdgeInsets.only(bottom: 12),
+            decoration: BoxDecoration(
+              color: AppTheme.surfaceWhite,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: widget.isSelected
+                    ? widget.accentColor
+                    : (_isHovered
+                        ? widget.accentColor.withValues(alpha: 0.4)
+                        : AppTheme.borderLight),
+                width: widget.isSelected ? 2.0 : (_isHovered ? 1.4 : 1.0),
+              ),
+              boxShadow: highlighted
+                  ? [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.06),
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ]
+                  : null,
+            ),
+            child: widget.child,
+          ),
+        ),
+      ),
+    );
   }
 }

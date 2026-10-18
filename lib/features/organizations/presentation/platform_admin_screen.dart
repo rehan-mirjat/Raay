@@ -121,16 +121,21 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
     final email = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        scrollable: true,
         title: const Text('Grant platform admin access'),
-        content: TextField(
-          controller: emailController,
-          autofocus: true,
-          keyboardType: TextInputType.emailAddress,
-          decoration: const InputDecoration(
-            labelText: 'Account email address',
-            hintText: 'name@example.com',
+        content: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 360),
+          child: TextField(
+            controller: emailController,
+            autofocus: true,
+            keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              labelText: 'Account email address',
+              hintText: 'name@example.com',
+            ),
+            onSubmitted: (v) => Navigator.pop(ctx, v.trim()),
           ),
-          onSubmitted: (v) => Navigator.pop(ctx, v.trim()),
         ),
         actions: [
           TextButton(
@@ -178,8 +183,12 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         title: const Text('Revoke platform admin access?'),
-        content: Text('$email will lose Platform Super Admin privileges.'),
+        content: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 360),
+          child: Text('$email will lose Platform Super Admin privileges.'),
+        ),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
@@ -259,9 +268,12 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
   }
 
   Widget _buildContent() {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 820),
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
         if (_analytics != null) _buildAnalytics(_analytics!),
         const SizedBox(height: 20),
         Row(
@@ -291,7 +303,9 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
             ),
           ),
         ],
-      ],
+          ],
+        ),
+      ),
     );
   }
 

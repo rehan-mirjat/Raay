@@ -123,10 +123,16 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
                             title: 'No organizations yet',
                             message: 'No organizations have been registered on the platform yet.',
                           )
-                        : ListView.builder(
-                            padding: const EdgeInsets.all(16),
-                            itemCount: _organizations.length,
-                            itemBuilder: (context, index) => _organizationCard(_organizations[index]),
+                        : Center(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 820),
+                              child: ListView.builder(
+                                padding: const EdgeInsets.all(16),
+                                itemCount: _organizations.length,
+                                itemBuilder: (context, index) =>
+                                    _organizationCard(_organizations[index]),
+                              ),
+                            ),
                           ),
       ),
     );

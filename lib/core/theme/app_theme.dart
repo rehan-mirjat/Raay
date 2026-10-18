@@ -106,6 +106,11 @@ class AppTheme {
         onSurface: textPrimary,
       ),
       scaffoldBackgroundColor: backgroundLight,
+      // Inter reads well at both phone and desktop sizes without a platform
+      // switch, so one scale serves both - the gaps filled in here
+      // (headlineLarge/Medium/Small, bodySmall) are the ones screens were
+      // otherwise re-deriving by hand with repeated `.copyWith(bold, navy)`
+      // calls; baking them into the theme keeps page titles consistent.
       textTheme: GoogleFonts.interTextTheme().copyWith(
         displayLarge: GoogleFonts.inter(
             color: textPrimary,
@@ -115,6 +120,29 @@ class AppTheme {
             color: textPrimary,
             fontWeight: FontWeight.bold,
             letterSpacing: -0.5),
+        displaySmall: GoogleFonts.inter(
+            color: textPrimary,
+            fontWeight: FontWeight.bold,
+            fontSize: 28,
+            letterSpacing: -0.4),
+        headlineLarge: GoogleFonts.inter(
+            color: textPrimary,
+            fontWeight: FontWeight.bold,
+            fontSize: 26,
+            letterSpacing: -0.3,
+            height: 1.2),
+        headlineMedium: GoogleFonts.inter(
+            color: textPrimary,
+            fontWeight: FontWeight.bold,
+            fontSize: 23,
+            letterSpacing: -0.3,
+            height: 1.25),
+        headlineSmall: GoogleFonts.inter(
+            color: secondaryNavy,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            letterSpacing: -0.2,
+            height: 1.3),
         titleLarge: GoogleFonts.inter(
             color: textPrimary,
             fontWeight: FontWeight.bold,
@@ -128,8 +156,19 @@ class AppTheme {
             GoogleFonts.inter(color: textPrimary, fontSize: 15, height: 1.5),
         bodyMedium:
             GoogleFonts.inter(color: textSecondary, fontSize: 14, height: 1.4),
+        bodySmall: GoogleFonts.inter(
+            color: textSecondary, fontSize: 12.5, height: 1.4),
         labelLarge: GoogleFonts.inter(
             color: textPrimary, fontWeight: FontWeight.w600, fontSize: 14),
+      ),
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: _SmoothPageTransitionsBuilder(),
+          TargetPlatform.iOS: _SmoothPageTransitionsBuilder(),
+          TargetPlatform.macOS: _SmoothPageTransitionsBuilder(),
+          TargetPlatform.windows: _SmoothPageTransitionsBuilder(),
+          TargetPlatform.linux: _SmoothPageTransitionsBuilder(),
+        },
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: backgroundLight,
@@ -294,6 +333,44 @@ class AppTheme {
             TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         useIndicator: true,
         indicatorColor: primaryBlue,
+      ),
+    );
+  }
+}
+
+/// A single cross-platform page transition (subtle fade + slight upward
+/// slide) used for every route via [ThemeData.pageTransitionsTheme] - the
+/// router previously had no custom transition at all, so every navigation
+/// used the bare platform default (an abrupt cut on some platforms).
+/// Respects the user's reduce-motion setting like every other animation in
+/// the app.
+class _SmoothPageTransitionsBuilder extends PageTransitionsBuilder {
+  const _SmoothPageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    if (MediaQuery.maybeOf(context)?.disableAnimations ?? false) {
+      return child;
+    }
+    final curved = CurvedAnimation(
+      parent: animation,
+      curve: Curves.easeOutCubic,
+      reverseCurve: Curves.easeInCubic,
+    );
+    return FadeTransition(
+      opacity: curved,
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0, 0.03),
+          end: Offset.zero,
+        ).animate(curved),
+        child: child,
       ),
     );
   }

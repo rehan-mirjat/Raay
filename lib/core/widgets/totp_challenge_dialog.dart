@@ -65,34 +65,42 @@ Future<UserCredential?> showTotpChallengeDialog(
           }
         }
 
-        return AlertDialog(
+        return PopScope(
+          canPop: !isVerifying,
+          child: AlertDialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          scrollable: true,
           title: const Text('Two-factor verification'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Enter the 6-digit code from your authenticator app to finish signing in.',
-                style: TextStyle(fontSize: 13),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: codeController,
-                autofocus: true,
-                enabled: !isVerifying,
-                keyboardType: TextInputType.number,
-                maxLength: 6,
-                decoration: const InputDecoration(
-                  labelText: 'Verification code',
-                  counterText: '',
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 360),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Enter the 6-digit code from your authenticator app to finish signing in.',
+                  style: TextStyle(fontSize: 13),
                 ),
-                onSubmitted: (_) => verify(),
-              ),
-              if (dialogError != null) ...[
-                const SizedBox(height: 8),
-                Text(dialogError!, style: const TextStyle(color: AppTheme.error)),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: codeController,
+                  autofocus: true,
+                  enabled: !isVerifying,
+                  keyboardType: TextInputType.number,
+                  maxLength: 6,
+                  decoration: const InputDecoration(
+                    labelText: 'Verification code',
+                    counterText: '',
+                  ),
+                  onSubmitted: (_) => verify(),
+                ),
+                if (dialogError != null) ...[
+                  const SizedBox(height: 8),
+                  Text(dialogError!,
+                      style: const TextStyle(color: AppTheme.error)),
+                ],
               ],
-            ],
+            ),
           ),
           actions: [
             TextButton(
@@ -111,6 +119,7 @@ Future<UserCredential?> showTotpChallengeDialog(
                   : const Text('Verify'),
             ),
           ],
+          ),
         );
       },
     ),
