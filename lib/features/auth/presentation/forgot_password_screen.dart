@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/utils/error_utils.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/inline_error_banner.dart';
@@ -94,6 +95,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final isMobile = ResponsiveLayout.isCompact(context);
+    final kc = KivoraColors.of(context);
 
     return AuthSplitLayout(
       onMobileBackTap: widget.onBackToLoginTap,
@@ -112,7 +114,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 borderRadius: BorderRadius.circular(16),
                 side: isMobile
                     ? BorderSide.none
-                    : const BorderSide(color: AppTheme.borderLight),
+                    : BorderSide(color: kc.border),
               ),
               child: Padding(
                 padding: EdgeInsets.all(isMobile ? 16 : 36),
@@ -149,15 +151,14 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                         style:
                             Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: AppTheme.secondaryNavy,
                                 ),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 8),
-                      const Text(
+                      Text(
                         'Enter the email address associated with your account to receive instructions to reset your password.',
                         style: TextStyle(
-                            color: AppTheme.textSecondary,
+                            color: kc.textSecondary,
                             fontSize: 13,
                             height: 1.5),
                         textAlign: TextAlign.center,
@@ -195,11 +196,11 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              const Text('EMAIL ADDRESS',
+                              Text('EMAIL ADDRESS',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 11,
-                                      color: AppTheme.secondaryNavy,
+                                      color: kc.textPrimary,
                                       letterSpacing: 0.5)),
                               const SizedBox(height: 8),
                               TextFormField(
@@ -246,10 +247,10 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                           alignment: WrapAlignment.center,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            const Text(
+                            Text(
                               "Remember your password? ",
                               style: TextStyle(
-                                  color: AppTheme.textSecondary, fontSize: 13),
+                                  color: kc.textSecondary, fontSize: 13),
                             ),
                             GestureDetector(
                               onTap: widget.onBackToLoginTap,

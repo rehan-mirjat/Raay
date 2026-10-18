@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/utils/error_utils.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/google_g_logo.dart';
@@ -167,6 +168,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
 
     final isMobile = ResponsiveLayout.isCompact(context);
+    final kc = KivoraColors.of(context);
 
     return AuthSplitLayout(
       child: Center(
@@ -179,13 +181,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             constraints: const BoxConstraints(maxWidth: 440),
             child: Card(
               elevation: isMobile ? 0 : 2,
-              shadowColor: AppTheme.secondaryNavy.withValues(alpha: 0.08),
               color: isMobile ? Colors.transparent : null,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                 side: isMobile
                     ? BorderSide.none
-                    : BorderSide(color: AppTheme.borderLight.withValues(alpha: 0.7)),
+                    : BorderSide(color: kc.border),
               ),
               child: Padding(
                 padding: EdgeInsets.all(isMobile ? 16 : 36),
@@ -219,15 +220,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         style:
                             Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: AppTheme.secondaryNavy,
                                 ),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 6),
-                      const Text(
+                      Text(
                         'Access your account and start voting',
-                        style: TextStyle(
-                            color: AppTheme.textSecondary, fontSize: 14),
+                        style: TextStyle(color: kc.textSecondary, fontSize: 14),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: isMobile ? 20 : 28),
@@ -235,11 +234,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            const Text('EMAIL ADDRESS',
+                            Text('EMAIL ADDRESS',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 11,
-                                    color: AppTheme.secondaryNavy,
+                                    color: kc.textPrimary,
                                     letterSpacing: 0.5)),
                             const SizedBox(height: 6),
                             TextFormField(
@@ -255,11 +254,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               validator: Validators.email,
                             ),
                             const SizedBox(height: 16),
-                            const Text('PASSWORD',
+                            Text('PASSWORD',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 11,
-                                    color: AppTheme.secondaryNavy,
+                                    color: kc.textPrimary,
                                     letterSpacing: 0.5)),
                             const SizedBox(height: 6),
                             TextFormField(
@@ -329,7 +328,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: Text('OR',
                                 style: TextStyle(
-                                    color: AppTheme.textSecondary,
+                                    color: kc.textSecondary,
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold)),
                           ),
@@ -340,8 +339,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       OutlinedButton.icon(
                         onPressed: _isLoading ? null : _googleSignIn,
                         icon: const GoogleGLogo(size: 18),
-                        label: const Text('Continue with Google',
-                            style: TextStyle(color: AppTheme.secondaryNavy)),
+                        label: const Text('Continue with Google'),
                       ),
                       SizedBox(height: isMobile ? 20 : 28),
                       Center(
@@ -349,10 +347,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           alignment: WrapAlignment.center,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            const Text(
+                            Text(
                               "New User? ",
                               style: TextStyle(
-                                  color: AppTheme.textSecondary, fontSize: 13),
+                                  color: kc.textSecondary, fontSize: 13),
                             ),
                             GestureDetector(
                               onTap: widget.onRegisterTap,

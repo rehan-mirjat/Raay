@@ -30,7 +30,7 @@ class AuthSplitLayout extends StatelessWidget {
                   icon: Icon(Icons.arrow_back,
                       color: isDark
                           ? AppTheme.darkTextPrimary
-                          : AppTheme.secondaryNavy),
+                          : AppTheme.textPrimary),
                   onPressed: onMobileBackTap,
                 ),
               )
@@ -47,8 +47,8 @@ class AuthSplitLayout extends StatelessWidget {
                     style: TextStyle(
                         color: (isDark
                                 ? AppTheme.darkTextSecondary
-                                : AppTheme.textSecondary)
-                            .withValues(alpha: 0.5),
+                                : AppTheme.darkTextSecondary)
+                            .withValues(alpha: isDark ? 0.5 : 0.4),
                         fontSize: 10),
                   ),
                 ),

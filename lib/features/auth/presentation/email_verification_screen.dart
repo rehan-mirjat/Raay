@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/utils/error_utils.dart';
 import '../../../core/widgets/inline_error_banner.dart';
 import '../../../services/auth_service.dart';
@@ -124,6 +125,7 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
   @override
   Widget build(BuildContext context) {
     final userEmail = ref.watch(authServiceProvider).currentUser?.email ?? 'your email address';
+    final kc = KivoraColors.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -150,30 +152,30 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
                   color: AppTheme.primaryBlue,
                 ),
                 const SizedBox(height: 24),
-                const Text(
+                Text(
                   'Verify Your Email Address',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.secondaryNavy,
+                    color: kc.textPrimary,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
                 Text(
                   'We have sent a verification link to:\n$userEmail',
-                  style: const TextStyle(
-                    color: AppTheme.textSecondary,
+                  style: TextStyle(
+                    color: kc.textSecondary,
                     fontSize: 15,
                     height: 1.4,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   'Please click the link in your email to unlock complete platform access.',
                   style: TextStyle(
-                    color: AppTheme.textSecondary,
+                    color: kc.textSecondary,
                     fontSize: 13,
                   ),
                   textAlign: TextAlign.center,

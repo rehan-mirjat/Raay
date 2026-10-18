@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/utils/error_utils.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/google_g_logo.dart';
@@ -171,6 +172,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     }
 
     final isMobile = ResponsiveLayout.isCompact(context);
+    final kc = KivoraColors.of(context);
 
     return AuthSplitLayout(
       onMobileBackTap: widget.onBackToLoginTap,
@@ -184,13 +186,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             constraints: const BoxConstraints(maxWidth: 440),
             child: Card(
               elevation: isMobile ? 0 : 2,
-              shadowColor: AppTheme.secondaryNavy.withValues(alpha: 0.08),
               color: isMobile ? Colors.transparent : null,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                 side: isMobile
                     ? BorderSide.none
-                    : BorderSide(color: AppTheme.borderLight.withValues(alpha: 0.7)),
+                    : BorderSide(color: kc.border),
               ),
               child: Padding(
                 padding: EdgeInsets.all(isMobile ? 16 : 36),
@@ -221,15 +222,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         style:
                             Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: AppTheme.secondaryNavy,
                                 ),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 6),
-                      const Text(
+                      Text(
                         'Create your platform identity to vote securely.',
-                        style: TextStyle(
-                            color: AppTheme.textSecondary, fontSize: 14),
+                        style: TextStyle(color: kc.textSecondary, fontSize: 14),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: isMobile ? 20 : 28),
@@ -242,11 +241,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 final firstName = Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text('FIRST NAME',
+                                    Text('FIRST NAME',
                                         style: TextStyle(
                                             fontWeight: FontWeight.w700,
                                             fontSize: 11,
-                                            color: AppTheme.secondaryNavy,
+                                            color: kc.textPrimary,
                                             letterSpacing: 0.5)),
                                     const SizedBox(height: 6),
                                     TextFormField(
@@ -267,11 +266,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 final lastName = Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text('LAST NAME',
+                                    Text('LAST NAME',
                                         style: TextStyle(
                                             fontWeight: FontWeight.w700,
                                             fontSize: 11,
-                                            color: AppTheme.secondaryNavy,
+                                            color: kc.textPrimary,
                                             letterSpacing: 0.5)),
                                     const SizedBox(height: 6),
                                     TextFormField(
@@ -304,11 +303,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               },
                             ),
                             const SizedBox(height: 16),
-                            const Text('EMAIL ADDRESS',
+                            Text('EMAIL ADDRESS',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 11,
-                                    color: AppTheme.secondaryNavy,
+                                    color: kc.textPrimary,
                                     letterSpacing: 0.5)),
                             const SizedBox(height: 6),
                             TextFormField(
@@ -323,11 +322,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               validator: Validators.email,
                             ),
                             const SizedBox(height: 16),
-                            const Text('PASSWORD',
+                            Text('PASSWORD',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 11,
-                                    color: AppTheme.secondaryNavy,
+                                    color: kc.textPrimary,
                                     letterSpacing: 0.5)),
                             const SizedBox(height: 6),
                             TextFormField(
@@ -355,11 +354,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               validator: Validators.password,
                             ),
                             const SizedBox(height: 16),
-                            const Text('CONFIRM PASSWORD',
+                            Text('CONFIRM PASSWORD',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 11,
-                                    color: AppTheme.secondaryNavy,
+                                    color: kc.textPrimary,
                                     letterSpacing: 0.5)),
                             const SizedBox(height: 6),
                             TextFormField(
@@ -419,7 +418,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: Text('OR',
                                 style: TextStyle(
-                                    color: AppTheme.textSecondary,
+                                    color: kc.textSecondary,
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold)),
                           ),
@@ -430,8 +429,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       OutlinedButton.icon(
                         onPressed: _isLoading ? null : _googleSignIn,
                         icon: const GoogleGLogo(size: 18),
-                        label: const Text('Continue with Google',
-                            style: TextStyle(color: AppTheme.secondaryNavy)),
+                        label: const Text('Continue with Google'),
                       ),
                       SizedBox(height: isMobile ? 20 : 28),
                       Center(
@@ -439,10 +437,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           alignment: WrapAlignment.center,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            const Text(
+                            Text(
                               "Already have an account? ",
                               style: TextStyle(
-                                  color: AppTheme.textSecondary, fontSize: 13),
+                                  color: kc.textSecondary, fontSize: 13),
                             ),
                             GestureDetector(
                               onTap: widget.onBackToLoginTap,

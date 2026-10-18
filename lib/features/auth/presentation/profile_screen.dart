@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
@@ -315,7 +316,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   'Account Settings',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.secondaryNavy,
                       ),
                 ),
                 const SizedBox(height: 20),
@@ -404,7 +404,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    final color = isSelected ? AppTheme.primaryBlue : AppTheme.secondaryNavy;
+    final color = isSelected ? AppTheme.primaryBlue : KivoraColors.textPrimaryOf(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -434,11 +434,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Widget _buildMobileTabs(BuildContext context) {
+    final kc = KivoraColors.of(context);
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: kc.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: kc.border),
       ),
       child: Row(
         children: [
@@ -449,7 +450,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               onTap: () => setState(() => _selectedIndex = 0),
             ),
           ),
-          Container(width: 1, height: 24, color: AppTheme.borderLight),
+          Container(width: 1, height: 24, color: kc.border),
           Expanded(
             child: _buildMobileTabItem(
               title: 'Security',
@@ -475,7 +476,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         child: Text(
           title,
           style: TextStyle(
-            color: isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
+            color: isSelected ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context),
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
           ),
         ),
@@ -507,7 +508,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   children: [
                     CircleAvatar(
                       radius: 38,
-                      backgroundColor: AppTheme.surfaceBlue,
+                      backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.15),
                       backgroundImage: sanitizedPhotoUrl.isNotEmpty
                           ? NetworkImage(sanitizedPhotoUrl)
                           : null,
@@ -565,15 +566,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: AppTheme.secondaryNavy,
                         ),
                       ),
                       const SizedBox(height: 2),
                       Text(
                         user.email,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
-                          color: AppTheme.textSecondary,
+                          color: KivoraColors.textSecondaryOf(context),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -625,9 +625,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       const SizedBox(height: 6),
                       Text(
                         'Member since ${dateFormat.format(user.createdAt)}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppTheme.textSecondary,
+                          color: KivoraColors.textSecondaryOf(context),
                         ),
                       ),
                     ],
@@ -706,7 +706,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -715,15 +715,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: AppTheme.secondaryNavy,
+                                color: KivoraColors.textPrimaryOf(context),
                               ),
                             ),
-                            SizedBox(height: 2),
+                            const SizedBox(height: 2),
                             Text(
                               'Manage your basic profile information.',
                               style: TextStyle(
                                 fontSize: 13,
-                                color: AppTheme.textSecondary,
+                                color: KivoraColors.textSecondaryOf(context),
                               ),
                             ),
                           ],
@@ -749,11 +749,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('FIRST NAME',
+                            Text('FIRST NAME',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 11,
-                                    color: AppTheme.secondaryNavy,
+                                    color: KivoraColors.textPrimaryOf(context),
                                     letterSpacing: 0.5)),
                             const SizedBox(height: 6),
                             _isEditing
@@ -776,11 +776,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('LAST NAME',
+                            Text('LAST NAME',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 11,
-                                    color: AppTheme.secondaryNavy,
+                                    color: KivoraColors.textPrimaryOf(context),
                                     letterSpacing: 0.5)),
                             const SizedBox(height: 6),
                             _isEditing
@@ -804,27 +804,27 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('EMAIL ADDRESS',
+                      Text('EMAIL ADDRESS',
                           style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 11,
-                              color: AppTheme.secondaryNavy,
+                              color: KivoraColors.textPrimaryOf(context),
                               letterSpacing: 0.5)),
                       const SizedBox(height: 6),
                       Text(user.email,
-                          style: const TextStyle(
-                              fontSize: 15, color: AppTheme.textSecondary)),
+                          style: TextStyle(
+                              fontSize: 15, color: KivoraColors.textSecondaryOf(context))),
                     ],
                   ),
                   const SizedBox(height: 20),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('PHONE NUMBER',
+                      Text('PHONE NUMBER',
                           style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 11,
-                              color: AppTheme.secondaryNavy,
+                              color: KivoraColors.textPrimaryOf(context),
                               letterSpacing: 0.5)),
                       const SizedBox(height: 6),
                       _isEditing
@@ -841,8 +841,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               style: TextStyle(
                                   fontSize: 15,
                                   color: user.phoneNumber?.isNotEmpty == true
-                                      ? AppTheme.secondaryNavy
-                                      : AppTheme.textSecondary,
+                                      ? KivoraColors.textPrimaryOf(context)
+                                      : KivoraColors.textSecondaryOf(context),
                                   fontWeight: FontWeight.w500)),
                     ],
                   ),
@@ -903,57 +903,55 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Card(
-          color: AppTheme.surfaceBlue,
-          shape: RoundedRectangleBorder(
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: AppTheme.primaryBlue.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(16),
-            side: BorderSide(
+            border: Border.all(
               color: AppTheme.primaryBlue.withValues(alpha: 0.2),
               width: 1.2,
             ),
           ),
-          child: const Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.shield_outlined,
-                        color: AppTheme.primaryBlue, size: 20),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Account Security',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.secondaryNavy,
-                        ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.shield_outlined,
+                      color: AppTheme.primaryBlue, size: 20),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Account Security',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: KivoraColors.textPrimaryOf(context),
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(height: 12),
-                Text(
-                  'Your Kivora account controls access to your organizations and voting administration features.',
-                  style: TextStyle(
-                    fontSize: 13,
-                    height: 1.45,
-                    color: AppTheme.secondaryNavy,
                   ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Your Kivora account controls access to your organizations and voting administration features.',
+                style: TextStyle(
+                  fontSize: 13,
+                  height: 1.45,
+                  color: KivoraColors.textPrimaryOf(context),
                 ),
-                SizedBox(height: 10),
-                Text(
-                  'Voting choices and cryptographic ballot receipts are NOT displayed or editable from your profile to maintain absolute secrecy.',
-                  style: TextStyle(
-                    fontSize: 13,
-                    height: 1.45,
-                    color: AppTheme.textSecondary,
-                  ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Voting choices and cryptographic ballot receipts are NOT displayed or editable from your profile to maintain absolute secrecy.',
+                style: TextStyle(
+                  fontSize: 13,
+                  height: 1.45,
+                  color: KivoraColors.textSecondaryOf(context),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 16),
@@ -965,21 +963,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Security',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.secondaryNavy,
+                    color: KivoraColors.textPrimaryOf(context),
                   ),
                 ),
                 const SizedBox(height: 20),
 
-                const Text('AUTHENTICATION METHOD',
+                Text('AUTHENTICATION METHOD',
                     style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 11,
-                        color: AppTheme.secondaryNavy,
+                        color: KivoraColors.textPrimaryOf(context),
                         letterSpacing: 0.5)),
                 const SizedBox(height: 6),
                 Text(
@@ -994,30 +992,30 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 const SizedBox(height: 20),
 
                 // Password Management
-                const Text('PASSWORD',
+                Text('PASSWORD',
                     style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 11,
-                        color: AppTheme.secondaryNavy,
+                        color: KivoraColors.textPrimaryOf(context),
                         letterSpacing: 0.5)),
                 const SizedBox(height: 8),
                 if (hasPasswordProvider)
                   const ChangePasswordSection()
                 else
-                  const Text('Managed securely through Google Sign-In.',
+                  Text('Managed securely through Google Sign-In.',
                       style: TextStyle(
-                          color: AppTheme.textSecondary, fontSize: 13)),
+                          color: KivoraColors.textSecondaryOf(context), fontSize: 13)),
 
                 const SizedBox(height: 24),
                 const Divider(height: 1),
                 const SizedBox(height: 24),
 
                 // Two-Factor Authentication
-                const Text('TWO-FACTOR AUTHENTICATION (2FA)',
+                Text('TWO-FACTOR AUTHENTICATION (2FA)',
                     style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 11,
-                        color: AppTheme.secondaryNavy,
+                        color: KivoraColors.textPrimaryOf(context),
                         letterSpacing: 0.5)),
                 const SizedBox(height: 12),
                 if (authUser != null && hasPasswordProvider)
@@ -1041,13 +1039,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                       fontWeight: FontWeight.bold,
                                       color: is2FAEnabled
                                           ? AppTheme.success
-                                          : AppTheme.textSecondary),
+                                          : KivoraColors.textSecondaryOf(context)),
                                 ),
                                 const SizedBox(height: 4),
-                                const Text(
+                                Text(
                                   'Require a code from an authenticator app when signing in.',
                                   style: TextStyle(
-                                      color: AppTheme.textSecondary,
+                                      color: KivoraColors.textSecondaryOf(context),
                                       fontSize: 13),
                                 ),
                               ],
@@ -1076,8 +1074,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     hasPasswordProvider
                         ? 'Sign in required to manage two-factor authentication.'
                         : 'Two-factor authentication is available for accounts signed in with a password.',
-                    style: const TextStyle(
-                        color: AppTheme.textSecondary, fontSize: 13),
+                    style: TextStyle(
+                        color: KivoraColors.textSecondaryOf(context), fontSize: 13),
                   ),
               ],
             ),
@@ -1100,10 +1098,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       color: AppTheme.error),
                 ),
                 const SizedBox(height: 12),
-                const Text(
+                Text(
                   'Permanently delete your user account and profile data.',
                   style: TextStyle(
-                      fontSize: 13, color: AppTheme.textSecondary, height: 1.4),
+                      fontSize: 13, color: KivoraColors.textSecondaryOf(context), height: 1.4),
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton.icon(
