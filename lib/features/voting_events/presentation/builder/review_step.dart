@@ -25,6 +25,7 @@ class ReviewStep extends ConsumerStatefulWidget {
 }
 
 class _ReviewStepState extends ConsumerState<ReviewStep> {
+  static final _dateFormat = DateFormat('MMM d, yyyy h:mm a');
   bool _isPublishing = false;
   String? _error;
 
@@ -120,12 +121,12 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
               _summaryRow(
                   'Start At',
                   draft.startAt != null
-                      ? DateFormat('MMM d, yyyy h:mm a').format(draft.startAt!)
+                      ? _dateFormat.format(draft.startAt!)
                       : ''),
               _summaryRow(
                   'End At',
                   draft.endAt != null
-                      ? DateFormat('MMM d, yyyy h:mm a').format(draft.endAt!)
+                      ? _dateFormat.format(draft.endAt!)
                       : ''),
               _summaryRow('Choices', '$count items configured'),
               if (!isReady) ...[

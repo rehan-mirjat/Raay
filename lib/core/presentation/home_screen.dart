@@ -77,12 +77,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final isDesktop = ResponsiveLayout.isWide(context);
         final isAdmin = orgContext.member.role == OrganizationRole.owner ||
             orgContext.member.role == OrganizationRole.admin;
-        final eventsAsync = ref
-            .watch(votingEventRepositoryProvider)
-            .watchOrganizationVotingEvents(
-              orgContext.organization.id,
-              includeDrafts: isAdmin,
-            );
+        final eventsArgs = (orgId: orgContext.organization.id, includeDrafts: isAdmin);
+        final eventsAsync = ref.watch(organizationVotingEventsProvider(eventsArgs));
 
         final departmentsAsync =
             ref.watch(activeOrganizationDepartmentsProvider);
@@ -90,7 +86,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           color: AppTheme.primaryBlue,
           onRefresh: () async {
             ref.invalidate(activeOrganizationContextProvider);
-            ref.invalidate(votingEventRepositoryProvider);
+            ref.invalidate(organizationVotingEventsProvider(eventsArgs));
             await Future.delayed(const Duration(milliseconds: 300));
           },
           child: SingleChildScrollView(
@@ -152,26 +148,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              StreamBuilder<List<VotingEvent>>(
-                                stream: eventsAsync,
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return const LoadingView(
-                                        message: 'Loading active elections...');
-                                  }
-
-                                  if (snapshot.hasError) {
-                                    return ErrorView(
-                                      type: ErrorViewType.generic,
-                                      message:
-                                          'Error loading elections: ${snapshot.error}',
-                                      onRetry: () => ref.invalidate(
-                                          votingEventRepositoryProvider),
-                                    );
-                                  }
-
-                                  final allEvents = snapshot.data ?? [];
+                              eventsAsync.when(
+                                loading: () => const LoadingView(
+                                    message: 'Loading active elections...'),
+                                error: (err, _) => ErrorView(
+                                  type: ErrorViewType.generic,
+                                  message: 'Error loading elections: $err',
+                                  onRetry: () => ref.invalidate(
+                                      organizationVotingEventsProvider(eventsArgs)),
+                                ),
+                                data: (allEvents) {
                                   final memberEvents = allEvents
                                       .where((e) =>
                                           e.status ==
@@ -563,8 +549,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  static final _dateFormat = DateFormat('MMM d, yyyy • h:mm a');
+
   Widget _buildMemberEventCard(BuildContext context, VotingEvent event) {
-    final dateFormat = DateFormat('MMM d, yyyy • h:mm a');
+    final dateFormat = _dateFormat;
     final isActive = event.status == VotingEventStatus.active;
 
     return Card(

@@ -1,6 +1,5 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, Timestamp } from "firebase-admin/firestore";
-import { getAuth } from "firebase-admin/auth";
 import { generateVoteReceipt } from "./generateReceipt";
 import { checkRateLimit, RATE_LIMIT_VOTE } from "../utils/rateLimiter";
 import { OPERATIONAL_ORG_STATUSES } from "../voting_events/votingCommon";
@@ -28,16 +27,15 @@ export const castVote = onCall({ cors: true }, async (request) => {
 
   // SEC-08: voting is the single most security-critical action in this app -
   // a revoked/disabled session must not be able to cast a ballot while its
-  // still-unexpired token is in circulation.
-  await requireNotRevoked(request);
+  // still-unexpired token is in circulation. requireNotRevoked returns the
+  // decoded token so we can read email_verified and sign_in_provider from it
+  // without a second getUser() round-trip.
+  const decodedToken = await requireNotRevoked(request);
 
   await checkRateLimit(uid, RATE_LIMIT_VOTE);
 
-  // Server-authoritative email verification check (the `users.status` Firestore field is
-  // set to "active" at registration, before verification, so it cannot be used for this).
-  const authUser = await getAuth().getUser(uid);
-  const isGoogleUser = authUser.providerData.some((p) => p.providerId === "google.com");
-  if (!authUser.emailVerified && !isGoogleUser) {
+  const isGoogleUser = (decodedToken.firebase?.sign_in_provider === "google.com");
+  if (!decodedToken.email_verified && !isGoogleUser) {
     throw new HttpsError("permission-denied", "Your email address must be verified before you can vote.");
   }
 

@@ -44,14 +44,14 @@ export function requireRecentAuthentication(auth: CallableRequest["auth"]): void
  * natural token expiry (~60 minutes). request.auth alone does NOT guarantee
  * this - the Functions Framework verifies signature/expiry but not revocation.
  */
-export async function requireNotRevoked(request: CallableRequest): Promise<void> {
+export async function requireNotRevoked(request: CallableRequest): Promise<import("firebase-admin/auth").DecodedIdToken> {
   const authHeader = request.rawRequest?.headers?.authorization;
   const idToken = typeof authHeader === "string" ? authHeader.replace(/^Bearer /i, "") : undefined;
   if (!idToken) {
     throw new HttpsError("unauthenticated", "Authentication required.");
   }
   try {
-    await getAuth().verifyIdToken(idToken, /* checkRevoked */ true);
+    return await getAuth().verifyIdToken(idToken, /* checkRevoked */ true);
   } catch (error: unknown) {
     const code = (error as { code?: string })?.code;
     if (code === "auth/id-token-revoked") {

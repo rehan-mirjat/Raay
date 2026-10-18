@@ -167,6 +167,6 @@ class DraftEventNotifier extends StateNotifier<DraftEventState> {
   }
 }
 
-final draftEventProvider = StateNotifierProvider.family<DraftEventNotifier, DraftEventState, String>((ref, orgId) {
+final draftEventProvider = StateNotifierProvider.autoDispose.family<DraftEventNotifier, DraftEventState, String>((ref, orgId) {
   return DraftEventNotifier(ref.watch(votingEventRepositoryProvider), orgId);
 });

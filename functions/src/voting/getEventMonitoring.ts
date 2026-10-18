@@ -1,6 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, Timestamp } from "firebase-admin/firestore";
-import { requireActiveMembership } from "../utils/authorization";
+import { requireActiveMembership, requireNotRevoked } from "../utils/authorization";
 import { getEligibleMembers } from "../results/tally";
 import { buildDepartmentBreakdown, buildParticipationHistory } from "./monitoringAggregation";
 
@@ -9,6 +9,9 @@ const PARTICIPATION_HISTORY_POINTS = 24;
 export const getEventMonitoring = onCall(async (request) => {
   const uid = request.auth?.uid;
   if (!uid) throw new HttpsError("unauthenticated", "Authentication required.");
+
+  await requireNotRevoked(request);
+
   const eventId = typeof request.data?.eventId === "string" ? request.data.eventId.trim() : "";
   if (!eventId) throw new HttpsError("invalid-argument", "Valid eventId is required.");
 

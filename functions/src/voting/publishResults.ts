@@ -1,11 +1,13 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
-import { requireActiveMembership } from "../utils/authorization";
+import { requireActiveMembership, requireNotRevoked } from "../utils/authorization";
 import { calculateEventResults } from "../results/tally";
 
 export const publishResults = onCall(async (request) => {
   const uid = request.auth?.uid;
   if (!uid) throw new HttpsError("unauthenticated", "Authentication required.");
+
+  await requireNotRevoked(request);
 
   const eventId = typeof request.data?.eventId === "string" ? request.data.eventId.trim() : "";
   if (!eventId) throw new HttpsError("invalid-argument", "Valid eventId is required.");
@@ -16,8 +18,10 @@ export const publishResults = onCall(async (request) => {
   const organizationId = eventSnap.data()?.organizationId as string;
   if (!organizationId) throw new HttpsError("failed-precondition", "Event has no organization.");
 
-  await requireActiveMembership(db, organizationId, uid, ["owner", "admin"]);
-  const organization = await db.collection("organizations").doc(organizationId).get();
+  const [, organization] = await Promise.all([
+    requireActiveMembership(db, organizationId, uid, ["owner", "admin"]),
+    db.collection("organizations").doc(organizationId).get(),
+  ]);
   if (!organization.exists || !["verified", "active"].includes(organization.data()?.status)) {
     throw new HttpsError("failed-precondition", "The organization is not currently authorized to manage voting events.");
   }

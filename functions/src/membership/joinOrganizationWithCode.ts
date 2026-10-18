@@ -1,6 +1,5 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
-import { getAuth } from "firebase-admin/auth";
 import * as crypto from "crypto";
 import {
   getJoinCodeSecret,
@@ -23,7 +22,7 @@ export const joinOrganizationWithCode = onCall(
     throw new HttpsError("unauthenticated", "Authentication required.");
   }
 
-  await requireNotRevoked(request);
+  const decodedToken = await requireNotRevoked(request);
 
   const uid = request.auth.uid;
   const { rawCode } = request.data || {};
@@ -34,15 +33,10 @@ export const joinOrganizationWithCode = onCall(
 
   const db = getFirestore();
 
-  // 1. Server-Side Email Verification Check via Firebase Auth Admin SDK
-  try {
-    const userAuthRecord = await getAuth().getUser(uid);
-    if (!userAuthRecord.emailVerified) {
-      throw new HttpsError("permission-denied", "Your email address must be verified before joining an organization.");
-    }
-  } catch (e: any) {
-    if (e instanceof HttpsError) throw e;
-    throw new HttpsError("permission-denied", "Failed to verify authentication status.", e);
+  // 1. Email verification check — read from the decoded token returned by
+  // requireNotRevoked to avoid a second getUser() round-trip.
+  if (!decodedToken.email_verified) {
+    throw new HttpsError("permission-denied", "Your email address must be verified before joining an organization.");
   }
 
   // 2. Validate User Account in Firestore

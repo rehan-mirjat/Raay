@@ -17,7 +17,7 @@ final participationRepositoryProvider = Provider<ParticipationRepository>((ref) 
   return ParticipationRepository();
 });
 
-final participationStatusProvider = FutureProvider.family<bool, ({String organizationId, String eventId, String userId})>((ref, args) {
+final participationStatusProvider = FutureProvider.autoDispose.family<bool, ({String organizationId, String eventId, String userId})>((ref, args) {
   final repo = ref.watch(participationRepositoryProvider);
   return repo.hasUserVoted(args.organizationId, args.eventId, args.userId);
 });

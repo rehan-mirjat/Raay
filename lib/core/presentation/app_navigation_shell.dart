@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -155,30 +154,26 @@ class _FloatingMobileNavBar extends StatelessWidget {
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          // Main Floating Glass Container
-          ClipRRect(
-            borderRadius: BorderRadius.circular(28),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-              child: Container(
-                height: 64,
-                decoration: BoxDecoration(
-                  color: AppTheme.surfaceWhite.withValues(alpha: 0.85),
-                  borderRadius: BorderRadius.circular(28),
-                  border: Border.all(
-                      color: AppTheme.borderLight.withValues(alpha: 0.8),
-                      width: 1.2),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppTheme.secondaryNavy.withValues(alpha: 0.08),
-                      blurRadius: 24,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
+          // Main Floating Nav Container
+          Container(
+            height: 64,
+            decoration: BoxDecoration(
+              color: AppTheme.surfaceWhite,
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(
+                  color: AppTheme.borderLight,
+                  width: 1.2),
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.secondaryNavy.withValues(alpha: 0.08),
+                  blurRadius: 24,
+                  offset: const Offset(0, 6),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Row(
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       _navItem(context, 0, Icons.home_outlined,
@@ -196,8 +191,6 @@ class _FloatingMobileNavBar extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
-            ),
           ),
 
           // Central Floating + Action Button (Owner & Admin Only with Kivora Gold Accent)

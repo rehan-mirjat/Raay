@@ -31,14 +31,18 @@ export const evaluateVotingEventLifecycles = onSchedule(
       .limit(MAX_EVENTS_PER_RUN)
       .get();
 
-    for (const doc of scheduled.docs) {
-      try {
-        const outcome = await db.runTransaction((tx) => activateOrCancel(tx, db, doc.ref, trustedNow));
-        if (outcome === "activated") counts.activated++;
-        else if (outcome === "cancelled") counts.cancelled++;
-      } catch (error) {
+    const activateResults = await Promise.allSettled(
+      scheduled.docs.map((doc) => db.runTransaction((tx) => activateOrCancel(tx, db, doc.ref, trustedNow))
+        .then((outcome) => ({ docId: doc.id, outcome }))
+      )
+    );
+    for (const result of activateResults) {
+      if (result.status === "fulfilled") {
+        if (result.value.outcome === "activated") counts.activated++;
+        else if (result.value.outcome === "cancelled") counts.cancelled++;
+      } else {
         counts.failed++;
-        logger.error("Failed to activate event", { eventId: doc.id, error });
+        logger.error("Failed to activate event", { error: result.reason });
       }
     }
 
@@ -48,13 +52,17 @@ export const evaluateVotingEventLifecycles = onSchedule(
       .limit(MAX_EVENTS_PER_RUN)
       .get();
 
-    for (const doc of active.docs) {
-      try {
-        const closed = await db.runTransaction((tx) => closeIfDue(tx, db, doc.ref));
-        if (closed) counts.closed++;
-      } catch (error) {
+    const closeResults = await Promise.allSettled(
+      active.docs.map((doc) => db.runTransaction((tx) => closeIfDue(tx, db, doc.ref))
+        .then((closed) => ({ docId: doc.id, closed }))
+      )
+    );
+    for (const result of closeResults) {
+      if (result.status === "fulfilled") {
+        if (result.value.closed) counts.closed++;
+      } else {
         counts.failed++;
-        logger.error("Failed to close event", { eventId: doc.id, error });
+        logger.error("Failed to close event", { error: result.reason });
       }
     }
 

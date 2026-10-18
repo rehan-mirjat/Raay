@@ -1,6 +1,5 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore } from "firebase-admin/firestore";
-import { getAuth } from "firebase-admin/auth";
 import * as crypto from "crypto";
 import {
   getJoinCodeSecret,
@@ -36,7 +35,7 @@ export const previewJoiningCode = onCall(
       throw new HttpsError("unauthenticated", "Authentication required.");
     }
 
-    await requireNotRevoked(request);
+    const decodedToken = await requireNotRevoked(request);
 
     const uid = request.auth.uid;
     const { rawCode } = request.data || {};
@@ -49,14 +48,9 @@ export const previewJoiningCode = onCall(
 
     // Same account-eligibility checks joinOrganizationWithCode performs, so
     // a successful preview can't promise a join that's actually blocked here.
-    try {
-      const userAuthRecord = await getAuth().getUser(uid);
-      if (!userAuthRecord.emailVerified) {
-        throw new HttpsError("permission-denied", "Your email address must be verified before joining an organization.");
-      }
-    } catch (e: any) {
-      if (e instanceof HttpsError) throw e;
-      throw new HttpsError("permission-denied", "Failed to verify authentication status.", e);
+    // Read email_verified from the decoded token to avoid a second getUser() call.
+    if (!decodedToken.email_verified) {
+      throw new HttpsError("permission-denied", "Your email address must be verified before joining an organization.");
     }
 
     const userSnap = await db.collection("users").doc(uid).get();
@@ -158,7 +152,10 @@ export const previewJoiningCode = onCall(
       // A successful preview isn't an attack signal, so it shouldn't eat into
       // the budget the real join attempt needs - clear it, same as a
       // successful join does.
-      await rateLimitRef.delete().catch(() => {});
+      await rateLimitRef.delete().catch((e: unknown) => {
+        const logger = require("firebase-functions/logger");
+        logger.warn("Failed to clear join-code rate limit after successful preview", { uid, error: (e as Error).message });
+      });
 
       return {
         status: "success",

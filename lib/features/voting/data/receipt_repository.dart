@@ -27,7 +27,7 @@ final receiptRepositoryProvider = Provider<ReceiptRepository>((ref) {
   return ReceiptRepository();
 });
 
-final receiptForEventProvider = FutureProvider.family<VoteReceipt?, ({String eventId, String userId})>((ref, args) {
+final receiptForEventProvider = FutureProvider.autoDispose.family<VoteReceipt?, ({String eventId, String userId})>((ref, args) {
   final repo = ref.watch(receiptRepositoryProvider);
   return repo.getReceiptForEvent(args.eventId, args.userId);
 });

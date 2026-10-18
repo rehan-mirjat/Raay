@@ -26,6 +26,7 @@ class EventMonitoringScreen extends ConsumerStatefulWidget {
 }
 
 class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
+  static final _dateFormat = DateFormat('d MMM, HH:mm');
   Map<String, dynamic>? _summary;
   Object? _error;
   bool _loading = true;
@@ -672,7 +673,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
   }
 
   Widget _buildEventDetailsCard(VotingEvent event) {
-    final dateFormat = DateFormat('d MMM, HH:mm');
+    final dateFormat = _dateFormat;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: _cardDecoration(),

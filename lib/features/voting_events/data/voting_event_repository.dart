@@ -122,6 +122,7 @@ class VotingEventRepository {
 
     return query
         .orderBy('startAt', descending: true)
+        .limit(50)
         .snapshots()
         .map((snapshot) => snapshot.docs.map((doc) => VotingEvent.fromFirestore(doc)).toList());
   }
@@ -136,3 +137,14 @@ class VotingEventRepository {
 }
 
 final votingEventRepositoryProvider = Provider((ref) => VotingEventRepository());
+
+/// Stable StreamProvider so the stream object identity is preserved across
+/// parent rebuilds — prevents StreamBuilder from reconnecting and flashing a
+/// loading state whenever the home screen rebuilds.
+final organizationVotingEventsProvider = StreamProvider.autoDispose
+    .family<List<VotingEvent>, ({String orgId, bool includeDrafts})>(
+        (ref, args) {
+  return ref
+      .watch(votingEventRepositoryProvider)
+      .watchOrganizationVotingEvents(args.orgId, includeDrafts: args.includeDrafts);
+});

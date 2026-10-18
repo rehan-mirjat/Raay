@@ -5,7 +5,7 @@ import * as admin from "firebase-admin";
 admin.initializeApp();
 
 setGlobalOptions({
-  maxInstances: 10,
+  maxInstances: 50,
   memory: "256MiB",
   cpu: "gcf_gen1",
 });

@@ -348,9 +348,11 @@ class _ResultsReadyCard extends StatelessWidget {
 
   final VotingEvent event;
 
+  static final _dateFormat = DateFormat('MMM d, yyyy, h:mm a');
+
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat('MMM d, yyyy, h:mm a');
+    final dateFormat = _dateFormat;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -409,10 +411,13 @@ class _EventDetailsCard extends StatelessWidget {
 
   final VotingEvent event;
 
+  static final _dateFormat = DateFormat('MMM d, yyyy');
+  static final _timeFormat = DateFormat('h:mm a');
+
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat('MMM d, yyyy');
-    final timeFormat = DateFormat('h:mm a');
+    final dateFormat = _dateFormat;
+    final timeFormat = _timeFormat;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),

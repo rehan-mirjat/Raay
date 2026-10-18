@@ -16,17 +16,17 @@ import '../data/voting_repository.dart';
 import 'vote_receipt_screen.dart';
 
 final eventCandidatesProvider =
-    StreamProvider.family<List<Candidate>, String>((ref, eventId) {
+    StreamProvider.autoDispose.family<List<Candidate>, String>((ref, eventId) {
   return ref.watch(candidateRepositoryProvider).watchEventCandidates(eventId);
 });
 
 final eventPollOptionsProvider =
-    StreamProvider.family<List<PollOption>, String>((ref, eventId) {
+    StreamProvider.autoDispose.family<List<PollOption>, String>((ref, eventId) {
   return ref.watch(pollOptionRepositoryProvider).watchEventPollOptions(eventId);
 });
 
 final singleVotingEventProvider =
-    StreamProvider.family<VotingEvent?, String>((ref, eventId) {
+    StreamProvider.autoDispose.family<VotingEvent?, String>((ref, eventId) {
   return ref.watch(votingEventRepositoryProvider).watchVotingEvent(eventId);
 });
 
