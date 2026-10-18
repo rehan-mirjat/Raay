@@ -16,6 +16,7 @@ import '../../features/organizations/presentation/organization_list_screen.dart'
 import '../../features/organizations/presentation/organization_settings_screen.dart';
 import '../../features/organizations/presentation/organization_audit_screen.dart';
 import '../../features/organizations/presentation/platform_organizations_screen.dart';
+import '../../features/organizations/presentation/platform_admin_screen.dart';
 import '../../features/organizations/presentation/membership_directory_screen.dart';
 import '../../features/departments/presentation/department_members_screen.dart';
 import '../../features/departments/presentation/departments_screen.dart';
@@ -233,6 +234,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/platform/organizations',
         builder: (context, state) => const PlatformOrganizationsScreen(),
+      ),
+      GoRoute(
+        path: '/platform/admin',
+        builder: (context, state) => const PlatformAdminScreen(),
       ),
       GoRoute(
         path: '/invite',

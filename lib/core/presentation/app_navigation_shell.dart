@@ -947,6 +947,10 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
             context.go('/orgs/invitations');
           } else if (value == 'help') {
             context.go('/help');
+          } else if (value == 'platform_admin') {
+            context.go('/platform/admin');
+          } else if (value == 'platform_organizations') {
+            context.go('/platform/organizations');
           }
         },
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -995,6 +999,13 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
           _buildMenuItem(
               'settings', Icons.settings_outlined, 'Account settings'),
           _buildMenuItem('help', Icons.help_outline, 'Help & support'),
+          if (ref.watch(platformAdminProvider).valueOrNull == true) ...[
+            const PopupMenuDivider(),
+            _buildMenuItem('platform_admin', Icons.admin_panel_settings_outlined,
+                'Platform administration'),
+            _buildMenuItem('platform_organizations', Icons.domain_outlined,
+                'Platform organizations'),
+          ],
           const PopupMenuDivider(),
           _buildMenuItem('logout', Icons.logout_rounded, 'Log out',
               isDestructive: true),
