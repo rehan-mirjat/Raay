@@ -5,6 +5,22 @@ enum PrivacyMode { anonymous, identifiable }
 enum EligibilityType { allMembers, selectedMembers, selectedDepartments }
 enum VotingEventStatus { draft, scheduled, active, closed, cancelled, archived }
 
+extension VotingTypeLabel on VotingType {
+  String get label => switch (this) {
+        VotingType.candidateElection => 'Candidate election',
+        VotingType.singleChoicePoll => 'Single-choice poll',
+        VotingType.yesNoPoll => 'Yes/No poll',
+      };
+}
+
+extension EligibilityTypeLabel on EligibilityType {
+  String get label => switch (this) {
+        EligibilityType.allMembers => 'All active members',
+        EligibilityType.selectedMembers => 'Selected members',
+        EligibilityType.selectedDepartments => 'Selected departments',
+      };
+}
+
 class VotingEvent {
   final String id;
   final String organizationId;

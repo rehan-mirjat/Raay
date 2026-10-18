@@ -12,11 +12,46 @@ import '../../data/voting_event_repository.dart';
 import '../providers/event_lifecycle_provider.dart';
 import 'event_card.dart';
 
-class AdminEventDashboardScreen extends ConsumerWidget {
+enum _EventFilter { all, active, scheduled, draft, closed, archived }
+
+extension on _EventFilter {
+  String get label => switch (this) {
+        _EventFilter.all => 'All',
+        _EventFilter.active => 'Active',
+        _EventFilter.scheduled => 'Scheduled',
+        _EventFilter.draft => 'Draft',
+        _EventFilter.closed => 'Closed',
+        _EventFilter.archived => 'Archived',
+      };
+
+  /// Null means "no status filter" (the All chip). Cancelled events have no
+  /// dedicated chip (matching the reference design) but remain visible
+  /// under All rather than being permanently hidden.
+  VotingEventStatus? get status => switch (this) {
+        _EventFilter.all => null,
+        _EventFilter.active => VotingEventStatus.active,
+        _EventFilter.scheduled => VotingEventStatus.scheduled,
+        _EventFilter.draft => VotingEventStatus.draft,
+        _EventFilter.closed => VotingEventStatus.closed,
+        _EventFilter.archived => VotingEventStatus.archived,
+      };
+}
+
+class AdminEventDashboardScreen extends ConsumerStatefulWidget {
   const AdminEventDashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AdminEventDashboardScreen> createState() =>
+      _AdminEventDashboardScreenState();
+}
+
+class _AdminEventDashboardScreenState
+    extends ConsumerState<AdminEventDashboardScreen> {
+  _EventFilter _filter = _EventFilter.all;
+  String _searchQuery = '';
+
+  @override
+  Widget build(BuildContext context) {
     final activeContextState = ref.watch(activeOrganizationContextProvider);
     final orgContext = activeContextState.valueOrNull?.context;
 
@@ -221,16 +256,36 @@ class AdminEventDashboardScreen extends ConsumerWidget {
                               _buildGuidanceCardsGrid(context),
                             ],
                           )
-                        else
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: events.length,
-                            itemBuilder: (context, index) {
-                              final event = events[index];
-                              return EventCard(event: event);
-                            },
-                          ),
+                        else ...[
+                          _buildFilterAndSearchRow(context, events),
+                          const SizedBox(height: 20),
+                          Builder(builder: (context) {
+                            final filtered = _applyFilter(events);
+                            if (filtered.isEmpty) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 48),
+                                child: Center(
+                                  child: Text(
+                                    _searchQuery.isNotEmpty
+                                        ? 'No events match "$_searchQuery".'
+                                        : 'No ${_filter.label.toLowerCase()} events.',
+                                    style: const TextStyle(
+                                        color: AppTheme.textSecondary, fontSize: 14),
+                                  ),
+                                ),
+                              );
+                            }
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: filtered.length,
+                              itemBuilder: (context, index) {
+                                final event = filtered[index];
+                                return EventCard(event: event);
+                              },
+                            );
+                          }),
+                        ],
                       ],
                     ),
                   ),
@@ -245,6 +300,85 @@ class AdminEventDashboardScreen extends ConsumerWidget {
             ),
         ],
       ),
+    );
+  }
+
+  List<VotingEvent> _applyFilter(List<VotingEvent> events) {
+    final status = _filter.status;
+    final query = _searchQuery.trim().toLowerCase();
+    return events.where((e) {
+      if (status != null && e.status != status) return false;
+      if (query.isNotEmpty && !e.title.toLowerCase().contains(query)) return false;
+      return true;
+    }).toList();
+  }
+
+  Widget _buildFilterAndSearchRow(BuildContext context, List<VotingEvent> events) {
+    final isWide = MediaQuery.sizeOf(context).width >= 700;
+
+    final chips = Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: _EventFilter.values.map((f) {
+        final count = f == _EventFilter.all
+            ? events.length
+            : events.where((e) => e.status == f.status).length;
+        final selected = _filter == f;
+        return InkWell(
+          onTap: () => setState(() => _filter = f),
+          borderRadius: BorderRadius.circular(999),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: selected ? AppTheme.primaryBlue : AppTheme.surfaceWhite,
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(
+                color: selected ? AppTheme.primaryBlue : AppTheme.borderLight,
+              ),
+            ),
+            child: Text(
+              '${f.label} $count',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: selected ? Colors.white : AppTheme.secondaryNavy,
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+
+    final search = SizedBox(
+      width: isWide ? 260 : double.infinity,
+      child: TextField(
+        onChanged: (v) => setState(() => _searchQuery = v),
+        decoration: const InputDecoration(
+          hintText: 'Search events',
+          prefixIcon: Icon(Icons.search_rounded, size: 20),
+          isDense: true,
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        ),
+      ),
+    );
+
+    if (isWide) {
+      return Row(
+        children: [
+          Expanded(child: chips),
+          const SizedBox(width: 16),
+          search,
+        ],
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        chips,
+        const SizedBox(height: 12),
+        search,
+      ],
     );
   }
 }

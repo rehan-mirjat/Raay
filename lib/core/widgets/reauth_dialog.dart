@@ -1,0 +1,96 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../theme/app_theme.dart';
+import '../../services/auth_service.dart';
+
+/// Shows a dialog to re-prove identity (password re-entry, or a fresh Google
+/// sign-in) and returns true once the server would accept a fresh
+/// `auth_time`. The underlying session/app state is untouched either way -
+/// this never signs the user out. Shared by every flow that can hit the
+/// server's 900-second recent-authentication window (FR-10): publishing/
+/// closing a voting event, etc.
+Future<bool> showReauthDialog(
+  BuildContext context,
+  WidgetRef ref, {
+  String reason = 'For security, this action requires you to have signed in '
+      'within the last 15 minutes. Please verify your identity to continue.',
+}) async {
+  final authService = ref.read(authServiceProvider);
+  final isGoogleUser = authService.currentUser?.providerData
+          .any((p) => p.providerId == 'google.com') ??
+      false;
+  final passwordController = TextEditingController();
+  bool isVerifying = false;
+  String? dialogError;
+
+  final result = await showDialog<bool>(
+    context: context,
+    barrierDismissible: !isVerifying,
+    builder: (dialogContext) => StatefulBuilder(
+      builder: (dialogContext, setDialogState) {
+        Future<void> verify() async {
+          setDialogState(() {
+            isVerifying = true;
+            dialogError = null;
+          });
+          try {
+            await authService.reauthenticate(
+              password: isGoogleUser ? null : passwordController.text,
+            );
+            if (dialogContext.mounted) Navigator.of(dialogContext).pop(true);
+          } catch (e) {
+            setDialogState(() {
+              isVerifying = false;
+              dialogError = e.toString().replaceAll('Exception: ', '');
+            });
+          }
+        }
+
+        return AlertDialog(
+          title: const Text('Verify it\'s you'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(reason),
+              const SizedBox(height: 16),
+              if (!isGoogleUser)
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  autofocus: true,
+                  enabled: !isVerifying,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                  onSubmitted: (_) => verify(),
+                ),
+              if (dialogError != null) ...[
+                const SizedBox(height: 8),
+                Text(dialogError!, style: const TextStyle(color: AppTheme.error)),
+              ],
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed:
+                  isVerifying ? null : () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: isVerifying ? null : verify,
+              child: isVerifying
+                  ? const SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2))
+                  : Text(isGoogleUser ? 'Verify with Google' : 'Verify'),
+            ),
+          ],
+        );
+      },
+    ),
+  );
+
+  passwordController.dispose();
+  return result ?? false;
+}

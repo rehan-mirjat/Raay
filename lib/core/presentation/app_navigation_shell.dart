@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../notifications/notification_providers.dart';
 import '../../features/organizations/presentation/organization_context_switcher.dart';
 import '../../features/organizations/presentation/providers/organization_providers.dart';
 import '../../features/organizations/domain/organization_enums.dart';
@@ -169,9 +170,9 @@ class _FloatingMobileNavBar extends StatelessWidget {
                       width: 1.2),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 16,
-                      offset: const Offset(0, 4),
+                      color: AppTheme.secondaryNavy.withValues(alpha: 0.08),
+                      blurRadius: 24,
+                      offset: const Offset(0, 6),
                     ),
                   ],
                 ),
@@ -344,8 +345,8 @@ class _TopHeader extends ConsumerWidget {
               border: Border.all(color: AppTheme.borderLight, width: 1.2),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
-                  blurRadius: 16,
+                  color: AppTheme.secondaryNavy.withValues(alpha: 0.06),
+                  blurRadius: 20,
                   offset: const Offset(0, 4),
                 ),
               ],
@@ -537,7 +538,8 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
   Widget build(BuildContext context) {
     final invitationsAsync = ref.watch(memberInvitationsProvider);
     final items = invitationsAsync.valueOrNull ?? [];
-    final unreadCount = items.length;
+    final reminders = ref.watch(unreadNotificationsProvider).valueOrNull ?? [];
+    final unreadCount = items.length + reminders.length;
     final hasUnread = unreadCount > 0;
 
     return MouseRegion(
@@ -547,7 +549,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
       child: PopupMenuButton<String>(
         offset: const Offset(0, 48),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppTheme.radiusCard),
           side: const BorderSide(color: AppTheme.borderLight),
         ),
         color: AppTheme.surfaceWhite,
@@ -616,6 +618,16 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
             context.go('/orgs/invitations');
           } else if (value == 'mark_read') {
             ref.invalidate(memberInvitationsProvider);
+            for (final r in reminders) {
+              markNotificationRead(r.id);
+            }
+          } else if (value.startsWith('reminder:')) {
+            final id = value.substring('reminder:'.length);
+            final matches = reminders.where((r) => r.id == id);
+            markNotificationRead(id);
+            if (matches.isNotEmpty && matches.first.votingEventId != null) {
+              context.go('/elections/${matches.first.votingEventId}');
+            }
           }
         },
         itemBuilder: (context) {
@@ -639,6 +651,9 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                       onTap: () {
                         Navigator.pop(context);
                         ref.invalidate(memberInvitationsProvider);
+                        for (final r in reminders) {
+                          markNotificationRead(r.id);
+                        }
                       },
                       child: const Text(
                         'Mark all as read',
@@ -654,7 +669,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
               ),
             ),
             const PopupMenuDivider(),
-            if (items.isEmpty)
+            if (items.isEmpty && reminders.isEmpty)
               const PopupMenuItem<String>(
                 enabled: false,
                 child: Padding(
@@ -726,6 +741,54 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                   ),
                 );
               }),
+            ...reminders.take(4).map((reminder) {
+              return PopupMenuItem<String>(
+                value: 'reminder:${reminder.id}',
+                child: SizedBox(
+                  width: 320,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppTheme.surfaceBlue.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.campaign_outlined,
+                            size: 16, color: AppTheme.accentGold),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                reminder.title,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                  color: AppTheme.secondaryNavy,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                reminder.message,
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: AppTheme.textSecondary,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }),
             const PopupMenuDivider(),
             const PopupMenuItem<String>(
               value: 'view_all',
@@ -780,7 +843,7 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
       child: PopupMenuButton<String>(
         offset: const Offset(0, 48),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppTheme.radiusCard),
           side: const BorderSide(color: AppTheme.borderLight),
         ),
         color: AppTheme.surfaceWhite,

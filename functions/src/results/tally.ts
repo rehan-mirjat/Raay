@@ -23,38 +23,128 @@ export interface EventResultsPayload {
   tallies: TallyRow[];
 }
 
-export async function countEligibleVoters(
-  db: Firestore,
-  organizationId: string,
+export interface EligibleMember {
+  userId: string;
+  departmentId: string | null;
+}
+
+export type EligibilitySource =
+  | { kind: "frozen"; userIds: string[] }
+  | { kind: "selected_members"; userIds: string[] }
+  | { kind: "selected_departments"; departmentIds: string[] }
+  | { kind: "all_members" };
+
+/**
+ * Decides where to read the eligible-voter selection from. Pure (no
+ * Firestore access) so the decision itself - the part that was actually
+ * wrong - can be unit tested directly.
+ *
+ * The eligibility SELECTION (which members/departments were picked) does
+ * not live on the votingEvents document itself once an event has gone
+ * through the normal builder flow: updateVotingEvent.ts writes edits to
+ * votingEventEligibility/{eventId} only, never back to the event document,
+ * so eventData.eligibilityUserIds/eligibilityDepartmentIds go stale (usually
+ * empty) the moment eligibility is set or changed post-creation. And once
+ * the event is activated, publishVotingEvent.ts freezes the resolved voter
+ * roll into votingEventEligibility/{eventId}.eligibleUserIds (see
+ * writeActivationDocs in voting_events/votingCommon.ts) - that frozen list,
+ * not a live re-resolution, is the authoritative "who could vote in this
+ * specific election" answer, and it's exactly what castVote.ts checks
+ * against. Reading eventData's fields directly (as this used to) therefore
+ * under-counts eligibility - often to zero - for any event edited or
+ * activated through the normal flow, while turnout/participation counts
+ * stay correct, producing exactly the "0 eligible, N voted" symptom this
+ * was fixed for.
+ */
+export function resolveEligibilitySource(
+  eligData: FirebaseFirestore.DocumentData | null,
   eventData: FirebaseFirestore.DocumentData
-): Promise<number> {
-  const eligibilityType = eventData.eligibilityType || "ALL_MEMBERS";
+): EligibilitySource {
+  if (eligData && Array.isArray(eligData.eligibleUserIds)) {
+    return {
+      kind: "frozen",
+      userIds: eligData.eligibleUserIds.filter((x: unknown) => typeof x === "string"),
+    };
+  }
+
+  // No frozen roster yet (event still in DRAFT) - fall back to the current
+  // configuration: the draft doc if it exists, else the event document's
+  // own (create-time-only) fields as a last resort.
+  const eligibilityType =
+    (eligData?.eligibilityType as string | undefined) || eventData.eligibilityType || "ALL_MEMBERS";
 
   if (eligibilityType === "SELECTED_MEMBERS") {
-    const ids: string[] = Array.isArray(eventData.eligibilityUserIds)
-      ? eventData.eligibilityUserIds
-      : [];
-    if (ids.length === 0) return 0;
-    const snap = await db
-      .collection("organizationMembers")
-      .where("organizationId", "==", organizationId)
-      .where("status", "==", "active")
-      .get();
-    const eligibleIds = new Set(ids);
-    return snap.docs.filter((doc) => eligibleIds.has(doc.data()?.userId)).length;
+    const ids: string[] = Array.isArray(eligData?.eligibilityUserIds)
+      ? (eligData!.eligibilityUserIds as string[])
+      : Array.isArray(eventData.eligibilityUserIds)
+        ? eventData.eligibilityUserIds
+        : [];
+    return { kind: "selected_members", userIds: ids };
   }
 
   if (eligibilityType === "SELECTED_DEPARTMENTS") {
-    const deptIds: string[] = Array.isArray(eventData.eligibilityDepartmentIds)
-      ? eventData.eligibilityDepartmentIds
-      : [];
-    if (deptIds.length === 0) return 0;
+    const deptIds: string[] = Array.isArray(eligData?.eligibilityDepartmentIds)
+      ? (eligData!.eligibilityDepartmentIds as string[])
+      : Array.isArray(eventData.eligibilityDepartmentIds)
+        ? eventData.eligibilityDepartmentIds
+        : [];
+    return { kind: "selected_departments", departmentIds: deptIds };
+  }
+
+  return { kind: "all_members" };
+}
+
+/**
+ * Resolves the actual list of eligible members (not just a count), so
+ * callers can group/aggregate by attributes like department. Mirrors
+ * countEligibleVoters' eligibility branches exactly - countEligibleVoters
+ * is defined in terms of this function precisely to keep both in sync.
+ */
+export async function getEligibleMembers(
+  db: Firestore,
+  organizationId: string,
+  eventData: FirebaseFirestore.DocumentData
+): Promise<EligibleMember[]> {
+  const toEligibleMember = (doc: FirebaseFirestore.DocumentSnapshot): EligibleMember => ({
+    userId: doc.data()?.userId,
+    departmentId: doc.data()?.departmentId ?? null,
+  });
+
+  const eventId = eventData.id as string | undefined;
+  const eligSnap = eventId
+    ? await db.collection("votingEventEligibility").doc(eventId).get()
+    : null;
+  const eligData = eligSnap?.exists ? eligSnap.data() ?? null : null;
+
+  const source = resolveEligibilitySource(eligData, eventData);
+
+  if (source.kind === "frozen") {
+    if (source.userIds.length === 0) return [];
+    const snaps = await db.getAll(
+      ...source.userIds.map((userId) => db.collection("organizationMembers").doc(`${organizationId}_${userId}`))
+    );
+    return snaps.filter((s) => s.exists).map(toEligibleMember);
+  }
+
+  if (source.kind === "selected_members") {
+    if (source.userIds.length === 0) return [];
     const snap = await db
       .collection("organizationMembers")
       .where("organizationId", "==", organizationId)
       .where("status", "==", "active")
       .get();
-    return snap.docs.filter((doc) => deptIds.includes(doc.data()?.departmentId)).length;
+    const eligibleIds = new Set(source.userIds);
+    return snap.docs.filter((doc) => eligibleIds.has(doc.data()?.userId)).map(toEligibleMember);
+  }
+
+  if (source.kind === "selected_departments") {
+    if (source.departmentIds.length === 0) return [];
+    const snap = await db
+      .collection("organizationMembers")
+      .where("organizationId", "==", organizationId)
+      .where("status", "==", "active")
+      .get();
+    return snap.docs.filter((doc) => source.departmentIds.includes(doc.data()?.departmentId)).map(toEligibleMember);
   }
 
   const snap = await db
@@ -62,7 +152,15 @@ export async function countEligibleVoters(
     .where("organizationId", "==", organizationId)
     .where("status", "==", "active")
     .get();
-  return snap.size;
+  return snap.docs.map(toEligibleMember);
+}
+
+export async function countEligibleVoters(
+  db: Firestore,
+  organizationId: string,
+  eventData: FirebaseFirestore.DocumentData
+): Promise<number> {
+  return (await getEligibleMembers(db, organizationId, eventData)).length;
 }
 
 export async function calculateEventResults(
