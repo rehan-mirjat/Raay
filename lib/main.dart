@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
+import 'core/deep_link/deep_link_handler.dart';
 import 'core/presentation/session_lock_screen.dart';
 import 'core/presentation/splash_screen.dart';
 import 'core/session/session_lock_provider.dart';
@@ -79,17 +80,22 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
     with WidgetsBindingObserver {
   String? _initError;
   bool _isRetrying = false;
+  DeepLinkHandler? _deepLinkHandler;
 
   @override
   void initState() {
     super.initState();
     _initError = widget.initializationError;
     WidgetsBinding.instance.addObserver(this);
+    if (_initError == null) {
+      _deepLinkHandler = DeepLinkHandler(ref)..start();
+    }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _deepLinkHandler?.dispose();
     super.dispose();
   }
 
@@ -122,6 +128,7 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
       }
       await FirebaseService.initialize();
       await _initCrashlytics();
+      _deepLinkHandler ??= DeepLinkHandler(ref)..start();
       setState(() {
         _isRetrying = false;
       });

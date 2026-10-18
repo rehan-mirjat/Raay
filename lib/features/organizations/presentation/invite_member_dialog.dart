@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
@@ -29,6 +30,8 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
   bool _isLoading = false;
   String? _error;
   String? _invitedEmail;
+  String? _inviteLink;
+  bool _linkCopied = false;
 
   @override
   void initState() {
@@ -62,6 +65,9 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
         setState(() {
           _isLoading = false;
           _invitedEmail = result.email;
+          _inviteLink = result.rawToken.isNotEmpty
+              ? OrganizationRepository.buildInviteLink(result.rawToken)
+              : null;
         });
       }
     } catch (e) {
@@ -108,6 +114,57 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
               style: TextStyle(
                   fontSize: 13, color: AppTheme.textSecondary, height: 1.45),
             ),
+            if (_inviteLink != null) ...[
+              const SizedBox(height: 16),
+              const Text(
+                'Or share this invite link directly - there\'s no automatic email, so share it however you prefer (email, chat, etc.):',
+                style: TextStyle(
+                    fontSize: 12, color: AppTheme.textSecondary, height: 1.4),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppTheme.backgroundLight,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppTheme.borderLight),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _inviteLink!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontSize: 12, color: AppTheme.secondaryNavy),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    InkWell(
+                      onTap: () async {
+                        await Clipboard.setData(
+                            ClipboardData(text: _inviteLink!));
+                        if (mounted) setState(() => _linkCopied = true);
+                      },
+                      borderRadius: BorderRadius.circular(6),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Icon(
+                          _linkCopied
+                              ? Icons.check_rounded
+                              : Icons.copy_rounded,
+                          size: 18,
+                          color: _linkCopied
+                              ? AppTheme.success
+                              : AppTheme.primaryBlue,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ],
         ),
         actions: [

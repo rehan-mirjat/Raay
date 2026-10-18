@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -209,7 +210,9 @@ class OrganizationRepository {
   }
 
   /// Creates a recipient-visible invitation through the server-authoritative function.
-  Future<({String invitationId, String email})> inviteMember({
+  /// [rawToken] is returned only once - use it to build a shareable invite
+  /// link (see [buildInviteLink]); it cannot be recovered later.
+  Future<({String invitationId, String email, String rawToken})> inviteMember({
     required String organizationId,
     required String email,
     required String role,
@@ -231,6 +234,7 @@ class OrganizationRepository {
         return (
           invitationId: (data['invitationId'] as String?) ?? '',
           email: (data['email'] as String?) ?? email,
+          rawToken: (data['rawToken'] as String?) ?? '',
         );
       }
     } on FirebaseFunctionsException catch (error) {
@@ -269,6 +273,53 @@ class OrganizationRepository {
     }
     throw Exception(
         'Invitation service returned an invalid response. Please try again.');
+  }
+
+  /// Builds a shareable https:// invitation link for the given raw token.
+  /// There is no transactional email sender in this project, so invitations
+  /// aren't emailed automatically - the admin copies this link and shares it
+  /// through whatever channel they choose (email client, chat, etc.). Uses
+  /// the current web origin when running as a web build (so it works
+  /// correctly behind any custom domain), and the project's default Firebase
+  /// Hosting domain otherwise - the link always opens correctly in a browser
+  /// regardless of the recipient's platform, whether or not they have the
+  /// app installed.
+  static String buildInviteLink(String rawToken) {
+    final base = kIsWeb ? Uri.base.origin : 'https://vote-d1ae4.web.app';
+    return '$base/invite?token=${Uri.encodeQueryComponent(rawToken)}';
+  }
+
+  /// Accepts an invitation by its raw token (from a shared invite link) via
+  /// the server-authoritative [acceptInvitation] Cloud Function.
+  Future<({String organizationId, String organizationName})>
+      acceptInvitationByToken(String rawToken) async {
+    final trimmedToken = rawToken.trim();
+    if (trimmedToken.isEmpty) {
+      throw Exception('This invitation link is missing its token.');
+    }
+
+    try {
+      final callable = _firebase.functions.httpsCallable('acceptInvitation');
+      final response = await callable.call({
+        'rawToken': trimmedToken,
+      });
+
+      final data = response.data as Map<dynamic, dynamic>?;
+      if (data != null &&
+          data['status'] == 'success' &&
+          data['organizationId'] != null) {
+        return (
+          organizationId: data['organizationId'] as String,
+          organizationName:
+              (data['organizationName'] as String?) ?? 'Organization',
+        );
+      }
+      throw Exception('Unable to accept this invitation. Please try again.');
+    } on FirebaseFunctionsException catch (e) {
+      throw Exception(mapFirebaseFunctionsError(e));
+    } catch (_) {
+      throw Exception('Unable to accept this invitation. Please try again.');
+    }
   }
 
   /// Adds an existing verified Kivora account directly as a regular member.

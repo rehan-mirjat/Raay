@@ -21,6 +21,7 @@ import '../../features/departments/presentation/department_members_screen.dart';
 import '../../features/departments/presentation/departments_screen.dart';
 import '../../features/organizations/presentation/join_organization_screen.dart';
 import '../../features/organizations/presentation/invitation_inbox_screen.dart';
+import '../../features/organizations/presentation/accept_invitation_link_screen.dart';
 import '../../features/organizations/presentation/joining_codes_screen.dart';
 import '../../features/organizations/presentation/organization_dashboard_screen.dart';
 import '../../features/organizations/presentation/create_organization_screen.dart';
@@ -52,6 +53,13 @@ final GlobalKey<NavigatorState> _shellNavigatorSettingsKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellSettings');
 final GlobalKey<NavigatorState> _shellNavigatorAdminKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellAdmin');
+
+/// Holds an invitation token received via a kivora://invite deep link while
+/// the user is not yet signed in/verified, so RouterNotifier's redirect can
+/// send them to /invite once auth completes instead of dropping them at
+/// /home and losing the invitation. Cleared once the invite screen has
+/// consumed it (accepted, dismissed, or shown an error).
+final pendingInviteTokenProvider = StateProvider<String?>((ref) => null);
 
 class RouterNotifier extends ChangeNotifier {
   final Ref _ref;
@@ -86,6 +94,8 @@ class RouterNotifier extends ChangeNotifier {
       }
       notifyListeners();
     });
+
+    _ref.listen(pendingInviteTokenProvider, (_, __) => notifyListeners());
   }
 
   bool get isAuthLoading => _isAuthLoading;
@@ -96,6 +106,7 @@ class RouterNotifier extends ChangeNotifier {
   bool get isAdmin =>
       _activeRole == OrganizationRole.owner ||
       _activeRole == OrganizationRole.admin;
+  String? get pendingInviteToken => _ref.read(pendingInviteTokenProvider);
 }
 
 final routerNotifierProvider = Provider<RouterNotifier>((ref) {
@@ -149,6 +160,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       }
 
       if (isUnauthRoute || isVerifyRoute || isSplashRoute || isPublicLanding) {
+        final pendingToken = notifier.pendingInviteToken;
+        if (pendingToken != null && pendingToken.isNotEmpty) {
+          return '/invite?token=${Uri.encodeQueryComponent(pendingToken)}';
+        }
         return '/home';
       }
 
@@ -218,6 +233,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/platform/organizations',
         builder: (context, state) => const PlatformOrganizationsScreen(),
+      ),
+      GoRoute(
+        path: '/invite',
+        builder: (context, state) => AcceptInvitationLinkScreen(
+          rawToken: state.uri.queryParameters['token'],
+        ),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
