@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,6 +9,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
+import '../../../core/widgets/reauth_dialog.dart';
+import '../../../core/widgets/totp_enroll_dialog.dart';
 import '../../../services/auth_service.dart';
 import '../../../services/firebase_service.dart'; // Needed for sanitizeStorageUrl
 import '../data/user_repository.dart';
@@ -37,6 +40,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   bool _isSaving = false;
   bool _isUploadingPhoto = false;
   bool _initialized = false;
+  bool _isMfaBusy = false;
   String? _error;
   String? _successMessage;
   String? _uploadedPhotoUrl;
@@ -61,6 +65,71 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     _lastNameController.dispose();
     _phoneNumberController.dispose();
     super.dispose();
+  }
+
+  Future<void> _enableTwoFactor() async {
+    setState(() => _isMfaBusy = true);
+    final messenger = ScaffoldMessenger.of(context);
+    final enabled = await showTotpEnrollDialog(context, ref);
+    if (!mounted) return;
+    setState(() => _isMfaBusy = false);
+    if (enabled) {
+      messenger.showSnackBar(const SnackBar(
+          content: Text('Two-factor authentication is now enabled.')));
+    }
+  }
+
+  Future<void> _disableTwoFactor(MultiFactorInfo factor) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Turn off two-factor authentication?'),
+        content: const Text(
+            'Your account will no longer require a code from your authenticator app to sign in.'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel')),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: AppTheme.error),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Turn off'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _isMfaBusy = true);
+    try {
+      final authUser = ref.read(authServiceProvider).currentUser;
+      if (authUser == null) return;
+      try {
+        await authUser.multiFactor.unenroll(multiFactorInfo: factor);
+      } on FirebaseAuthException catch (e) {
+        if (e.code != 'requires-recent-login') rethrow;
+        if (!mounted) return;
+        final reauthed = await showReauthDialog(
+          context,
+          ref,
+          reason:
+              'Turning off two-factor authentication requires you to have signed '
+              'in recently. Please verify your identity to continue.',
+        );
+        if (!reauthed) return;
+        await authUser.multiFactor.unenroll(multiFactorInfo: factor);
+      }
+      if (mounted) {
+        messenger.showSnackBar(const SnackBar(
+            content: Text('Two-factor authentication is now disabled.')));
+      }
+    } catch (_) {
+      messenger.showSnackBar(const SnackBar(
+          content: Text('Could not disable two-factor authentication.')));
+    } finally {
+      if (mounted) setState(() => _isMfaBusy = false);
+    }
   }
 
   void _populateControllers(AppUser user) {
@@ -939,37 +1008,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 const SizedBox(height: 24),
 
                 // Two-Factor Authentication
-                Row(
-                  children: [
-                    const Text('TWO-FACTOR AUTHENTICATION (2FA)',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 11,
-                            color: AppTheme.secondaryNavy,
-                            letterSpacing: 0.5)),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: AppTheme.surfaceBlue,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Text('Coming soon',
-                          style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.primaryBlue)),
-                    ),
-                  ],
-                ),
+                const Text('TWO-FACTOR AUTHENTICATION (2FA)',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 11,
+                        color: AppTheme.secondaryNavy,
+                        letterSpacing: 0.5)),
                 const SizedBox(height: 12),
-                if (authUser != null)
-                  FutureBuilder<List<dynamic>>(
+                if (authUser != null && hasPasswordProvider)
+                  FutureBuilder<List<MultiFactorInfo>>(
                     future: authUser.multiFactor.getEnrolledFactors(),
                     builder: (context, snapshot) {
-                      final is2FAEnabled =
-                          snapshot.hasData && snapshot.data!.isNotEmpty;
+                      final factors = snapshot.data ?? const [];
+                      final is2FAEnabled = factors.isNotEmpty;
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -988,7 +1039,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 ),
                                 const SizedBox(height: 4),
                                 const Text(
-                                  'Add an extra layer of security to your account.',
+                                  'Require a code from an authenticator app when signing in.',
                                   style: TextStyle(
                                       color: AppTheme.textSecondary,
                                       fontSize: 13),
@@ -997,24 +1048,30 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             ),
                           ),
                           if (snapshot.connectionState ==
-                              ConnectionState.waiting)
+                              ConnectionState.waiting || _isMfaBusy)
                             const SizedBox(
                               width: 32,
                               height: 32,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
                           else
-                            Tooltip(
-                              message:
-                                  'Two-factor authentication enrollment is coming soon.',
-                              child: Switch(
-                                value: is2FAEnabled,
-                                onChanged: null,
-                              ),
+                            Switch(
+                              value: is2FAEnabled,
+                              onChanged: (value) => value
+                                  ? _enableTwoFactor()
+                                  : _disableTwoFactor(factors.first),
                             ),
                         ],
                       );
                     },
+                  )
+                else
+                  Text(
+                    hasPasswordProvider
+                        ? 'Sign in required to manage two-factor authentication.'
+                        : 'Two-factor authentication is available for accounts signed in with a password.',
+                    style: const TextStyle(
+                        color: AppTheme.textSecondary, fontSize: 13),
                   ),
               ],
             ),

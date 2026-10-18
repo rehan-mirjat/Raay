@@ -8,6 +8,7 @@ import '../../../core/utils/error_utils.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/google_g_logo.dart';
 import '../../../core/widgets/inline_error_banner.dart';
+import '../../../core/widgets/totp_challenge_dialog.dart';
 import '../../../services/auth_service.dart';
 import 'email_verification_screen.dart';
 import 'widgets/auth_split_layout.dart';
@@ -74,6 +75,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             widget.onAuthenticated!();
           }
         }
+      }
+    } on FirebaseAuthMultiFactorException catch (e) {
+      setState(() => _isLoading = false);
+      if (!mounted) return;
+      final credential = await showTotpChallengeDialog(context, e.resolver);
+      if (!mounted) return;
+      if (credential?.user != null) {
+        await credential!.user!.getIdToken(true);
+        if (!mounted) return;
+        setState(() {
+          _requiresEmailVerification = !(credential.user?.emailVerified ?? false);
+        });
+        if (!_requiresEmailVerification) widget.onAuthenticated?.call();
       }
     } on FirebaseAuthException catch (e) {
       if (mounted) {
