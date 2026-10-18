@@ -26,7 +26,10 @@ Future<bool> showReauthDialog(
 
   final result = await showDialog<bool>(
     context: context,
-    barrierDismissible: !isVerifying,
+    // Can only be left via Cancel/Verify, never the barrier - a tap outside
+    // while a verify call is in flight would otherwise pop the dialog and
+    // the completed call would try to setState on a gone widget.
+    barrierDismissible: false,
     builder: (dialogContext) => StatefulBuilder(
       builder: (dialogContext, setDialogState) {
         Future<void> verify() async {
@@ -40,6 +43,7 @@ Future<bool> showReauthDialog(
             );
             if (dialogContext.mounted) Navigator.of(dialogContext).pop(true);
           } catch (e) {
+            if (!dialogContext.mounted) return;
             setDialogState(() {
               isVerifying = false;
               dialogError = e.toString().replaceAll('Exception: ', '');

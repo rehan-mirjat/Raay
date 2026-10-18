@@ -60,7 +60,11 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
 
   final result = await showDialog<bool>(
     context: context,
-    barrierDismissible: !isVerifying,
+    // Verification is multi-step and stateful (secret + code), so this
+    // dialog can only be left via Cancel/Enable, never the barrier - a tap
+    // outside while a verify call is in flight would otherwise pop the
+    // dialog and the completed call would try to setState on a gone widget.
+    barrierDismissible: false,
     builder: (dialogContext) => StatefulBuilder(
       builder: (dialogContext, setDialogState) {
         Future<void> confirm() async {
@@ -82,6 +86,7 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
             );
             if (dialogContext.mounted) Navigator.of(dialogContext).pop(true);
           } on FirebaseAuthException catch (e) {
+            if (!dialogContext.mounted) return;
             setDialogState(() {
               isVerifying = false;
               dialogError = e.code == 'invalid-verification-code'
@@ -89,6 +94,7 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
                   : (e.message ?? 'Could not verify that code.');
             });
           } catch (_) {
+            if (!dialogContext.mounted) return;
             setDialogState(() {
               isVerifying = false;
               dialogError = 'Could not verify that code.';

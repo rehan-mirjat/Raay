@@ -11,7 +11,9 @@ rules_version = '2';
 //  - Eligibility lists and the frozen voter roll live in
 //    votingEventEligibility/{eventId} (Owner/Admin read only), NOT on the
 //    votingEvents document, so members cannot read rosters.
-//  - rateLimits/{key_uid} is written only by Cloud Functions (global deny applies).
+//  - rateLimits/{key_uid}, invitationRateLimit/{uid}, joinCodeRateLimit/{uid},
+//    and joinCodeOrgThrottle/{organizationId} are all written only by Cloud
+//    Functions (global deny applies to each - none has an explicit rule below).
 //  - results/{eventId} has a boolean `published` field set by publishResults().
 //  - turnout/{eventId} holds a counter document maintained by castVote().
 //  - All organization membership/role/event/candidate/option writes go through
@@ -332,7 +334,23 @@ service cloud.firestore {
     }
 
     match /userReports/{reportId} {
-      allow create: if signedIn() && request.auth.uid == request.resource.data.userId;
+      // FIX: field-level restriction (Rules spec section 47, same pattern as
+      // /users above) - a signed-in user could otherwise write arbitrary
+      // extra fields/size into their own report document.
+      allow create: if signedIn()
+        && request.auth.uid == request.resource.data.userId
+        && request.resource.data.keys().hasOnly(
+             ["userId", "userEmail", "subject", "message", "createdAt", "status"])
+        && request.resource.data.userEmail is string
+        && request.resource.data.userEmail.size() <= 320
+        && request.resource.data.subject is string
+        && request.resource.data.subject.size() > 0
+        && request.resource.data.subject.size() <= 200
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() <= 5000
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.status == "open";
       allow read: if isPlatformAdmin() || (signedIn() && request.auth.uid == resource.data.userId);
       allow update, delete: if false;
     }

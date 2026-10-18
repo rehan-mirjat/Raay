@@ -114,6 +114,9 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
   }
 
   Future<void> _grantAdmin() async {
+    if (_busyUid != null) return;
+    setState(() => _busyUid = 'grant');
+
     final emailController = TextEditingController();
     final email = await showDialog<String>(
       context: context,
@@ -141,10 +144,12 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
         ],
       ),
     );
-    if (email == null || email.isEmpty || !mounted) return;
+    if (email == null || email.isEmpty || !mounted) {
+      if (mounted) setState(() => _busyUid = null);
+      return;
+    }
 
     final messenger = ScaffoldMessenger.of(context);
-    setState(() => _busyUid = 'grant');
     try {
       await FirebaseService()
           .functions
@@ -168,6 +173,7 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
     if (_busyUid != null) return;
     final uid = user['uid'] as String;
     final email = user['email'] as String? ?? 'this account';
+    setState(() => _busyUid = uid);
 
     final confirmed = await showDialog<bool>(
       context: context,
@@ -187,10 +193,12 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
         ],
       ),
     );
-    if (confirmed != true || !mounted) return;
+    if (confirmed != true || !mounted) {
+      if (mounted) setState(() => _busyUid = null);
+      return;
+    }
 
     final messenger = ScaffoldMessenger.of(context);
-    setState(() => _busyUid = uid);
     try {
       await FirebaseService()
           .functions

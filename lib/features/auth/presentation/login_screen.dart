@@ -79,16 +79,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } on FirebaseAuthMultiFactorException catch (e) {
       setState(() => _isLoading = false);
       if (!mounted) return;
-      final credential = await showTotpChallengeDialog(context, e.resolver);
-      if (!mounted) return;
-      if (credential?.user != null) {
-        await credential!.user!.getIdToken(true);
-        if (!mounted) return;
-        setState(() {
-          _requiresEmailVerification = !(credential.user?.emailVerified ?? false);
-        });
-        if (!_requiresEmailVerification) widget.onAuthenticated?.call();
+
+      final hasTotpHint = e.resolver.hints.any((h) => h.factorId == 'totp');
+      if (!hasTotpHint) {
+        setState(() => _error =
+            'This account\'s second factor isn\'t supported by this app yet. Please contact support.');
+        return;
       }
+
+      final credential = await showTotpChallengeDialog(context, e.resolver);
+      if (!mounted || credential?.user == null) return;
+
+      // getIdToken only refreshes claims/token, not the cached emailVerified
+      // flag - reload() is what every other sign-in path in this app uses
+      // (see auth_service.dart) to get a fresh value before gating on it.
+      await credential!.user!.reload();
+      if (!mounted) return;
+      final isVerified = ref.read(authServiceProvider).isEmailVerified;
+      setState(() => _requiresEmailVerification = !isVerified);
+      if (isVerified) widget.onAuthenticated?.call();
     } on FirebaseAuthException catch (e) {
       if (mounted) {
         setState(() {

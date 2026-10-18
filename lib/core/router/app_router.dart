@@ -108,6 +108,20 @@ class RouterNotifier extends ChangeNotifier {
       _activeRole == OrganizationRole.owner ||
       _activeRole == OrganizationRole.admin;
   String? get pendingInviteToken => _ref.read(pendingInviteTokenProvider);
+
+  /// Captures a token carried directly on the `/invite` URL (the shared
+  /// https:// link opened in a browser) before an auth/verification redirect
+  /// would otherwise strip it. On native this duplicates what
+  /// DeepLinkHandler already does for a kivora:// link, which is harmless -
+  /// setting a StateProvider to its current value doesn't notify listeners
+  /// again. On web, DeepLinkHandler never runs at all, so this is the only
+  /// place the token gets captured.
+  void captureInviteTokenIfPresent(String? token) {
+    if (token != null && token.isNotEmpty) {
+      final notifier = _ref.read(pendingInviteTokenProvider.notifier);
+      if (notifier.state != token) notifier.state = token;
+    }
+  }
 }
 
 final routerNotifierProvider = Provider<RouterNotifier>((ref) {
@@ -141,6 +155,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       final isVerifyRoute = location == '/verify-email';
       final isSplashRoute = location == '/splash';
       final isAdminRoute = location.startsWith('/admin');
+      final isInviteRoute = location == '/invite';
+
+      if (isInviteRoute) {
+        notifier.captureInviteTokenIfPresent(state.uri.queryParameters['token']);
+      }
 
       if (!isAuth) {
         // Once this install has already shown the pre-login intro carousel,

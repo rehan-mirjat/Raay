@@ -25,7 +25,10 @@ Future<UserCredential?> showTotpChallengeDialog(
 
   final credential = await showDialog<UserCredential>(
     context: context,
-    barrierDismissible: !isVerifying,
+    // Can only be left via Cancel/Verify, never the barrier - a tap outside
+    // while a verify call is in flight would otherwise pop the dialog and
+    // the completed call would try to setState on a gone widget.
+    barrierDismissible: false,
     builder: (dialogContext) => StatefulBuilder(
       builder: (dialogContext, setDialogState) {
         Future<void> verify() async {
@@ -46,6 +49,7 @@ Future<UserCredential?> showTotpChallengeDialog(
             final result = await resolver.resolveSignIn(assertion);
             if (dialogContext.mounted) Navigator.of(dialogContext).pop(result);
           } on FirebaseAuthException catch (e) {
+            if (!dialogContext.mounted) return;
             setDialogState(() {
               isVerifying = false;
               dialogError = e.code == 'invalid-verification-code'
@@ -53,6 +57,7 @@ Future<UserCredential?> showTotpChallengeDialog(
                   : (e.message ?? 'Could not verify that code.');
             });
           } catch (_) {
+            if (!dialogContext.mounted) return;
             setDialogState(() {
               isVerifying = false;
               dialogError = 'Could not verify that code.';

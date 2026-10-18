@@ -44,6 +44,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   String? _error;
   String? _successMessage;
   String? _uploadedPhotoUrl;
+  Future<List<MultiFactorInfo>>? _mfaFactorsFuture;
 
   @override
   void initState() {
@@ -72,7 +73,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final messenger = ScaffoldMessenger.of(context);
     final enabled = await showTotpEnrollDialog(context, ref);
     if (!mounted) return;
-    setState(() => _isMfaBusy = false);
+    setState(() {
+      _isMfaBusy = false;
+      if (enabled) _mfaFactorsFuture = null;
+    });
     if (enabled) {
       messenger.showSnackBar(const SnackBar(
           content: Text('Two-factor authentication is now enabled.')));
@@ -121,6 +125,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         await authUser.multiFactor.unenroll(multiFactorInfo: factor);
       }
       if (mounted) {
+        setState(() => _mfaFactorsFuture = null);
         messenger.showSnackBar(const SnackBar(
             content: Text('Two-factor authentication is now disabled.')));
       }
@@ -1017,7 +1022,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 const SizedBox(height: 12),
                 if (authUser != null && hasPasswordProvider)
                   FutureBuilder<List<MultiFactorInfo>>(
-                    future: authUser.multiFactor.getEnrolledFactors(),
+                    future: _mfaFactorsFuture ??=
+                        authUser.multiFactor.getEnrolledFactors(),
                     builder: (context, snapshot) {
                       final factors = snapshot.data ?? const [];
                       final is2FAEnabled = factors.isNotEmpty;
