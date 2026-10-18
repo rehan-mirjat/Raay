@@ -67,6 +67,48 @@ class OrganizationRepository {
     }
   }
 
+  /// Resolves a joining code to the organization it belongs to, without
+  /// joining, via [previewJoiningCode] - lets the member confirm it's the
+  /// right organization before committing.
+  Future<
+      ({
+        String organizationId,
+        String organizationName,
+        String? logoUrl,
+        bool verified,
+      })> previewJoiningCode(String rawCode) async {
+    final trimmedCode = rawCode.trim();
+    if (trimmedCode.isEmpty) {
+      throw Exception('Please enter a valid joining code.');
+    }
+
+    try {
+      final callable =
+          _firebase.functions.httpsCallable('previewJoiningCode');
+      final response = await callable.call({
+        'rawCode': trimmedCode,
+      });
+
+      final data = response.data as Map<dynamic, dynamic>?;
+      if (data != null &&
+          data['status'] == 'success' &&
+          data['organizationId'] != null) {
+        return (
+          organizationId: data['organizationId'] as String,
+          organizationName:
+              (data['organizationName'] as String?) ?? 'Organization',
+          logoUrl: data['logoUrl'] as String?,
+          verified: data['verified'] as bool? ?? false,
+        );
+      }
+      throw Exception('Unable to find organization. Please try again.');
+    } on FirebaseFunctionsException catch (e) {
+      throw Exception(mapFirebaseFunctionsError(e));
+    } catch (_) {
+      throw Exception('Unable to find organization. Please try again.');
+    }
+  }
+
   /// Joins an Organization using a raw joining code via [joinOrganizationWithCode] Cloud Function.
   Future<({String organizationId, String organizationName})>
   joinOrganizationWithCode(String rawCode) async {
