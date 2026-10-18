@@ -94,30 +94,20 @@ service cloud.firestore {
       allow create: if false;   // created by the completeRegistration callable (Admin SDK)
 
       // FIX: field-level restriction (Rules spec section 47).
+      // Only photoUrl is writable directly by the client (set right after
+      // Google sign-in). displayName/firstName/lastName/phoneNumber have no
+      // editing UI today and are NOT sanitized against control/bidi-spoofing
+      // characters at the rules layer (rules can only bound size/type, not
+      // strip characters) - route any future "edit profile" feature through
+      // a Cloud Function using sanitizePlainText(), the same as every other
+      // free-text field, rather than re-opening direct writes to them.
       allow update: if signedIn()
         && request.auth.uid == userId
         && request.resource.data.diff(resource.data).affectedKeys()
-             .hasOnly(["displayName", "photoUrl", "firstName", "lastName", "phoneNumber"])
-        && (!("displayName" in request.resource.data)
-             || (request.resource.data.displayName is string
-                 && request.resource.data.displayName.size() > 0
-                 && request.resource.data.displayName.size() <= 80))
-        && (!("photoUrl" in request.resource.data)
-             || request.resource.data.photoUrl == null
+             .hasOnly(["photoUrl"])
+        && (request.resource.data.photoUrl == null
              || (request.resource.data.photoUrl is string
-                 && request.resource.data.photoUrl.size() <= 500))
-        && (!("firstName" in request.resource.data)
-             || (request.resource.data.firstName is string
-                 && request.resource.data.firstName.size() > 0
-                 && request.resource.data.firstName.size() <= 80))
-        && (!("lastName" in request.resource.data)
-             || (request.resource.data.lastName is string
-                 && request.resource.data.lastName.size() > 0
-                 && request.resource.data.lastName.size() <= 80))
-        && (!("phoneNumber" in request.resource.data)
-             || request.resource.data.phoneNumber == null
-             || (request.resource.data.phoneNumber is string
-                 && request.resource.data.phoneNumber.size() <= 20));
+                 && request.resource.data.photoUrl.size() <= 500));
 
       allow delete: if false;
     }
@@ -132,14 +122,15 @@ service cloud.firestore {
 
       allow create: if false;
 
-      // FIX: Owner may only touch presentation fields. Status, ownerId,
-      // createdAt, organizationId etc. are server-controlled.
-      // FIX: platform-admin direct writes removed; use verify/suspend
-      // functions so that every action is audited.
-      allow update: if isOwner(organizationId)
-        && orgOperational(organizationId)
-        && request.resource.data.diff(resource.data).affectedKeys()
-             .hasOnly(["name", "description", "logoUrl", "brandColors", "website"]);
+      // FIX: direct client writes removed entirely. Owners update name/
+      // description/branding exclusively through the updateOrganization
+      // Cloud Function, which the client already calls exclusively (never
+      // writes this document directly) - that function sanitizes free text
+      // (control/bidi-spoofing characters) and enforces the cross-collection
+      // duplicate-name check, neither of which security rules can express
+      // (rules can bound size/type but can't strip characters or run a
+      // "does another org already use this name" query).
+      allow update: if false;
 
       allow delete: if false;
     }
@@ -289,19 +280,34 @@ service cloud.firestore {
 
     match /eventResults/{eventId} {
 
+      // FIX: `resource` is null for a document that doesn't exist yet (the
+      // normal state right after an event closes, before an admin has
+      // triggered calculateResults) - referencing resource.data.X without
+      // this guard throws inside the rule and denies the read for EVERYONE,
+      // admins included, with no recovery path in the client. There is
+      // nothing to leak from a nonexistent document, so this branch is safe
+      // to allow for any signed-in user.
+      //
       // Owners/Admins may review after closure (document only exists then).
       // Members only see results once published.
-      allow read: if isOwnerOrAdmin(resource.data.organizationId)
-        || (isActiveMember(resource.data.organizationId)
-            && resource.data.published == true);
+      allow read: if signedIn()
+        && (resource == null
+            || isOwnerOrAdmin(resource.data.organizationId)
+            || (isActiveMember(resource.data.organizationId)
+                && resource.data.published == true));
 
       allow create, update, delete: if false;
     }
 
+    // Legacy/unused path (no function or client code writes or reads this
+    // collection - eventResults above is the real one), kept locked down
+    // with the same not-yet-existing-document fix for defense in depth.
     match /results/{eventId} {
-      allow read: if isOwnerOrAdmin(resource.data.organizationId)
-        || (isActiveMember(resource.data.organizationId)
-            && resource.data.published == true);
+      allow read: if signedIn()
+        && (resource == null
+            || isOwnerOrAdmin(resource.data.organizationId)
+            || (isActiveMember(resource.data.organizationId)
+                && resource.data.published == true));
 
       allow create, update, delete: if false;
     }
@@ -329,6 +335,16 @@ service cloud.firestore {
       allow create: if signedIn() && request.auth.uid == request.resource.data.userId;
       allow read: if isPlatformAdmin() || (signedIn() && request.auth.uid == resource.data.userId);
       allow update, delete: if false;
+    }
+
+    match /notifications/{notificationId} {
+      // Server-written only (e.g. remindNonVoters) - a client can never
+      // create one for itself or anyone else. A recipient may read their
+      // own and mark it read, nothing more.
+      allow read: if signedIn() && request.auth.uid == resource.data.userId;
+      allow update: if signedIn() && request.auth.uid == resource.data.userId
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
+      allow create, delete: if false;
     }
 
     // =========================
