@@ -11,6 +11,7 @@ import '../../services/firebase_service.dart';
 import '../layout/responsive.dart';
 import '../../features/auth/data/user_repository.dart';
 import '../theme/app_theme.dart';
+import '../theme/theme_provider.dart';
 import '../../features/onboarding/presentation/tour_keys.dart';
 
 class AppNavigationShell extends ConsumerWidget {
@@ -32,26 +33,29 @@ class AppNavigationShell extends ConsumerWidget {
     final isManager = memberRole == OrganizationRole.owner ||
         memberRole == OrganizationRole.admin;
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? AppTheme.darkBackground : AppTheme.backgroundLight;
+
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: bgColor,
       body: SafeArea(
         bottom: false,
         child: Column(
           children: [
             const _TopHeader(),
             if (!isDesktop) ...[
-              // Mobile specific: The Organization Context Switcher goes right below the header,
-              // plus quick-access to Directory/Departments (desktop-only nav links otherwise,
-              // leaving managers with no way to reach them on mobile at all).
               Container(
                 width: double.infinity,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: const BoxDecoration(
-                  color: AppTheme.surfaceWhite,
+                decoration: BoxDecoration(
+                  color: isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite,
                   border: Border(
-                      bottom:
-                          BorderSide(color: AppTheme.borderLight, width: 1)),
+                      bottom: BorderSide(
+                          color: isDark
+                              ? AppTheme.darkBorder
+                              : AppTheme.borderLight,
+                          width: 1)),
                 ),
                 child: Row(
                   children: [
@@ -106,6 +110,7 @@ class _MobileQuickNavButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Tooltip(
       message: tooltip,
       child: Semantics(
@@ -113,16 +118,22 @@ class _MobileQuickNavButton extends StatelessWidget {
         label: tooltip,
         child: Material(
           key: navKey,
-          color: AppTheme.backgroundLight,
-          shape: const CircleBorder(
-              side: BorderSide(color: AppTheme.borderLight, width: 1.2)),
+          color: isDark ? AppTheme.darkElevated : AppTheme.backgroundLight,
+          shape: CircleBorder(
+              side: BorderSide(
+                  color: isDark ? AppTheme.darkBorder : AppTheme.borderLight,
+                  width: 1.2)),
           child: InkWell(
             onTap: () => context.go(route),
             customBorder: const CircleBorder(),
             child: SizedBox(
               width: 38,
               height: 38,
-              child: Icon(icon, size: 18, color: AppTheme.secondaryNavy),
+              child: Icon(icon,
+                  size: 18,
+                  color: isDark
+                      ? AppTheme.darkTextSecondary
+                      : AppTheme.textSecondary),
             ),
           ),
         ),
@@ -146,6 +157,13 @@ class _FloatingMobileNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.paddingOf(context).bottom;
     final currentIndex = navigationShell.currentIndex;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final navBg = isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite;
+    final navBorder = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
+    final shadowColor = isDark
+        ? Colors.black.withValues(alpha: 0.4)
+        : AppTheme.secondaryNavy.withValues(alpha: 0.08);
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -154,18 +172,15 @@ class _FloatingMobileNavBar extends StatelessWidget {
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          // Main Floating Nav Container
           Container(
             height: 64,
             decoration: BoxDecoration(
-              color: AppTheme.surfaceWhite,
+              color: navBg,
               borderRadius: BorderRadius.circular(28),
-              border: Border.all(
-                  color: AppTheme.borderLight,
-                  width: 1.2),
+              border: Border.all(color: navBorder, width: 1.2),
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.secondaryNavy.withValues(alpha: 0.08),
+                  color: shadowColor,
                   blurRadius: 24,
                   offset: const Offset(0, 6),
                 ),
@@ -174,26 +189,23 @@ class _FloatingMobileNavBar extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _navItem(context, 0, Icons.home_outlined,
-                          Icons.home_rounded, 'Home', currentIndex),
-                      _navItem(context, 1, Icons.business_outlined,
-                          Icons.business_rounded, 'Orgs', currentIndex),
-                      if (showCreateEventButton) ...[
-                        // Spacer for central floating + button
-                        const SizedBox(width: 52),
-                      ],
-                      _navItem(context, 3, Icons.inventory_2_outlined,
-                          Icons.inventory_2_rounded, 'Events', currentIndex),
-                      _navItem(context, 2, Icons.person_outline_rounded,
-                          Icons.person_rounded, 'Profile', currentIndex),
-                    ],
-                  ),
-                ),
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _navItem(context, 0, Icons.home_outlined,
+                      Icons.home_rounded, 'Home', currentIndex),
+                  _navItem(context, 1, Icons.business_outlined,
+                      Icons.business_rounded, 'Orgs', currentIndex),
+                  if (showCreateEventButton) const SizedBox(width: 52),
+                  _navItem(context, 3, Icons.how_to_vote_outlined,
+                      Icons.how_to_vote_rounded, 'Events', currentIndex),
+                  _navItem(context, 2, Icons.person_outline_rounded,
+                      Icons.person_rounded, 'Profile', currentIndex),
+                ],
+              ),
+            ),
           ),
 
-          // Central Floating + Action Button (Owner & Admin Only with Kivora Gold Accent)
+          // Gold floating + Create Event button (admin/owner only)
           if (showCreateEventButton)
             Positioned(
               top: -14,
@@ -212,23 +224,22 @@ class _FloatingMobileNavBar extends StatelessWidget {
                         height: 52,
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [Color(0xFFFBBF24), AppTheme.accentGold],
+                            colors: [Color(0xFF9D7BFF), AppTheme.primaryBlue],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color:
-                                  AppTheme.accentGold.withValues(alpha: 0.45),
-                              blurRadius: 14,
+                              color: AppTheme.primaryBlue.withValues(alpha: 0.5),
+                              blurRadius: 16,
                               offset: const Offset(0, 4),
                             ),
                           ],
                         ),
                         child: const Icon(
                           Icons.add_rounded,
-                          color: AppTheme.secondaryNavy,
+                          color: Colors.white,
                           size: 28,
                         ),
                       ),
@@ -251,6 +262,13 @@ class _FloatingMobileNavBar extends StatelessWidget {
     int currentIndex,
   ) {
     final isSelected = index == currentIndex;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final selectedColor = AppTheme.primaryBlue;
+    final unselectedColor =
+        isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
+    final selectedBg = isDark
+        ? AppTheme.primaryBlue.withValues(alpha: 0.18)
+        : AppTheme.primaryBlue.withValues(alpha: 0.10);
 
     return Expanded(
       child: InkWell(
@@ -272,15 +290,12 @@ class _FloatingMobileNavBar extends StatelessWidget {
                 vertical: 4,
               ),
               decoration: BoxDecoration(
-                color: isSelected
-                    ? AppTheme.primaryBlue.withValues(alpha: 0.12)
-                    : Colors.transparent,
+                color: isSelected ? selectedBg : Colors.transparent,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(
                 isSelected ? iconFilled : iconOutlined,
-                color:
-                    isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
+                color: isSelected ? selectedColor : unselectedColor,
                 size: 22,
               ),
             ),
@@ -290,8 +305,7 @@ class _FloatingMobileNavBar extends StatelessWidget {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                color:
-                    isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
+                color: isSelected ? selectedColor : unselectedColor,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -313,6 +327,7 @@ class _TopHeader extends ConsumerWidget {
     final appUserAsync =
         user != null ? ref.watch(userProfileProvider(user.uid)) : null;
     final photoUrlToUse = appUserAsync?.valueOrNull?.photoUrl ?? user?.photoURL;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final activeOrgContext =
         ref.watch(activeOrganizationContextProvider).valueOrNull?.context;
@@ -320,8 +335,15 @@ class _TopHeader extends ConsumerWidget {
         (activeOrgContext.member.role == OrganizationRole.owner ||
             activeOrgContext.member.role == OrganizationRole.admin);
 
+    final headerBg = isDark ? AppTheme.darkBackground : AppTheme.backgroundLight;
+    final pillBg = isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite;
+    final pillBorder = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
+    final pillShadow = isDark
+        ? Colors.black.withValues(alpha: 0.3)
+        : AppTheme.secondaryNavy.withValues(alpha: 0.06);
+
     return Container(
-      color: AppTheme.backgroundLight,
+      color: headerBg,
       padding: EdgeInsets.symmetric(
         horizontal: isDesktop ? 24 : 12,
         vertical: isDesktop ? 12 : 6,
@@ -333,12 +355,12 @@ class _TopHeader extends ConsumerWidget {
             height: isDesktop ? 60 : 52,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             decoration: BoxDecoration(
-              color: AppTheme.surfaceWhite,
+              color: pillBg,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppTheme.borderLight, width: 1.2),
+              border: Border.all(color: pillBorder, width: 1.2),
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.secondaryNavy.withValues(alpha: 0.06),
+                  color: pillShadow,
                   blurRadius: 20,
                   offset: const Offset(0, 4),
                 ),
@@ -346,12 +368,16 @@ class _TopHeader extends ConsumerWidget {
             ),
             child: Row(
               children: [
-                // Logo & Wordmark with Hover State
                 const _BrandLogoLink(),
 
                 if (isDesktop) ...[
                   const SizedBox(width: 16),
-                  Container(width: 1, height: 20, color: AppTheme.borderLight),
+                  Container(
+                      width: 1,
+                      height: 20,
+                      color: isDark
+                          ? AppTheme.darkBorder
+                          : AppTheme.borderLight),
                   const SizedBox(width: 16),
                   _DesktopNavLink(
                       label: 'Events',
@@ -378,13 +404,13 @@ class _TopHeader extends ConsumerWidget {
 
                 const Spacer(),
 
-                // Notifications Dropdown
+                // Theme toggle
+                _ThemeToggleButton(),
                 if (user != null) ...[
+                  const SizedBox(width: 8),
                   const _NotificationDropdown(),
                   const SizedBox(width: 10),
                 ],
-
-                // Profile Dropdown
                 if (user != null)
                   _ProfileDropdown(
                     key: TourKeys.profileKey,
@@ -402,11 +428,44 @@ class _TopHeader extends ConsumerWidget {
   }
 }
 
+class _ThemeToggleButton extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final pillBorder = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
+    final iconColor = isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
+    final bgColor = isDark ? AppTheme.darkElevated : AppTheme.backgroundLight;
+
+    return Tooltip(
+      message: isDark ? 'Switch to light mode' : 'Switch to dark mode',
+      child: GestureDetector(
+        onTap: () => ref.read(themeModeProvider.notifier).toggle(),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: bgColor,
+            shape: BoxShape.circle,
+            border: Border.all(color: pillBorder, width: 1.2),
+          ),
+          child: Icon(
+            isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+            size: 17,
+            color: iconColor,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _BrandLogoLink extends StatelessWidget {
   const _BrandLogoLink();
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
@@ -426,10 +485,10 @@ class _BrandLogoLink extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              const Text(
+              Text(
                 'Kivora',
                 style: TextStyle(
-                  color: AppTheme.secondaryNavy,
+                  color: isDark ? AppTheme.darkTextPrimary : AppTheme.secondaryNavy,
                   fontSize: 19,
                   fontWeight: FontWeight.w900,
                   letterSpacing: -0.5,
@@ -469,6 +528,17 @@ class _DesktopNavLinkState extends State<_DesktopNavLink> {
         : (location == widget.route ||
             (widget.route != '/home' &&
                 location.startsWith('${widget.route}/')));
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final activeBg = isDark
+        ? AppTheme.primaryBlue.withValues(alpha: 0.15)
+        : AppTheme.surfaceBlue;
+    final hoverBg = isDark
+        ? AppTheme.primaryBlue.withValues(alpha: 0.08)
+        : AppTheme.surfaceBlue.withValues(alpha: 0.6);
+    final activeColor = AppTheme.primaryBlue;
+    final inactiveColor =
+        isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -480,33 +550,19 @@ class _DesktopNavLinkState extends State<_DesktopNavLink> {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
           curve: Curves.easeOutCubic,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
             color: isActive
-                ? AppTheme.surfaceBlue
-                : (_isHovered
-                    ? AppTheme.surfaceBlue.withValues(alpha: 0.6)
-                    : Colors.transparent),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isActive
-                  ? AppTheme.primaryBlue.withValues(alpha: 0.3)
-                  : (_isHovered
-                      ? AppTheme.primaryBlue.withValues(alpha: 0.2)
-                      : Colors.transparent),
-              width: 1.0,
-            ),
+                ? activeBg
+                : (_isHovered ? hoverBg : Colors.transparent),
+            borderRadius: BorderRadius.circular(14),
           ),
           child: Text(
             widget.label,
             style: TextStyle(
-              color: isActive
-                  ? AppTheme.primaryBlue
-                  : (_isHovered
-                      ? AppTheme.primaryBlue
-                      : AppTheme.secondaryNavy),
+              color: (isActive || _isHovered) ? activeColor : inactiveColor,
               fontWeight:
-                  (isActive || _isHovered) ? FontWeight.bold : FontWeight.w500,
+                  (isActive || _isHovered) ? FontWeight.w600 : FontWeight.w500,
               fontSize: 13,
             ),
           ),
@@ -534,6 +590,12 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
     final reminders = ref.watch(unreadNotificationsProvider).valueOrNull ?? [];
     final unreadCount = items.length + reminders.length;
     final hasUnread = unreadCount > 0;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final iconBg = isDark ? AppTheme.darkElevated : AppTheme.backgroundLight;
+    final iconBorder = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
+    final menuBg = isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite;
+    final menuBorder = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -543,26 +605,26 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
         offset: const Offset(0, 48),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-          side: const BorderSide(color: AppTheme.borderLight),
+          side: BorderSide(color: menuBorder),
         ),
-        color: AppTheme.surfaceWhite,
+        color: menuBg,
         elevation: 6,
         tooltip: 'Notifications',
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
-          width: 38,
-          height: 38,
+          width: 36,
+          height: 36,
           decoration: BoxDecoration(
             color: hasUnread
-                ? AppTheme.surfaceBlue
+                ? AppTheme.primaryBlue.withValues(alpha: 0.15)
                 : (_isHovered
-                    ? AppTheme.surfaceBlue.withValues(alpha: 0.6)
-                    : AppTheme.backgroundLight),
+                    ? AppTheme.primaryBlue.withValues(alpha: 0.08)
+                    : iconBg),
             shape: BoxShape.circle,
             border: Border.all(
               color: (hasUnread || _isHovered)
                   ? AppTheme.primaryBlue.withValues(alpha: 0.4)
-                  : AppTheme.borderLight,
+                  : iconBorder,
               width: 1.2,
             ),
           ),
@@ -574,23 +636,25 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                 hasUnread
                     ? Icons.notifications_active_rounded
                     : Icons.notifications_none_rounded,
-                size: 18,
+                size: 17,
                 color: (hasUnread || _isHovered)
                     ? AppTheme.primaryBlue
-                    : AppTheme.secondaryNavy,
+                    : (isDark
+                        ? AppTheme.darkTextSecondary
+                        : AppTheme.textSecondary),
               ),
               if (hasUnread)
                 Positioned(
-                  top: -3,
-                  right: -3,
+                  top: -2,
+                  right: -2,
                   child: Container(
-                    padding: const EdgeInsets.all(3),
+                    padding: const EdgeInsets.all(2.5),
                     decoration: const BoxDecoration(
                       color: AppTheme.error,
                       shape: BoxShape.circle,
                     ),
                     constraints:
-                        const BoxConstraints(minWidth: 16, minHeight: 16),
+                        const BoxConstraints(minWidth: 15, minHeight: 15),
                     child: Center(
                       child: Text(
                         unreadCount > 9 ? '9+' : unreadCount.toString(),
@@ -624,10 +688,16 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
           }
         },
         itemBuilder: (context) {
-          // Caps at 320 on normal/wide screens but shrinks to fit narrow
-          // Android phones (down to a 200 floor) instead of overflowing.
           final menuWidth =
               (MediaQuery.sizeOf(context).width - 32).clamp(200.0, 320.0);
+          final labelColor =
+              isDark ? AppTheme.darkTextPrimary : AppTheme.secondaryNavy;
+          final subColor =
+              isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
+          final itemBg = isDark
+              ? AppTheme.darkElevated
+              : const Color(0xFFF0F5FF);
+
           return <PopupMenuEntry<String>>[
             PopupMenuItem<String>(
               enabled: false,
@@ -636,12 +706,12 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Notifications',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
-                        color: AppTheme.secondaryNavy,
+                        color: labelColor,
                       ),
                     ),
                     InkWell(
@@ -653,7 +723,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                         }
                       },
                       child: const Text(
-                        'Mark all as read',
+                        'Mark all read',
                         style: TextStyle(
                           fontSize: 12,
                           color: AppTheme.primaryBlue,
@@ -667,15 +737,14 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
             ),
             const PopupMenuDivider(),
             if (items.isEmpty && reminders.isEmpty)
-              const PopupMenuItem<String>(
+              PopupMenuItem<String>(
                 enabled: false,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Center(
                     child: Text(
                       'No new notifications',
-                      style: TextStyle(
-                          color: AppTheme.textSecondary, fontSize: 13),
+                      style: TextStyle(color: subColor, fontSize: 13),
                     ),
                   ),
                 ),
@@ -693,7 +762,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF0F5FF),
+                        color: itemBg,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Row(
@@ -714,20 +783,18 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'You\'re invited to join $orgName',
-                                  style: const TextStyle(
+                                  'Invited to join $orgName',
+                                  style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
-                                    color: AppTheme.secondaryNavy,
+                                    color: labelColor,
                                   ),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   'Role: ${role.toUpperCase()} • Action required',
-                                  style: const TextStyle(
-                                    fontSize: 11,
-                                    color: AppTheme.textSecondary,
-                                  ),
+                                  style:
+                                      TextStyle(fontSize: 11, color: subColor),
                                 ),
                               ],
                             ),
@@ -746,7 +813,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: AppTheme.surfaceBlue.withValues(alpha: 0.5),
+                      color: itemBg,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Row(
@@ -761,19 +828,16 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                             children: [
                               Text(
                                 reminder.title,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13,
-                                  color: AppTheme.secondaryNavy,
+                                  color: labelColor,
                                 ),
                               ),
                               const SizedBox(height: 2),
                               Text(
                                 reminder.message,
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  color: AppTheme.textSecondary,
-                                ),
+                                style: TextStyle(fontSize: 11, color: subColor),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -832,6 +896,14 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
   Widget build(BuildContext context) {
     final sanitizedPhotoUrl =
         FirebaseService.sanitizeStorageUrl(widget.photoUrl);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final pillBg = isDark ? AppTheme.darkElevated : AppTheme.backgroundLight;
+    final pillBorder = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
+    final menuBg = isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite;
+    final menuBorder = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
+    final textColor = isDark ? AppTheme.darkTextPrimary : AppTheme.secondaryNavy;
+    final subColor = isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -841,9 +913,9 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
         offset: const Offset(0, 48),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-          side: const BorderSide(color: AppTheme.borderLight),
+          side: BorderSide(color: menuBorder),
         ),
-        color: AppTheme.surfaceWhite,
+        color: menuBg,
         elevation: 6,
         tooltip: 'Account menu',
         child: AnimatedContainer(
@@ -851,38 +923,20 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
             color: _isHovered
-                ? AppTheme.surfaceBlue.withValues(alpha: 0.6)
-                : AppTheme.backgroundLight,
+                ? AppTheme.primaryBlue.withValues(alpha: 0.08)
+                : pillBg,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: _isHovered
                   ? AppTheme.primaryBlue.withValues(alpha: 0.4)
-                  : AppTheme.borderLight,
+                  : pillBorder,
               width: 1.2,
             ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircleAvatar(
-                radius: 14,
-                backgroundColor: AppTheme.surfaceBlue,
-                backgroundImage: sanitizedPhotoUrl.isNotEmpty
-                    ? NetworkImage(sanitizedPhotoUrl)
-                    : null,
-                child: sanitizedPhotoUrl.isEmpty
-                    ? Text(
-                        widget.displayName.isNotEmpty
-                            ? widget.displayName[0].toUpperCase()
-                            : 'U',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.primaryBlue,
-                        ),
-                      )
-                    : null,
-              ),
+              _avatar(sanitizedPhotoUrl, size: 14),
               const SizedBox(width: 8),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -894,9 +948,8 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: _isHovered
-                          ? AppTheme.primaryBlue
-                          : AppTheme.secondaryNavy,
+                      color:
+                          _isHovered ? AppTheme.primaryBlue : textColor,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -915,9 +968,9 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                           : 'Account user';
                       return Text(
                         roleLabel,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 10,
-                          color: AppTheme.textSecondary,
+                          color: subColor,
                           fontWeight: FontWeight.w500,
                         ),
                       );
@@ -929,8 +982,7 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
               Icon(
                 Icons.keyboard_arrow_down_rounded,
                 size: 14,
-                color:
-                    _isHovered ? AppTheme.primaryBlue : AppTheme.textSecondary,
+                color: _isHovered ? AppTheme.primaryBlue : subColor,
               ),
             ],
           ),
@@ -950,71 +1002,86 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
             context.go('/platform/organizations');
           }
         },
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-          PopupMenuItem<String>(
-            enabled: false,
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: AppTheme.surfaceBlue,
-                  backgroundImage: sanitizedPhotoUrl.isNotEmpty
-                      ? NetworkImage(sanitizedPhotoUrl)
-                      : null,
-                  child: sanitizedPhotoUrl.isEmpty
-                      ? Text(
-                          widget.displayName.isNotEmpty
-                              ? widget.displayName[0].toUpperCase()
-                              : 'U',
-                          style: const TextStyle(
-                              color: AppTheme.primaryBlue,
-                              fontWeight: FontWeight.bold))
-                      : null,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(widget.displayName,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.secondaryNavy,
-                              fontSize: 14)),
-                      Text(widget.email,
-                          style: const TextStyle(
-                              color: AppTheme.textSecondary, fontSize: 12),
-                          overflow: TextOverflow.ellipsis),
-                    ],
+        itemBuilder: (BuildContext context) {
+          final labelColor = isDark ? AppTheme.darkTextPrimary : AppTheme.secondaryNavy;
+          final subLabelColor = isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
+
+          return <PopupMenuEntry<String>>[
+            PopupMenuItem<String>(
+              enabled: false,
+              child: Row(
+                children: [
+                  _avatar(sanitizedPhotoUrl, size: 20),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(widget.displayName,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: labelColor,
+                                fontSize: 14)),
+                        Text(widget.email,
+                            style: TextStyle(
+                                color: subLabelColor, fontSize: 12),
+                            overflow: TextOverflow.ellipsis),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const PopupMenuDivider(),
-          _buildMenuItem(
-              'settings', Icons.settings_outlined, 'Account settings'),
-          _buildMenuItem('help', Icons.help_outline, 'Help & support'),
-          if (ref.watch(platformAdminProvider).valueOrNull == true) ...[
             const PopupMenuDivider(),
-            _buildMenuItem('platform_admin', Icons.admin_panel_settings_outlined,
-                'Platform administration'),
-            _buildMenuItem('platform_organizations', Icons.domain_outlined,
-                'Platform organizations'),
-          ],
-          const PopupMenuDivider(),
-          _buildMenuItem('logout', Icons.logout_rounded, 'Log out',
-              isDestructive: true),
-        ],
+            _buildMenuItem(context, isDark, 'settings',
+                Icons.settings_outlined, 'Account settings'),
+            _buildMenuItem(
+                context, isDark, 'help', Icons.help_outline, 'Help & support'),
+            if (ref.watch(platformAdminProvider).valueOrNull == true) ...[
+              const PopupMenuDivider(),
+              _buildMenuItem(context, isDark, 'platform_admin',
+                  Icons.admin_panel_settings_outlined, 'Platform admin'),
+              _buildMenuItem(context, isDark, 'platform_organizations',
+                  Icons.domain_outlined, 'Organizations'),
+            ],
+            const PopupMenuDivider(),
+            _buildMenuItem(context, isDark, 'logout', Icons.logout_rounded,
+                'Log out',
+                isDestructive: true),
+          ];
+        },
       ),
     );
   }
 
+  Widget _avatar(String photoUrl, {required double size}) {
+    return CircleAvatar(
+      radius: size,
+      backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.15),
+      backgroundImage:
+          photoUrl.isNotEmpty ? NetworkImage(photoUrl) : null,
+      child: photoUrl.isEmpty
+          ? Text(
+              widget.displayName.isNotEmpty
+                  ? widget.displayName[0].toUpperCase()
+                  : 'U',
+              style: TextStyle(
+                fontSize: size * 0.75,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.primaryBlue,
+              ),
+            )
+          : null,
+    );
+  }
+
   PopupMenuItem<String> _buildMenuItem(
-      String value, IconData icon, String label,
+      BuildContext context, bool isDark, String value, IconData icon, String label,
       {bool isDestructive = false}) {
-    final color = isDestructive ? AppTheme.error : AppTheme.secondaryNavy;
+    final color = isDestructive
+        ? AppTheme.error
+        : (isDark ? AppTheme.darkTextPrimary : AppTheme.secondaryNavy);
     return PopupMenuItem<String>(
       value: value,
       height: 40,
@@ -1024,7 +1091,9 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
           const SizedBox(width: 12),
           Text(label,
               style: TextStyle(
-                  color: color, fontSize: 13, fontWeight: FontWeight.w500)),
+                  color: color,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500)),
         ],
       ),
     );

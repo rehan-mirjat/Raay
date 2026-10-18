@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_provider.dart';
 import 'core/router/app_router.dart';
 import 'core/deep_link/deep_link_handler.dart';
 import 'core/presentation/session_lock_screen.dart';
@@ -147,7 +148,8 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
         title: 'Kivora',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
-        themeMode: ThemeMode.light,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.dark,
         home: SplashScreen(
           errorMessage: _initError,
           onRetry: _retryInitialization,
@@ -165,12 +167,14 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
 
     final isLocked = ref.watch(sessionLockProvider);
     final hasSignedInUser = ref.watch(authStateChangesProvider).valueOrNull != null;
+    final themeMode = ref.watch(themeModeProvider);
 
     return MaterialApp.router(
       title: 'Kivora',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.withOrganizationBranding(AppTheme.lightTheme, brandColors),
-      themeMode: ThemeMode.light,
+      darkTheme: AppTheme.withOrganizationBranding(AppTheme.darkTheme, brandColors),
+      themeMode: themeMode,
       routerConfig: goRouter,
       builder: (context, child) {
         // The app was backgrounded/closed past the idle timeout - block all

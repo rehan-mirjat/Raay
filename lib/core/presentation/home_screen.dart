@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../theme/app_theme.dart';
+import '../theme/kivora_colors.dart';
 import '../layout/responsive.dart';
 import '../../../core/widgets/error_view.dart';
 import '../widgets/fade_through.dart';
@@ -113,15 +114,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     .textTheme
                                     .headlineMedium
                                     ?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: AppTheme.secondaryNavy),
+                                        fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 'Manage public and private decision channels for ${orgContext.organization.name}.',
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 15,
-                                    color: AppTheme.textSecondary),
+                                    color: KivoraColors.textSecondaryOf(context)),
                               ),
                             ],
                           ),
@@ -166,14 +166,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       .toList();
 
                                   if (memberEvents.isEmpty) {
+                                    final kc = KivoraColors.of(context);
                                     return Container(
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 64, horizontal: 24),
                                       decoration: BoxDecoration(
-                                        color: AppTheme.surfaceWhite,
+                                        color: kc.surface,
                                         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-                                        border: Border.all(
-                                            color: AppTheme.borderLight),
+                                        border: Border.all(color: kc.border),
                                       ),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
@@ -182,7 +182,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                             padding: const EdgeInsets.all(24),
                                             decoration: BoxDecoration(
                                               color: AppTheme.primaryBlue
-                                                  .withValues(alpha: 0.08),
+                                                  .withValues(alpha: 0.10),
                                               shape: BoxShape.circle,
                                             ),
                                             child: const Icon(
@@ -191,20 +191,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                 color: AppTheme.primaryBlue),
                                           ),
                                           const SizedBox(height: 24),
-                                          const Text(
+                                          Text(
                                             'No Active Elections',
                                             style: TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold,
-                                                color: AppTheme.secondaryNavy),
+                                                color: kc.textPrimary),
                                           ),
                                           const SizedBox(height: 12),
                                           Text(
                                             'There are currently no active or running elections inside the ${orgContext.organization.name}\ncontext. Start a new secure vote to gather member feedback.',
                                             textAlign: TextAlign.center,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                                 fontSize: 15,
-                                                color: AppTheme.textSecondary,
+                                                color: kc.textSecondary,
                                                 height: 1.5),
                                           ),
                                           if (isAdmin) ...[
@@ -281,6 +281,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildRightSidebar(BuildContext context, dynamic orgContext,
       AsyncValue<List<dynamic>> departmentsAsync) {
+    final kc = KivoraColors.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -289,12 +290,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         // Departments Card
         Container(
           decoration: BoxDecoration(
-            color: AppTheme.surfaceWhite,
+            color: kc.surface,
             borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-            border: Border.all(color: AppTheme.borderLight.withValues(alpha: 0.7)),
-            boxShadow: [
+            border: Border.all(color: kc.border),
+            boxShadow: kc.isDark ? [] : [
               BoxShadow(
-                color: AppTheme.secondaryNavy.withValues(alpha: 0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 20,
                 offset: const Offset(0, 6),
               ),
@@ -308,12 +309,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Active Departments',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: AppTheme.secondaryNavy),
+                          color: kc.textPrimary),
                     ),
                     InkWell(
                       onTap: () => context.go('/orgs/departments'),
@@ -326,7 +327,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ],
                 ),
               ),
-              const Divider(height: 1, color: AppTheme.borderLight),
+              Divider(height: 1, color: kc.border),
               departmentsAsync.when(
                   loading: () => const LoadingView(),
                   error: (_, __) => const Padding(
@@ -335,10 +336,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           style: TextStyle(color: AppTheme.error))),
                   data: (depts) {
                     if (depts.isEmpty) {
-                      return const Padding(
-                        padding: EdgeInsets.all(24),
+                      return Padding(
+                        padding: const EdgeInsets.all(24),
                         child: Text('No departments found.',
-                            style: TextStyle(color: AppTheme.textSecondary)),
+                            style: TextStyle(color: kc.textSecondary)),
                       );
                     }
                     return ListView.separated(
@@ -346,18 +347,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: depts.length > 4 ? 4 : depts.length,
                       separatorBuilder: (context, index) =>
-                          const Divider(height: 1, color: AppTheme.borderLight),
+                          Divider(height: 1, color: kc.border),
                       itemBuilder: (context, index) {
                         final dept = depts[index];
                         String badgeText = 'Standard';
-                        Color badgeBg =
-                            AppTheme.primaryBlue.withValues(alpha: 0.1);
+                        Color badgeBg = AppTheme.primaryBlue.withValues(alpha: 0.1);
                         Color badgeColor = AppTheme.primaryBlue;
                         if (index == 0) badgeText = 'Primary';
                         if (index == 2) {
                           badgeText = 'Restricted';
-                          badgeBg = Colors.grey.shade100;
-                          badgeColor = AppTheme.textSecondary;
+                          badgeBg = kc.elevated;
+                          badgeColor = kc.textSecondary;
                         }
 
                         return Padding(
@@ -372,18 +372,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   children: [
                                     Text(
                                       dept.name,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14,
-                                          color: AppTheme.secondaryNavy),
+                                          color: kc.textPrimary),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     const SizedBox(height: 4),
-                                    const Text('View members',
+                                    Text('View members',
                                         style: TextStyle(
                                             fontSize: 12,
-                                            color: AppTheme.textSecondary)),
+                                            color: kc.textSecondary)),
                                   ],
                                 ),
                               ),
@@ -414,12 +414,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: AppTheme.surfaceWhite,
+            color: kc.surface,
             borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-            border: Border.all(color: AppTheme.borderLight.withValues(alpha: 0.7)),
-            boxShadow: [
+            border: Border.all(color: kc.border),
+            boxShadow: kc.isDark ? [] : [
               BoxShadow(
-                color: AppTheme.secondaryNavy.withValues(alpha: 0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 20,
                 offset: const Offset(0, 6),
               ),
@@ -433,26 +433,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                        color: AppTheme.success.withValues(alpha: 0.1),
+                        color: AppTheme.success.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(10)),
                     child: const Icon(Icons.shield_outlined,
                         color: AppTheme.success, size: 20),
                   ),
                   const SizedBox(width: 12),
-                  const Text(
+                  Text(
                     'Secure Voting Sandbox',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        color: AppTheme.secondaryNavy),
+                        color: kc.textPrimary),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'Kivora uses end-to-end homomorphic cryptography. Your individual selection is completely decoupled from your identity receipt.',
                 style: TextStyle(
-                    color: AppTheme.textSecondary, fontSize: 14, height: 1.5),
+                    color: kc.textSecondary, fontSize: 14, height: 1.5),
               ),
             ],
           ),
@@ -495,15 +495,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildMetricCard(String label, String value, Color? statusColor) {
+    final kc = KivoraColors.of(context);
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: kc.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: AppTheme.borderLight.withValues(alpha: 0.7)),
-        boxShadow: [
+        border: Border.all(color: kc.border),
+        boxShadow: kc.isDark ? [] : [
           BoxShadow(
-            color: AppTheme.secondaryNavy.withValues(alpha: 0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 6),
           ),
@@ -515,10 +516,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
-                color: AppTheme.secondaryNavy,
+                color: kc.textPrimary,
                 letterSpacing: 0.5),
           ),
           const SizedBox(height: 12),
@@ -539,7 +540,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: statusColor ?? AppTheme.secondaryNavy),
+                      color: statusColor ?? kc.textPrimary),
                 ),
               ),
             ],
@@ -577,10 +578,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 Expanded(
                   child: Text(
                     event.title,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.secondaryNavy),
+                        color: KivoraColors.textPrimaryOf(context)),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -593,8 +594,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               const SizedBox(height: 10),
               Text(
                 event.description,
-                style: const TextStyle(
-                    color: AppTheme.textSecondary, fontSize: 13, height: 1.4),
+                style: TextStyle(
+                    color: KivoraColors.textSecondaryOf(context),
+                    fontSize: 13,
+                    height: 1.4),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -602,14 +605,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const SizedBox(height: 16),
             Row(
               children: [
-                const Icon(Icons.schedule_rounded,
-                    size: 15, color: AppTheme.textSecondary),
+                Icon(Icons.schedule_rounded,
+                    size: 15,
+                    color: KivoraColors.textSecondaryOf(context)),
                 const SizedBox(width: 6),
                 Text(
                   'Ends: ${dateFormat.format(event.endAt)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 12,
-                      color: AppTheme.textSecondary,
+                      color: KivoraColors.textSecondaryOf(context),
                       fontWeight: FontWeight.w500),
                 ),
               ],
@@ -655,6 +659,7 @@ class _SrsWelcomeOverviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDesktop = ResponsiveLayout.isWide(context);
+    final kc = KivoraColors.of(context);
 
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(
@@ -670,12 +675,12 @@ class _SrsWelcomeOverviewScreen extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(isDesktop ? 48 : 32),
                 decoration: BoxDecoration(
-                  color: AppTheme.surfaceWhite,
+                  color: kc.surface,
                   borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-                  border: Border.all(color: AppTheme.borderLight.withValues(alpha: 0.7)),
-                  boxShadow: [
+                  border: Border.all(color: kc.border),
+                  boxShadow: kc.isDark ? [] : [
                     BoxShadow(
-                      color: AppTheme.secondaryNavy.withValues(alpha: 0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 20,
                       offset: const Offset(0, 6),
                     ),
@@ -685,8 +690,8 @@ class _SrsWelcomeOverviewScreen extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.all(20),
-                      decoration: const BoxDecoration(
-                        color: AppTheme.surfaceBlue,
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(Icons.inventory_2_outlined,
@@ -698,7 +703,6 @@ class _SrsWelcomeOverviewScreen extends StatelessWidget {
                       style:
                           Theme.of(context).textTheme.headlineMedium?.copyWith(
                                 fontWeight: FontWeight.w800,
-                                color: AppTheme.secondaryNavy,
                                 letterSpacing: -0.5,
                               ),
                       textAlign: TextAlign.center,
@@ -713,11 +717,11 @@ class _SrsWelcomeOverviewScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
-                    const Text(
+                    Text(
                       'Select an active organization context from the top bar to view active elections, manage\nmembers, or participate in secure voting.',
                       style: TextStyle(
                           fontSize: 15,
-                          color: AppTheme.textSecondary,
+                          color: kc.textSecondary,
                           height: 1.5),
                       textAlign: TextAlign.center,
                     ),
@@ -737,12 +741,12 @@ class _SrsWelcomeOverviewScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 48),
-              const Text(
+              Text(
                 'PLATFORM CAPABILITIES & VERIFIABILITY',
                 style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
-                    color: AppTheme.textSecondary,
+                    color: kc.textSecondary,
                     letterSpacing: 1.2),
               ),
               const SizedBox(height: 20),
@@ -827,15 +831,16 @@ class _CapabilityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final kc = KivoraColors.of(context);
     return Container(
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: kc.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: AppTheme.borderLight.withValues(alpha: 0.7)),
-        boxShadow: [
+        border: Border.all(color: kc.border),
+        boxShadow: kc.isDark ? [] : [
           BoxShadow(
-            color: AppTheme.secondaryNavy.withValues(alpha: 0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 6),
           ),
@@ -847,7 +852,7 @@ class _CapabilityCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppTheme.surfaceBlue,
+              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: AppTheme.primaryBlue, size: 24),
@@ -855,16 +860,16 @@ class _CapabilityCard extends StatelessWidget {
           const SizedBox(height: 20),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
-                color: AppTheme.secondaryNavy),
+                color: kc.textPrimary),
           ),
           const SizedBox(height: 10),
           Text(
             description,
-            style: const TextStyle(
-                color: AppTheme.textSecondary, fontSize: 13, height: 1.5),
+            style: TextStyle(
+                color: kc.textSecondary, fontSize: 13, height: 1.5),
           ),
         ],
       ),

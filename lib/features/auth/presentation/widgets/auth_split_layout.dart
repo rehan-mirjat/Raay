@@ -15,17 +15,22 @@ class AuthSplitLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDesktop = ResponsiveLayout.isWide(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (!isDesktop) {
       return Scaffold(
-        backgroundColor: AppTheme.backgroundLight,
+        backgroundColor:
+            isDark ? AppTheme.darkBackground : AppTheme.backgroundLight,
         appBar: onMobileBackTap != null
             ? AppBar(
-                backgroundColor: AppTheme.backgroundLight,
+                backgroundColor:
+                    isDark ? AppTheme.darkBackground : AppTheme.backgroundLight,
                 elevation: 0,
                 leading: IconButton(
-                  icon: const Icon(Icons.arrow_back,
-                      color: AppTheme.secondaryNavy),
+                  icon: Icon(Icons.arrow_back,
+                      color: isDark
+                          ? AppTheme.darkTextPrimary
+                          : AppTheme.secondaryNavy),
                   onPressed: onMobileBackTap,
                 ),
               )
@@ -40,7 +45,10 @@ class AuthSplitLayout extends StatelessWidget {
                   child: Text(
                     'Secure voting for organizations',
                     style: TextStyle(
-                        color: AppTheme.textSecondary.withValues(alpha: 0.5),
+                        color: (isDark
+                                ? AppTheme.darkTextSecondary
+                                : AppTheme.textSecondary)
+                            .withValues(alpha: 0.5),
                         fontSize: 10),
                   ),
                 ),
@@ -52,9 +60,11 @@ class AuthSplitLayout extends StatelessWidget {
     }
 
     return Scaffold(
+      backgroundColor:
+          isDark ? AppTheme.darkBackground : AppTheme.backgroundLight,
       body: Row(
         children: [
-          // Left Side - Premium Gradient Branding
+          // Left Side — Dark branding panel (always dark for contrast)
           Expanded(
             flex: 1,
             child: Container(
@@ -63,38 +73,37 @@ class AuthSplitLayout extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Color(
-                        0xFF24324D), // Lighter Slate Navy for high logo visibility
-                    Color(0xFF1E293B), // Slate Navy
-                    Color(0xFF0F172A), // Deep Slate Navy
+                    Color(0xFF1A1040), // Deep violet-navy
+                    Color(0xFF0B1020), // Midnight
+                    Color(0xFF0B1020),
                   ],
                 ),
               ),
               child: Stack(
                 children: [
-                  // Subtle top-left electric blue ambient glow
+                  // Violet glow top-left
                   Positioned(
                     top: -120,
-                    left: -120,
+                    left: -80,
                     child: Container(
-                      width: 380,
-                      height: 380,
+                      width: 420,
+                      height: 420,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppTheme.primaryBlue.withValues(alpha: 0.18),
+                        color: AppTheme.primaryBlue.withValues(alpha: 0.22),
                       ),
                     ),
                   ),
-                  // Subtle bottom-right gold ambient glow matching logo facets
+                  // Blue glow bottom-right
                   Positioned(
-                    bottom: -100,
-                    right: -100,
+                    bottom: -80,
+                    right: -80,
                     child: Container(
-                      width: 360,
-                      height: 360,
+                      width: 300,
+                      height: 300,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: const Color(0xFFC5A059).withValues(alpha: 0.10),
+                        color: AppTheme.secondaryBlue.withValues(alpha: 0.14),
                       ),
                     ),
                   ),
@@ -115,14 +124,14 @@ class AuthSplitLayout extends StatelessWidget {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                            const SizedBox(width: 16),
+                            const SizedBox(width: 14),
                             const Text(
-                              'KIVORA',
+                              'Kivora',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.2,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: -0.5,
                               ),
                             ),
                           ],
@@ -132,19 +141,29 @@ class AuthSplitLayout extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: AppTheme.accentTeal.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(4),
+                            color: AppTheme.accentCyan.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                                color:
+                                    AppTheme.accentCyan.withValues(alpha: 0.3),
+                                width: 1),
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.circle,
-                                  size: 8, color: AppTheme.accentTeal),
-                              SizedBox(width: 8),
-                              Text(
+                              Container(
+                                width: 6,
+                                height: 6,
+                                decoration: const BoxDecoration(
+                                  color: AppTheme.accentCyan,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              const Text(
                                 'PRIVACY-AWARE VOTING',
                                 style: TextStyle(
-                                  color: AppTheme.accentTeal,
+                                  color: AppTheme.accentCyan,
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
                                   letterSpacing: 1.1,
@@ -161,6 +180,16 @@ class AuthSplitLayout extends StatelessWidget {
                             fontSize: 40,
                             fontWeight: FontWeight.bold,
                             height: 1.2,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Secure, transparent and modern\ne-voting for organizations.',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.55),
+                            fontSize: 15,
+                            height: 1.5,
                           ),
                         ),
                         const SizedBox(height: 48),
@@ -170,36 +199,36 @@ class AuthSplitLayout extends StatelessWidget {
                           description:
                               'Ballots are validated and recorded by trusted backend services.',
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 28),
                         _buildFeatureItem(
                           icon: Icons.fingerprint,
                           title: 'Privacy-aware ballots',
                           description:
                               'Anonymous ballots are separated from participation records.',
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 28),
                         _buildFeatureItem(
                           icon: Icons.check_circle_outline,
                           title: 'Clear participation receipts',
                           description:
-                              'Voters can confirm participation without revealing their selection.',
+                              'Confirm participation without revealing your selection.',
                         ),
                         const Spacer(),
-                        const Divider(color: Color(0xFF334155)), // Slate 700
-                        const SizedBox(height: 24),
+                        Divider(color: Colors.white.withValues(alpha: 0.1)),
+                        const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Kivora',
+                              'Kivora © 2026',
                               style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.5),
+                                  color: Colors.white.withValues(alpha: 0.4),
                                   fontSize: 12),
                             ),
                             Text(
-                              'Android • iOS • Web',
+                              'Android • Web',
                               style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.5),
+                                  color: Colors.white.withValues(alpha: 0.4),
                                   fontSize: 12),
                             ),
                           ],
@@ -211,11 +240,11 @@ class AuthSplitLayout extends StatelessWidget {
               ),
             ),
           ),
-          // Right Side - Auth Form
+          // Right Side — Auth Form
           Expanded(
             flex: 1,
             child: Container(
-              color: AppTheme.backgroundLight,
+              color: isDark ? AppTheme.darkBackground : AppTheme.backgroundLight,
               child: child,
             ),
           ),
@@ -232,12 +261,16 @@ class AuthSplitLayout extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.05),
+            color: AppTheme.primaryBlue.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+                color: AppTheme.primaryBlue.withValues(alpha: 0.25), width: 1),
           ),
-          child: Icon(icon, color: Colors.white, size: 24),
+          child: Icon(icon,
+              color: const Color(0xFFAB98FF), // light violet
+              size: 20),
         ),
         const SizedBox(width: 16),
         Expanded(
@@ -248,15 +281,15 @@ class AuthSplitLayout extends StatelessWidget {
                 title,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                   fontSize: 14,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 3),
               Text(
                 description,
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.6),
+                  color: Colors.white.withValues(alpha: 0.55),
                   fontSize: 13,
                   height: 1.4,
                 ),

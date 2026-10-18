@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/fade_through.dart';
 import '../../../core/widgets/loading_view.dart';
@@ -33,7 +34,7 @@ class EventDetailScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: KivoraColors.backgroundOf(context),
       body: SafeArea(
         child: FadeThrough(
           stateKey: stateKey,
@@ -131,15 +132,15 @@ class EventDetailScreen extends ConsumerWidget {
                         style:
                             Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: AppTheme.secondaryNavy,
                                 ),
                       ),
                       if (event.description.isNotEmpty) ...[
                         const SizedBox(height: 6),
                         Text(
                           event.description,
-                          style: const TextStyle(
-                              fontSize: 14, color: AppTheme.textSecondary),
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: KivoraColors.textSecondaryOf(context)),
                         ),
                       ],
                       const SizedBox(height: 24),
@@ -227,7 +228,7 @@ class _VotedCard extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppTheme.success.withValues(alpha: 0.08),
+        color: AppTheme.success.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
         border: Border.all(color: AppTheme.success.withValues(alpha: 0.3)),
       ),
@@ -252,13 +253,13 @@ class _VotedCard extends ConsumerWidget {
                     Text(
                       'You voted in this event',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.secondaryNavy),
+                          fontWeight: FontWeight.bold),
                     ),
-                    const Text(
+                    Text(
                       'Your participation was securely recorded.',
                       style: TextStyle(
-                          fontSize: 13, color: AppTheme.textSecondary),
+                          fontSize: 13,
+                          color: KivoraColors.textSecondaryOf(context)),
                     ),
                   ],
                 ),
@@ -266,11 +267,13 @@ class _VotedCard extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'Each member can vote once, so voting again is not possible. '
             'Keep your receipt as proof that you took part.',
             style: TextStyle(
-                fontSize: 13, color: AppTheme.textSecondary, height: 1.4),
+                fontSize: 13,
+                color: KivoraColors.textSecondaryOf(context),
+                height: 1.4),
           ),
           const SizedBox(height: 16),
           OutlinedButton.icon(
@@ -292,7 +295,7 @@ class _VotedCard extends ConsumerWidget {
             icon: const Icon(Icons.description_outlined, size: 18),
             label: const Text('View your confirmation receipt'),
             style: OutlinedButton.styleFrom(
-              backgroundColor: AppTheme.surfaceWhite,
+              backgroundColor: KivoraColors.surfaceOf(context),
             ),
           ),
         ],
@@ -309,12 +312,13 @@ class _NotVotedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isActive = event.status == VotingEventStatus.active;
+    final kc = KivoraColors.of(context);
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: kc.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: kc.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -353,12 +357,13 @@ class _ResultsReadyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dateFormat = _dateFormat;
+    final kc = KivoraColors.of(context);
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: kc.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: kc.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -368,7 +373,7 @@ class _ResultsReadyCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppTheme.surfaceBlue,
+                  color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(Icons.bar_chart_rounded,
@@ -382,13 +387,12 @@ class _ResultsReadyCard extends StatelessWidget {
                     Text(
                       'Results are ready',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.secondaryNavy),
+                          fontWeight: FontWeight.bold),
                     ),
                     Text(
                       'Voting closed on ${dateFormat.format(event.endAt)}.',
-                      style: const TextStyle(
-                          fontSize: 13, color: AppTheme.textSecondary),
+                      style: TextStyle(
+                          fontSize: 13, color: kc.textSecondary),
                     ),
                   ],
                 ),
@@ -418,18 +422,19 @@ class _EventDetailsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final dateFormat = _dateFormat;
     final timeFormat = _timeFormat;
+    final kc = KivoraColors.of(context);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: kc.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: kc.border),
       ),
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -437,7 +442,7 @@ class _EventDetailsCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.textSecondary,
+                  color: kc.textSecondary,
                   letterSpacing: 1.0,
                 ),
               ),
@@ -445,18 +450,21 @@ class _EventDetailsCard extends StatelessWidget {
           ),
           const Divider(height: 1),
           _detailRow(
+            context: context,
             icon: Icons.how_to_vote_outlined,
             label: 'Voting type',
             value: event.votingType.label,
           ),
           const Divider(height: 1),
           _detailRow(
+            context: context,
             icon: Icons.groups_outlined,
             label: 'Who could vote',
             value: event.eligibilityType.label,
           ),
           const Divider(height: 1),
           _detailRow(
+            context: context,
             icon: Icons.schedule_rounded,
             label: 'Voting opened',
             subvalue: timeFormat.format(event.startAt),
@@ -464,6 +472,7 @@ class _EventDetailsCard extends StatelessWidget {
           ),
           const Divider(height: 1),
           _detailRow(
+            context: context,
             icon: Icons.event_busy_outlined,
             label: 'Voting closed',
             subvalue: timeFormat.format(event.endAt),
@@ -516,11 +525,13 @@ class _EventDetailsCard extends StatelessWidget {
   }
 
   Widget _detailRow({
+    required BuildContext context,
     required IconData icon,
     required String label,
     required String value,
     String? subvalue,
   }) {
+    final kc = KivoraColors.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
@@ -530,7 +541,7 @@ class _EventDetailsCard extends StatelessWidget {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: AppTheme.surfaceBlue,
+              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, size: 17, color: AppTheme.primaryBlue),
@@ -542,15 +553,13 @@ class _EventDetailsCard extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
-                      fontSize: 12.5, color: AppTheme.textSecondary),
+                  style: TextStyle(fontSize: 12.5, color: kc.textSecondary),
                 ),
                 if (subvalue != null) ...[
                   const SizedBox(height: 2),
                   Text(
                     subvalue,
-                    style: const TextStyle(
-                        fontSize: 12, color: AppTheme.textSecondary),
+                    style: TextStyle(fontSize: 12, color: kc.textSecondary),
                   ),
                 ],
               ],
@@ -560,10 +569,10 @@ class _EventDetailsCard extends StatelessWidget {
           Text(
             value,
             textAlign: TextAlign.end,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
-                color: AppTheme.secondaryNavy),
+                color: kc.textPrimary),
           ),
         ],
       ),
