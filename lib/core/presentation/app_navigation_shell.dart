@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,6 +14,10 @@ import '../../features/auth/data/user_repository.dart';
 import '../theme/app_theme.dart';
 import '../theme/theme_provider.dart';
 import '../../features/onboarding/presentation/tour_keys.dart';
+import '../widgets/global_search_overlay.dart';
+
+// Persists sidebar collapsed state across navigations
+final _sidebarCollapsedProvider = StateProvider<bool>((ref) => false);
 
 class AppNavigationShell extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
@@ -35,62 +40,91 @@ class AppNavigationShell extends ConsumerWidget {
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bgColor = isDark ? AppTheme.darkBackground : AppTheme.backgroundLight;
+    final collapsed = ref.watch(_sidebarCollapsedProvider);
 
-    return Scaffold(
-      backgroundColor: bgColor,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            const _TopHeader(),
-            if (!isDesktop) ...[
-              Container(
-                width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite,
-                  border: Border(
-                      bottom: BorderSide(
-                          color: isDark
-                              ? AppTheme.darkBorder
-                              : AppTheme.borderLight,
-                          width: 1)),
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.keyK, meta: true): () =>
+            showGlobalSearch(context),
+        const SingleActivator(LogicalKeyboardKey.keyK, control: true): () =>
+            showGlobalSearch(context),
+      },
+      child: Focus(
+        autofocus: true,
+        child: Scaffold(
+          backgroundColor: bgColor,
+          body: SafeArea(
+            bottom: false,
+            child: Column(
+              children: [
+                const _TopHeader(),
+                if (!isDesktop) ...[
+                  Container(
+                    width: double.infinity,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite,
+                      border: Border(
+                          bottom: BorderSide(
+                              color: isDark
+                                  ? AppTheme.darkBorder
+                                  : AppTheme.borderLight,
+                              width: 1)),
+                    ),
+                    child: Row(
+                      children: [
+                        const Expanded(child: OrganizationContextSwitcher()),
+                        if (isManager) ...[
+                          const SizedBox(width: 8),
+                          _MobileQuickNavButton(
+                            navKey: TourKeys.directoryKey,
+                            icon: Icons.groups_outlined,
+                            tooltip: 'Directory',
+                            route: '/orgs/members',
+                          ),
+                          const SizedBox(width: 6),
+                          _MobileQuickNavButton(
+                            navKey: TourKeys.departmentsKey,
+                            icon: Icons.apartment_outlined,
+                            tooltip: 'Departments',
+                            route: '/orgs/departments',
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+                Expanded(
+                  child: isDesktop
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _DesktopSidebar(
+                              collapsed: collapsed,
+                              isManager: isManager,
+                              canCreateEvent: canCreateEvent,
+                              onToggleCollapse: () => ref
+                                  .read(_sidebarCollapsedProvider.notifier)
+                                  .state = !collapsed,
+                            ),
+                            Expanded(child: navigationShell),
+                          ],
+                        )
+                      : navigationShell,
                 ),
-                child: Row(
-                  children: [
-                    const Expanded(child: OrganizationContextSwitcher()),
-                    if (isManager) ...[
-                      const SizedBox(width: 8),
-                      _MobileQuickNavButton(
-                        navKey: TourKeys.directoryKey,
-                        icon: Icons.groups_outlined,
-                        tooltip: 'Directory',
-                        route: '/orgs/members',
-                      ),
-                      const SizedBox(width: 6),
-                      _MobileQuickNavButton(
-                        navKey: TourKeys.departmentsKey,
-                        icon: Icons.apartment_outlined,
-                        tooltip: 'Departments',
-                        route: '/orgs/departments',
-                      ),
-                    ],
-                  ],
+              ],
+            ),
+          ),
+          bottomNavigationBar: isDesktop || keyboardVisible
+              ? null
+              : _FloatingMobileNavBar(
+                  navigationShell: navigationShell,
+                  showCreateEventButton: canCreateEvent,
+                  onCreateEvent: () => context.go('/admin/events/new'),
                 ),
-              ),
-            ],
-            Expanded(child: navigationShell),
-          ],
         ),
       ),
-      bottomNavigationBar: isDesktop || keyboardVisible
-          ? null
-          : _FloatingMobileNavBar(
-              navigationShell: navigationShell,
-              showCreateEventButton: canCreateEvent,
-              onCreateEvent: () => context.go('/admin/events/new'),
-            ),
     );
   }
 }
@@ -141,6 +175,301 @@ class _MobileQuickNavButton extends StatelessWidget {
     );
   }
 }
+
+// ─── Desktop collapsible sidebar ─────────────────────────────────────────────
+
+class _DesktopSidebar extends StatelessWidget {
+  const _DesktopSidebar({
+    required this.collapsed,
+    required this.isManager,
+    required this.canCreateEvent,
+    required this.onToggleCollapse,
+  });
+  final bool collapsed;
+  final bool isManager;
+  final bool canCreateEvent;
+  final VoidCallback onToggleCollapse;
+
+  static const _expandedWidth = 220.0;
+  static const _collapsedWidth = 64.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sidebarBg = isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite;
+    final borderColor = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
+
+    final items = [
+      _SidebarItem(
+          icon: Icons.home_outlined,
+          iconActive: Icons.home_rounded,
+          label: 'Home',
+          route: '/home'),
+      _SidebarItem(
+          icon: Icons.business_outlined,
+          iconActive: Icons.business_rounded,
+          label: 'Organizations',
+          route: '/orgs'),
+      _SidebarItem(
+          icon: Icons.how_to_vote_outlined,
+          iconActive: Icons.how_to_vote_rounded,
+          label: 'Events',
+          route: '/admin/events'),
+      if (isManager) ...[
+        _SidebarItem(
+            icon: Icons.groups_outlined,
+            iconActive: Icons.groups_rounded,
+            label: 'Directory',
+            route: '/orgs/members',
+            key: TourKeys.directoryKey),
+        _SidebarItem(
+            icon: Icons.apartment_outlined,
+            iconActive: Icons.apartment_rounded,
+            label: 'Departments',
+            route: '/orgs/departments',
+            key: TourKeys.departmentsKey),
+      ],
+      _SidebarItem(
+          icon: Icons.person_outline_rounded,
+          iconActive: Icons.person_rounded,
+          label: 'Profile',
+          route: '/settings'),
+    ];
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 240),
+      curve: Curves.easeOutCubic,
+      width: collapsed ? _collapsedWidth : _expandedWidth,
+      decoration: BoxDecoration(
+        color: sidebarBg,
+        border: Border(right: BorderSide(color: borderColor, width: 1)),
+      ),
+      child: Column(
+        children: [
+          // Org switcher (only when expanded)
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 180),
+            child: collapsed
+                ? const SizedBox(height: 12)
+                : Padding(
+                    key: const ValueKey('switcher'),
+                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+                    child: const OrganizationContextSwitcher(),
+                  ),
+          ),
+
+          // Nav items
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.symmetric(
+                  horizontal: collapsed ? 8 : 10, vertical: 4),
+              children: items
+                  .map((item) => _SidebarTile(item: item, collapsed: collapsed))
+                  .toList(),
+            ),
+          ),
+
+          // Create event button
+          if (canCreateEvent)
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: collapsed ? 10 : 12, vertical: 8),
+              child: Tooltip(
+                message: 'Create voting event',
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 240),
+                  curve: Curves.easeOutCubic,
+                  child: InkWell(
+                    onTap: () => context.go('/admin/events/new'),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      height: 42,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF9D7BFF), AppTheme.primaryBlue],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppTheme.primaryBlue.withValues(alpha: 0.35),
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: collapsed
+                            ? MainAxisAlignment.center
+                            : MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.add_rounded,
+                              color: Colors.white, size: 20),
+                          if (!collapsed) ...[
+                            const SizedBox(width: 6),
+                            const Text(
+                              'Create Event',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+          // Collapse toggle
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
+            child: Tooltip(
+              message: collapsed ? 'Expand sidebar' : 'Collapse sidebar',
+              child: InkWell(
+                onTap: onToggleCollapse,
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  height: 36,
+                  alignment: Alignment.center,
+                  child: AnimatedRotation(
+                    turns: collapsed ? 0 : 0.5,
+                    duration: const Duration(milliseconds: 240),
+                    curve: Curves.easeOutCubic,
+                    child: Icon(
+                      Icons.chevron_right_rounded,
+                      size: 20,
+                      color: isDark
+                          ? AppTheme.darkTextSecondary
+                          : AppTheme.textSecondary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SidebarItem {
+  const _SidebarItem({
+    required this.icon,
+    required this.iconActive,
+    required this.label,
+    required this.route,
+    this.key,
+  });
+  final IconData icon;
+  final IconData iconActive;
+  final String label;
+  final String route;
+  final Key? key;
+}
+
+class _SidebarTile extends StatefulWidget {
+  const _SidebarTile({required this.item, required this.collapsed});
+  final _SidebarItem item;
+  final bool collapsed;
+
+  @override
+  State<_SidebarTile> createState() => _SidebarTileState();
+}
+
+class _SidebarTileState extends State<_SidebarTile> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final location = GoRouterState.of(context).matchedLocation;
+    final isActive = widget.item.route == '/orgs'
+        ? (location == '/orgs' || location.startsWith('/orgs/'))
+        : (location == widget.item.route ||
+            (widget.item.route != '/home' &&
+                location.startsWith('${widget.item.route}/')));
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final activeColor = AppTheme.primaryBlue;
+    final inactiveColor =
+        isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
+    final activeBg = isDark
+        ? AppTheme.primaryBlue.withValues(alpha: 0.15)
+        : AppTheme.primaryBlue.withValues(alpha: 0.09);
+    final hoverBg = isDark
+        ? AppTheme.primaryBlue.withValues(alpha: 0.07)
+        : AppTheme.primaryBlue.withValues(alpha: 0.05);
+
+    final color = isActive ? activeColor : (_hovered ? activeColor : inactiveColor);
+
+    return MouseRegion(
+      key: widget.item.key,
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: () => context.go(widget.item.route),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 160),
+          curve: Curves.easeOutCubic,
+          margin: const EdgeInsets.symmetric(vertical: 2),
+          padding: EdgeInsets.symmetric(
+              horizontal: widget.collapsed ? 0 : 10, vertical: 10),
+          decoration: BoxDecoration(
+            color: isActive
+                ? activeBg
+                : (_hovered ? hoverBg : Colors.transparent),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            mainAxisAlignment: widget.collapsed
+                ? MainAxisAlignment.center
+                : MainAxisAlignment.start,
+            children: [
+              Icon(
+                isActive ? widget.item.iconActive : widget.item.icon,
+                size: 20,
+                color: color,
+              ),
+              if (!widget.collapsed) ...[
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    widget.item.label,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight:
+                          isActive ? FontWeight.w700 : FontWeight.w500,
+                      color: color,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (isActive)
+                  Container(
+                    width: 4,
+                    height: 4,
+                    decoration: const BoxDecoration(
+                      color: AppTheme.primaryBlue,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _FloatingMobileNavBar extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -329,12 +658,6 @@ class _TopHeader extends ConsumerWidget {
     final photoUrlToUse = appUserAsync?.valueOrNull?.photoUrl ?? user?.photoURL;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final activeOrgContext =
-        ref.watch(activeOrganizationContextProvider).valueOrNull?.context;
-    final isManager = activeOrgContext != null &&
-        (activeOrgContext.member.role == OrganizationRole.owner ||
-            activeOrgContext.member.role == OrganizationRole.admin);
-
     final headerBg = isDark ? AppTheme.darkBackground : AppTheme.backgroundLight;
     final pillBg = isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite;
     final pillBorder = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
@@ -370,39 +693,11 @@ class _TopHeader extends ConsumerWidget {
               children: [
                 const _BrandLogoLink(),
 
-                if (isDesktop) ...[
-                  const SizedBox(width: 16),
-                  Container(
-                      width: 1,
-                      height: 20,
-                      color: isDark
-                          ? AppTheme.darkBorder
-                          : AppTheme.borderLight),
-                  const SizedBox(width: 16),
-                  _DesktopNavLink(
-                      label: 'Events',
-                      route: '/admin/events',
-                      navKey: TourKeys.eventsKey),
-                  const SizedBox(width: 4),
-                  _DesktopNavLink(
-                      label: 'Organization',
-                      route: '/orgs',
-                      navKey: TourKeys.organizationKey),
-                  if (isManager) ...[
-                    const SizedBox(width: 4),
-                    _DesktopNavLink(
-                        label: 'Directory',
-                        route: '/orgs/members',
-                        navKey: TourKeys.directoryKey),
-                    const SizedBox(width: 4),
-                    _DesktopNavLink(
-                        label: 'Departments',
-                        route: '/orgs/departments',
-                        navKey: TourKeys.departmentsKey),
-                  ],
-                ],
-
                 const Spacer(),
+
+                // Global search button
+                _SearchButton(),
+                const SizedBox(width: 8),
 
                 // Theme toggle
                 _ThemeToggleButton(),
@@ -460,6 +755,79 @@ class _ThemeToggleButton extends ConsumerWidget {
   }
 }
 
+class _SearchButton extends StatefulWidget {
+  @override
+  State<_SearchButton> createState() => _SearchButtonState();
+}
+
+class _SearchButtonState extends State<_SearchButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDesktop = ResponsiveLayout.isWide(context);
+    final border = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
+    final bg = isDark ? AppTheme.darkElevated : AppTheme.backgroundLight;
+    final textColor = isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: () => showGlobalSearch(context),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          height: 36,
+          padding: EdgeInsets.symmetric(
+              horizontal: isDesktop ? 12 : 10, vertical: 0),
+          decoration: BoxDecoration(
+            color: _hovered
+                ? AppTheme.primaryBlue.withValues(alpha: 0.08)
+                : bg,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: _hovered
+                  ? AppTheme.primaryBlue.withValues(alpha: 0.4)
+                  : border,
+              width: 1.2,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.search_rounded, size: 16, color: textColor),
+              if (isDesktop) ...[
+                const SizedBox(width: 6),
+                Text('Search',
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: textColor,
+                        fontWeight: FontWeight.w500)),
+                const SizedBox(width: 8),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: border,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text('⌘K',
+                      style: TextStyle(
+                          fontSize: 10,
+                          color: textColor,
+                          fontWeight: FontWeight.w600)),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _BrandLogoLink extends StatelessWidget {
   const _BrandLogoLink();
 
@@ -502,75 +870,6 @@ class _BrandLogoLink extends StatelessWidget {
   }
 }
 
-class _DesktopNavLink extends StatefulWidget {
-  final String label;
-  final String route;
-  final Key? navKey;
-
-  const _DesktopNavLink({
-    required this.label,
-    required this.route,
-    this.navKey,
-  });
-
-  @override
-  State<_DesktopNavLink> createState() => _DesktopNavLinkState();
-}
-
-class _DesktopNavLinkState extends State<_DesktopNavLink> {
-  bool _isHovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final location = GoRouterState.of(context).matchedLocation;
-    final isActive = widget.route == '/orgs'
-        ? (location == '/orgs' || location == '/orgs/dashboard')
-        : (location == widget.route ||
-            (widget.route != '/home' &&
-                location.startsWith('${widget.route}/')));
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    final activeBg = isDark
-        ? AppTheme.primaryBlue.withValues(alpha: 0.15)
-        : AppTheme.surfaceBlue;
-    final hoverBg = isDark
-        ? AppTheme.primaryBlue.withValues(alpha: 0.08)
-        : AppTheme.surfaceBlue.withValues(alpha: 0.6);
-    final activeColor = AppTheme.primaryBlue;
-    final inactiveColor =
-        isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
-
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        key: widget.navKey,
-        onTap: () => context.go(widget.route),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          curve: Curves.easeOutCubic,
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          decoration: BoxDecoration(
-            color: isActive
-                ? activeBg
-                : (_isHovered ? hoverBg : Colors.transparent),
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Text(
-            widget.label,
-            style: TextStyle(
-              color: (isActive || _isHovered) ? activeColor : inactiveColor,
-              fontWeight:
-                  (isActive || _isHovered) ? FontWeight.w600 : FontWeight.w500,
-              fontSize: 13,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class _NotificationDropdown extends ConsumerStatefulWidget {
   const _NotificationDropdown();
