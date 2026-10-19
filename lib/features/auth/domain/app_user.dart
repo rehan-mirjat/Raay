@@ -15,6 +15,11 @@ class AppUser {
     required this.emailVerified,
     required this.createdAt,
     required this.status,
+    this.notificationPreferences = const {
+      'voteReminders': true,
+      'invitationAlerts': true,
+      'eventUpdates': true,
+    },
   });
 
   final String userId;
@@ -27,6 +32,10 @@ class AppUser {
   final bool emailVerified;
   final DateTime createdAt;
   final String status;
+
+  /// Defaults to all-true for users who signed up before this preference
+  /// existed, so opting out is always an explicit action.
+  final Map<String, bool> notificationPreferences;
 
   factory AppUser.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
     final data = doc.data()!;
@@ -41,6 +50,11 @@ class AppUser {
       emailVerified: data['emailVerified'] as bool? ?? false,
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       status: data['status'] as String? ?? 'active',
+      notificationPreferences: {
+        'voteReminders': data['notificationPreferences']?['voteReminders'] as bool? ?? true,
+        'invitationAlerts': data['notificationPreferences']?['invitationAlerts'] as bool? ?? true,
+        'eventUpdates': data['notificationPreferences']?['eventUpdates'] as bool? ?? true,
+      },
     );
   }
 

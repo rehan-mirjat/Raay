@@ -1,7 +1,56 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
-import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { getFirestore, FieldValue, Firestore, DocumentData } from "firebase-admin/firestore";
+import * as logger from "firebase-functions/logger";
 import { requireActiveMembership, requireNotRevoked } from "../utils/authorization";
-import { calculateEventResults } from "../results/tally";
+import { calculateEventResults, getEligibleMembers } from "../results/tally";
+import { filterOptedIn } from "../utils/notificationPreferences";
+
+const NOTIFICATIONS_BATCH_SIZE = 400; // headroom under Firestore's 500-write batch limit
+
+/**
+ * Best-effort "results published" notification to eligible members who
+ * haven't opted out (eventUpdates preference). Failures here are logged and
+ * swallowed - results are already published and committed by this point, so
+ * a notification-delivery problem must never surface as a publish failure.
+ */
+async function notifyResultsPublished(
+  db: Firestore,
+  organizationId: string,
+  eventId: string,
+  event: DocumentData
+): Promise<void> {
+  try {
+    const eligibleMembers = await getEligibleMembers(db, organizationId, event);
+    if (eligibleMembers.length === 0) return;
+
+    const optedInUserIds = new Set(
+      await filterOptedIn(db, eligibleMembers.map((m) => m.userId), "eventUpdates")
+    );
+    const recipients = eligibleMembers.filter((m) => optedInUserIds.has(m.userId));
+    if (recipients.length === 0) return;
+
+    const eventTitle = (event.title as string)?.trim() || "a voting event";
+    for (let i = 0; i < recipients.length; i += NOTIFICATIONS_BATCH_SIZE) {
+      const slice = recipients.slice(i, i + NOTIFICATIONS_BATCH_SIZE);
+      const batch = db.batch();
+      for (const member of slice) {
+        batch.set(db.collection("notifications").doc(), {
+          userId: member.userId,
+          organizationId,
+          type: "RESULTS_PUBLISHED",
+          title: "Results are in",
+          message: `Results for "${eventTitle}" have been published.`,
+          votingEventId: eventId,
+          createdAt: FieldValue.serverTimestamp(),
+          read: false,
+        });
+      }
+      await batch.commit();
+    }
+  } catch (error) {
+    logger.error(`notifyResultsPublished failed for event ${eventId}`, error);
+  }
+}
 
 export const publishResults = onCall(async (request) => {
   const uid = request.auth?.uid;
@@ -36,6 +85,9 @@ export const publishResults = onCall(async (request) => {
       metadata: { totalVotes: results.totalVotes },
       timestamp: FieldValue.serverTimestamp(),
     });
+
+    await notifyResultsPublished(db, organizationId, eventId, eventSnap.data()!);
+
     return { status: "success", eventId, published: true };
   } catch (error) {
     if (error instanceof HttpsError) throw error;

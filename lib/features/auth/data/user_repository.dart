@@ -1,8 +1,10 @@
 import 'dart:typed_data';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/utils/error_utils.dart';
 import '../../../services/firebase_service.dart';
 import '../domain/app_user.dart';
 
@@ -17,30 +19,42 @@ class UserRepository {
         .map((doc) => doc.exists ? AppUser.fromFirestore(doc) : null);
   }
 
+  /// Firestore rules only allow the client to write [photoUrl] directly on
+  /// users/{uid} - firstName/lastName/phoneNumber need server-side sanitizing
+  /// (control/bidi-spoofing stripping) that rules can't express, so this goes
+  /// through the updateUserProfile Cloud Function instead of a direct write.
   Future<void> updateProfile({
     required String uid,
     required String firstName,
     required String lastName,
     String? phoneNumber,
   }) async {
-    final trimmedFirst = firstName.trim();
-    final trimmedLast = lastName.trim();
-    final displayName = '$trimmedFirst $trimmedLast';
-
-    final data = <String, dynamic>{
-      'firstName': trimmedFirst,
-      'lastName': trimmedLast,
-      'displayName': displayName,
-    };
-    
-    if (phoneNumber != null) {
-      data['phoneNumber'] = phoneNumber.trim();
+    try {
+      await _firebase.functions.httpsCallable('updateUserProfile').call({
+        'firstName': firstName.trim(),
+        'lastName': lastName.trim(),
+        'phoneNumber': phoneNumber?.trim(),
+      });
+    } on FirebaseFunctionsException catch (e) {
+      throw Exception(mapFirebaseFunctionsError(e));
+    } catch (_) {
+      throw Exception('Unable to update profile. Please try again.');
     }
+  }
 
-    await _firebase.firestore
-        .collection(AppConstants.usersCollection)
-        .doc(uid)
-        .update(data);
+  /// Updates the caller's notification preferences via the same callable.
+  Future<void> updateNotificationPreferences({
+    required Map<String, bool> preferences,
+  }) async {
+    try {
+      await _firebase.functions.httpsCallable('updateUserProfile').call({
+        'notificationPreferences': preferences,
+      });
+    } on FirebaseFunctionsException catch (e) {
+      throw Exception(mapFirebaseFunctionsError(e));
+    } catch (_) {
+      throw Exception('Unable to update notification preferences. Please try again.');
+    }
   }
 
   Future<String> uploadProfilePhoto({

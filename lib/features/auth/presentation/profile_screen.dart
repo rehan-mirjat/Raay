@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,13 +6,17 @@ import 'package:intl/intl.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/kivora_icons.dart';
+import '../../../core/theme/theme_provider.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
-import '../../../core/widgets/reauth_dialog.dart';
 import '../../../core/widgets/totp_enroll_dialog.dart';
+import '../../../core/widgets/ui_kit/kivora_button.dart';
+import '../../../core/widgets/ui_kit/kivora_card.dart';
+import '../../../core/widgets/ui_kit/kivora_text_field.dart';
 import '../../../services/auth_service.dart';
-import '../../../services/firebase_service.dart'; // Needed for sanitizeStorageUrl
+import '../../../services/firebase_service.dart';
 import '../data/user_repository.dart';
 import '../domain/app_user.dart';
 import 'widgets/change_password_section.dart';
@@ -31,21 +34,20 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  late int _selectedIndex;
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
-  final _phoneNumberController = TextEditingController();
+  final _phoneController = TextEditingController();
 
-  late int _selectedIndex;
-  bool _isEditing = false;
   bool _isSaving = false;
-  bool _isUploadingPhoto = false;
-  bool _initialized = false;
-  bool _isMfaBusy = false;
   String? _error;
   String? _successMessage;
+
+  bool _isUploadingPhoto = false;
   String? _uploadedPhotoUrl;
-  Future<List<MultiFactorInfo>>? _mfaFactorsFuture;
+  bool _isSavingPrefs = false;
+  bool _isLinkingAccount = false;
 
   @override
   void initState() {
@@ -54,159 +56,62 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   @override
-  void didUpdateWidget(covariant ProfileScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.initialTab != widget.initialTab) {
-      _selectedIndex = widget.initialTab;
-    }
-  }
-
-  @override
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
-    _phoneNumberController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
-  Future<void> _enableTwoFactor() async {
-    setState(() => _isMfaBusy = true);
-    final messenger = ScaffoldMessenger.of(context);
-    final enabled = await showTotpEnrollDialog(context, ref);
-    if (!mounted) return;
-    setState(() {
-      _isMfaBusy = false;
-      if (enabled) _mfaFactorsFuture = null;
-    });
-    if (enabled) {
-      messenger.showSnackBar(const SnackBar(
-          content: Text('Two-factor authentication is now enabled.')));
-    }
-  }
-
-  Future<void> _disableTwoFactor(MultiFactorInfo factor) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Turn off two-factor authentication?'),
-        content: const Text(
-            'Your account will no longer require a code from your authenticator app to sign in.'),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel')),
-          FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: AppTheme.error),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Turn off'),
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true || !mounted) return;
-
-    final messenger = ScaffoldMessenger.of(context);
-    setState(() => _isMfaBusy = true);
-    try {
-      final authUser = ref.read(authServiceProvider).currentUser;
-      if (authUser == null) return;
-      try {
-        await authUser.multiFactor.unenroll(multiFactorInfo: factor);
-      } on FirebaseAuthException catch (e) {
-        if (e.code != 'requires-recent-login') rethrow;
-        if (!mounted) return;
-        final reauthed = await showReauthDialog(
-          context,
-          ref,
-          reason:
-              'Turning off two-factor authentication requires you to have signed '
-              'in recently. Please verify your identity to continue.',
-        );
-        if (!reauthed) return;
-        await authUser.multiFactor.unenroll(multiFactorInfo: factor);
-      }
-      if (mounted) {
-        setState(() => _mfaFactorsFuture = null);
-        messenger.showSnackBar(const SnackBar(
-            content: Text('Two-factor authentication is now disabled.')));
-      }
-    } catch (_) {
-      messenger.showSnackBar(const SnackBar(
-          content: Text('Could not disable two-factor authentication.')));
-    } finally {
-      if (mounted) setState(() => _isMfaBusy = false);
-    }
-  }
-
   void _populateControllers(AppUser user) {
-    if (!_initialized && !_isEditing) {
+    if (_firstNameController.text.isEmpty && user.firstName.isNotEmpty) {
       _firstNameController.text = user.firstName;
+    }
+    if (_lastNameController.text.isEmpty && user.lastName.isNotEmpty) {
       _lastNameController.text = user.lastName;
-      _phoneNumberController.text = user.phoneNumber ?? '';
-      _initialized = true;
+    }
+    if (_phoneController.text.isEmpty && user.phoneNumber != null) {
+      _phoneController.text = user.phoneNumber!;
     }
   }
 
   Future<void> _pickAndUploadImage() async {
-    setState(() {
-      _isUploadingPhoto = true;
-      _error = null;
-    });
-
     try {
       final picker = ImagePicker();
-      final file = await picker.pickImage(
+      final XFile? image = await picker.pickImage(
         source: ImageSource.gallery,
-        maxWidth: 1024,
-        imageQuality: 85,
+        maxWidth: 512,
+        maxHeight: 512,
+        imageQuality: 80,
       );
 
-      if (file != null) {
-        final extension = _imageExtension(file.mimeType, file.name);
-        if (extension == null) {
-          throw Exception('Choose a JPEG, PNG, or WebP image.');
-        }
-        final bytes = await file.readAsBytes();
-        final photoUrl =
-            await ref.read(userRepositoryProvider).uploadProfilePhoto(
-                  uid: widget.uid,
-                  imageBytes: bytes,
-                  fileExtension: extension,
-                );
-        ref.invalidate(userProfileProvider(widget.uid));
-        if (mounted) {
-          setState(() {
-            _uploadedPhotoUrl = photoUrl;
-            _successMessage = 'Profile photo updated!';
-          });
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _error =
-              'Failed to upload image: ${e.toString().replaceAll('Exception: ', '')}';
-        });
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isUploadingPhoto = false);
-      }
-    }
-  }
+      if (image == null) return;
 
-  String? _imageExtension(String? mimeType, String name) {
-    final mime = mimeType?.toLowerCase();
-    final lowerName = name.toLowerCase();
-    if (mime == 'image/jpeg' ||
-        mime == 'image/jpg' ||
-        lowerName.endsWith('.jpg') ||
-        lowerName.endsWith('.jpeg')) {
-      return 'jpg';
+      setState(() => _isUploadingPhoto = true);
+
+      final bytes = await image.readAsBytes();
+      final url = await ref.read(userRepositoryProvider).uploadProfilePhoto(
+            uid: widget.uid,
+            imageBytes: bytes,
+            fileExtension: image.name.split(".").last,
+          );
+
+      setState(() {
+        _uploadedPhotoUrl = url;
+        _isUploadingPhoto = false;
+        _successMessage = 'Profile photo updated successfully.';
+        _error = null;
+      });
+
+      Future.delayed(const Duration(seconds: 3), () {
+        if (mounted) setState(() => _successMessage = null);
+      });
+    } catch (e) {
+      setState(() {
+        _error = 'Failed to upload photo: $e';
+        _isUploadingPhoto = false;
+      });
     }
-    if (mime == 'image/png' || lowerName.endsWith('.png')) return 'png';
-    if (mime == 'image/webp' || lowerName.endsWith('.webp')) return 'webp';
-    return null;
   }
 
   Future<void> _saveProfile() async {
@@ -221,89 +126,35 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     try {
       await ref.read(userRepositoryProvider).updateProfile(
             uid: widget.uid,
-            firstName: _firstNameController.text,
-            lastName: _lastNameController.text,
-            phoneNumber: _phoneNumberController.text,
+            firstName: _firstNameController.text.trim(),
+            lastName: _lastNameController.text.trim(),
+            phoneNumber: _phoneController.text.trim().isEmpty
+                ? null
+                : _phoneController.text.trim(),
           );
 
-      if (mounted) {
-        setState(() {
-          _isEditing = false;
-          _isSaving = false;
-          _successMessage = 'Profile updated successfully!';
-        });
-      }
+      setState(() {
+        _successMessage = 'Profile updated successfully.';
+      });
+      Future.delayed(const Duration(seconds: 3), () {
+        if (mounted) setState(() => _successMessage = null);
+      });
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _error = 'Failed to update profile: ${e.toString()}';
-          _isSaving = false;
-        });
-      }
-    }
-  }
-
-  void _confirmDeleteAccount(BuildContext context) async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Row(
-          children: [
-            Icon(Icons.warning_amber_rounded, color: AppTheme.error),
-            SizedBox(width: 8),
-            Text('Delete Account?'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Are you sure you want to permanently delete your account?',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'This action cannot be undone. Your user profile will be permanently deleted and you will lose access to all associated organizations.',
-              style: TextStyle(
-                  fontSize: 13,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  height: 1.4),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete Permanently'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirm == true && mounted) {
-      try {
-        await ref.read(authServiceProvider).deleteAccount();
-      } catch (e) {
-        if (mounted) {
-          setState(() {
-            _error = 'Failed to delete account: $e';
-          });
-        }
-      }
+      setState(() {
+        _error = e.toString().replaceAll('Exception: ', '');
+      });
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final userAsync = ref.watch(userProfileProvider(widget.uid));
+    final kc = KivoraColors.of(context);
 
     return Scaffold(
+      backgroundColor: kc.background,
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Center(
@@ -316,6 +167,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   'Account Settings',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
+                        color: kc.textPrimary,
                       ),
                 ),
                 const SizedBox(height: 20),
@@ -349,9 +201,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           ),
                           const SizedBox(width: 32),
                           Expanded(
-                            child: _selectedIndex == 0
-                                ? _buildProfileView(context, user)
-                                : _buildSecurityView(context, user),
+                            child: _buildSelectedView(context, user),
                           ),
                         ],
                       );
@@ -362,9 +212,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       children: [
                         _buildMobileTabs(context),
                         const SizedBox(height: 24),
-                        _selectedIndex == 0
-                            ? _buildProfileView(context, user)
-                            : _buildSecurityView(context, user),
+                        _buildSelectedView(context, user),
                       ],
                     );
                   },
@@ -377,23 +225,38 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
+  Widget _buildSelectedView(BuildContext context, AppUser user) {
+    return switch (_selectedIndex) {
+      0 => _buildProfileView(context, user),
+      1 => _buildSecurityView(context, user),
+      2 => _buildNotificationsView(context, user),
+      3 => _buildPreferencesView(context),
+      4 => _buildConnectedAccountsView(context),
+      _ => _buildProfileView(context, user),
+    };
+  }
+
+  static const _tabs = [
+    (icon: KivoraIcons.user, title: 'Profile', shortTitle: 'Profile'),
+    (icon: KivoraIcons.lock, title: 'Security & Settings', shortTitle: 'Security'),
+    (icon: KivoraIcons.bell, title: 'Notifications', shortTitle: 'Alerts'),
+    (icon: KivoraIcons.settings, title: 'Preferences', shortTitle: 'Prefs'),
+    (icon: KivoraIcons.link, title: 'Connected Accounts', shortTitle: 'Accounts'),
+  ];
+
   Widget _buildSidebar(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _buildSidebarItem(
-          icon: Icons.person_outline_rounded,
-          title: 'Profile',
-          isSelected: _selectedIndex == 0,
-          onTap: () => setState(() => _selectedIndex = 0),
-        ),
-        const SizedBox(height: 8),
-        _buildSidebarItem(
-          icon: Icons.security_outlined,
-          title: 'Security & Settings',
-          isSelected: _selectedIndex == 1,
-          onTap: () => setState(() => _selectedIndex = 1),
-        ),
+        for (var i = 0; i < _tabs.length; i++) ...[
+          if (i > 0) const SizedBox(height: 8),
+          _buildSidebarItem(
+            icon: _tabs[i].icon,
+            title: _tabs[i].title,
+            isSelected: _selectedIndex == i,
+            onTap: () => setState(() => _selectedIndex = i),
+          ),
+        ],
       ],
     );
   }
@@ -441,24 +304,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: kc.border),
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: _buildMobileTabItem(
-              title: 'Profile',
-              isSelected: _selectedIndex == 0,
-              onTap: () => setState(() => _selectedIndex = 0),
-            ),
-          ),
-          Container(width: 1, height: 24, color: kc.border),
-          Expanded(
-            child: _buildMobileTabItem(
-              title: 'Security',
-              isSelected: _selectedIndex == 1,
-              onTap: () => setState(() => _selectedIndex = 1),
-            ),
-          ),
-        ],
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Row(
+          children: [
+            for (var i = 0; i < _tabs.length; i++)
+              _buildMobileTabItem(
+                title: _tabs[i].shortTitle,
+                isSelected: _selectedIndex == i,
+                onTap: () => setState(() => _selectedIndex = i),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -468,16 +326,26 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
+    final color = isSelected ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context);
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: isSelected ? AppTheme.primaryBlue : Colors.transparent,
+              width: 2,
+            ),
+          ),
+        ),
         child: Text(
           title,
+          textAlign: TextAlign.center,
           style: TextStyle(
-            color: isSelected ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context),
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            color: color,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+            fontSize: 14,
           ),
         ),
       ),
@@ -487,154 +355,151 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget _buildProfileView(BuildContext context, AppUser user) {
     final authUser = ref.watch(authServiceProvider).currentUser;
     final photoUrl = _uploadedPhotoUrl ?? user.photoUrl ?? authUser?.photoURL;
-    // Live Auth state, not the Firestore `emailVerified` field - that field is only
-    // ever written once at registration and never updated again, so it goes stale
-    // the moment a user actually verifies their email after signing up.
     final isEmailVerified = authUser?.emailVerified ?? false;
     final dateFormat = DateFormat('MMMM d, yyyy');
 
     final sanitizedPhotoUrl = FirebaseService.sanitizeStorageUrl(photoUrl);
+    final kc = KivoraColors.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // Profile Avatar Header Card
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Row(
-              children: [
-                Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 38,
-                      backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.15),
-                      backgroundImage: sanitizedPhotoUrl.isNotEmpty
-                          ? NetworkImage(sanitizedPhotoUrl)
-                          : null,
-                      child: sanitizedPhotoUrl.isEmpty
-                          ? Text(
-                              user.firstName.isNotEmpty
-                                  ? user.firstName[0].toUpperCase()
-                                  : 'U',
-                              style: const TextStyle(
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
-                                color: AppTheme.primaryBlue,
-                              ),
-                            )
-                          : null,
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: InkWell(
-                        onTap: _isUploadingPhoto ? null : _pickAndUploadImage,
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: const BoxDecoration(
-                            color: AppTheme.primaryBlue,
-                            shape: BoxShape.circle,
-                          ),
-                          child: _isUploadingPhoto
-                              ? const SizedBox(
-                                  width: 14,
-                                  height: 14,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Icon(
-                                  Icons.camera_alt,
-                                  size: 14,
+        KivoraCard(
+          padding: const EdgeInsets.all(24),
+          child: Row(
+            children: [
+              Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 38,
+                    backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.15),
+                    backgroundImage: sanitizedPhotoUrl.isNotEmpty
+                        ? NetworkImage(sanitizedPhotoUrl)
+                        : null,
+                    child: sanitizedPhotoUrl.isEmpty
+                        ? Text(
+                            user.firstName.isNotEmpty
+                                ? user.firstName[0].toUpperCase()
+                                : 'U',
+                            style: const TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.primaryBlue,
+                            ),
+                          )
+                        : null,
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: InkWell(
+                      onTap: _isUploadingPhoto ? null : _pickAndUploadImage,
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: const BoxDecoration(
+                          color: AppTheme.primaryBlue,
+                          shape: BoxShape.circle,
+                        ),
+                        child: _isUploadingPhoto
+                            ? const SizedBox(
+                                width: 14,
+                                height: 14,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
                                   color: Colors.white,
                                 ),
+                              )
+                            : const Icon(
+                                Icons.camera_alt,
+                                size: 14,
+                                color: Colors.white,
+                              ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 18),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      user.displayName,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: kc.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      user.email,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: kc.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: isEmailVerified
+                                ? AppTheme.success.withValues(alpha: 0.12)
+                                : AppTheme.warning.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            isEmailVerified ? 'VERIFIED' : 'UNVERIFIED',
+                            style: TextStyle(
+                              color: isEmailVerified
+                                  ? AppTheme.success
+                                  : AppTheme.warning,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                            ),
+                          ),
                         ),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: user.status == 'active'
+                                ? AppTheme.primaryBlue.withValues(alpha: 0.12)
+                                : AppTheme.warning.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            user.status.toUpperCase(),
+                            style: TextStyle(
+                              color: user.status == 'active'
+                                  ? AppTheme.primaryBlue
+                                  : AppTheme.warning,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Member since ${dateFormat.format(user.createdAt)}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: kc.textSecondary,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(width: 18),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user.displayName,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        user.email,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: KivoraColors.textSecondaryOf(context),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: isEmailVerified
-                                  ? AppTheme.success.withValues(alpha: 0.12)
-                                  : AppTheme.warning.withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              isEmailVerified ? 'VERIFIED' : 'UNVERIFIED',
-                              style: TextStyle(
-                                color: isEmailVerified
-                                    ? AppTheme.success
-                                    : AppTheme.warning,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: user.status == 'active'
-                                  ? AppTheme.primaryBlue.withValues(alpha: 0.12)
-                                  : AppTheme.warning.withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              user.status.toUpperCase(),
-                              style: TextStyle(
-                                color: user.status == 'active'
-                                    ? AppTheme.primaryBlue
-                                    : AppTheme.warning,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        'Member since ${dateFormat.format(user.createdAt)}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: KivoraColors.textSecondaryOf(context),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 16),
@@ -650,7 +515,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.check_circle_outline_rounded,
+                const Icon(KivoraIcons.checkCircle,
                     color: AppTheme.success, size: 20),
                 const SizedBox(width: 10),
                 Expanded(
@@ -679,13 +544,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.error_outline_rounded,
+                const Icon(KivoraIcons.alertCircle,
                     color: AppTheme.error, size: 20),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     _error!,
-                    style: const TextStyle(color: AppTheme.error, fontSize: 13),
+                    style: const TextStyle(
+                      color: AppTheme.error,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
                   ),
                 ),
               ],
@@ -694,196 +563,84 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           const SizedBox(height: 16),
         ],
 
-        // Personal Information Card
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Personal Information',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: KivoraColors.textPrimaryOf(context),
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              'Manage your basic profile information.',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: KivoraColors.textSecondaryOf(context),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (!_isEditing)
-                        OutlinedButton.icon(
-                          icon: const Icon(Icons.edit_outlined, size: 16),
-                          label: const Text('Edit'),
-                          style: OutlinedButton.styleFrom(
-                            minimumSize: const Size(0, 36),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 14, vertical: 8),
+        KivoraCard(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Personal Information',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: kc.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final isSmall = constraints.maxWidth < 400;
+                    if (isSmall) {
+                      return Column(
+                        children: [
+                          KivoraTextField(
+                            label: 'First Name',
+                            controller: _firstNameController,
+                            validator: (v) =>
+                                Validators.required(v, 'First name'),
                           ),
-                          onPressed: () => setState(() => _isEditing = true),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('FIRST NAME',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 11,
-                                    color: KivoraColors.textPrimaryOf(context),
-                                    letterSpacing: 0.5)),
-                            const SizedBox(height: 6),
-                            _isEditing
-                                ? TextFormField(
-                                    controller: _firstNameController,
-                                    decoration: const InputDecoration(
-                                        hintText: 'First Name'),
-                                    validator: (v) =>
-                                        Validators.required(v, 'First Name'),
-                                  )
-                                : Text(user.firstName,
-                                    style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500)),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('LAST NAME',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 11,
-                                    color: KivoraColors.textPrimaryOf(context),
-                                    letterSpacing: 0.5)),
-                            const SizedBox(height: 6),
-                            _isEditing
-                                ? TextFormField(
-                                    controller: _lastNameController,
-                                    decoration: const InputDecoration(
-                                        hintText: 'Last Name'),
-                                    validator: (v) =>
-                                        Validators.required(v, 'Last Name'),
-                                  )
-                                : Text(user.lastName,
-                                    style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('EMAIL ADDRESS',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 11,
-                              color: KivoraColors.textPrimaryOf(context),
-                              letterSpacing: 0.5)),
-                      const SizedBox(height: 6),
-                      Text(user.email,
-                          style: TextStyle(
-                              fontSize: 15, color: KivoraColors.textSecondaryOf(context))),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('PHONE NUMBER',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 11,
-                              color: KivoraColors.textPrimaryOf(context),
-                              letterSpacing: 0.5)),
-                      const SizedBox(height: 6),
-                      _isEditing
-                          ? TextFormField(
-                              controller: _phoneNumberController,
-                              decoration: const InputDecoration(
-                                  hintText: '+1 (555) 000-0000'),
-                              keyboardType: TextInputType.phone,
-                            )
-                          : Text(
-                              user.phoneNumber?.isNotEmpty == true
-                                  ? user.phoneNumber!
-                                  : 'Not provided',
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: user.phoneNumber?.isNotEmpty == true
-                                      ? KivoraColors.textPrimaryOf(context)
-                                      : KivoraColors.textSecondaryOf(context),
-                                  fontWeight: FontWeight.w500)),
-                    ],
-                  ),
-                  if (_isEditing) ...[
-                    const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                          const SizedBox(height: 16),
+                          KivoraTextField(
+                            label: 'Last Name',
+                            controller: _lastNameController,
+                            validator: (v) =>
+                                Validators.required(v, 'Last name'),
+                          ),
+                        ],
+                      );
+                    }
+                    return Row(
                       children: [
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _isEditing = false;
-                              _firstNameController.text = user.firstName;
-                              _lastNameController.text = user.lastName;
-                              _phoneNumberController.text =
-                                  user.phoneNumber ?? '';
-                            });
-                          },
-                          child: const Text('Cancel'),
-                        ),
-                        const SizedBox(width: 12),
-                        ElevatedButton(
-                          onPressed: _isSaving ? null : _saveProfile,
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(0, 40),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
+                        Expanded(
+                          child: KivoraTextField(
+                            label: 'First Name',
+                            controller: _firstNameController,
+                            validator: (v) =>
+                                Validators.required(v, 'First name'),
                           ),
-                          child: _isSaving
-                              ? const SizedBox(
-                                  height: 16,
-                                  width: 16,
-                                  child: CircularProgressIndicator(
-                                      color: Colors.white, strokeWidth: 2))
-                              : const Text('Save Changes'),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: KivoraTextField(
+                            label: 'Last Name',
+                            controller: _lastNameController,
+                            validator: (v) =>
+                                Validators.required(v, 'Last name'),
+                          ),
                         ),
                       ],
-                    ),
-                  ],
-                ],
-              ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+                KivoraTextField(
+                  label: 'Phone Number (Optional)',
+                  controller: _phoneController,
+                  hint: '+1 234 567 8900',
+                  keyboardType: TextInputType.phone,
+                ),
+                const SizedBox(height: 32),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: KivoraButton(
+                    onPressed: _isSaving ? null : _saveProfile,
+                    isLoading: _isSaving,
+                    label: 'Save Changes',
+                    isExpanded: false,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -892,230 +649,481 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Widget _buildSecurityView(BuildContext context, AppUser user) {
-    final authUser = ref.watch(authServiceProvider).currentUser;
-    final hasPasswordProvider =
-        authUser?.providerData.any((info) => info.providerId == 'password') ??
-            false;
-    final hasGoogleProvider =
-        authUser?.providerData.any((info) => info.providerId == 'google.com') ??
-            false;
+    final kc = KivoraColors.of(context);
+    final isGoogleAuth = ref
+        .watch(authServiceProvider)
+        .currentUser
+        ?.providerData
+        .any((info) => info.providerId == 'google.com');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: AppTheme.primaryBlue.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: AppTheme.primaryBlue.withValues(alpha: 0.2),
-              width: 1.2,
+        if (isGoogleAuth == true) ...[
+          KivoraCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Authentication Method',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: kc.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Your account is connected to Google. Password changes are managed through your Google account.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: kc.textSecondary,
+                  ),
+                ),
+              ],
             ),
           ),
+          const SizedBox(height: 16),
+        ] else ...[
+          const ChangePasswordSection(),
+          const SizedBox(height: 16),
+        ],
+        KivoraCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  const Icon(Icons.shield_outlined,
-                      color: AppTheme.primaryBlue, size: 20),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Account Security',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: KivoraColors.textPrimaryOf(context),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
               Text(
-                'Your Kivora account controls access to your organizations and voting administration features.',
+                'Two-Factor Authentication',
                 style: TextStyle(
-                  fontSize: 13,
-                  height: 1.45,
-                  color: KivoraColors.textPrimaryOf(context),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: kc.textPrimary,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 16),
               Text(
-                'Voting choices and cryptographic ballot receipts are NOT displayed or editable from your profile to maintain absolute secrecy.',
+                'Protect your account by requiring an additional authentication step.',
                 style: TextStyle(
-                  fontSize: 13,
-                  height: 1.45,
-                  color: KivoraColors.textSecondaryOf(context),
+                  fontSize: 14,
+                  color: kc.textSecondary,
                 ),
+              ),
+              const SizedBox(height: 24),
+              KivoraButton(
+                type: KivoraButtonType.secondary,
+                icon: KivoraIcons.shieldCheck,
+                label: 'Setup Authenticator App',
+                onPressed: () {
+                  showTotpEnrollDialog(context, ref);
+                },
+                isExpanded: false,
               ),
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 24),
+        KivoraButton(
+          type: KivoraButtonType.destructive,
+          label: 'Sign Out',
+          icon: KivoraIcons.logIn,
+          onPressed: () async {
+            await ref.read(authServiceProvider).signOut();
+            if (widget.onSignOut != null) widget.onSignOut!();
+          },
+        ),
+      ],
+    );
+  }
 
-        // Security Section
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
+  Widget _buildPreferencesView(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    final currentMode = ref.watch(themeModeProvider);
+
+    Widget modeOption(ThemeMode mode, IconData icon, String label) {
+      final isSelected = currentMode == mode;
+      return Expanded(
+        child: InkWell(
+          onTap: () => ref.read(themeModeProvider.notifier).setMode(mode),
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? AppTheme.primaryBlue.withValues(alpha: 0.1)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isSelected ? AppTheme.primaryBlue : kc.border,
+                width: isSelected ? 1.5 : 1,
+              ),
+            ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Security',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: KivoraColors.textPrimaryOf(context),
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                Text('AUTHENTICATION METHOD',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 11,
-                        color: KivoraColors.textPrimaryOf(context),
-                        letterSpacing: 0.5)),
-                const SizedBox(height: 6),
-                Text(
-                  hasGoogleProvider && hasPasswordProvider
-                      ? 'Email/Password + Google'
-                      : hasGoogleProvider
-                          ? 'Google Sign-In'
-                          : 'Email & Password',
-                  style: const TextStyle(fontSize: 15),
-                ),
-
-                const SizedBox(height: 20),
-
-                // Password Management
-                Text('PASSWORD',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 11,
-                        color: KivoraColors.textPrimaryOf(context),
-                        letterSpacing: 0.5)),
+                Icon(icon,
+                    size: 22,
+                    color: isSelected ? AppTheme.primaryBlue : kc.textSecondary),
                 const SizedBox(height: 8),
-                if (hasPasswordProvider)
-                  const ChangePasswordSection()
-                else
-                  Text('Managed securely through Google Sign-In.',
-                      style: TextStyle(
-                          color: KivoraColors.textSecondaryOf(context), fontSize: 13)),
-
-                const SizedBox(height: 24),
-                const Divider(height: 1),
-                const SizedBox(height: 24),
-
-                // Two-Factor Authentication
-                Text('TWO-FACTOR AUTHENTICATION (2FA)',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 11,
-                        color: KivoraColors.textPrimaryOf(context),
-                        letterSpacing: 0.5)),
-                const SizedBox(height: 12),
-                if (authUser != null && hasPasswordProvider)
-                  FutureBuilder<List<MultiFactorInfo>>(
-                    future: _mfaFactorsFuture ??=
-                        authUser.multiFactor.getEnrolledFactors(),
-                    builder: (context, snapshot) {
-                      final factors = snapshot.data ?? const [];
-                      final is2FAEnabled = factors.isNotEmpty;
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  is2FAEnabled ? 'Enabled' : 'Disabled',
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                      color: is2FAEnabled
-                                          ? AppTheme.success
-                                          : KivoraColors.textSecondaryOf(context)),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Require a code from an authenticator app when signing in.',
-                                  style: TextStyle(
-                                      color: KivoraColors.textSecondaryOf(context),
-                                      fontSize: 13),
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting || _isMfaBusy)
-                            const SizedBox(
-                              width: 32,
-                              height: 32,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          else
-                            Switch(
-                              value: is2FAEnabled,
-                              onChanged: (value) => value
-                                  ? _enableTwoFactor()
-                                  : _disableTwoFactor(factors.first),
-                            ),
-                        ],
-                      );
-                    },
-                  )
-                else
-                  Text(
-                    hasPasswordProvider
-                        ? 'Sign in required to manage two-factor authentication.'
-                        : 'Two-factor authentication is available for accounts signed in with a password.',
-                    style: TextStyle(
-                        color: KivoraColors.textSecondaryOf(context), fontSize: 13),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                    color: isSelected ? AppTheme.primaryBlue : kc.textPrimary,
                   ),
+                ),
               ],
             ),
           ),
         ),
-        const SizedBox(height: 16),
+      );
+    }
 
-        // Danger Zone
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Danger Zone',
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        KivoraCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Appearance',
                   style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.error),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Permanently delete your user account and profile data.',
-                  style: TextStyle(
-                      fontSize: 13, color: KivoraColors.textSecondaryOf(context), height: 1.4),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.delete_forever_rounded, size: 16),
-                  label: const Text('Delete Account'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.error,
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size(0, 38),
-                  ),
-                  onPressed: () => _confirmDeleteAccount(context),
-                ),
-              ],
+                      color: kc.textPrimary)),
+              const SizedBox(height: 6),
+              Text('Choose how Kivora looks on this device.',
+                  style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  modeOption(ThemeMode.light, Icons.light_mode_outlined, 'Light'),
+                  const SizedBox(width: 12),
+                  modeOption(ThemeMode.dark, Icons.dark_mode_outlined, 'Dark'),
+                  const SizedBox(width: 12),
+                  modeOption(
+                      ThemeMode.system, Icons.brightness_auto_outlined, 'System'),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _updateNotificationPreference(
+      Map<String, bool> current, String key, bool value) async {
+    final updated = {...current, key: value};
+    setState(() => _isSavingPrefs = true);
+    try {
+      await ref
+          .read(userRepositoryProvider)
+          .updateNotificationPreferences(preferences: updated);
+    } catch (e) {
+      if (mounted) {
+        setState(() => _error = e.toString().replaceAll('Exception: ', ''));
+      }
+    } finally {
+      if (mounted) setState(() => _isSavingPrefs = false);
+    }
+  }
+
+  Widget _buildNotificationsView(BuildContext context, AppUser user) {
+    final kc = KivoraColors.of(context);
+    final prefs = user.notificationPreferences;
+
+    Widget toggle(String key, String title, String subtitle) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: kc.textPrimary)),
+                  const SizedBox(height: 2),
+                  Text(subtitle,
+                      style: TextStyle(fontSize: 12, color: kc.textSecondary)),
+                ],
+              ),
             ),
+            Switch(
+              value: prefs[key] ?? true,
+              activeThumbColor: AppTheme.primaryBlue,
+              onChanged: _isSavingPrefs
+                  ? null
+                  : (value) => _updateNotificationPreference(prefs, key, value),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (_error != null) ...[
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: AppTheme.error.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppTheme.error.withValues(alpha: 0.3)),
+            ),
+            child: Text(_error!,
+                style: const TextStyle(
+                    color: AppTheme.error,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13)),
+          ),
+          const SizedBox(height: 16),
+        ],
+        KivoraCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Notifications',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: kc.textPrimary)),
+              const SizedBox(height: 6),
+              Text(
+                  'Choose which notifications you want to receive. These apply to the notification bell and reminder emails.',
+                  style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+              const SizedBox(height: 12),
+              Divider(color: kc.border),
+              toggle('voteReminders', 'Vote reminders',
+                  'Get notified when an active election is about to close and you haven\'t voted.'),
+              Divider(color: kc.border, height: 1),
+              toggle('eventUpdates', 'Results published',
+                  'Get notified when results are published for an election you were eligible to vote in.'),
+              Divider(color: kc.border, height: 1),
+              toggle('invitationAlerts', 'Organization invitations',
+                  'Show pending organization invitations in the notification bell.'),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildConnectedAccountsView(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    final authUser = ref.watch(authServiceProvider).currentUser;
+    final providers = authUser?.providerData.map((p) => p.providerId).toSet() ?? {};
+    final hasPassword = providers.contains('password');
+    final hasGoogle = providers.contains('google.com');
+    final canUnlink = providers.length > 1;
+
+    Future<void> linkGoogle() async {
+      setState(() => _isLinkingAccount = true);
+      try {
+        await ref.read(authServiceProvider).linkGoogleAccount();
+        if (mounted) {
+          setState(() => _successMessage = 'Google account connected.');
+          Future.delayed(const Duration(seconds: 3), () {
+            if (mounted) setState(() => _successMessage = null);
+          });
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() => _error = e.toString().replaceAll('Exception: ', ''));
+        }
+      } finally {
+        if (mounted) setState(() => _isLinkingAccount = false);
+      }
+    }
+
+    Future<void> unlink(String providerId, String label) async {
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('Disconnect $label?'),
+          content: Text(
+              'You will no longer be able to sign in to Kivora using $label.'),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('Cancel')),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text('Disconnect',
+                  style: const TextStyle(color: AppTheme.error)),
+            ),
+          ],
+        ),
+      );
+      if (confirm != true) return;
+
+      setState(() => _isLinkingAccount = true);
+      try {
+        await ref.read(authServiceProvider).unlinkProvider(providerId);
+        if (mounted) {
+          setState(() => _successMessage = '$label disconnected.');
+          Future.delayed(const Duration(seconds: 3), () {
+            if (mounted) setState(() => _successMessage = null);
+          });
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() => _error = e.toString().replaceAll('Exception: ', ''));
+        }
+      } finally {
+        if (mounted) setState(() => _isLinkingAccount = false);
+      }
+    }
+
+    Widget accountRow({
+      required IconData icon,
+      required String title,
+      required String subtitle,
+      required bool isConnected,
+      VoidCallback? onConnect,
+      VoidCallback? onDisconnect,
+    }) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: AppTheme.primaryBlue.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: AppTheme.primaryBlue, size: 20),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: kc.textPrimary)),
+                  const SizedBox(height: 2),
+                  Text(subtitle,
+                      style: TextStyle(fontSize: 12, color: kc.textSecondary)),
+                ],
+              ),
+            ),
+            if (isConnected)
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppTheme.success.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text('CONNECTED',
+                    style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.success)),
+              )
+            else if (onConnect != null)
+              KivoraButton(
+                type: KivoraButtonType.secondary,
+                label: 'Connect',
+                isExpanded: false,
+                isLoading: _isLinkingAccount,
+                onPressed: _isLinkingAccount ? null : onConnect,
+              ),
+            if (isConnected && onDisconnect != null) ...[
+              const SizedBox(width: 8),
+              TextButton(
+                onPressed: _isLinkingAccount ? null : onDisconnect,
+                child: const Text('Disconnect',
+                    style: TextStyle(color: AppTheme.error)),
+              ),
+            ],
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (_successMessage != null) ...[
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: AppTheme.success.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10),
+              border:
+                  Border.all(color: AppTheme.success.withValues(alpha: 0.3)),
+            ),
+            child: Text(_successMessage!,
+                style: const TextStyle(
+                    color: AppTheme.success,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13)),
+          ),
+          const SizedBox(height: 16),
+        ],
+        if (_error != null) ...[
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: AppTheme.error.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppTheme.error.withValues(alpha: 0.3)),
+            ),
+            child: Text(_error!,
+                style: const TextStyle(
+                    color: AppTheme.error,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13)),
+          ),
+          const SizedBox(height: 16),
+        ],
+        KivoraCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Connected Accounts',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: kc.textPrimary)),
+              const SizedBox(height: 6),
+              Text(
+                  'Sign-in methods linked to your Kivora account. You must keep at least one connected.',
+                  style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+              const SizedBox(height: 8),
+              Divider(color: kc.border),
+              accountRow(
+                icon: KivoraIcons.mail,
+                title: 'Email & Password',
+                subtitle: authUser?.email ?? '',
+                isConnected: hasPassword,
+                onDisconnect: hasPassword && canUnlink
+                    ? () => unlink('password', 'Email & Password')
+                    : null,
+              ),
+              Divider(color: kc.border, height: 1),
+              accountRow(
+                icon: KivoraIcons.google,
+                title: 'Google',
+                subtitle: hasGoogle
+                    ? authUser?.email ?? ''
+                    : 'Sign in with your Google account.',
+                isConnected: hasGoogle,
+                onConnect: hasGoogle ? null : linkGoogle,
+                onDisconnect:
+                    hasGoogle && canUnlink ? () => unlink('google.com', 'Google') : null,
+              ),
+            ],
           ),
         ),
       ],

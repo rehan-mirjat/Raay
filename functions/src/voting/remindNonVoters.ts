@@ -3,6 +3,7 @@ import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { requireActiveMembership, requireNotRevoked } from "../utils/authorization";
 import { requireAuth, requireId, ADMIN_ROLES, CALLABLE_OPTIONS, enforceRateLimit } from "../voting_events/votingCommon";
 import { getEligibleMembers } from "../results/tally";
+import { filterOptedIn } from "../utils/notificationPreferences";
 
 const NOTIFICATIONS_BATCH_SIZE = 400; // headroom under Firestore's 500-write batch limit
 
@@ -56,10 +57,15 @@ export const remindNonVoters = onCall(CALLABLE_OPTIONS, async (request) => {
     return { status: "success", remindedCount: 0 };
   }
 
+  const optedInUserIds = new Set(
+    await filterOptedIn(db, nonVoters.map((m) => m.userId), "voteReminders")
+  );
+  const recipients = nonVoters.filter((m) => optedInUserIds.has(m.userId));
+
   const eventTitle = (event.title as string)?.trim() || "a voting event";
   let remindedCount = 0;
-  for (let i = 0; i < nonVoters.length; i += NOTIFICATIONS_BATCH_SIZE) {
-    const slice = nonVoters.slice(i, i + NOTIFICATIONS_BATCH_SIZE);
+  for (let i = 0; i < recipients.length; i += NOTIFICATIONS_BATCH_SIZE) {
+    const slice = recipients.slice(i, i + NOTIFICATIONS_BATCH_SIZE);
     const batch = db.batch();
     for (const member of slice) {
       batch.set(db.collection("notifications").doc(), {

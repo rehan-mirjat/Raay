@@ -21,6 +21,7 @@ export const ping = onCall((request) => {
 export * from "./auth/completeRegistration";
 export * from "./auth/onUserDeleted";
 export * from "./auth/deleteAccount";
+export * from "./auth/updateUserProfile";
 export * from "./organizations/createOrganization";
 export * from "./organizations/updateOrganization";
 export * from "./organizations/deleteOrganization";

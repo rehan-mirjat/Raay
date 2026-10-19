@@ -128,6 +128,70 @@ class AuthService {
     return userCredential;
   }
 
+  /// Links the Google provider to the already-signed-in account, for the
+  /// "Connected Accounts" settings tab. Unlike [signInWithGoogle], this never
+  /// starts a new session - it attaches a second sign-in method to the
+  /// current one, so a user who registered with email/password gains the
+  /// option to also sign in with Google without losing their account.
+  Future<void> linkGoogleAccount() async {
+    final user = currentUser;
+    if (user == null) throw Exception('You must be signed in to link an account.');
+
+    try {
+      if (kIsWeb) {
+        final provider = GoogleAuthProvider()
+          ..addScope('email')
+          ..setCustomParameters({'prompt': 'select_account'});
+        await user.linkWithPopup(provider);
+      } else {
+        final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+        if (googleUser == null) return; // Cancelled by user
+
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        await user.linkWithCredential(credential);
+      }
+      await user.reload();
+    } on PlatformException catch (e) {
+      if (e.code == 'sign_in_canceled') return;
+      throw Exception('Could not link your Google account. Please try again.');
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'popup-closed-by-user':
+        case 'cancelled-popup-request':
+        case 'web-context-canceled':
+          return;
+        case 'credential-already-in-use':
+          throw Exception('This Google account is already linked to a different Kivora account.');
+        case 'provider-already-linked':
+          throw Exception('Your account is already linked to Google.');
+        default:
+          throw Exception('Could not link your Google account. Please try again.');
+      }
+    }
+  }
+
+  /// Unlinks a sign-in provider from the current account. Firebase does NOT
+  /// refuse to remove the last remaining provider - doing so would strand
+  /// the user with no way to sign back in - so the caller (the Connected
+  /// Accounts UI) must only offer this action while 2+ providers are linked.
+  Future<void> unlinkProvider(String providerId) async {
+    final user = currentUser;
+    if (user == null) throw Exception('You must be signed in to do this.');
+
+    try {
+      await user.unlink(providerId);
+      await user.reload();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'no-such-provider') return;
+      throw Exception('Could not disconnect this account. Please try again.');
+    }
+  }
+
   /// Creates the Firestore profile (via backend function) on first Google login.
   Future<void> _ensureUserProfile(User user) async {
     final userDoc = await _firebase.firestore.collection('users').doc(user.uid).get();

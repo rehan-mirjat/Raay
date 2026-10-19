@@ -32,4 +32,8 @@ class KivoraIcons {
   static const IconData search = Icons.search_rounded;
   static const IconData checkCircle = Icons.check_circle_outline_rounded;
   static const IconData alertCircle = Icons.error_outline_rounded;
+  static const IconData bell = Icons.notifications_outlined;
+  static const IconData link = Icons.link_rounded;
+  static const IconData unlink = Icons.link_off_rounded;
+  static const IconData google = Icons.g_mobiledata_rounded;
 }

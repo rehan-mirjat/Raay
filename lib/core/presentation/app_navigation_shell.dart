@@ -897,8 +897,14 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
 
   @override
   Widget build(BuildContext context) {
+    final uid = ref.watch(authServiceProvider).currentUser?.uid;
+    final invitationAlertsEnabled = uid == null
+        ? true
+        : (ref.watch(userProfileProvider(uid)).valueOrNull
+                ?.notificationPreferences['invitationAlerts'] ??
+            true);
     final invitationsAsync = ref.watch(memberInvitationsProvider);
-    final items = invitationsAsync.valueOrNull ?? [];
+    final items = invitationAlertsEnabled ? (invitationsAsync.valueOrNull ?? []) : const [];
     final reminders = ref.watch(unreadNotificationsProvider).valueOrNull ?? [];
     final unreadCount = items.length + reminders.length;
     final hasUnread = unreadCount > 0;
