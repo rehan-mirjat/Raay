@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
@@ -78,6 +79,27 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1.2,
                         ),
+                  ),
+                  const SizedBox(height: 16),
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: QrImageView(
+                        data: 'KIVORA-JOIN:${result.rawCode}',
+                        version: QrVersions.auto,
+                        size: 160,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Or scan this with Kivora\'s "Scan to Join" on another device.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
               ),

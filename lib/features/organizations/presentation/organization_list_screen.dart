@@ -72,6 +72,14 @@ class OrganizationListScreen extends ConsumerWidget {
                                   onPressed: () => context.go('/orgs/create'),
                                 ),
                                 const SizedBox(width: 8),
+                                Tooltip(
+                                  message: 'Scan to Join',
+                                  child: IconButton.outlined(
+                                    icon: const Icon(KivoraIcons.qrCode),
+                                    onPressed: () => context.go('/orgs/join/scan'),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
                                 KivoraButton(
                                   icon: KivoraIcons.logIn,
                                   label: 'Join',

@@ -22,6 +22,7 @@ import '../../features/organizations/presentation/membership_directory_screen.da
 import '../../features/departments/presentation/department_members_screen.dart';
 import '../../features/departments/presentation/departments_screen.dart';
 import '../../features/organizations/presentation/join_organization_screen.dart';
+import '../../features/organizations/presentation/scan_join_code_screen.dart';
 import '../../features/organizations/presentation/invitation_inbox_screen.dart';
 import '../../features/organizations/presentation/accept_invitation_link_screen.dart';
 import '../../features/organizations/presentation/joining_codes_screen.dart';
@@ -323,7 +324,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'join',
-                    builder: (context, state) => const JoinOrganizationScreen(),
+                    builder: (context, state) {
+                      final extra = state.extra as Map<String, dynamic>?;
+                      return JoinOrganizationScreen(
+                        initialCode: extra?['initialCode'] as String?,
+                      );
+                    },
+                    routes: [
+                      GoRoute(
+                        path: 'scan',
+                        builder: (context, state) => const ScanJoinCodeScreen(),
+                      ),
+                    ],
                   ),
                   GoRoute(
                     path: 'invitations',

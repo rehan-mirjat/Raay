@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/kivora_icons.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/inline_error_banner.dart';
 import '../data/organization_repository.dart';
@@ -14,10 +15,15 @@ class JoinOrganizationScreen extends ConsumerStatefulWidget {
     super.key,
     this.onJoined,
     this.onCancelTap,
+    this.initialCode,
   });
 
   final Function(String organizationId, String organizationName)? onJoined;
   final VoidCallback? onCancelTap;
+
+  /// Pre-fills the code field and auto-submits, for arrival from the
+  /// "Scan to Join" QR flow.
+  final String? initialCode;
 
   @override
   ConsumerState<JoinOrganizationScreen> createState() => _JoinOrganizationScreenState();
@@ -50,6 +56,12 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
     _codeController.addListener(() {
       setState(() {});
     });
+    if (widget.initialCode != null && widget.initialCode!.isNotEmpty) {
+      _codeController.text = widget.initialCode!.toUpperCase();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _findOrganization();
+      });
+    }
   }
 
   @override
@@ -269,13 +281,20 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
             'Paste the complete code exactly as it was shared with you.',
             style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 12),
+          TextButton.icon(
+            onPressed: () => context.go('/orgs/join/scan'),
+            icon: Icon(KivoraIcons.qrCode, size: 18),
+            label: const Text('Scan QR code instead'),
+            style: TextButton.styleFrom(padding: EdgeInsets.zero),
+          ),
+          SizedBox(height: 8),
 
           // Info Callout Box
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: const Color(0xFFF0F5FF),
+              color: AppTheme.primaryBlue.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
