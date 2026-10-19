@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:go_router/go_router.dart';
 import 'package:kivora/core/theme/kivora_icons.dart';
 
 import '../../../core/theme/app_theme.dart';
@@ -97,7 +94,7 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        'Enter your SHA-256 cryptographic receipt hash below to confirm your ballot was permanently recorded in the ledger. For your privacy, this tool does not reveal your identity or your vote choice.',
+                        'Enter your SHA-256 receipt hash below to confirm it was received by the server. This tool verifies existence only, maintaining absolute ballot secrecy.',
                         style: TextStyle(fontSize: 14, color: kc.textSecondary, height: 1.5),
                       ),
                       const SizedBox(height: 32),
@@ -132,17 +129,10 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'This ballot is permanently recorded in the ledger.',
+                            'A matching receipt was found. This confirms your ballot was recorded, but does not independently prove inclusion in the final tally.',
+                            textAlign: TextAlign.center,
                             style: TextStyle(color: kc.textSecondary),
                           ),
-                          const SizedBox(height: 24),
-                          const Divider(),
-                          const SizedBox(height: 16),
-                          _buildDetailRow('Timestamp', _foundReceipt!['votedAt'] != null ? DateTime.parse(_foundReceipt!['votedAt']).toLocal().toString() : 'Unknown', kc),
-                          const SizedBox(height: 12),
-                          _buildDetailRow('Privacy Mode', _foundReceipt!['privacyMode'] ?? 'Anonymous', kc),
-                          const SizedBox(height: 12),
-                          _buildDetailRow('Event ID', _foundReceipt!['votingEventId'] ?? 'Unknown', kc),
                         ],
                       ),
                     )
@@ -158,7 +148,7 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'We could not find a matching ballot receipt in the ledger. Please ensure the hash was copied correctly.',
+                            'We could not find a matching ballot receipt. Please ensure the hash was copied correctly.',
                             textAlign: TextAlign.center,
                             style: TextStyle(color: kc.textSecondary),
                           ),
@@ -171,21 +161,6 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildDetailRow(String label, String value, KivoraColors kc) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 120,
-          child: Text(label, style: TextStyle(fontWeight: FontWeight.bold, color: kc.textPrimary, fontSize: 13)),
-        ),
-        Expanded(
-          child: Text(value, style: TextStyle(color: kc.textSecondary, fontSize: 13)),
-        ),
-      ],
     );
   }
 }
