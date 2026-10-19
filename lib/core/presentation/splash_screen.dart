@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../layout/responsive.dart';
 import '../theme/app_theme.dart';
+import '../../core/theme/kivora_colors.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   final String? errorMessage;
@@ -58,7 +59,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final isWide = ResponsiveLayout.isWide(context);
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: KivoraColors.backgroundOf(context),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -79,7 +80,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         _buildBrandHero(),
-                        const SizedBox(height: 40),
+                        SizedBox(height: 40),
                         _buildFooterBadge(),
                       ],
                     ),
@@ -102,7 +103,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12),
                       _buildBrandHero(),
                       _buildFooterBadge(),
                     ],
@@ -151,32 +152,32 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
 
             // App Title & Tagline
             Semantics(
               header: true,
-              child: const Text(
+              child: Text(
                 'Kivora',
                 style: TextStyle(
                   fontSize: 34,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.6,
-                  color: AppTheme.secondaryNavy,
+                  color: KivoraColors.textPrimaryOf(context),
                 ),
               ),
             ),
-            const SizedBox(height: 6),
-            const Text(
+            SizedBox(height: 6),
+            Text(
               'Enterprise Multi-Tenant E-Voting',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 letterSpacing: 0.2,
-                color: AppTheme.textSecondary,
+                color: KivoraColors.textSecondaryOf(context),
               ),
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: 40),
 
             // Dynamic Status / Error State
             if (widget.errorMessage != null)
@@ -192,13 +193,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Widget _buildFooterBadge() {
     return FadeTransition(
       opacity: _fadeAnimation,
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.shield_outlined,
             size: 14,
-            color: AppTheme.textSecondary,
+            color: KivoraColors.textSecondaryOf(context),
           ),
           SizedBox(width: 6),
           Text(
@@ -206,7 +207,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: AppTheme.textSecondary,
+              color: KivoraColors.textSecondaryOf(context),
             ),
           ),
         ],
@@ -215,7 +216,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   Widget _buildLoadingIndicator() {
-    return const Column(
+    return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
@@ -232,7 +233,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w500,
-            color: AppTheme.textSecondary,
+            color: KivoraColors.textSecondaryOf(context),
           ),
         ),
       ],
@@ -244,7 +245,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       constraints: const BoxConstraints(maxWidth: 420),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: AppTheme.error.withValues(alpha: 0.3),
@@ -260,36 +261,36 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
+          Icon(
             Icons.error_outline_rounded,
             color: AppTheme.error,
             size: 40,
           ),
-          const SizedBox(height: 12),
-          const Text(
+          SizedBox(height: 12),
+          Text(
             'Connection Error',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: AppTheme.secondaryNavy,
+              color: KivoraColors.textPrimaryOf(context),
             ),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
             widget.errorMessage ?? 'Failed to connect to Kivora services.',
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
-              color: AppTheme.textSecondary,
+              color: KivoraColors.textSecondaryOf(context),
               height: 1.4,
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           if (widget.onRetry != null)
             ElevatedButton.icon(
               onPressed: widget.onRetry,
-              icon: const Icon(Icons.refresh_rounded, size: 18),
-              label: const Text('Retry Connection'),
+              icon: Icon(Icons.refresh_rounded, size: 18),
+              label: Text('Retry Connection'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primaryBlue,
                 foregroundColor: Colors.white,
