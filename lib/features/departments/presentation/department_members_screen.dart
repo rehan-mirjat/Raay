@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
@@ -71,7 +72,7 @@ class _DepartmentMembersScreenState
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Department',
+        title: Text('Delete Department',
             style: TextStyle(color: AppTheme.error)),
         content: Text(
           'Are you sure you want to delete "${dept.name}"?\n\nThis permanently deletes the department.',
@@ -79,7 +80,7 @@ class _DepartmentMembersScreenState
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -108,7 +109,7 @@ class _DepartmentMembersScreenState
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
-            child: const Text('Delete Permanently'),
+            child: Text('Delete Permanently'),
           ),
         ],
       ),
@@ -168,13 +169,13 @@ class _DepartmentMembersScreenState
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Remove from department',
+        title: Text('Remove from department',
             style: TextStyle(color: AppTheme.error)),
         content: Text('Remove "$memberName" from this department?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text('Cancel'),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
@@ -182,7 +183,7 @@ class _DepartmentMembersScreenState
               Navigator.pop(ctx);
               _handleRemoveMember(orgId, targetUid, memberName);
             },
-            child: const Text('Remove'),
+            child: Text('Remove'),
           ),
         ],
       ),
@@ -253,7 +254,7 @@ class _DepartmentMembersScreenState
     final allDepartments = departmentsAsync.valueOrNull ?? [];
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: KivoraColors.backgroundOf(context),
       body: membersAsync.when(
         loading: () =>
             const LoadingView(message: 'Loading department roster...'),
@@ -288,7 +289,7 @@ class _DepartmentMembersScreenState
                     InkWell(
                       onTap: () => context.go('/orgs/departments'),
                       borderRadius: BorderRadius.circular(6),
-                      child: const Padding(
+                      child: Padding(
                         padding:
                             EdgeInsets.symmetric(vertical: 4, horizontal: 2),
                         child: Row(
@@ -308,7 +309,7 @@ class _DepartmentMembersScreenState
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
 
                     // 2. Header Title & Actions Row
                     Row(
@@ -329,44 +330,44 @@ class _DepartmentMembersScreenState
                                           .headlineMedium
                                           ?.copyWith(
                                             fontWeight: FontWeight.bold,
-                                            color: AppTheme.secondaryNavy,
+                                            color: KivoraColors.textPrimaryOf(context),
                                           ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                  const SizedBox(width: 12),
+                                  SizedBox(width: 12),
                                   Container(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 10, vertical: 4),
                                     decoration: BoxDecoration(
-                                      color: AppTheme.surfaceWhite,
+                                      color: KivoraColors.surfaceOf(context),
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(
-                                          color: AppTheme.borderLight),
+                                          color: KivoraColors.borderOf(context)),
                                     ),
                                     child: Text(
                                       '${assignedMembers.length} assigned members',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w600,
-                                          color: AppTheme.textSecondary),
+                                          color: KivoraColors.textSecondaryOf(context)),
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 6),
-                              const Text(
+                              SizedBox(height: 6),
+                              Text(
                                 'Members in this department can be chosen as eligible voters for events.',
                                 style: TextStyle(
-                                    color: AppTheme.textSecondary,
+                                    color: KivoraColors.textSecondaryOf(context),
                                     fontSize: 14),
                               ),
                             ],
                           ),
                         ),
                         if (isManager) ...[
-                          const SizedBox(width: 16),
+                          SizedBox(width: 16),
                           Row(
                             children: [
                               OutlinedButton.icon(
@@ -380,24 +381,24 @@ class _DepartmentMembersScreenState
                                     ),
                                   );
                                 },
-                                icon: const Icon(Icons.edit_outlined, size: 16),
-                                label: const Text('Rename'),
+                                icon: Icon(Icons.edit_outlined, size: 16),
+                                label: Text('Rename'),
                                 style: OutlinedButton.styleFrom(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 16, vertical: 12),
                                 ),
                               ),
-                              const SizedBox(width: 10),
+                              SizedBox(width: 10),
                               OutlinedButton.icon(
                                 onPressed: () => _showDeleteConfirmation(
                                     context, department, orgId),
-                                icon: const Icon(Icons.delete_outline_rounded,
+                                icon: Icon(Icons.delete_outline_rounded,
                                     size: 16, color: AppTheme.error),
-                                label: const Text('Delete',
+                                label: Text('Delete',
                                     style: TextStyle(color: AppTheme.error)),
                                 style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(
-                                      color: AppTheme.borderLight),
+                                  side: BorderSide(
+                                      color: KivoraColors.borderOf(context)),
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 16, vertical: 12),
                                 ),
@@ -407,7 +408,7 @@ class _DepartmentMembersScreenState
                         ],
                       ],
                     ),
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28),
 
                     // 3. Two-Column Assignment Grid
                     isDesktop
@@ -425,7 +426,7 @@ class _DepartmentMembersScreenState
                                   orgId,
                                 ),
                               ),
-                              const SizedBox(width: 24),
+                              SizedBox(width: 24),
 
                               // RIGHT COLUMN: Add Members List & Selection Card
                               Expanded(
@@ -451,7 +452,7 @@ class _DepartmentMembersScreenState
                                 isManager,
                                 orgId,
                               ),
-                              const SizedBox(height: 24),
+                              SizedBox(height: 24),
                               _buildAddMembersCard(
                                 context,
                                 department,
@@ -484,9 +485,9 @@ class _DepartmentMembersScreenState
   ) {
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),
@@ -506,22 +507,22 @@ class _DepartmentMembersScreenState
               children: [
                 Text(
                   'Members in ${dept.name}',
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.secondaryNavy),
+                      color: KivoraColors.textPrimaryOf(context)),
                 ),
                 Container(
                   width: 28,
                   height: 28,
-                  decoration: const BoxDecoration(
-                    color: AppTheme.surfaceBlue,
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                     shape: BoxShape.circle,
                   ),
                   child: Center(
                     child: Text(
                       '${assignedMembers.length}',
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                           color: AppTheme.primaryBlue),
@@ -531,7 +532,7 @@ class _DepartmentMembersScreenState
               ],
             ),
           ),
-          const Divider(height: 1, color: AppTheme.borderLight),
+          Divider(height: 1, color: KivoraColors.borderOf(context)),
 
           // Body: List or Empty View
           if (assignedMembers.isEmpty)
@@ -542,35 +543,35 @@ class _DepartmentMembersScreenState
                   Container(
                     width: 56,
                     height: 56,
-                    decoration: const BoxDecoration(
-                      color: AppTheme.surfaceBlue,
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.people_outline_rounded,
+                    child: Icon(Icons.people_outline_rounded,
                         size: 28, color: AppTheme.primaryBlue),
                   ),
-                  const SizedBox(height: 16),
-                  const Text(
+                  SizedBox(height: 16),
+                  Text(
                     'No members assigned yet',
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.secondaryNavy),
+                        color: KivoraColors.textPrimaryOf(context)),
                   ),
-                  const SizedBox(height: 6),
-                  const Text(
+                  SizedBox(height: 6),
+                  Text(
                     'Choose people from the list to add them to this department. You can change it at any time.',
                     style: TextStyle(
                         fontSize: 13,
-                        color: AppTheme.textSecondary,
+                        color: KivoraColors.textSecondaryOf(context),
                         height: 1.4),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 16),
-                  const Text(
+                  SizedBox(height: 16),
+                  Text(
                     'Assigned members will appear here.',
                     style:
-                        TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+                        TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context)),
                   ),
                 ],
               ),
@@ -582,7 +583,7 @@ class _DepartmentMembersScreenState
               padding: const EdgeInsets.symmetric(vertical: 8),
               itemCount: assignedMembers.length,
               separatorBuilder: (_, __) =>
-                  const Divider(height: 1, color: AppTheme.borderLight),
+                  Divider(height: 1, color: KivoraColors.borderOf(context)),
               itemBuilder: (context, idx) {
                 final member = assignedMembers[idx];
                 final name = member['displayName'] as String? ?? 'Member';
@@ -600,30 +601,30 @@ class _DepartmentMembersScreenState
                         radius: 18,
                         backgroundColor: color,
                         child: Text(initials,
-                            style: const TextStyle(
+                            style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold)),
                       ),
-                      const SizedBox(width: 14),
+                      SizedBox(width: 14),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(name,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
-                                    color: AppTheme.secondaryNavy)),
+                                    color: KivoraColors.textPrimaryOf(context))),
                           ],
                         ),
                       ),
                       StatusBadge.role(role),
                       if (isManager) ...[
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8),
                         IconButton(
-                          icon: const Icon(Icons.close_rounded,
-                              size: 18, color: AppTheme.textSecondary),
+                          icon: Icon(Icons.close_rounded,
+                              size: 18, color: KivoraColors.textSecondaryOf(context)),
                           tooltip: 'Remove from department',
                           onPressed: () => _showRemoveMemberConfirmation(
                               context, orgId, userId, name),
@@ -635,22 +636,22 @@ class _DepartmentMembersScreenState
               },
             ),
 
-          const Divider(height: 1, color: AppTheme.borderLight),
+          Divider(height: 1, color: KivoraColors.borderOf(context)),
 
           // Footnote Notice
           Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                const Icon(Icons.info_outline_rounded,
-                    size: 15, color: AppTheme.textSecondary),
-                const SizedBox(width: 8),
+                Icon(Icons.info_outline_rounded,
+                    size: 15, color: KivoraColors.textSecondaryOf(context)),
+                SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     'Pending selections are not members yet. Confirm with "Assign ${_pendingSelectedUids.length} members" to add them to ${dept.name}.',
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 11,
-                        color: AppTheme.textSecondary,
+                        color: KivoraColors.textSecondaryOf(context),
                         height: 1.3),
                   ),
                 ),
@@ -704,9 +705,9 @@ class _DepartmentMembersScreenState
 
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),
@@ -724,48 +725,48 @@ class _DepartmentMembersScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Add members',
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.secondaryNavy),
+                      color: KivoraColors.textPrimaryOf(context)),
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: 2),
                 Text(
                   'Select people to assign to ${dept.name}.',
-                  style: const TextStyle(
-                      fontSize: 12, color: AppTheme.textSecondary),
+                  style: TextStyle(
+                      fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
 
                 // Search Bar
                 TextField(
                   controller: _searchCtrl,
                   decoration: InputDecoration(
                     hintText: 'Search by name',
-                    prefixIcon: const Icon(Icons.search_rounded,
-                        color: AppTheme.textSecondary, size: 20),
+                    prefixIcon: Icon(Icons.search_rounded,
+                        color: KivoraColors.textSecondaryOf(context), size: 20),
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: AppTheme.borderLight),
+                      borderSide: BorderSide(color: KivoraColors.borderOf(context)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: AppTheme.borderLight),
+                      borderSide: BorderSide(color: KivoraColors.borderOf(context)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
+                      borderSide: BorderSide(
                           color: AppTheme.primaryBlue, width: 1.5),
                     ),
-                    fillColor: AppTheme.surfaceWhite,
+                    fillColor: KivoraColors.surfaceOf(context),
                     filled: true,
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
 
                 // Filter Tabs Row (horizontally scrollable - a long department
                 // name can otherwise overflow narrow screens)
@@ -773,13 +774,13 @@ class _DepartmentMembersScreenState
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      const Icon(Icons.filter_list_rounded,
-                          size: 18, color: AppTheme.textSecondary),
-                      const SizedBox(width: 8),
+                      Icon(Icons.filter_list_rounded,
+                          size: 18, color: KivoraColors.textSecondaryOf(context)),
+                      SizedBox(width: 8),
                       _buildFilterPill('all', 'All members'),
-                      const SizedBox(width: 6),
+                      SizedBox(width: 6),
                       _buildFilterPill('unassigned', 'No department'),
-                      const SizedBox(width: 6),
+                      SizedBox(width: 6),
                       _buildFilterPill('assigned', dept.name),
                     ],
                   ),
@@ -787,16 +788,16 @@ class _DepartmentMembersScreenState
               ],
             ),
           ),
-          const Divider(height: 1, color: AppTheme.borderLight),
+          Divider(height: 1, color: KivoraColors.borderOf(context)),
 
           // Selectable Members List
           if (filteredMembers.isEmpty)
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(vertical: 40),
               child: Center(
                 child: Text('No members match your search.',
                     style:
-                        TextStyle(color: AppTheme.textSecondary, fontSize: 13)),
+                        TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 13)),
               ),
             )
           else
@@ -850,13 +851,13 @@ class _DepartmentMembersScreenState
                           horizontal: 14, vertical: 10),
                       decoration: BoxDecoration(
                         color: isChecked
-                            ? AppTheme.surfaceBlue.withValues(alpha: 0.6)
-                            : AppTheme.surfaceWhite,
+                            ? AppTheme.primaryBlue.withValues(alpha: 0.12).withValues(alpha: 0.6)
+                            : KivoraColors.surfaceOf(context),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: isChecked
                               ? AppTheme.primaryBlue
-                              : AppTheme.borderLight,
+                              : KivoraColors.borderOf(context),
                           width: isChecked ? 1.4 : 1.0,
                         ),
                       ),
@@ -869,33 +870,33 @@ class _DepartmentMembersScreenState
                             decoration: BoxDecoration(
                               color: isChecked
                                   ? AppTheme.primaryBlue
-                                  : AppTheme.surfaceWhite,
+                                  : KivoraColors.surfaceOf(context),
                               borderRadius: BorderRadius.circular(6),
                               border: Border.all(
                                 color: isChecked
                                     ? AppTheme.primaryBlue
-                                    : AppTheme.borderLight,
+                                    : KivoraColors.borderOf(context),
                                 width: 1.5,
                               ),
                             ),
                             child: isChecked
-                                ? const Icon(Icons.check_rounded,
+                                ? Icon(Icons.check_rounded,
                                     size: 14, color: Colors.white)
                                 : null,
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: 12),
 
                           // Avatar
                           CircleAvatar(
                             radius: 16,
                             backgroundColor: color,
                             child: Text(initials,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 11,
                                     fontWeight: FontWeight.bold)),
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: 12),
 
                           // Name & Department subtitle
                           Expanded(
@@ -911,16 +912,16 @@ class _DepartmentMembersScreenState
                                         : FontWeight.w600,
                                     color: isChecked
                                         ? AppTheme.primaryBlue
-                                        : AppTheme.secondaryNavy,
+                                        : KivoraColors.textPrimaryOf(context),
                                   ),
                                 ),
                                 Text(
                                   inThisDept
                                       ? 'Assigned to ${dept.name}'
                                       : currentDeptName,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                       fontSize: 11,
-                                      color: AppTheme.textSecondary),
+                                      color: KivoraColors.textSecondaryOf(context)),
                                 ),
                               ],
                             ),
@@ -936,7 +937,7 @@ class _DepartmentMembersScreenState
               },
             ),
 
-          const Divider(height: 1, color: AppTheme.borderLight),
+          Divider(height: 1, color: KivoraColors.borderOf(context)),
 
           // Bottom Action Footer
           Padding(
@@ -951,20 +952,20 @@ class _DepartmentMembersScreenState
                       children: [
                         Text(
                           '${_pendingSelectedUids.length} selected',
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
-                              color: AppTheme.secondaryNavy),
+                              color: KivoraColors.textPrimaryOf(context)),
                         ),
                         if (_pendingSelectedUids.isNotEmpty) ...[
-                          const SizedBox(width: 8),
+                          SizedBox(width: 8),
                           InkWell(
                             onTap: () {
                               setState(() {
                                 _pendingSelectedUids.clear();
                               });
                             },
-                            child: const Text('Clear',
+                            child: Text('Clear',
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
@@ -973,11 +974,11 @@ class _DepartmentMembersScreenState
                         ],
                       ],
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2),
                     Text(
                       'Pending assignment to ${dept.name}',
-                      style: const TextStyle(
-                          fontSize: 11, color: AppTheme.textSecondary),
+                      style: TextStyle(
+                          fontSize: 11, color: KivoraColors.textSecondaryOf(context)),
                     ),
                   ],
                 ),
@@ -992,7 +993,7 @@ class _DepartmentMembersScreenState
                             child: CircularProgressIndicator(
                                 color: Colors.white, strokeWidth: 2),
                           )
-                        : const Icon(Icons.person_add_alt_1_rounded, size: 16),
+                        : Icon(Icons.person_add_alt_1_rounded, size: 16),
                     label: Text(_isAssigning
                         ? 'Assigning...'
                         : 'Assign ${_pendingSelectedUids.length} members'),
@@ -1025,16 +1026,16 @@ class _DepartmentMembersScreenState
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? AppTheme.primaryBlue : AppTheme.surfaceWhite,
+          color: isSelected ? AppTheme.primaryBlue : KivoraColors.surfaceOf(context),
           borderRadius: BorderRadius.circular(16),
-          border: isSelected ? null : Border.all(color: AppTheme.borderLight),
+          border: isSelected ? null : Border.all(color: KivoraColors.borderOf(context)),
         ),
         child: Text(
           label,
           style: TextStyle(
             fontSize: 12,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-            color: isSelected ? Colors.white : AppTheme.textSecondary,
+            color: isSelected ? Colors.white : KivoraColors.textSecondaryOf(context),
           ),
         ),
       ),

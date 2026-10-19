@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/kivora_colors.dart';
 import '../../../../core/layout/responsive.dart';
 import '../../../../core/widgets/loading_view.dart';
 import '../../../../core/widgets/error_view.dart';
@@ -89,19 +90,19 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
         final confirm = await showDialog<bool>(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Discard Changes?'),
-            content: const Text(
+            title: Text('Discard Changes?'),
+            content: Text(
                 'Are you sure you want to leave the builder? Unsaved progress will be lost.'),
             actions: [
               TextButton(
                   onPressed: () => Navigator.pop(ctx, false),
-                  child: const Text('Cancel')),
+                  child: Text('Cancel')),
               TextButton(
                 onPressed: () {
                   ref.read(draftEventProvider(orgId).notifier).reset();
                   Navigator.pop(ctx, true);
                 },
-                child: const Text('Leave',
+                child: Text('Leave',
                     style: TextStyle(color: AppTheme.error)),
               ),
             ],
@@ -121,7 +122,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppTheme.backgroundLight,
+        backgroundColor: KivoraColors.backgroundOf(context),
         body: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1140),
@@ -133,7 +134,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                   Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_back_rounded, color: AppTheme.secondaryNavy),
+                        icon: Icon(Icons.arrow_back_rounded, color: KivoraColors.textPrimaryOf(context)),
                         onPressed: () {
                           if (context.canPop()) {
                             context.pop();
@@ -142,19 +143,19 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                           }
                         },
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8),
                       Text(
                         draftState.serverEventId != null
                             ? 'Edit Event Draft'
                             : 'Create Voting Event',
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: AppTheme.secondaryNavy,
+                              color: KivoraColors.textPrimaryOf(context),
                             ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   Expanded(
                     child: Theme(
                       data: Theme.of(context).copyWith(
@@ -176,14 +177,14 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                             const SizedBox.shrink(), // Custom controls in each step
                         steps: [
                           Step(
-                            title: const Text('Basic Info'),
+                            title: Text('Basic Info'),
                             content: BasicInfoStep(
                                 orgId: orgId, onNext: () => setState(() => _currentStep = 1)),
                             isActive: _currentStep >= 0,
                             state: _currentStep > 0 ? StepState.complete : StepState.indexed,
                           ),
                           Step(
-                            title: const Text('Schedule'),
+                            title: Text('Schedule'),
                             content: ScheduleStep(
                                 orgId: orgId,
                                 onNext: () => setState(() => _currentStep = 2),
@@ -192,7 +193,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                             state: _currentStep > 1 ? StepState.complete : StepState.indexed,
                           ),
                           Step(
-                            title: const Text('Eligibility'),
+                            title: Text('Eligibility'),
                             content: EligibilityStep(
                                 orgId: orgId,
                                 onNext: () => setState(() => _currentStep = 3),
@@ -201,15 +202,15 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                             state: _currentStep > 2 ? StepState.complete : StepState.indexed,
                           ),
                           Step(
-                            title: const Text('Choices'),
+                            title: Text('Choices'),
                             content: draftState.serverEventId == null
                                 ? Padding(
                                     padding: const EdgeInsets.symmetric(vertical: 24),
                                     child: Column(
                                       children: [
-                                        const Text(
+                                        Text(
                                             'Please complete the Eligibility step and tap "Create Draft & Continue" first.'),
-                                        const SizedBox(height: 16),
+                                        SizedBox(height: 16),
                                         ElevatedButton(
                                           onPressed: () async {
                                             final success = await ref
@@ -219,7 +220,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                                               setState(() {});
                                             }
                                           },
-                                          child: const Text('Create Draft Now'),
+                                          child: Text('Create Draft Now'),
                                         ),
                                       ],
                                     ),
@@ -232,9 +233,9 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                             state: _currentStep > 3 ? StepState.complete : StepState.indexed,
                           ),
                           Step(
-                            title: const Text('Review'),
+                            title: Text('Review'),
                             content: draftState.serverEventId == null
-                                ? const Center(child: Text('Create Draft first.'))
+                                ? Center(child: Text('Create Draft first.'))
                                 : ReviewStep(
                                     orgId: orgId,
                                     onBack: () => setState(() => _currentStep = 3)),

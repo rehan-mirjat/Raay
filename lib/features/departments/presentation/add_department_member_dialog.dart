@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../organizations/presentation/membership_directory_screen.dart';
 import '../data/department_repository.dart';
 
@@ -65,7 +66,7 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
 
     return AlertDialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      title: const Text('Add Member to Department'),
+      title: Text('Add Member to Department'),
       content: SizedBox(
         width: (screenSize.width - 80).clamp(200.0, 560.0).toDouble(),
         height: (screenSize.height * 0.58).clamp(240.0, 500.0).toDouble(),
@@ -80,13 +81,13 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
               ),
               onChanged: (val) => setState(() => _searchQuery = val.trim().toLowerCase()),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Expanded(
               child: availableMembers.isEmpty
-                  ? const Center(child: Text('No eligible members found.', style: TextStyle(color: AppTheme.textSecondary)))
+                  ? Center(child: Text('No eligible members found.', style: TextStyle(color: KivoraColors.textSecondaryOf(context))))
                   : ListView.separated(
                       itemCount: availableMembers.length,
-                      separatorBuilder: (_, __) => const Divider(height: 1),
+                      separatorBuilder: (_, __) => Divider(height: 1),
                       itemBuilder: (context, index) {
                         final member = availableMembers[index];
                         final name = member['displayName'] as String? ?? 'Unknown User';
@@ -106,19 +107,19 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
                           contentPadding: const EdgeInsets.symmetric(vertical: 8),
                           leading: CircleAvatar(
                             backgroundColor: AppTheme.primaryBlue,
-                            child: Text(name.isNotEmpty ? name[0].toUpperCase() : 'U', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                            child: Text(name.isNotEmpty ? name[0].toUpperCase() : 'U', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                           ),
-                          title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
-                          subtitle: Text('$email${currentDept != null ? ' • currently in $currentDept' : ''}', style: const TextStyle(color: AppTheme.textSecondary)),
+                          title: Text(name, style: TextStyle(fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context))),
+                          subtitle: Text('$email${currentDept != null ? ' • currently in $currentDept' : ''}', style: TextStyle(color: KivoraColors.textSecondaryOf(context))),
                           trailing: compact
                               ? IconButton.filledTonal(
                                   tooltip: 'Add member',
                                   onPressed: isDisabled ? null : () => _assignMember(targetUid),
-                                  icon: isAssigningThis ? spinner : const Icon(Icons.person_add_alt_1_rounded),
+                                  icon: isAssigningThis ? spinner : Icon(Icons.person_add_alt_1_rounded),
                                 )
                               : ElevatedButton(
                                   onPressed: isDisabled ? null : () => _assignMember(targetUid),
-                                  child: isAssigningThis ? spinner : const Text('Add member'),
+                                  child: isAssigningThis ? spinner : Text('Add member'),
                                 ),
                         );
                       },
@@ -130,7 +131,7 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Close'),
+          child: Text('Close'),
         ),
       ],
     );

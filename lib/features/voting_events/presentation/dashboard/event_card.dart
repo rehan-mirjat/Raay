@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/kivora_colors.dart';
 import '../../domain/voting_event.dart';
 import '../providers/event_lifecycle_provider.dart';
 
@@ -31,7 +32,7 @@ class EventCard extends ConsumerWidget {
                 Expanded(
                   child: Text(
                     event.title,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -39,26 +40,26 @@ class EventCard extends ConsumerWidget {
                 _buildStatusBadge(event.status),
               ],
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text(
               _getTypeLabel(event.votingType),
-              style: const TextStyle(fontWeight: FontWeight.w600, color: AppTheme.secondaryNavy),
+              style: TextStyle(fontWeight: FontWeight.w600, color: KivoraColors.textPrimaryOf(context)),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Row(
               children: [
-                const Icon(Icons.schedule, size: 16, color: AppTheme.textSecondary),
-                const SizedBox(width: 8),
-                Text('${format.format(event.startAt)} to', style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                Icon(Icons.schedule, size: 16, color: KivoraColors.textSecondaryOf(context)),
+                SizedBox(width: 8),
+                Text('${format.format(event.startAt)} to', style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
               ],
             ),
             Row(
               children: [
-                const SizedBox(width: 24),
-                Text(format.format(event.endAt), style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                SizedBox(width: 24),
+                Text(format.format(event.endAt), style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
               ],
             ),
-            const Divider(height: 32),
+            Divider(height: 32),
             _buildActionButtons(context, ref),
           ],
         ),
@@ -122,20 +123,20 @@ class EventCard extends ConsumerWidget {
           children: [
             TextButton.icon(
               onPressed: () => _confirmDelete(context, ref),
-              icon: const Icon(Icons.delete, color: AppTheme.error, size: 18),
-              label: const Text('Delete', style: TextStyle(color: AppTheme.error)),
+              icon: Icon(Icons.delete, color: AppTheme.error, size: 18),
+              label: Text('Delete', style: TextStyle(color: AppTheme.error)),
             ),
             OutlinedButton(
               onPressed: () => context.go('/admin/events/${event.id}/choices'),
-              child: const Text('Manage Choices'),
+              child: Text('Manage Choices'),
             ),
             ElevatedButton(
               onPressed: () => context.go('/admin/events/${event.id}/edit'),
-              child: const Text('Edit Config'),
+              child: Text('Edit Config'),
             ),
             ElevatedButton(
               onPressed: () => context.go('/admin/events/${event.id}/review'),
-              child: const Text('Publish'),
+              child: Text('Publish'),
             ),
           ],
         );
@@ -147,14 +148,14 @@ class EventCard extends ConsumerWidget {
           children: [
             TextButton.icon(
               onPressed: () => _confirmCancel(context, ref),
-              icon: const Icon(Icons.cancel, color: AppTheme.error, size: 18),
-              label: const Text('Cancel Event', style: TextStyle(color: AppTheme.error)),
+              icon: Icon(Icons.cancel, color: AppTheme.error, size: 18),
+              label: Text('Cancel Event', style: TextStyle(color: AppTheme.error)),
             ),
             OutlinedButton(
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Details view coming in Milestone 6.')));
               },
-              child: const Text('View Details'),
+              child: Text('View Details'),
             ),
           ],
         );
@@ -166,12 +167,12 @@ class EventCard extends ConsumerWidget {
           children: [
             TextButton.icon(
               onPressed: () => _confirmClose(context, ref),
-              icon: const Icon(Icons.stop_circle, color: AppTheme.error, size: 18),
-              label: const Text('Close Early', style: TextStyle(color: AppTheme.error)),
+              icon: Icon(Icons.stop_circle, color: AppTheme.error, size: 18),
+              label: Text('Close Early', style: TextStyle(color: AppTheme.error)),
             ),
             ElevatedButton(
               onPressed: () => context.go('/admin/events/${event.id}/monitor'),
-              child: const Text('Monitor Turnout'),
+              child: Text('Monitor Turnout'),
             ),
           ],
         );
@@ -184,7 +185,7 @@ class EventCard extends ConsumerWidget {
           children: [
             ElevatedButton(
               onPressed: () => context.go('/elections/${event.id}/results'),
-              child: const Text('View Results'),
+              child: Text('View Results'),
             ),
           ],
         );
@@ -198,7 +199,7 @@ class EventCard extends ConsumerWidget {
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Details view coming in Milestone 6.')));
               },
-              child: const Text('View Details'),
+              child: Text('View Details'),
             ),
           ],
         );
@@ -209,13 +210,13 @@ class EventCard extends ConsumerWidget {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Draft Event?'),
+        title: Text('Delete Draft Event?'),
         content: Text('Are you sure you want to permanently delete "${event.title}"? This cannot be undone.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text('Cancel')),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete', style: TextStyle(color: AppTheme.error)),
+            child: Text('Delete', style: TextStyle(color: AppTheme.error)),
           ),
         ],
       )
@@ -229,13 +230,13 @@ class EventCard extends ConsumerWidget {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Cancel Scheduled Event?'),
+        title: Text('Cancel Scheduled Event?'),
         content: Text('Are you sure you want to cancel "${event.title}"? It will not become active.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Keep Scheduled')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text('Keep Scheduled')),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Cancel Event', style: TextStyle(color: AppTheme.error)),
+            child: Text('Cancel Event', style: TextStyle(color: AppTheme.error)),
           ),
         ],
       )
@@ -249,13 +250,13 @@ class EventCard extends ConsumerWidget {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Close Event Early?'),
+        title: Text('Close Event Early?'),
         content: Text('Are you sure you want to close "${event.title}"? No further votes will be accepted.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text('Cancel')),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Close Early', style: TextStyle(color: AppTheme.error)),
+            child: Text('Close Early', style: TextStyle(color: AppTheme.error)),
           ),
         ],
       )

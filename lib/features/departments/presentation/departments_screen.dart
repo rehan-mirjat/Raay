@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
@@ -49,7 +50,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Department',
+        title: Text('Delete Department',
             style: TextStyle(color: AppTheme.error)),
         content: Text(
           'Are you sure you want to delete "${dept.name}"?\n\nThis permanently deletes the department. Existing member records may retain a reference to the deleted department, but the deleted department will no longer be valid for assignment or voting eligibility.',
@@ -57,7 +58,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -85,7 +86,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
-            child: const Text('Delete Permanently'),
+            child: Text('Delete Permanently'),
           ),
         ],
       ),
@@ -151,7 +152,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
         .watchOrganizationVotingEvents(orgId);
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: KivoraColors.backgroundOf(context),
       body: departmentsAsync.when(
         loading: () => const LoadingView(message: 'Loading departments...'),
         error: (err, stack) => ErrorView(
@@ -204,21 +205,21 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                         .headlineMedium
                                         ?.copyWith(
                                           fontWeight: FontWeight.bold,
-                                          color: AppTheme.secondaryNavy,
+                                          color: KivoraColors.textPrimaryOf(context),
                                         ),
                                   ),
-                                  const SizedBox(height: 6),
-                                  const Text(
+                                  SizedBox(height: 6),
+                                  Text(
                                     'Group members into departments to limit who is eligible to vote in an event.',
                                     style: TextStyle(
-                                        color: AppTheme.textSecondary,
+                                        color: KivoraColors.textSecondaryOf(context),
                                         fontSize: 14),
                                   ),
                                 ],
                               ),
                             ),
                             if (isManager) ...[
-                              const SizedBox(width: 16),
+                              SizedBox(width: 16),
                               FilledButton.icon(
                                 onPressed: () {
                                   showDialog(
@@ -230,8 +231,8 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                     ),
                                   );
                                 },
-                                icon: const Icon(Icons.add_rounded, size: 18),
-                                label: const Text('New department'),
+                                icon: Icon(Icons.add_rounded, size: 18),
+                                label: Text('New department'),
                                 style: FilledButton.styleFrom(
                                   backgroundColor: AppTheme.primaryBlue,
                                   padding: const EdgeInsets.symmetric(
@@ -243,7 +244,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                             ],
                           ],
                         ),
-                        const SizedBox(height: 28),
+                        SizedBox(height: 28),
 
                         // 2. Toolbar (Search Input & Sort Dropdown)
                         Row(
@@ -253,32 +254,32 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                 controller: _searchCtrl,
                                 decoration: InputDecoration(
                                   hintText: 'Search departments',
-                                  prefixIcon: const Icon(Icons.search_rounded,
-                                      color: AppTheme.textSecondary, size: 20),
+                                  prefixIcon: Icon(Icons.search_rounded,
+                                      color: KivoraColors.textSecondaryOf(context), size: 20),
                                   contentPadding: const EdgeInsets.symmetric(
                                       horizontal: 16, vertical: 14),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
-                                    borderSide: const BorderSide(
-                                        color: AppTheme.borderLight),
+                                    borderSide: BorderSide(
+                                        color: KivoraColors.borderOf(context)),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
-                                    borderSide: const BorderSide(
-                                        color: AppTheme.borderLight),
+                                    borderSide: BorderSide(
+                                        color: KivoraColors.borderOf(context)),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
-                                    borderSide: const BorderSide(
+                                    borderSide: BorderSide(
                                         color: AppTheme.primaryBlue,
                                         width: 1.5),
                                   ),
-                                  fillColor: AppTheme.surfaceWhite,
+                                  fillColor: KivoraColors.surfaceOf(context),
                                   filled: true,
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            SizedBox(width: 12),
 
                             // Sort Dropdown
                             PopupMenuButton<String>(
@@ -286,10 +287,10 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                               offset: const Offset(0, 42),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                side: const BorderSide(
-                                    color: AppTheme.borderLight),
+                                side: BorderSide(
+                                    color: KivoraColors.borderOf(context)),
                               ),
-                              color: AppTheme.surfaceWhite,
+                              color: KivoraColors.surfaceOf(context),
                               onSelected: (val) {
                                 setState(() {
                                   _selectedSort = val;
@@ -304,62 +305,62 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 14, vertical: 12),
                                 decoration: BoxDecoration(
-                                  color: AppTheme.surfaceWhite,
+                                  color: KivoraColors.surfaceOf(context),
                                   borderRadius: BorderRadius.circular(10),
                                   border:
-                                      Border.all(color: AppTheme.borderLight),
+                                      Border.all(color: KivoraColors.borderOf(context)),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Icon(Icons.swap_vert_rounded,
+                                    Icon(Icons.swap_vert_rounded,
                                         size: 16,
-                                        color: AppTheme.textSecondary),
-                                    const SizedBox(width: 8),
+                                        color: KivoraColors.textSecondaryOf(context)),
+                                    SizedBox(width: 8),
                                     Text(
                                       _getSortLabel(_selectedSort),
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.w600,
-                                          color: AppTheme.secondaryNavy),
+                                          color: KivoraColors.textPrimaryOf(context)),
                                     ),
-                                    const SizedBox(width: 6),
-                                    const Icon(
+                                    SizedBox(width: 6),
+                                    Icon(
                                         Icons.keyboard_arrow_down_rounded,
                                         size: 16,
-                                        color: AppTheme.textSecondary),
+                                        color: KivoraColors.textSecondaryOf(context)),
                                   ],
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: 20),
 
                         // 3. Sub-header Counter & Hint
                         Row(
                           children: [
                             Text(
                               '${userDepts.length} ${userDepts.length == 1 ? 'department' : 'departments'}',
-                              style: const TextStyle(
+                              style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13,
-                                  color: AppTheme.secondaryNavy),
+                                  color: KivoraColors.textPrimaryOf(context)),
                             ),
-                            const SizedBox(width: 12),
-                            const Expanded(
+                            SizedBox(width: 12),
+                            Expanded(
                               child: Text(
                                 'Manage members directly, or use ••• for more actions',
                                 style: TextStyle(
                                     fontSize: 12,
-                                    color: AppTheme.textSecondary),
+                                    color: KivoraColors.textSecondaryOf(context)),
                                 textAlign: TextAlign.right,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16),
 
                         // 4. Department Cards Grid
                         if (userDepts.isEmpty)
@@ -492,16 +493,16 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
       child: Row(
         children: [
           if (isSelected)
-            const Icon(Icons.check_rounded,
+            Icon(Icons.check_rounded,
                 size: 16, color: AppTheme.primaryBlue)
           else
-            const SizedBox(width: 16),
-          const SizedBox(width: 8),
+            SizedBox(width: 16),
+          SizedBox(width: 8),
           Text(
             label,
             style: TextStyle(
               fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-              color: isSelected ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
+              color: isSelected ? AppTheme.primaryBlue : KivoraColors.textPrimaryOf(context),
               fontSize: 13,
             ),
           ),
@@ -560,12 +561,12 @@ class _DepartmentCardState extends State<_DepartmentCard> {
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOutCubic,
         decoration: BoxDecoration(
-          color: AppTheme.surfaceWhite,
+          color: KivoraColors.surfaceOf(context),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: _isHovered
                 ? AppTheme.primaryBlue.withValues(alpha: 0.4)
-                : AppTheme.borderLight,
+                : KivoraColors.borderOf(context),
             width: _isHovered ? 1.4 : 1.0,
           ),
           boxShadow: [
@@ -588,10 +589,10 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: AppTheme.surfaceBlue,
+                    color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Icon(
                       Icons.apartment_rounded,
                       color: AppTheme.primaryBlue,
@@ -599,33 +600,33 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 14),
+                SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         widget.dept.name,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: AppTheme.secondaryNavy,
+                          color: KivoraColors.textPrimaryOf(context),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2),
                       Text(
                         '$memberCount ${memberCount == 1 ? 'member' : 'members'}',
-                        style: const TextStyle(
-                            fontSize: 12, color: AppTheme.textSecondary),
+                        style: TextStyle(
+                            fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                       ),
                     ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
 
             // Middle Row: Avatars Stack & Event Usage Badge
             Row(
@@ -640,7 +641,7 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: widget.eventsCount > 0
-                        ? AppTheme.surfaceBlue
+                        ? AppTheme.primaryBlue.withValues(alpha: 0.12)
                         : const Color(0xFFF1F5F9),
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -653,15 +654,15 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                       fontWeight: FontWeight.bold,
                       color: widget.eventsCount > 0
                           ? AppTheme.primaryBlue
-                          : AppTheme.textSecondary,
+                          : KivoraColors.textSecondaryOf(context),
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            const Divider(height: 1, color: AppTheme.borderLight),
-            const SizedBox(height: 12),
+            SizedBox(height: 16),
+            Divider(height: 1, color: KivoraColors.borderOf(context)),
+            SizedBox(height: 12),
 
             // Footer Row: Manage Members Link & Popup Menu
             Row(
@@ -670,7 +671,7 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                 InkWell(
                   onTap: widget.onManageMembers,
                   borderRadius: BorderRadius.circular(8),
-                  child: const Padding(
+                  child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -696,11 +697,11 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                     offset: const Offset(0, 36),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
-                      side: const BorderSide(color: AppTheme.borderLight),
+                      side: BorderSide(color: KivoraColors.borderOf(context)),
                     ),
-                    color: AppTheme.surfaceWhite,
-                    icon: const Icon(Icons.more_horiz_rounded,
-                        color: AppTheme.textSecondary),
+                    color: KivoraColors.surfaceOf(context),
+                    icon: Icon(Icons.more_horiz_rounded,
+                        color: KivoraColors.textSecondaryOf(context)),
                     onSelected: (value) {
                       if (value == 'edit') {
                         widget.onEdit();
@@ -716,34 +717,34 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                         height: 32,
                         child: Text(
                           widget.dept.name,
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
-                              color: AppTheme.textSecondary),
+                              color: KivoraColors.textSecondaryOf(context)),
                         ),
                       ),
                       const PopupMenuDivider(),
-                      const PopupMenuItem<String>(
+                      PopupMenuItem<String>(
                         value: 'edit',
                         child: Row(
                           children: [
                             Icon(Icons.edit_outlined,
-                                size: 16, color: AppTheme.secondaryNavy),
-                            SizedBox(width: 8),
-                            Text('Rename',
+                                size: 16, color: KivoraColors.textPrimaryOf(context)),
+                            const SizedBox(width: 8),
+                            const Text('Rename',
                                 style: TextStyle(
                                     fontSize: 13, fontWeight: FontWeight.w500)),
                           ],
                         ),
                       ),
-                      const PopupMenuItem<String>(
+                      PopupMenuItem<String>(
                         value: 'manage',
                         child: Row(
                           children: [
                             Icon(Icons.people_outline_rounded,
-                                size: 16, color: AppTheme.secondaryNavy),
-                            SizedBox(width: 8),
-                            Text('Manage members',
+                                size: 16, color: KivoraColors.textPrimaryOf(context)),
+                            const SizedBox(width: 8),
+                            const Text('Manage members',
                                 style: TextStyle(
                                     fontSize: 13, fontWeight: FontWeight.w500)),
                           ],
@@ -759,7 +760,7 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                             color: AppTheme.error.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Row(
+                          child: Row(
                             children: [
                               Icon(Icons.delete_outline_rounded,
                                   size: 16, color: AppTheme.error),
@@ -788,11 +789,11 @@ class _DepartmentCardState extends State<_DepartmentCard> {
       return Container(
         width: 28,
         height: 28,
-        decoration: const BoxDecoration(
-          color: AppTheme.surfaceBlue,
+        decoration: BoxDecoration(
+          color: AppTheme.primaryBlue.withValues(alpha: 0.12),
           shape: BoxShape.circle,
         ),
-        child: const Icon(Icons.person_outline_rounded,
+        child: Icon(Icons.person_outline_rounded,
             size: 16, color: AppTheme.primaryBlue),
       );
     }
@@ -829,7 +830,7 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                     child: Center(
                       child: Text(
                         initials,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
@@ -842,16 +843,16 @@ class _DepartmentCardState extends State<_DepartmentCard> {
             ),
           ),
           if (remaining > 0) ...[
-            const SizedBox(width: 4),
+            SizedBox(width: 4),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
               decoration: BoxDecoration(
-                color: AppTheme.surfaceBlue,
+                color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
                 '+$remaining',
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                     color: AppTheme.primaryBlue),
@@ -905,11 +906,11 @@ class _NewDepartmentDashedCardState extends State<_NewDepartmentDashedCard> {
           height: 180,
           decoration: BoxDecoration(
             color: _isHovered
-                ? AppTheme.surfaceBlue.withValues(alpha: 0.5)
+                ? AppTheme.primaryBlue.withValues(alpha: 0.12).withValues(alpha: 0.5)
                 : const Color(0xFFF8FAFC),
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
-              color: _isHovered ? AppTheme.primaryBlue : AppTheme.borderLight,
+              color: _isHovered ? AppTheme.primaryBlue : KivoraColors.borderOf(context),
               width: 1.5,
             ),
           ),
@@ -920,16 +921,16 @@ class _NewDepartmentDashedCardState extends State<_NewDepartmentDashedCard> {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: AppTheme.surfaceBlue,
+                  color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                   border: Border.all(
                       color: AppTheme.primaryBlue.withValues(alpha: 0.3)),
                 ),
-                child: const Icon(Icons.add_rounded,
+                child: Icon(Icons.add_rounded,
                     color: AppTheme.primaryBlue, size: 22),
               ),
-              const SizedBox(height: 12),
-              const Text(
+              SizedBox(height: 12),
+              Text(
                 'New department',
                 style: TextStyle(
                   fontSize: 15,
@@ -937,10 +938,10 @@ class _NewDepartmentDashedCardState extends State<_NewDepartmentDashedCard> {
                   color: AppTheme.primaryBlue,
                 ),
               ),
-              const SizedBox(height: 4),
-              const Text(
+              SizedBox(height: 4),
+              Text(
                 'Create a group for your members',
-                style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
               ),
             ],
           ),

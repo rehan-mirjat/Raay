@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/kivora_colors.dart';
 import '../../../../core/widgets/inline_error_banner.dart';
 import '../../data/candidate_repository.dart';
 import '../../domain/candidate.dart';
@@ -138,34 +139,34 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                                 ? NetworkImage(widget.existingCandidate!.photoUrl!) as ImageProvider
                                 : null),
                         child: _selectedImageBytes == null && widget.existingCandidate?.photoUrl == null
-                            ? const Icon(Icons.camera_alt, size: 40)
+                            ? Icon(Icons.camera_alt, size: 40)
                             : null,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
-                const Text('Tap to select photo', style: TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
-                const SizedBox(height: 16),
+                SizedBox(height: 8),
+                Text('Tap to select photo', style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
+                SizedBox(height: 16),
                 
                 TextFormField(
                   controller: _nameCtrl,
                   decoration: const InputDecoration(labelText: 'Name *'),
                   validator: (v) => v == null || v.trim().length < 3 ? 'Name must be at least 3 chars' : null,
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 TextFormField(
                   controller: _partyCtrl,
                   decoration: const InputDecoration(labelText: 'Party / Affiliation (Optional)'),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 TextFormField(
                   controller: _bioCtrl,
                   decoration: const InputDecoration(labelText: 'Biography (Optional)'),
                   maxLines: 3,
                 ),
                 if (_error != null) ...[
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   InlineErrorBanner(message: _error!),
                 ],
               ],
@@ -175,10 +176,10 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
       ),
       actions: [
         if (!_isLoading)
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel')),
         ElevatedButton(
           onPressed: _isLoading ? null : _submit,
-          child: _isLoading ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : const Text('Save'),
+          child: _isLoading ? SizedBox(height: 16, width: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : Text('Save'),
         ),
       ],
     );

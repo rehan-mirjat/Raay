@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/kivora_colors.dart';
 import '../../domain/voting_event.dart';
 import '../providers/draft_event_provider.dart';
 
@@ -108,41 +109,41 @@ class _ScheduleStepState extends ConsumerState<ScheduleStep> {
            Container(
              padding: const EdgeInsets.all(12),
              decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(8)),
-             child: const Text('Event is no longer a DRAFT. Schedule is strictly immutable.', style: TextStyle(color: Colors.grey)),
+             child: Text('Event is no longer a DRAFT. Schedule is strictly immutable.', style: TextStyle(color: Colors.grey)),
            ),
-        const SizedBox(height: 16),
-        const Text('Voting Schedule', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        const Text('All times are evaluated securely against the server clock. Local selections are for convenience.', style: TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
-        const SizedBox(height: 24),
+        SizedBox(height: 16),
+        Text('Voting Schedule', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        SizedBox(height: 8),
+        Text('All times are evaluated securely against the server clock. Local selections are for convenience.', style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
+        SizedBox(height: 24),
         
         ListTile(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide(color: Colors.grey.shade300)),
-          title: const Text('Start Time'),
-          subtitle: Text(_startAt != null ? format.format(_startAt!) : 'Not set', style: TextStyle(color: _startAt != null ? AppTheme.secondaryNavy : AppTheme.error)),
-          trailing: const Icon(Icons.calendar_today),
+          title: Text('Start Time'),
+          subtitle: Text(_startAt != null ? format.format(_startAt!) : 'Not set', style: TextStyle(color: _startAt != null ? KivoraColors.textPrimaryOf(context) : AppTheme.error)),
+          trailing: Icon(Icons.calendar_today),
           onTap: isDraft ? () => _pickDateTime(true) : null,
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
         ListTile(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide(color: Colors.grey.shade300)),
-          title: const Text('End Time'),
-          subtitle: Text(_endAt != null ? format.format(_endAt!) : 'Not set', style: TextStyle(color: _endAt != null ? AppTheme.secondaryNavy : AppTheme.error)),
-          trailing: const Icon(Icons.calendar_today),
+          title: Text('End Time'),
+          subtitle: Text(_endAt != null ? format.format(_endAt!) : 'Not set', style: TextStyle(color: _endAt != null ? KivoraColors.textPrimaryOf(context) : AppTheme.error)),
+          trailing: Icon(Icons.calendar_today),
           onTap: isDraft ? () => _pickDateTime(false) : null,
         ),
         
         if (_localError != null) ...[
-          const SizedBox(height: 16),
-          Text(_localError!, style: const TextStyle(color: AppTheme.error, fontWeight: FontWeight.bold)),
+          SizedBox(height: 16),
+          Text(_localError!, style: TextStyle(color: AppTheme.error, fontWeight: FontWeight.bold)),
         ],
 
-        const SizedBox(height: 32),
+        SizedBox(height: 32),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            TextButton(onPressed: widget.onBack, child: const Text('Back')),
-            ElevatedButton(onPressed: isDraft ? _validateAndProceed : widget.onNext, child: const Text('Next: Eligibility')),
+            TextButton(onPressed: widget.onBack, child: Text('Back')),
+            ElevatedButton(onPressed: isDraft ? _validateAndProceed : widget.onNext, child: Text('Next: Eligibility')),
           ],
         ),
       ],

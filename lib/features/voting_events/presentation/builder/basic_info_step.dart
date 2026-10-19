@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/kivora_colors.dart';
 import '../../../../core/layout/responsive.dart';
 import '../../domain/voting_event.dart';
 import '../providers/draft_event_provider.dart';
@@ -59,9 +60,9 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
             child: Container(
               padding: const EdgeInsets.all(28),
               decoration: BoxDecoration(
-                color: AppTheme.surfaceWhite,
+                color: KivoraColors.surfaceOf(context),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppTheme.borderLight),
+                border: Border.all(color: KivoraColors.borderOf(context)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,20 +74,20 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                         color: Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.lock_outline_rounded, size: 16, color: AppTheme.textSecondary),
+                          Icon(Icons.lock_outline_rounded, size: 16, color: KivoraColors.textSecondaryOf(context)),
                           SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               'Event is no longer a DRAFT. Basic info is strictly immutable.',
-                              style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                              style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 13),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
                   ],
 
                   // Form Section Header
@@ -95,17 +96,17 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: AppTheme.surfaceBlue,
+                          color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.edit_calendar_outlined,
                           color: AppTheme.primaryBlue,
                           size: 22,
                         ),
                       ),
-                      const SizedBox(width: 14),
-                      const Column(
+                      SizedBox(width: 14),
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -113,39 +114,39 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: AppTheme.secondaryNavy,
+                              color: KivoraColors.textPrimaryOf(context),
                             ),
                           ),
                           SizedBox(height: 2),
                           Text(
                             'Provide the basic information about your voting event.',
-                            style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+                            style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context)),
                           ),
                         ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 28),
+                  SizedBox(height: 28),
 
                   // Event Title
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         'Event Title *',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
-                          color: AppTheme.secondaryNavy,
+                          color: KivoraColors.textPrimaryOf(context),
                         ),
                       ),
                       Text(
                         '${_titleCtrl.text.length}/100',
-                        style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+                        style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context)),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6),
                   TextFormField(
                     controller: _titleCtrl,
                     enabled: isDraft,
@@ -161,27 +162,27 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
 
                   // Description
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         'Description *',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
-                          color: AppTheme.secondaryNavy,
+                          color: KivoraColors.textPrimaryOf(context),
                         ),
                       ),
                       Text(
                         '${_descCtrl.text.length}/500',
-                        style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+                        style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context)),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6),
                   TextFormField(
                     controller: _descCtrl,
                     enabled: isDraft,
@@ -201,18 +202,18 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
 
                   // Voting Type
-                  const Text(
+                  Text(
                     'Voting Type',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.secondaryNavy,
+                      color: KivoraColors.textPrimaryOf(context),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   LayoutBuilder(
                     builder: (context, constraints) {
                       final cardWidth = constraints.maxWidth >= 600
@@ -251,18 +252,18 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                       );
                     },
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
 
                   // Ballot Privacy Dropdown
-                  const Text(
+                  Text(
                     'Ballot privacy',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.secondaryNavy,
+                      color: KivoraColors.textPrimaryOf(context),
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6),
                   DropdownButtonFormField<PrivacyMode>(
                     initialValue: _privacyMode,
                     decoration: const InputDecoration(
@@ -284,15 +285,15 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                           }
                         : null,
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6),
                   Text(
                     _privacyMode == PrivacyMode.anonymous
                         ? 'Voter identity is stored separately from the ballot.'
                         : 'Each ballot is associated with the voter’s account. Voters will see this notice before confirming.',
-                    style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                    style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                   ),
 
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32),
 
                   // Bottom Action Button
                   Row(
@@ -310,8 +311,8 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                             widget.onNext();
                           }
                         },
-                        icon: const Text('Next: Schedule'),
-                        label: const Icon(Icons.arrow_forward_rounded, size: 16),
+                        icon: Text('Next: Schedule'),
+                        label: Icon(Icons.arrow_forward_rounded, size: 16),
                         style: FilledButton.styleFrom(
                           backgroundColor: AppTheme.primaryBlue,
                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
@@ -327,7 +328,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
 
           // Right Quick Tips Sidebar (Desktop)
           if (isDesktop) ...[
-            const SizedBox(width: 24),
+            SizedBox(width: 24),
             SizedBox(
               width: 300,
               child: _buildQuickTipsCard(context),
@@ -362,10 +363,10 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
           width: width,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: isSelected ? AppTheme.surfaceBlue.withValues(alpha: 0.5) : AppTheme.surfaceWhite,
+            color: isSelected ? AppTheme.primaryBlue.withValues(alpha: 0.12).withValues(alpha: 0.5) : KivoraColors.surfaceOf(context),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: isSelected ? AppTheme.primaryBlue : AppTheme.borderLight,
+              color: isSelected ? AppTheme.primaryBlue : KivoraColors.borderOf(context),
               width: isSelected ? 1.5 : 1.0,
             ),
           ),
@@ -374,10 +375,10 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
             children: [
               Icon(
                 isSelected ? Icons.radio_button_checked_rounded : Icons.radio_button_unchecked_rounded,
-                color: isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
+                color: isSelected ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context),
                 size: 18,
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,24 +386,24 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                     Row(
                       children: [
                         Icon(icon, size: 16, color: AppTheme.primaryBlue),
-                        const SizedBox(width: 6),
+                        SizedBox(width: 6),
                         Expanded(
                           child: Text(
                             title,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
-                              color: isSelected ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
+                              color: isSelected ? AppTheme.primaryBlue : KivoraColors.textPrimaryOf(context),
                             ),
                             maxLines: 1, overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4),
                     Text(
                       subtitle,
-                      style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary, height: 1.3),
+                      style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context), height: 1.3),
                     ),
                   ],
                 ),
@@ -420,7 +421,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
       decoration: BoxDecoration(
         color: const Color(0xFFF8FAFF),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -433,45 +434,45 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                   color: AppTheme.primaryBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.lightbulb_outline_rounded, color: AppTheme.primaryBlue, size: 20),
+                child: Icon(Icons.lightbulb_outline_rounded, color: AppTheme.primaryBlue, size: 20),
               ),
-              const SizedBox(width: 12),
-              const Text(
+              SizedBox(width: 12),
+              Text(
                 'Quick Tips',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.secondaryNavy),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: KivoraColors.textPrimaryOf(context)),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          const Text(
+          SizedBox(height: 16),
+          Text(
             'A well-structured event helps you get better participation and more meaningful results.',
-            style: TextStyle(color: AppTheme.textSecondary, fontSize: 13, height: 1.4),
+            style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 13, height: 1.4),
           ),
-          const SizedBox(height: 20),
-          const Divider(height: 1, color: AppTheme.borderLight),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
+          Divider(height: 1, color: KivoraColors.borderOf(context)),
+          SizedBox(height: 20),
 
           _buildCheckItem('Use a clear and specific title'),
           _buildCheckItem('Add relevant details in the description'),
           _buildCheckItem('Choose the right voting type'),
           _buildCheckItem('Keep your audience in mind'),
 
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppTheme.surfaceWhite,
+              color: KivoraColors.surfaceOf(context),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppTheme.borderLight),
+              border: Border.all(color: KivoraColors.borderOf(context)),
             ),
-            child: const Row(
+            child: Row(
               children: [
                 Icon(Icons.shield_outlined, color: AppTheme.primaryBlue, size: 18),
                 SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     'Your event will be visible to all eligible members in your organization.',
-                    style: TextStyle(fontSize: 11, color: AppTheme.textSecondary, height: 1.3),
+                    style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context), height: 1.3),
                   ),
                 ),
               ],
@@ -490,17 +491,17 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
         children: [
           Container(
             padding: const EdgeInsets.all(2),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppTheme.primaryBlue,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.check, size: 10, color: Colors.white),
+            child: Icon(Icons.check, size: 10, color: Colors.white),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           Expanded(
             child: Text(
               label,
-              style: const TextStyle(fontSize: 12, color: AppTheme.secondaryNavy, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 12, color: KivoraColors.textPrimaryOf(context), fontWeight: FontWeight.w500),
             ),
           ),
         ],

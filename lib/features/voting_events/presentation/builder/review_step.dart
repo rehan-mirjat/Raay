@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/kivora_colors.dart';
 import '../../../../core/layout/responsive.dart';
 import '../../../../core/widgets/loading_view.dart';
 import '../../../../core/widgets/reauth_dialog.dart';
@@ -114,9 +115,9 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text('Review & Publish',
+              Text('Review & Publish',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               _summaryRow('Title', draft.title),
               _summaryRow(
                   'Start At',
@@ -130,44 +131,44 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                       : ''),
               _summaryRow('Choices', '$count items configured'),
               if (!isReady) ...[
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                       color: Colors.orange.shade50,
                       borderRadius: BorderRadius.circular(8)),
-                  child: const Text(
+                  child: Text(
                       'Warning: A minimum of 2 choices must be configured before publishing.',
                       style: TextStyle(color: Colors.orange)),
                 ),
               ],
               if (_error != null) ...[
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                       color: AppTheme.error.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8)),
                   child: Text('Publish Error: $_error',
-                      style: const TextStyle(color: AppTheme.error)),
+                      style: TextStyle(color: AppTheme.error)),
                 ),
               ],
-              const SizedBox(height: 32),
+              SizedBox(height: 32),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
                       onPressed: _isPublishing ? null : widget.onBack,
-                      child: const Text('Back')),
+                      child: Text('Back')),
                   ElevatedButton(
                     onPressed: _isPublishing || !isReady ? null : _publish,
                     child: _isPublishing
-                        ? const SizedBox(
+                        ? SizedBox(
                             height: 16,
                             width: 16,
                             child: CircularProgressIndicator(
                                 color: Colors.white, strokeWidth: 2))
-                        : const Text('Publish Event'),
+                        : Text('Publish Event'),
                   ),
                 ],
               ),
@@ -185,9 +186,9 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
           SizedBox(
             width: ResponsiveLayout.isCompact(context) ? 76 : 100,
             child: Text(label,
-                style: const TextStyle(
+                style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.secondaryNavy)),
+                    color: KivoraColors.textPrimaryOf(context))),
           ),
           Expanded(child: Text(value, softWrap: true)),
         ],

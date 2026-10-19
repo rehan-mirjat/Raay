@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/fade_through.dart';
@@ -72,7 +73,7 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
         .doc(widget.eventId);
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: KivoraColors.backgroundOf(context),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -93,7 +94,7 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                               label: eventTitle ?? 'Event',
                               eventId: widget.eventId,
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16),
                             body,
                           ],
                         ),
@@ -158,7 +159,7 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                         label: eventTitle ?? 'Event',
                         eventId: widget.eventId,
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16),
                       Row(
                         children: [
                           Text(
@@ -168,9 +169,9 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                                 .headlineSmall
                                 ?.copyWith(
                                     fontWeight: FontWeight.bold,
-                                    color: AppTheme.secondaryNavy),
+                                    color: KivoraColors.textPrimaryOf(context)),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10),
                           Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 3),
@@ -194,24 +195,24 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       Text(
                         [
                           if (eventTitle != null) eventTitle,
                           if (votingTypeLabel != null) votingTypeLabel,
                           'calculated by the server after voting closed',
                         ].join(' · '),
-                        style: const TextStyle(
-                            fontSize: 13, color: AppTheme.textSecondary),
+                        style: TextStyle(
+                            fontSize: 13, color: KivoraColors.textSecondaryOf(context)),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20),
                       if (rows.isNotEmpty) ...[
                         _OutcomeBanner(rows: rows, total: total),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16),
                       ],
                       _StatsCard(
                           total: total, eligible: eligible, turnout: turnout),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16),
                       if (!isPublished)
                         Container(
                           margin: const EdgeInsets.only(bottom: 16),
@@ -223,46 +224,46 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                             border: Border.all(
                                 color: AppTheme.warning.withValues(alpha: 0.3)),
                           ),
-                          child: const Text(
+                          child: Text(
                             'These results are visible to organization administrators only until published.',
                             style: TextStyle(
-                                fontSize: 13, color: AppTheme.secondaryNavy),
+                                fontSize: 13, color: KivoraColors.textPrimaryOf(context)),
                           ),
                         ),
                       if (rows.length > 1) ...[
                         _VoteSplitBar(rows: rows),
-                        const SizedBox(height: 20),
+                        SizedBox(height: 20),
                       ],
                       for (var i = 0; i < rows.length; i++) ...[
                         _ResultRow(
                           row: rows[i],
                           color: _kResultColors[i % _kResultColors.length],
                         ),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10),
                       ],
                       if (rows.isEmpty)
                         Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: AppTheme.surfaceWhite,
+                            color: KivoraColors.surfaceOf(context),
                             borderRadius:
                                 BorderRadius.circular(AppTheme.radiusCard),
-                            border: Border.all(color: AppTheme.borderLight),
+                            border: Border.all(color: KivoraColors.borderOf(context)),
                           ),
-                          child: const Text(
+                          child: Text(
                               'No ballots were recorded for this event.'),
                         ),
-                      const SizedBox(height: 16),
-                      const Text(
+                      SizedBox(height: 16),
+                      Text(
                         'Results are shown to eligible members after an administrator publishes them. '
                         'Percentages are of ballots counted.',
                         style: TextStyle(
-                            fontSize: 12, color: AppTheme.textSecondary),
+                            fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                       ),
                       if (canManage) ...[
-                        const SizedBox(height: 20),
-                        const Divider(),
-                        const SizedBox(height: 12),
+                        SizedBox(height: 20),
+                        Divider(),
+                        SizedBox(height: 12),
                         Wrap(
                           spacing: 12,
                           runSpacing: 12,
@@ -270,7 +271,7 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                             OutlinedButton.icon(
                               onPressed:
                                   _busy ? null : () => _run('calculateResults'),
-                              icon: const Icon(Icons.refresh_rounded, size: 18),
+                              icon: Icon(Icons.refresh_rounded, size: 18),
                               label:
                                   Text(_busy ? 'Working…' : 'Recalculate results'),
                             ),
@@ -278,8 +279,8 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                               FilledButton.icon(
                                 onPressed:
                                     _busy ? null : () => _run('publishResults'),
-                                icon: const Icon(Icons.publish_rounded, size: 18),
-                                label: const Text('Publish results to members'),
+                                icon: Icon(Icons.publish_rounded, size: 18),
+                                label: Text('Publish results to members'),
                               ),
                           ],
                         ),
@@ -321,12 +322,12 @@ class _BackLink extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.arrow_back_rounded,
+            Icon(Icons.arrow_back_rounded,
                 size: 16, color: AppTheme.primaryBlue),
-            const SizedBox(width: 4),
+            SizedBox(width: 4),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppTheme.primaryBlue,
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
@@ -393,20 +394,20 @@ class _OutcomeBanner extends StatelessWidget {
               color: const Color(0xFFB45309),
             ),
           ),
-          const SizedBox(width: 14),
+          SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
-                        color: AppTheme.secondaryNavy)),
-                const SizedBox(height: 2),
+                        color: KivoraColors.textPrimaryOf(context))),
+                SizedBox(height: 2),
                 Text(subtitle,
-                    style: const TextStyle(
-                        fontSize: 13, color: AppTheme.textSecondary)),
+                    style: TextStyle(
+                        fontSize: 13, color: KivoraColors.textSecondaryOf(context))),
               ],
             ),
           ),
@@ -428,17 +429,17 @@ class _StatsCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(child: _stat('BALLOTS COUNTED', '$total')),
-          Expanded(child: _stat('ELIGIBLE VOTERS', '$eligible')),
+          Expanded(child: _stat(context, 'BALLOTS COUNTED', '$total')),
+          Expanded(child: _stat(context, 'ELIGIBLE VOTERS', '$eligible')),
           Expanded(
-            child: _stat('TURNOUT', '${turnout.toStringAsFixed(0)}%',
+            child: _stat(context, 'TURNOUT', '${turnout.toStringAsFixed(0)}%',
                 progress: (turnout / 100).clamp(0, 1)),
           ),
         ],
@@ -446,34 +447,34 @@ class _StatsCard extends StatelessWidget {
     );
   }
 
-  Widget _stat(String label, String value, {double? progress}) {
+  Widget _stat(BuildContext context, String label, String value, {double? progress}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.bold,
-              color: AppTheme.textSecondary,
+              color: KivoraColors.textSecondaryOf(context),
               letterSpacing: 0.8),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6),
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.bold,
-              color: AppTheme.secondaryNavy),
+              color: KivoraColors.textPrimaryOf(context)),
         ),
         if (progress != null) ...[
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 5,
-              backgroundColor: AppTheme.borderLight,
+              backgroundColor: KivoraColors.borderOf(context),
               valueColor:
                   const AlwaysStoppedAnimation<Color>(AppTheme.primaryBlue),
             ),
@@ -493,15 +494,15 @@ class _VoteSplitBar extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'VOTE SPLIT',
           style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.bold,
-              color: AppTheme.textSecondary,
+              color: KivoraColors.textSecondaryOf(context),
               letterSpacing: 0.8),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         ClipRRect(
           borderRadius: BorderRadius.circular(999),
           child: SizedBox(
@@ -522,7 +523,7 @@ class _VoteSplitBar extends StatelessWidget {
                       child: (rows[i]['percent'] as num) >= 12
                           ? Text(
                               '${rows[i]['name']} ${(rows[i]['percent'] as num).toStringAsFixed(0)}%',
-                              style: const TextStyle(
+                              style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12),
@@ -553,9 +554,9 @@ class _ResultRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -567,35 +568,35 @@ class _ResultRow extends StatelessWidget {
                 height: 10,
                 decoration: BoxDecoration(color: color, shape: BoxShape.circle),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Expanded(
                 child: Text(name,
-                    style: const TextStyle(fontWeight: FontWeight.w600)),
+                    style: TextStyle(fontWeight: FontWeight.w600)),
               ),
               Text.rich(
                 TextSpan(
                   text: '$votes vote${votes == 1 ? '' : 's'} · ',
-                  style: const TextStyle(
-                      fontSize: 13, color: AppTheme.textSecondary),
+                  style: TextStyle(
+                      fontSize: 13, color: KivoraColors.textSecondaryOf(context)),
                   children: [
                     TextSpan(
                       text: '${percent.toStringAsFixed(1)}%',
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: AppTheme.secondaryNavy),
+                          color: KivoraColors.textPrimaryOf(context)),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: LinearProgressIndicator(
               value: percent / 100,
               minHeight: 8,
-              backgroundColor: AppTheme.borderLight,
+              backgroundColor: KivoraColors.borderOf(context),
               valueColor: AlwaysStoppedAnimation<Color>(color),
             ),
           ),
