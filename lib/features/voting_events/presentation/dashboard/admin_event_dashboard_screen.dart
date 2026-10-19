@@ -127,44 +127,62 @@ class _AdminEventDashboardScreenState
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         // Page Header
-                        Row(
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 16,
+                          runSpacing: 16,
                           children: [
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              child: Icon(
-                                Icons.calendar_today_rounded,
-                                color: AppTheme.primaryBlue,
-                                size: 22,
-                              ),
-                            ),
-                            SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Event Management',
-                                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: KivoraColors.textPrimaryOf(context),
-                                        ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: AppTheme.primaryBlue.withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(14),
                                   ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    'Create, manage and organize events for your community.',
-                                    style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14),
+                                  child: Icon(
+                                    Icons.calendar_today_rounded,
+                                    color: AppTheme.primaryBlue,
+                                    size: 22,
                                   ),
-                                ],
-                              ),
+                                ),
+                                SizedBox(width: 16),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Event Management',
+                                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: KivoraColors.textPrimaryOf(context),
+                                          ),
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      'Create, manage and organize events for your community.',
+                                      style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            if (events.isNotEmpty)
-                              _AnimatedCreateButton(
-                                onPressed: () => context.go('/admin/events/new'),
-                              ),
+                            Wrap(
+                              spacing: 12,
+                              runSpacing: 12,
+                              children: [
+                                OutlinedButton.icon(
+                                  onPressed: () => context.go('/admin/command-center'),
+                                  icon: const Icon(Icons.dashboard_customize_outlined, size: 18),
+                                  label: const Text('Command Center'),
+                                ),
+                                if (events.isNotEmpty)
+                                  _AnimatedCreateButton(
+                                    onPressed: () => context.go('/admin/events/new'),
+                                  ),
+                              ],
+                            ),
                           ],
                         ),
                         SizedBox(height: 32),

@@ -109,14 +109,57 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
           }
 
           final count = snapshot.data ?? 0;
-          final isReady =
+          final hasChoices =
               count >= 2 || draft.votingType == VotingType.yesNoPoll;
+          final hasSchedule = draft.startAt != null &&
+              draft.endAt != null &&
+              draft.endAt!.isAfter(draft.startAt!);
+          final hasEligibility = draft.eligibilityType == EligibilityType.allMembers ||
+              draft.selectedDepartmentIds.isNotEmpty ||
+              draft.selectedUserIds.isNotEmpty;
+          final hasTitle = draft.title.trim().isNotEmpty;
+          final checklist = <_ChecklistItem>[
+            _ChecklistItem('Title configured', hasTitle),
+            _ChecklistItem(
+                'Description added',
+                draft.description.trim().isNotEmpty,
+                optional: true),
+            _ChecklistItem('Voting window scheduled', hasSchedule),
+            _ChecklistItem(
+                'Privacy mode set (${draft.privacyMode == PrivacyMode.identifiable ? 'Identifiable' : 'Anonymous'})',
+                true),
+            _ChecklistItem(
+                'Candidates/options configured ($count)', hasChoices),
+            _ChecklistItem(
+                'Eligibility rules valid (${draft.eligibilityType.label})',
+                hasEligibility),
+          ];
+          final isReady = checklist.every((c) => c.done || c.optional);
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text('Review & Publish',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              SizedBox(height: 4),
+              Text('ELECTION SETUP CHECKLIST',
+                  style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: KivoraColors.textSecondaryOf(context),
+                      letterSpacing: 0.8)),
+              SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: KivoraColors.surfaceOf(context),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: KivoraColors.borderOf(context)),
+                ),
+                child: Column(
+                  children: checklist.map((c) => _checklistRow(context, c)).toList(),
+                ),
+              ),
               SizedBox(height: 16),
               _summaryRow('Title', draft.title),
               _summaryRow(
@@ -135,11 +178,11 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                      color: Colors.orange.shade50,
+                      color: AppTheme.warning.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8)),
                   child: Text(
-                      'Warning: A minimum of 2 choices must be configured before publishing.',
-                      style: TextStyle(color: Colors.orange)),
+                      'Complete every required checklist item above before publishing.',
+                      style: TextStyle(color: AppTheme.warning, fontWeight: FontWeight.w600)),
                 ),
               ],
               if (_error != null) ...[
@@ -177,6 +220,36 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
         });
   }
 
+  Widget _checklistRow(BuildContext context, _ChecklistItem item) {
+    final color = item.done
+        ? AppTheme.success
+        : (item.optional ? KivoraColors.textSecondaryOf(context) : AppTheme.error);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        children: [
+          Icon(
+            item.done
+                ? Icons.check_circle_rounded
+                : (item.optional ? Icons.radio_button_unchecked : Icons.error_outline_rounded),
+            size: 18,
+            color: color,
+          ),
+          SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              item.label + (item.optional && !item.done ? ' (optional)' : ''),
+              style: TextStyle(
+                  fontSize: 13,
+                  color: KivoraColors.textPrimaryOf(context),
+                  decoration: item.done ? null : null),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _summaryRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -195,4 +268,13 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
       ),
     );
   }
+}
+
+/// Package B2's election setup checklist item: [optional] items (currently
+/// just the description) don't block publishing even when incomplete.
+class _ChecklistItem {
+  const _ChecklistItem(this.label, this.done, {this.optional = false});
+  final String label;
+  final bool done;
+  final bool optional;
 }

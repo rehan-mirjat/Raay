@@ -31,6 +31,7 @@ import '../../features/organizations/presentation/create_organization_screen.dar
 import '../../features/voting_events/presentation/dashboard/admin_event_dashboard_screen.dart';
 import '../../features/voting_events/presentation/builder/event_builder_screen.dart';
 import '../../features/voting_events/presentation/election_calendar_screen.dart';
+import '../../features/voting_events/presentation/election_command_center_screen.dart';
 import '../../features/voting_events/presentation/event_detail_screen.dart';
 import '../../features/voting_events/presentation/event_results_screen.dart';
 import '../../features/voting_events/presentation/event_monitoring_screen.dart';
@@ -410,6 +411,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             navigatorKey: _shellNavigatorAdminKey,
             routes: [
+              GoRoute(
+                path: '/admin/command-center',
+                builder: (context, state) => const ElectionCommandCenterScreen(),
+              ),
               GoRoute(
                 path: '/admin/events',
                 builder: (context, state) => const AdminEventDashboardScreen(),
