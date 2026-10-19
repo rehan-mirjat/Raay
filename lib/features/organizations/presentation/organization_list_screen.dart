@@ -6,6 +6,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/error_view.dart';
+import '../../../core/widgets/kivora_animations.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../services/firebase_service.dart';
@@ -37,7 +38,7 @@ class OrganizationListScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: KivoraColors.backgroundOf(context),
-      body: SingleChildScrollView(
+      body: PageEntry(child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
         child: Center(
           child: ConstrainedBox(
@@ -309,7 +310,7 @@ class OrganizationListScreen extends ConsumerWidget {
             ),
           ),
         ),
-      ),
+      )), // PageEntry
     );
   }
 

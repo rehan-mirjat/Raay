@@ -37,8 +37,8 @@ class StatusBadge extends StatelessWidget {
       case 'CLOSED':
         return StatusBadge(
           label: 'CLOSED',
-          backgroundColor: AppTheme.textSecondary.withValues(alpha: 0.12),
-          textColor: AppTheme.textSecondary,
+          backgroundColor: AppTheme.darkTextSecondary.withValues(alpha: 0.12),
+          textColor: AppTheme.darkTextSecondary,
           icon: Icons.lock_clock_rounded,
         );
       case 'CANCELLED':
@@ -96,8 +96,8 @@ class StatusBadge extends StatelessWidget {
     }
     return StatusBadge(
       label: 'MEMBER',
-      backgroundColor: AppTheme.textSecondary.withValues(alpha: 0.12),
-      textColor: AppTheme.textSecondary,
+      backgroundColor: AppTheme.darkTextSecondary.withValues(alpha: 0.12),
+      textColor: AppTheme.darkTextSecondary,
       icon: Icons.person_rounded,
     );
   }
@@ -117,7 +117,7 @@ class StatusBadge extends StatelessWidget {
         children: [
           if (icon != null) ...[
             Icon(icon, size: 13, color: textColor),
-            const SizedBox(width: 4),
+            SizedBox(width: 4),
           ],
           Text(
             label,

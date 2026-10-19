@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../session/session_lock_provider.dart';
 import '../theme/app_theme.dart';
+import '../../core/theme/kivora_colors.dart';
 import '../widgets/inline_error_banner.dart';
 import '../../services/auth_service.dart';
 
@@ -70,7 +71,7 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
     final busy = _isVerifying || _isSigningOut;
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: KivoraColors.backgroundOf(context),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -84,32 +85,32 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                     width: 72,
                     height: 72,
                     decoration: BoxDecoration(
-                      color: AppTheme.surfaceBlue,
+                      color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                       shape: BoxShape.circle,
                       border: Border.all(
                           color: AppTheme.primaryBlue.withValues(alpha: 0.25)),
                     ),
-                    child: const Icon(Icons.lock_outline_rounded,
+                    child: Icon(Icons.lock_outline_rounded,
                         size: 32, color: AppTheme.primaryBlue),
                   ),
-                  const SizedBox(height: 24),
-                  const Text(
+                  SizedBox(height: 24),
+                  Text(
                     'Welcome back',
                     style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.secondaryNavy),
+                        color: KivoraColors.textPrimaryOf(context)),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   Text(
                     'For your security, please verify it\'s you to continue'
                     '${user?.email != null ? ' as ${user!.email}' : ''}.',
-                    style: const TextStyle(
-                        fontSize: 14, color: AppTheme.textSecondary, height: 1.4),
+                    style: TextStyle(
+                        fontSize: 14, color: KivoraColors.textSecondaryOf(context), height: 1.4),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 28),
+                  SizedBox(height: 28),
                   if (!isGoogleUser) ...[
                     TextField(
                       controller: _passwordController,
@@ -119,11 +120,11 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                       decoration: const InputDecoration(labelText: 'Password'),
                       onSubmitted: (_) => _verify(),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
                   ],
                   if (_error != null) ...[
                     InlineErrorBanner(message: _error!),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
                   ],
                   SizedBox(
                     width: double.infinity,
@@ -135,7 +136,7 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: _isVerifying
-                          ? const SizedBox(
+                          ? SizedBox(
                               height: 18,
                               width: 18,
                               child: CircularProgressIndicator(
@@ -143,15 +144,15 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                           : Text(isGoogleUser ? 'Verify with Google' : 'Verify'),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   TextButton(
                     onPressed: busy ? null : _signOutInstead,
                     child: _isSigningOut
-                        ? const SizedBox(
+                        ? SizedBox(
                             height: 16,
                             width: 16,
                             child: CircularProgressIndicator(strokeWidth: 2))
-                        : const Text('Sign out instead'),
+                        : Text('Sign out instead'),
                   ),
                 ],
               ),

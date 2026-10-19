@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../organizations/presentation/providers/organization_providers.dart';
 import '../../departments/presentation/providers/department_providers.dart';
 import '../../voting_events/data/voting_event_repository.dart';
@@ -62,9 +63,9 @@ class SetupChecklistWidget extends ConsumerWidget {
           margin: const EdgeInsets.only(bottom: 24),
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: AppTheme.surfaceWhite,
+            color: KivoraColors.surfaceOf(context),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppTheme.borderLight),
+            border: Border.all(color: KivoraColors.borderOf(context)),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.02),
@@ -79,52 +80,52 @@ class SetupChecklistWidget extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Get your organization ready',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close_rounded, size: 20, color: AppTheme.textSecondary),
+                    icon: Icon(Icons.close_rounded, size: 20, color: KivoraColors.textSecondaryOf(context)),
                     onPressed: () => ref.read(onboardingProvider.notifier).dismissChecklist(),
                     tooltip: 'Dismiss',
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               Row(
                 children: [
                   Expanded(
                     child: LinearProgressIndicator(
                       value: completedCount / items.length,
-                      backgroundColor: AppTheme.borderLight,
+                      backgroundColor: KivoraColors.borderOf(context),
                       color: AppTheme.success,
                       minHeight: 6,
                       borderRadius: BorderRadius.circular(3),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Text(
                     '$completedCount of ${items.length} completed',
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: KivoraColors.textSecondaryOf(context)),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               ...items.map((item) => Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Row(
                   children: [
                     Icon(
                       item.isCompleted ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
-                      color: item.isCompleted ? AppTheme.success : AppTheme.borderLight,
+                      color: item.isCompleted ? AppTheme.success : KivoraColors.borderOf(context),
                       size: 20,
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                     Text(
                       item.title,
                       style: TextStyle(
                         fontSize: 14,
-                        color: item.isCompleted ? AppTheme.textSecondary : AppTheme.secondaryNavy,
+                        color: item.isCompleted ? KivoraColors.textSecondaryOf(context) : KivoraColors.textPrimaryOf(context),
                         decoration: item.isCompleted ? TextDecoration.lineThrough : null,
                       ),
                     ),

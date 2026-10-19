@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../../core/theme/kivora_colors.dart';
 
 enum ErrorViewType {
   organizationRequired,
@@ -108,10 +109,10 @@ class ErrorView extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 520),
           child: Container(
             decoration: BoxDecoration(
-              color: AppTheme.surfaceWhite,
+              color: KivoraColors.surfaceOf(context),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: AppTheme.borderLight,
+                color: KivoraColors.borderOf(context),
               ),
               boxShadow: [
                 BoxShadow(
@@ -144,7 +145,7 @@ class ErrorView extends StatelessWidget {
                               size: 20,
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: 12),
                           Text(
                             statusLabel,
                             style: TextStyle(
@@ -155,21 +156,21 @@ class ErrorView extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24),
                       Text(
                         effectiveTitle,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: AppTheme.secondaryNavy,
+                          color: KivoraColors.textPrimaryOf(context),
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12),
                       Text(
                         message ?? '',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
-                          color: AppTheme.textSecondary,
+                          color: KivoraColors.textSecondaryOf(context),
                           height: 1.5,
                         ),
                       ),
@@ -177,10 +178,10 @@ class ErrorView extends StatelessWidget {
                   ),
                 ),
                 if (onRetry != null || onSecondaryAction != null) ...[
-                  const Divider(height: 1, color: AppTheme.borderLight),
+                  Divider(height: 1, color: KivoraColors.borderOf(context)),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       color: Color(0xFFF8FAFC),
                       borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
                     ),
@@ -191,13 +192,13 @@ class ErrorView extends StatelessWidget {
                           OutlinedButton(
                             onPressed: onSecondaryAction,
                             style: OutlinedButton.styleFrom(
-                              foregroundColor: AppTheme.textSecondary,
-                              side: const BorderSide(color: AppTheme.borderLight),
+                              foregroundColor: KivoraColors.textSecondaryOf(context),
+                              side: BorderSide(color: KivoraColors.borderOf(context)),
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                             ),
                             child: Text(secondaryActionLabel!),
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: 12),
                         ],
                         if (onRetry != null)
                           FilledButton.icon(

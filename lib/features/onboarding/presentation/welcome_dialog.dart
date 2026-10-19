@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../providers/onboarding_providers.dart';
 
 class WelcomeDialog extends ConsumerWidget {
@@ -33,27 +34,27 @@ class WelcomeDialog extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
-              const Text(
+              SizedBox(height: 24),
+              Text(
                 'Welcome to Kivora',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.secondaryNavy,
+                  color: KivoraColors.textPrimaryOf(context),
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 12),
-              const Text(
+              SizedBox(height: 12),
+              Text(
                 'Manage your organization, members, and secure voting events in one place.',
                 style: TextStyle(
                   fontSize: 15,
-                  color: AppTheme.textSecondary,
+                  color: KivoraColors.textSecondaryOf(context),
                   height: 1.5,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
@@ -64,10 +65,10 @@ class WelcomeDialog extends ConsumerWidget {
                     backgroundColor: AppTheme.primaryBlue,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  child: const Text('Take a quick tour'),
+                  child: Text('Take a quick tour'),
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
                 child: TextButton(
@@ -76,9 +77,9 @@ class WelcomeDialog extends ConsumerWidget {
                     Navigator.pop(context, false);
                   },
                   style: TextButton.styleFrom(
-                    foregroundColor: AppTheme.textSecondary,
+                    foregroundColor: KivoraColors.textSecondaryOf(context),
                   ),
-                  child: const Text('Skip for now'),
+                  child: Text('Skip for now'),
                 ),
               ),
             ],

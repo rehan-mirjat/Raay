@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../../core/theme/kivora_colors.dart';
 
 class EmptyView extends StatelessWidget {
   final IconData icon;
@@ -31,7 +32,7 @@ class EmptyView extends StatelessWidget {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: AppTheme.surfaceBlue,
+                  color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: AppTheme.primaryBlue.withValues(alpha: 0.2),
@@ -43,28 +44,28 @@ class EmptyView extends StatelessWidget {
                   color: AppTheme.primaryBlue,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.secondaryNavy,
+                  color: KivoraColors.textPrimaryOf(context),
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               Text(
                 message,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
-                  color: AppTheme.textSecondary,
+                  color: KivoraColors.textSecondaryOf(context),
                   height: 1.4,
                 ),
                 textAlign: TextAlign.center,
               ),
               if (actionLabel != null && onAction != null) ...[
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: onAction,
                   child: Text(actionLabel!),

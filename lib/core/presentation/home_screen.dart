@@ -8,6 +8,7 @@ import '../theme/kivora_colors.dart';
 import '../layout/responsive.dart';
 import '../../../core/widgets/error_view.dart';
 import '../widgets/fade_through.dart';
+import '../widgets/kivora_animations.dart';
 import '../widgets/loading_view.dart';
 import '../widgets/status_badge.dart';
 import '../../features/departments/presentation/providers/department_providers.dart';
@@ -83,7 +84,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
         final departmentsAsync =
             ref.watch(activeOrganizationDepartmentsProvider);
-        return RefreshIndicator(
+        return PageEntry(
+          child: RefreshIndicator(
           color: AppTheme.primaryBlue,
           onRefresh: () async {
             ref.invalidate(activeOrganizationContextProvider);
@@ -274,7 +276,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
           ),
-        );
+        )); // RefreshIndicator + PageEntry
       },
     );
   }

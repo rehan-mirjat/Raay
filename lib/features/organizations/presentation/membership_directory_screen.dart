@@ -7,6 +7,7 @@ import '../../../core/theme/kivora_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
+import '../../../core/widgets/kivora_animations.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../services/firebase_service.dart';
@@ -312,7 +313,7 @@ class _MembershipDirectoryScreenState
             }
             return KeyEventResult.ignored;
           },
-          child: Material(
+          child: PageEntry(child: Material(
             color: background,
             child: Center(
               child: ConstrainedBox(
@@ -412,7 +413,9 @@ class _MembershipDirectoryScreenState
                                       itemCount: filtered.length,
                                       itemBuilder: (context, index) {
                                         final member = filtered[index];
-                                        return _MemberCard(
+                                        return StaggeredListItem(
+                                          index: index,
+                                          child: _MemberCard(
                                           member: member,
                                           compact: compact,
                                           onTap: () => showDialog<void>(
@@ -425,7 +428,7 @@ class _MembershipDirectoryScreenState
                                                   organizationMembersDirectoryProvider(orgId)),
                                             ),
                                           ),
-                                        );
+                                        ));
                                       },
                                     ),
                                   ),
@@ -439,7 +442,7 @@ class _MembershipDirectoryScreenState
                 ),
               ),
             ),
-          ),
+          )), // PageEntry
         );
       },
     );
@@ -468,7 +471,10 @@ class _MemberCard extends StatelessWidget {
     final photoUrl = FirebaseService.sanitizeStorageUrl(rawPhotoUrl);
     final isInactive = status == 'inactive';
 
-    return Card(
+    return HoverLiftCard(
+      borderRadius: 16,
+      onTap: onTap,
+      child: Card(
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -476,7 +482,7 @@ class _MemberCard extends StatelessWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        hoverColor: AppTheme.primaryBlue.withValues(alpha: 0.12).withValues(alpha: 0.3),
+        hoverColor: AppTheme.primaryBlue.withValues(alpha: 0.06),
         onTap: onTap,
         child: Padding(
           padding: EdgeInsets.all(compact ? 12 : 20),
@@ -544,7 +550,7 @@ class _MemberCard extends StatelessWidget {
           ),
         ),
       ),
-    );
+    )); // HoverLiftCard
   }
 
   Widget _iconLine(BuildContext context, IconData icon, String text) => Row(

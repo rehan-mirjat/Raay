@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/layout/responsive.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/kivora_colors.dart';
 
 class AuthSplitLayout extends StatelessWidget {
   final Widget child;
@@ -20,11 +21,11 @@ class AuthSplitLayout extends StatelessWidget {
     if (!isDesktop) {
       return Scaffold(
         backgroundColor:
-            isDark ? AppTheme.darkBackground : AppTheme.backgroundLight,
+            isDark ? AppTheme.darkBackground : KivoraColors.backgroundOf(context),
         appBar: onMobileBackTap != null
             ? AppBar(
                 backgroundColor:
-                    isDark ? AppTheme.darkBackground : AppTheme.backgroundLight,
+                    isDark ? AppTheme.darkBackground : KivoraColors.backgroundOf(context),
                 elevation: 0,
                 leading: IconButton(
                   icon: Icon(Icons.arrow_back,
@@ -61,14 +62,14 @@ class AuthSplitLayout extends StatelessWidget {
 
     return Scaffold(
       backgroundColor:
-          isDark ? AppTheme.darkBackground : AppTheme.backgroundLight,
+          isDark ? AppTheme.darkBackground : KivoraColors.backgroundOf(context),
       body: Row(
         children: [
           // Left Side — Dark branding panel (always dark for contrast)
           Expanded(
             flex: 1,
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -124,8 +125,8 @@ class AuthSplitLayout extends StatelessWidget {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                            const SizedBox(width: 14),
-                            const Text(
+                            SizedBox(width: 14),
+                            Text(
                               'Kivora',
                               style: TextStyle(
                                 color: Colors.white,
@@ -136,7 +137,7 @@ class AuthSplitLayout extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16),
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 6),
@@ -154,13 +155,13 @@ class AuthSplitLayout extends StatelessWidget {
                               Container(
                                 width: 6,
                                 height: 6,
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
                                   color: AppTheme.accentCyan,
                                   shape: BoxShape.circle,
                                 ),
                               ),
-                              const SizedBox(width: 8),
-                              const Text(
+                              SizedBox(width: 8),
+                              Text(
                                 'PRIVACY-AWARE VOTING',
                                 style: TextStyle(
                                   color: AppTheme.accentCyan,
@@ -172,8 +173,8 @@ class AuthSplitLayout extends StatelessWidget {
                             ],
                           ),
                         ),
-                        const Spacer(),
-                        const Text(
+                        Spacer(),
+                        Text(
                           'Your Voice,\nYour Choice.',
                           style: TextStyle(
                             color: Colors.white,
@@ -183,7 +184,7 @@ class AuthSplitLayout extends StatelessWidget {
                             letterSpacing: -0.5,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        SizedBox(height: 12),
                         Text(
                           'Secure, transparent and modern\ne-voting for organizations.',
                           style: TextStyle(
@@ -192,30 +193,30 @@ class AuthSplitLayout extends StatelessWidget {
                             height: 1.5,
                           ),
                         ),
-                        const SizedBox(height: 48),
+                        SizedBox(height: 48),
                         _buildFeatureItem(
                           icon: Icons.lock_outline,
                           title: 'Server-authorized voting',
                           description:
                               'Ballots are validated and recorded by trusted backend services.',
                         ),
-                        const SizedBox(height: 28),
+                        SizedBox(height: 28),
                         _buildFeatureItem(
                           icon: Icons.fingerprint,
                           title: 'Privacy-aware ballots',
                           description:
                               'Anonymous ballots are separated from participation records.',
                         ),
-                        const SizedBox(height: 28),
+                        SizedBox(height: 28),
                         _buildFeatureItem(
                           icon: Icons.check_circle_outline,
                           title: 'Clear participation receipts',
                           description:
                               'Confirm participation without revealing your selection.',
                         ),
-                        const Spacer(),
+                        Spacer(),
                         Divider(color: Colors.white.withValues(alpha: 0.1)),
-                        const SizedBox(height: 20),
+                        SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -244,7 +245,7 @@ class AuthSplitLayout extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Container(
-              color: isDark ? AppTheme.darkBackground : AppTheme.backgroundLight,
+              color: isDark ? AppTheme.darkBackground : KivoraColors.backgroundOf(context),
               child: child,
             ),
           ),
@@ -272,20 +273,20 @@ class AuthSplitLayout extends StatelessWidget {
               color: const Color(0xFFAB98FF), // light violet
               size: 20),
         ),
-        const SizedBox(width: 16),
+        SizedBox(width: 16),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
                 ),
               ),
-              const SizedBox(height: 3),
+              SizedBox(height: 3),
               Text(
                 description,
                 style: TextStyle(

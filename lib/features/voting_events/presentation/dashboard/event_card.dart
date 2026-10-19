@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/kivora_colors.dart';
+import '../../../../core/widgets/kivora_animations.dart';
 import '../../domain/voting_event.dart';
 import '../providers/event_lifecycle_provider.dart';
 
@@ -17,7 +18,10 @@ class EventCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final format = DateFormat('MMM d, yyyy - h:mm a');
 
-    return Card(
+    return HoverLiftCard(
+      borderRadius: AppTheme.radiusCard,
+      onTap: () => context.go('/elections/${event.id}'),
+      child: Card(
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusCard)),
@@ -64,7 +68,7 @@ class EventCard extends ConsumerWidget {
           ],
         ),
       ),
-    );
+    )); // HoverLiftCard
   }
 
   Widget _buildStatusBadge(VotingEventStatus status) {

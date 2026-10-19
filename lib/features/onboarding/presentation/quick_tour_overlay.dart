@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../providers/onboarding_providers.dart';
 import 'tour_keys.dart';
 
@@ -120,7 +121,7 @@ class _QuickTourOverlayState extends ConsumerState<QuickTourOverlay> {
               child: Container(
                 padding: const EdgeInsets.all(32),
                 decoration: BoxDecoration(
-                    color: AppTheme.surfaceWhite,
+                    color: KivoraColors.surfaceOf(context),
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
@@ -138,35 +139,35 @@ class _QuickTourOverlayState extends ConsumerState<QuickTourOverlay> {
                         color: AppTheme.success.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.check_circle_rounded,
+                      child: Icon(Icons.check_circle_rounded,
                           color: AppTheme.success, size: 40),
                     ),
-                    const SizedBox(height: 24),
-                    const Text(
+                    SizedBox(height: 24),
+                    Text(
                       'You\'re ready to go!',
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: AppTheme.secondaryNavy),
+                          color: KivoraColors.textPrimaryOf(context)),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 12),
-                    const Text(
+                    SizedBox(height: 12),
+                    Text(
                       'Kivora is set up for you.\n\nStart by creating an organization, joining an organization, or exploring your workspace.',
                       style: TextStyle(
                           fontSize: 14,
-                          color: AppTheme.textSecondary,
+                          color: KivoraColors.textSecondaryOf(context),
                           height: 1.5),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32),
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton(
                         onPressed: _close,
                         style: FilledButton.styleFrom(
                             backgroundColor: AppTheme.primaryBlue),
-                        child: const Text('Get Started \u2192'),
+                        child: Text('Get Started \u2192'),
                       ),
                     ),
                   ],
@@ -233,7 +234,7 @@ class _QuickTourOverlayState extends ConsumerState<QuickTourOverlay> {
               width: 320,
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: AppTheme.surfaceWhite,
+                color: KivoraColors.surfaceOf(context),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
@@ -250,39 +251,39 @@ class _QuickTourOverlayState extends ConsumerState<QuickTourOverlay> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('Step ${_currentStep + 1} of ${_steps.length}',
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                               color: AppTheme.primaryBlue)),
                       IconButton(
-                        icon: const Icon(Icons.close_rounded,
-                            size: 18, color: AppTheme.textSecondary),
+                        icon: Icon(Icons.close_rounded,
+                            size: 18, color: KivoraColors.textSecondaryOf(context)),
                         onPressed: _close,
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   Text(step.title,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: AppTheme.secondaryNavy)),
-                  const SizedBox(height: 8),
+                          color: KivoraColors.textPrimaryOf(context))),
+                  SizedBox(height: 8),
                   Text(step.description,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 14,
-                          color: AppTheme.textSecondary,
+                          color: KivoraColors.textSecondaryOf(context),
                           height: 1.4)),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       if (_currentStep > 0)
                         TextButton(
                           onPressed: _prevStep,
-                          child: const Text('Back'),
+                          child: Text('Back'),
                         )
                       else
                         const SizedBox.shrink(),
@@ -293,7 +294,7 @@ class _QuickTourOverlayState extends ConsumerState<QuickTourOverlay> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
                         ),
-                        child: const Text('Next \u2192'),
+                        child: Text('Next \u2192'),
                       ),
                     ],
                   ),

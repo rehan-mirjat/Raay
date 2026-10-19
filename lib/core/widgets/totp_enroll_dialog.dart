@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../theme/app_theme.dart';
+import '../../core/theme/kivora_colors.dart';
 import '../../services/auth_service.dart';
 import 'reauth_dialog.dart';
 
@@ -106,7 +107,7 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
           canPop: !isVerifying,
           child: AlertDialog(
           insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-          title: const Text('Set up two-factor authentication'),
+          title: Text('Set up two-factor authentication'),
           content: SingleChildScrollView(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 360),
@@ -114,19 +115,19 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     '1. Scan this QR code with an authenticator app '
                     '(Google Authenticator, Authy, 1Password, etc.).',
                     style: TextStyle(fontSize: 13),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   Center(
                     child: Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: AppTheme.borderLight),
+                        border: Border.all(color: KivoraColors.borderOf(context)),
                       ),
                       child: QrImageView(
                         data: qrCodeUrl,
@@ -135,25 +136,25 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  const Text(
+                  SizedBox(height: 12),
+                  Text(
                     'Can\'t scan? Enter this key manually:',
-                    style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                    style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   SelectableText(
                     secret.secretKey,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1.2),
                   ),
-                  const SizedBox(height: 16),
-                  const Text(
+                  SizedBox(height: 16),
+                  Text(
                     '2. Enter the 6-digit code it generates:',
                     style: TextStyle(fontSize: 13),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   TextField(
                     controller: codeController,
                     autofocus: true,
@@ -167,8 +168,8 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
                     onSubmitted: (_) => confirm(),
                   ),
                   if (dialogError != null) ...[
-                    const SizedBox(height: 8),
-                    Text(dialogError!, style: const TextStyle(color: AppTheme.error)),
+                    SizedBox(height: 8),
+                    Text(dialogError!, style: TextStyle(color: AppTheme.error)),
                   ],
                 ],
               ),
@@ -179,16 +180,16 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
               onPressed: isVerifying
                   ? null
                   : () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
+              child: Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: isVerifying ? null : confirm,
               child: isVerifying
-                  ? const SizedBox(
+                  ? SizedBox(
                       height: 16,
                       width: 16,
                       child: CircularProgressIndicator(strokeWidth: 2))
-                  : const Text('Enable 2FA'),
+                  : Text('Enable 2FA'),
             ),
           ],
           ),

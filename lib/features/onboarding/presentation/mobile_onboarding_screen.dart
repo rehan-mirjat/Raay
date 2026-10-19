@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../providers/onboarding_providers.dart';
 
 class MobileOnboardingScreen extends ConsumerStatefulWidget {
@@ -53,7 +54,7 @@ class _MobileOnboardingScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: KivoraColors.backgroundOf(context),
       body: SafeArea(
         child: Column(
           children: [
@@ -103,13 +104,13 @@ class _MobileOnboardingScreenState
                   fit: BoxFit.cover,
                 ),
               ),
-              const SizedBox(width: 10),
-              const Text(
+              SizedBox(width: 10),
+              Text(
                 'Kivora',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
-                  color: AppTheme.secondaryNavy,
+                  color: KivoraColors.textPrimaryOf(context),
                   letterSpacing: -0.5,
                 ),
               ),
@@ -123,7 +124,7 @@ class _MobileOnboardingScreenState
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
-              child: const Text('Skip',
+              child: Text('Skip',
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
             ),
         ],
@@ -139,7 +140,7 @@ class _MobileOnboardingScreenState
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         children: [
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
 
           // Illustration Graphic Card
           _buildGraphicCard(
@@ -149,31 +150,31 @@ class _MobileOnboardingScreenState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Your organization',
+                    Text('Your organization',
                         style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: AppTheme.secondaryNavy)),
+                            color: KivoraColors.textPrimaryOf(context))),
                     Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                          color: AppTheme.surfaceBlue,
+                          color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(6)),
-                      child: const Icon(Icons.corporate_fare_outlined,
+                      child: Icon(Icons.corporate_fare_outlined,
                           size: 14, color: AppTheme.primaryBlue),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 _illustrationActionRow(
                     Icons.add_rounded,
                     'Create an organization',
                     'Start a space for your community'),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 _illustrationActionRow(Icons.person_add_outlined,
                     'Join an organization', 'Use your code or invitation'),
-                const SizedBox(height: 12),
-                const Row(
+                SizedBox(height: 12),
+                Row(
                   children: [
                     Icon(Icons.key_outlined,
                         size: 12, color: AppTheme.primaryBlue),
@@ -189,7 +190,7 @@ class _MobileOnboardingScreenState
             ),
           ),
 
-          const Spacer(),
+          Spacer(),
 
           // Category Badge & Titles
           _buildTextContent(
@@ -199,7 +200,7 @@ class _MobileOnboardingScreenState
                 'Bring your people together. Create a home for your elections and polls, or join with an invitation code.',
           ),
 
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
 
           // Bottom Callout
           _buildCalloutBox(
@@ -209,7 +210,7 @@ class _MobileOnboardingScreenState
                 'Connect your members, elections and polls in one organization.',
           ),
 
-          const Spacer(),
+          Spacer(),
 
           // Bottom Controls (1 of 3 + Next button)
           _buildBottomControls(
@@ -217,7 +218,7 @@ class _MobileOnboardingScreenState
             onNext: _nextPage,
             primaryLabel: 'Next',
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
         ],
       ),
     );
@@ -231,7 +232,7 @@ class _MobileOnboardingScreenState
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         children: [
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
 
           // Illustration Graphic Card
           _buildGraphicCard(
@@ -241,39 +242,39 @@ class _MobileOnboardingScreenState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('EXAMPLE BALLOT',
+                    Text('EXAMPLE BALLOT',
                         style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
-                            color: AppTheme.textSecondary)),
+                            color: KivoraColors.textSecondaryOf(context))),
                     Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                          color: AppTheme.surfaceBlue,
+                          color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(6)),
-                      child: const Icon(Icons.how_to_vote_outlined,
+                      child: Icon(Icons.how_to_vote_outlined,
                           size: 14, color: AppTheme.primaryBlue),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                const Text('Student council 2026',
+                SizedBox(height: 8),
+                Text('Student council 2026',
                     style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.secondaryNavy)),
-                const Text('President · Choose one candidate',
+                        color: KivoraColors.textPrimaryOf(context))),
+                Text('President · Choose one candidate',
                     style:
-                        TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
-                const SizedBox(height: 12),
+                        TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
+                SizedBox(height: 12),
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                      color: AppTheme.surfaceBlue,
+                      color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: AppTheme.primaryBlue)),
-                  child: const Row(
+                  child: Row(
                     children: [
                       Icon(Icons.radio_button_checked_rounded,
                           size: 14, color: AppTheme.primaryBlue),
@@ -286,25 +287,25 @@ class _MobileOnboardingScreenState
                     ],
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                      color: AppTheme.backgroundLight,
+                      color: KivoraColors.backgroundOf(context),
                       borderRadius: BorderRadius.circular(8)),
-                  child: const Row(
+                  child: Row(
                     children: [
                       Icon(Icons.radio_button_unchecked_rounded,
-                          size: 14, color: AppTheme.textSecondary),
+                          size: 14, color: KivoraColors.textSecondaryOf(context)),
                       SizedBox(width: 8),
                       Text('Jordan Lee',
                           style: TextStyle(
-                              fontSize: 12, color: AppTheme.secondaryNavy)),
+                              fontSize: 12, color: KivoraColors.textPrimaryOf(context))),
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
@@ -315,7 +316,7 @@ class _MobileOnboardingScreenState
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                     ),
-                    child: const Text('Review vote',
+                    child: Text('Review vote',
                         style: TextStyle(fontSize: 12)),
                   ),
                 ),
@@ -323,7 +324,7 @@ class _MobileOnboardingScreenState
             ),
           ),
 
-          const Spacer(),
+          Spacer(),
 
           // Category Badge & Titles
           _buildTextContent(
@@ -333,7 +334,7 @@ class _MobileOnboardingScreenState
                 'Make your voice count in elections and polls. Review your options, choose, and submit your vote.',
           ),
 
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
 
           // Bottom Callout
           _buildCalloutBox(
@@ -343,7 +344,7 @@ class _MobileOnboardingScreenState
                 'Private ballots protect your choices while keeping the process accountable.',
           ),
 
-          const Spacer(),
+          Spacer(),
 
           // Bottom Controls (2 of 3 + Back & Next)
           _buildBottomControls(
@@ -352,7 +353,7 @@ class _MobileOnboardingScreenState
             onNext: _nextPage,
             primaryLabel: 'Next',
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
         ],
       ),
     );
@@ -366,7 +367,7 @@ class _MobileOnboardingScreenState
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         children: [
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
 
           // Illustration Graphic Card
           _buildGraphicCard(
@@ -376,28 +377,28 @@ class _MobileOnboardingScreenState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Organization settings',
+                    Text('Organization settings',
                         style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
-                            color: AppTheme.secondaryNavy)),
+                            color: KivoraColors.textPrimaryOf(context))),
                     Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                          color: AppTheme.surfaceBlue,
+                          color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(6)),
-                      child: const Icon(Icons.tune_rounded,
+                      child: Icon(Icons.tune_rounded,
                           size: 14, color: AppTheme.primaryBlue),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                      color: AppTheme.surfaceBlue,
+                      color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8)),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
@@ -407,10 +408,10 @@ class _MobileOnboardingScreenState
                               style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
-                                  color: AppTheme.secondaryNavy)),
+                                  color: KivoraColors.textPrimaryOf(context))),
                           Text('Approval required',
                               style: TextStyle(
-                                  fontSize: 9, color: AppTheme.textSecondary)),
+                                  fontSize: 9, color: KivoraColors.textSecondaryOf(context))),
                         ],
                       ),
                       Icon(Icons.toggle_on_rounded,
@@ -418,20 +419,20 @@ class _MobileOnboardingScreenState
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
-                const Text('Activity log',
+                SizedBox(height: 12),
+                Text('Activity log',
                     style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.secondaryNavy)),
-                const SizedBox(height: 4),
+                        color: KivoraColors.textPrimaryOf(context))),
+                SizedBox(height: 4),
                 _miniLogItem('Member approved', '09:32'),
                 _miniLogItem('Election created', '09:15'),
               ],
             ),
           ),
 
-          const Spacer(),
+          Spacer(),
 
           // Category Badge & Titles
           _buildTextContent(
@@ -441,7 +442,7 @@ class _MobileOnboardingScreenState
                 'Set clear rules for your organization. Manage member verification and follow important actions in the activity log.',
           ),
 
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
 
           // Bottom Callout
           _buildCalloutBox(
@@ -451,7 +452,7 @@ class _MobileOnboardingScreenState
                 'Verification controls who can take part. Activity logs keep administrative actions on record.',
           ),
 
-          const Spacer(),
+          Spacer(),
 
           // Bottom Controls (3 of 3 + Back & Continue)
           _buildBottomControls(
@@ -460,7 +461,7 @@ class _MobileOnboardingScreenState
             onNext: _nextPage,
             primaryLabel: 'Continue',
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
         ],
       ),
     );
@@ -474,7 +475,7 @@ class _MobileOnboardingScreenState
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         children: [
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
 
           // Graphic Card
           _buildGraphicCard(
@@ -486,37 +487,37 @@ class _MobileOnboardingScreenState
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                          color: AppTheme.surfaceBlue,
+                          color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(10)),
-                      child: const Icon(Icons.people_outline_rounded,
+                      child: Icon(Icons.people_outline_rounded,
                           color: AppTheme.primaryBlue, size: 20),
                     ),
-                    const SizedBox(width: 10),
-                    const Column(
+                    SizedBox(width: 10),
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Your community',
                             style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
-                                color: AppTheme.secondaryNavy)),
+                                color: KivoraColors.textPrimaryOf(context))),
                         Text('A shared place to decide',
                             style: TextStyle(
-                                fontSize: 10, color: AppTheme.textSecondary)),
+                                fontSize: 10, color: KivoraColors.textSecondaryOf(context))),
                       ],
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
                       child: Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                            color: AppTheme.backgroundLight,
+                            color: KivoraColors.backgroundOf(context),
                             borderRadius: BorderRadius.circular(10)),
-                        child: const Column(
+                        child: Column(
                           children: [
                             Icon(Icons.how_to_vote_outlined,
                                 size: 18, color: AppTheme.primaryBlue),
@@ -525,19 +526,19 @@ class _MobileOnboardingScreenState
                                 style: TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.bold,
-                                    color: AppTheme.secondaryNavy)),
+                                    color: KivoraColors.textPrimaryOf(context))),
                           ],
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    SizedBox(width: 10),
                     Expanded(
                       child: Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                            color: AppTheme.backgroundLight,
+                            color: KivoraColors.backgroundOf(context),
                             borderRadius: BorderRadius.circular(10)),
-                        child: const Column(
+                        child: Column(
                           children: [
                             Icon(Icons.bar_chart_rounded,
                                 size: 18, color: AppTheme.primaryBlue),
@@ -546,15 +547,15 @@ class _MobileOnboardingScreenState
                                 style: TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.bold,
-                                    color: AppTheme.secondaryNavy)),
+                                    color: KivoraColors.textPrimaryOf(context))),
                           ],
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                const Text('Better decisions, together.',
+                SizedBox(height: 12),
+                Text('Better decisions, together.',
                     style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
@@ -563,32 +564,32 @@ class _MobileOnboardingScreenState
             ),
           ),
 
-          const Spacer(),
+          Spacer(),
 
           // Welcome Title & Subtitle
-          const Text(
+          Text(
             'Give your organization\na voice.',
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w800,
-              color: AppTheme.secondaryNavy,
+              color: KivoraColors.textPrimaryOf(context),
               height: 1.2,
               letterSpacing: -0.6,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
-          const Text(
+          SizedBox(height: 12),
+          Text(
             'Create a home for your elections and polls. Bring your members in, and move forward together with Kivora.',
             style: TextStyle(
               fontSize: 13,
-              color: AppTheme.textSecondary,
+              color: KivoraColors.textSecondaryOf(context),
               height: 1.4,
             ),
             textAlign: TextAlign.center,
           ),
 
-          const Spacer(),
+          Spacer(),
 
           // Action Buttons
           SizedBox(
@@ -604,11 +605,11 @@ class _MobileOnboardingScreenState
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
               ),
-              child: const Text('Get started',
+              child: Text('Get started',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
             child: OutlinedButton(
@@ -618,16 +619,16 @@ class _MobileOnboardingScreenState
               },
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppTheme.primaryBlue,
-                side: const BorderSide(color: AppTheme.borderLight, width: 1.5),
+                side: BorderSide(color: KivoraColors.borderOf(context), width: 1.5),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
               ),
-              child: const Text('I already have an account',
+              child: Text('I already have an account',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
 
           InkWell(
             onTap: () {
@@ -635,7 +636,7 @@ class _MobileOnboardingScreenState
               context.go('/login');
             },
             borderRadius: BorderRadius.circular(6),
-            child: const Padding(
+            child: Padding(
               padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -652,13 +653,13 @@ class _MobileOnboardingScreenState
             ),
           ),
 
-          const SizedBox(height: 16),
-          const Text(
+          SizedBox(height: 16),
+          Text(
             'By continuing, you agree to our Terms and Privacy Policy.',
-            style: TextStyle(fontSize: 10, color: AppTheme.textSecondary),
+            style: TextStyle(fontSize: 10, color: KivoraColors.textSecondaryOf(context)),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
         ],
       ),
     );
@@ -674,12 +675,12 @@ class _MobileOnboardingScreenState
       decoration: BoxDecoration(
         color: const Color(0xFFF3F6FE),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
       ),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppTheme.surfaceWhite,
+          color: KivoraColors.surfaceOf(context),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -698,35 +699,35 @@ class _MobileOnboardingScreenState
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-          color: AppTheme.backgroundLight,
+          color: KivoraColors.backgroundOf(context),
           borderRadius: BorderRadius.circular(10)),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-                color: AppTheme.surfaceBlue,
+                color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(8)),
             child: Icon(icon, size: 16, color: AppTheme.primaryBlue),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.secondaryNavy)),
+                        color: KivoraColors.textPrimaryOf(context))),
                 Text(subtitle,
-                    style: const TextStyle(
-                        fontSize: 10, color: AppTheme.textSecondary)),
+                    style: TextStyle(
+                        fontSize: 10, color: KivoraColors.textSecondaryOf(context))),
               ],
             ),
           ),
-          const Icon(Icons.chevron_right_rounded,
-              size: 16, color: AppTheme.textSecondary),
+          Icon(Icons.chevron_right_rounded,
+              size: 16, color: KivoraColors.textSecondaryOf(context)),
         ],
       ),
     );
@@ -743,17 +744,17 @@ class _MobileOnboardingScreenState
               Container(
                   width: 6,
                   height: 6,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                       color: AppTheme.primaryBlue, shape: BoxShape.circle)),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Text(title,
-                  style: const TextStyle(
-                      fontSize: 10, color: AppTheme.secondaryNavy)),
+                  style: TextStyle(
+                      fontSize: 10, color: KivoraColors.textPrimaryOf(context))),
             ],
           ),
           Text(time,
               style:
-                  const TextStyle(fontSize: 9, color: AppTheme.textSecondary)),
+                  TextStyle(fontSize: 9, color: KivoraColors.textSecondaryOf(context))),
         ],
       ),
     );
@@ -765,31 +766,31 @@ class _MobileOnboardingScreenState
       children: [
         Text(
           tag,
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.bold,
               color: AppTheme.primaryBlue,
               letterSpacing: 0.8),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 26,
             fontWeight: FontWeight.w800,
-            color: AppTheme.secondaryNavy,
+            color: KivoraColors.textPrimaryOf(context),
             height: 1.2,
             letterSpacing: -0.5,
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         Text(
           subtitle,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 13,
-            color: AppTheme.textSecondary,
+            color: KivoraColors.textSecondaryOf(context),
             height: 1.4,
           ),
           textAlign: TextAlign.center,
@@ -803,33 +804,33 @@ class _MobileOnboardingScreenState
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-                color: AppTheme.surfaceBlue,
+                color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(8)),
             child: Icon(icon, color: AppTheme.primaryBlue, size: 16),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.secondaryNavy)),
+                        color: KivoraColors.textPrimaryOf(context))),
                 Text(text,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 10,
-                        color: AppTheme.textSecondary,
+                        color: KivoraColors.textSecondaryOf(context),
                         height: 1.3)),
               ],
             ),
@@ -858,17 +859,17 @@ class _MobileOnboardingScreenState
               width: isCurrent ? 20 : 8,
               height: 8,
               decoration: BoxDecoration(
-                color: isCurrent ? AppTheme.primaryBlue : AppTheme.borderLight,
+                color: isCurrent ? AppTheme.primaryBlue : KivoraColors.borderOf(context),
                 borderRadius: BorderRadius.circular(4),
               ),
             );
           }),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: 4),
         Text('$pageIndex of 3',
             style:
-                const TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
-        const SizedBox(height: 16),
+                TextStyle(fontSize: 10, color: KivoraColors.textSecondaryOf(context))),
+        SizedBox(height: 16),
 
         // Action Buttons Row
         Row(
@@ -878,18 +879,18 @@ class _MobileOnboardingScreenState
                 child: OutlinedButton(
                   onPressed: onBack,
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: AppTheme.secondaryNavy,
-                    side: const BorderSide(
-                        color: AppTheme.borderLight, width: 1.5),
+                    foregroundColor: KivoraColors.textPrimaryOf(context),
+                    side: BorderSide(
+                        color: KivoraColors.borderOf(context), width: 1.5),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text('Back',
+                  child: Text('Back',
                       style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
             ],
             Expanded(
               child: FilledButton(
@@ -901,7 +902,7 @@ class _MobileOnboardingScreenState
                       borderRadius: BorderRadius.circular(12)),
                 ),
                 child: Text(primaryLabel,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 15)),
               ),
             ),

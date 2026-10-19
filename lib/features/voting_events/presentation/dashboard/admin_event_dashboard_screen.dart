@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/kivora_colors.dart';
 import '../../../../core/widgets/error_view.dart';
+import '../../../../core/widgets/kivora_animations.dart';
 import '../../../../core/widgets/loading_view.dart';
 import '../../../organizations/domain/organization_enums.dart';
 import '../../../organizations/presentation/providers/organization_providers.dart';
@@ -113,7 +114,7 @@ class _AdminEventDashboardScreenState
 
               final events = snapshot.data ?? [];
 
-              return SingleChildScrollView(
+              return PageEntry(child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
                 child: Center(
                   child: ConstrainedBox(
@@ -282,7 +283,10 @@ class _AdminEventDashboardScreenState
                               itemCount: filtered.length,
                               itemBuilder: (context, index) {
                                 final event = filtered[index];
-                                return EventCard(event: event);
+                                return StaggeredListItem(
+                                  index: index,
+                                  child: EventCard(event: event),
+                                );
                               },
                             );
                           }),
@@ -291,7 +295,7 @@ class _AdminEventDashboardScreenState
                     ),
                   ),
                 ),
-              );
+              )); // PageEntry
             },
           ),
           if (lifecycleState.isLoading)

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../../core/layout/responsive.dart';
 
 class LandingPageScreen extends ConsumerStatefulWidget {
@@ -49,7 +50,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: KivoraColors.backgroundOf(context),
       endDrawer: !isDesktop ? _buildMobileDrawer(context) : null,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -82,10 +83,10 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
     return Container(
       height: 72,
       padding: const EdgeInsets.symmetric(horizontal: 28),
-      decoration: const BoxDecoration(
-        color: AppTheme.surfaceWhite,
+      decoration: BoxDecoration(
+        color: KivoraColors.surfaceOf(context),
         border:
-            Border(bottom: BorderSide(color: AppTheme.borderLight, width: 1.0)),
+            Border(bottom: BorderSide(color: KivoraColors.borderOf(context), width: 1.0)),
       ),
       child: Center(
         child: ConstrainedBox(
@@ -115,13 +116,13 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    const Text(
+                    SizedBox(width: 12),
+                    Text(
                       'Kivora',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w800,
-                        color: AppTheme.secondaryNavy,
+                        color: KivoraColors.textPrimaryOf(context),
                         letterSpacing: -0.6,
                       ),
                     ),
@@ -161,7 +162,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                       label: 'Sign in',
                       onPressed: () => context.go('/login'),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                     _AnimatedButton(
                       isPrimary: true,
                       label: 'Get started',
@@ -172,8 +173,8 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
               else
                 Builder(
                   builder: (ctx) => IconButton(
-                    icon: const Icon(Icons.menu_rounded,
-                        color: AppTheme.secondaryNavy),
+                    icon: Icon(Icons.menu_rounded,
+                        color: KivoraColors.textPrimaryOf(context)),
                     onPressed: () => Scaffold.of(ctx).openEndDrawer(),
                   ),
                 ),
@@ -186,7 +187,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
 
   Widget _buildMobileDrawer(BuildContext context) {
     return Drawer(
-      backgroundColor: AppTheme.surfaceWhite,
+      backgroundColor: KivoraColors.surfaceOf(context),
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -207,25 +208,25 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                           fit: BoxFit.cover,
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      const Text(
+                      SizedBox(width: 10),
+                      Text(
                         'Kivora',
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: AppTheme.secondaryNavy),
+                            color: KivoraColors.textPrimaryOf(context)),
                       ),
                     ],
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close_rounded),
+                    icon: Icon(Icons.close_rounded),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],
               ),
-              const SizedBox(height: 32),
-              const Divider(height: 1, color: AppTheme.borderLight),
-              const SizedBox(height: 16),
+              SizedBox(height: 32),
+              Divider(height: 1, color: KivoraColors.borderOf(context)),
+              SizedBox(height: 16),
               _drawerTile('Features', () {
                 Navigator.pop(context);
                 _scrollToSection(_featuresKey);
@@ -246,7 +247,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                 Navigator.pop(context);
                 _scrollToSection(_faqKey);
               }),
-              const Spacer(),
+              Spacer(),
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
@@ -254,10 +255,10 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     Navigator.pop(context);
                     context.go('/login');
                   },
-                  child: const Text('Sign in'),
+                  child: Text('Sign in'),
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
@@ -267,7 +268,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                   },
                   style: FilledButton.styleFrom(
                       backgroundColor: AppTheme.primaryBlue),
-                  child: const Text('Get started'),
+                  child: Text('Get started'),
                 ),
               ),
             ],
@@ -280,8 +281,8 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   Widget _drawerTile(String label, VoidCallback onTap) {
     return ListTile(
       title: Text(label,
-          style: const TextStyle(
-              fontWeight: FontWeight.w600, color: AppTheme.secondaryNavy)),
+          style: TextStyle(
+              fontWeight: FontWeight.w600, color: KivoraColors.textPrimaryOf(context))),
       onTap: onTap,
       contentPadding: EdgeInsets.zero,
     );
@@ -310,7 +311,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                       flex: 6,
                       child: _buildHeroTextContent(context, true),
                     ),
-                    const SizedBox(width: 48),
+                    SizedBox(width: 48),
                     Expanded(
                       flex: 5,
                       child: _buildHeroInteractiveWidget(context),
@@ -321,7 +322,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                 return Column(
                   children: [
                     _buildHeroTextContent(context, false),
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40),
                     _buildHeroInteractiveWidget(context),
                   ],
                 );
@@ -342,12 +343,12 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
           decoration: BoxDecoration(
-            color: AppTheme.surfaceBlue,
+            color: AppTheme.primaryBlue.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(20),
             border:
                 Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.25)),
           ),
-          child: const Row(
+          child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.shield_outlined,
@@ -368,7 +369,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
 
         // Headline
         Text(
@@ -376,25 +377,25 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           style: TextStyle(
             fontSize: alignLeft ? 50 : 34,
             fontWeight: FontWeight.w800,
-            color: AppTheme.secondaryNavy,
+            color: KivoraColors.textPrimaryOf(context),
             height: 1.12,
             letterSpacing: -1.2,
           ),
           textAlign: alignLeft ? TextAlign.left : TextAlign.center,
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
 
         // Supporting Text
         Text(
           'Bring your members together. Hold elections and polls with Kivora’s verified identities, protected ballots, and server-authoritative audit logs.',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
-            color: AppTheme.textSecondary,
+            color: KivoraColors.textSecondaryOf(context),
             height: 1.5,
           ),
           textAlign: alignLeft ? TextAlign.left : TextAlign.center,
         ),
-        const SizedBox(height: 32),
+        SizedBox(height: 32),
 
         // Primary Action Buttons
         Wrap(
@@ -416,13 +417,13 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
             ),
           ],
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
 
         // Micro-link
         InkWell(
           onTap: () => context.go('/login'),
           borderRadius: BorderRadius.circular(6),
-          child: const Padding(
+          child: Padding(
             padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
             child: Wrap(
               alignment: WrapAlignment.center,
@@ -430,7 +431,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
               children: [
                 Text(
                   'Have a joining code or invitation? ',
-                  style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+                  style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context)),
                 ),
                 Text(
                   'Join an organization →',
@@ -458,7 +459,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: AppTheme.surfaceWhite,
+              color: KivoraColors.surfaceOf(context),
               borderRadius: BorderRadius.circular(18),
               boxShadow: [
                 BoxShadow(
@@ -482,27 +483,27 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                           Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: AppTheme.surfaceBlue,
+                              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Icon(Icons.school_outlined,
+                            child: Icon(Icons.school_outlined,
                                 size: 18, color: AppTheme.primaryBlue),
                           ),
-                          const SizedBox(width: 8),
-                          const Expanded(
+                          SizedBox(width: 8),
+                          Expanded(
                             child: Text(
                               'Student Council',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13,
-                                  color: AppTheme.secondaryNavy),
+                                  color: KivoraColors.textPrimaryOf(context)),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
@@ -510,7 +511,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                         color: AppTheme.success.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Text('ACTIVE',
+                      child: Text('ACTIVE',
                           style: TextStyle(
                               color: AppTheme.success,
                               fontSize: 10,
@@ -518,41 +519,41 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
 
-                const Text(
+                Text(
                   'Student Council Election 2026',
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.secondaryNavy),
+                      color: KivoraColors.textPrimaryOf(context)),
                 ),
-                const SizedBox(height: 4),
-                const Text(
+                SizedBox(height: 4),
+                Text(
                   'Choose one candidate to represent your department.',
-                  style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                  style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
 
                 // Candidate options
                 _heroCandidateOption(0, 'Candidate A — Sarah Jenkins'),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 _heroCandidateOption(1, 'Candidate B — Michael Chen'),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 _heroCandidateOption(2, 'Candidate C — David Miller'),
 
-                const SizedBox(height: 20),
-                const Row(
+                SizedBox(height: 20),
+                Row(
                   children: [
                     Icon(Icons.lock_outline_rounded,
-                        size: 14, color: AppTheme.textSecondary),
+                        size: 14, color: KivoraColors.textSecondaryOf(context)),
                     SizedBox(width: 6),
                     Text('Anonymous ballot',
                         style: TextStyle(
-                            fontSize: 11, color: AppTheme.textSecondary)),
+                            fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
                   ],
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
 
                 SizedBox(
                   width: double.infinity,
@@ -574,7 +575,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                 ),
 
                 if (_heroVoteSubmitted) ...[
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeOut,
@@ -585,7 +586,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                       border: Border.all(
                           color: AppTheme.success.withValues(alpha: 0.3)),
                     ),
-                    child: const Row(
+                    child: Row(
                       children: [
                         Icon(Icons.check_circle_rounded,
                             color: AppTheme.success, size: 18),
@@ -598,11 +599,11 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12,
-                                      color: AppTheme.secondaryNavy)),
+                                      color: KivoraColors.textPrimaryOf(context))),
                               Text('Receipt code: #0x82f9...a42',
                                   style: TextStyle(
                                       fontSize: 11,
-                                      color: AppTheme.textSecondary)),
+                                      color: KivoraColors.textSecondaryOf(context))),
                             ],
                           ),
                         ),
@@ -613,13 +614,13 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 12),
-          const Text(
+          SizedBox(height: 12),
+          Text(
             'ILLUSTRATIVE BALLOT · MEMBER VIEW DEMO',
             style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
-                color: AppTheme.textSecondary,
+                color: KivoraColors.textSecondaryOf(context),
                 letterSpacing: 0.8),
           ),
         ],
@@ -642,11 +643,11 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppTheme.surfaceBlue.withValues(alpha: 0.6)
-              : AppTheme.surfaceWhite,
+              ? AppTheme.primaryBlue.withValues(alpha: 0.12).withValues(alpha: 0.6)
+              : KivoraColors.surfaceOf(context),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppTheme.primaryBlue : AppTheme.borderLight,
+            color: isSelected ? AppTheme.primaryBlue : KivoraColors.borderOf(context),
             width: isSelected ? 1.8 : 1.0,
           ),
         ),
@@ -656,10 +657,10 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
               isSelected
                   ? Icons.radio_button_checked_rounded
                   : Icons.radio_button_unchecked_rounded,
-              color: isSelected ? AppTheme.primaryBlue : AppTheme.textSecondary,
+              color: isSelected ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context),
               size: 18,
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             Expanded(
               child: Text(
                 label,
@@ -668,7 +669,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                   fontSize: 13,
                   color: isSelected
                       ? AppTheme.primaryBlue
-                      : AppTheme.secondaryNavy,
+                      : KivoraColors.textPrimaryOf(context),
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -685,10 +686,10 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   Widget _buildTrustStrip(BuildContext context, double screenWidth) {
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: AppTheme.surfaceWhite,
+      decoration: BoxDecoration(
+        color: KivoraColors.surfaceOf(context),
         border: Border.symmetric(
-            horizontal: BorderSide(color: AppTheme.borderLight)),
+            horizontal: BorderSide(color: KivoraColors.borderOf(context))),
       ),
       padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
       child: Center(
@@ -748,25 +749,25 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: AppTheme.surfaceBlue,
+            color: AppTheme.primaryBlue.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: AppTheme.primaryBlue, size: 22),
         ),
-        const SizedBox(width: 14),
+        SizedBox(width: 14),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                      color: AppTheme.secondaryNavy)),
-              const SizedBox(height: 2),
+                      color: KivoraColors.textPrimaryOf(context))),
+              SizedBox(height: 2),
               Text(subtitle,
-                  style: const TextStyle(
-                      fontSize: 12, color: AppTheme.textSecondary)),
+                  style: TextStyle(
+                      fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
             ],
           ),
         ),
@@ -787,7 +788,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'BUILT FOR COLLECTIVE DECISIONS',
                 style: TextStyle(
                     fontSize: 11,
@@ -795,40 +796,40 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     color: AppTheme.primaryBlue,
                     letterSpacing: 1.0),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'One place to vote.\nMore ways to be heard.',
                       style: TextStyle(
                           fontSize: 36,
                           fontWeight: FontWeight.w800,
-                          color: AppTheme.secondaryNavy,
+                          color: KivoraColors.textPrimaryOf(context),
                           height: 1.15,
                           letterSpacing: -0.8),
                     ),
                   ),
                   if (ResponsiveLayout.isWide(context))
-                    const SizedBox(
+                    SizedBox(
                       width: 320,
                       child: Text(
                         'From choosing your next representative to finding a meeting time, give every decision a clear home.',
                         style: TextStyle(
-                            color: AppTheme.textSecondary,
+                            color: KivoraColors.textSecondaryOf(context),
                             fontSize: 14,
                             height: 1.4),
                       ),
                     ),
                 ],
               ),
-              const SizedBox(height: 48),
+              SizedBox(height: 48),
 
               _buildDualPreviewCards(context),
 
-              const SizedBox(height: 48),
+              SizedBox(height: 48),
 
               // 6 Feature Cards Grid
               LayoutBuilder(
@@ -932,34 +933,34 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppTheme.surfaceWhite,
+                        color: KivoraColors.surfaceOf(context),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.how_to_vote_outlined,
+                      child: Icon(Icons.how_to_vote_outlined,
                           color: AppTheme.primaryBlue, size: 20),
                     ),
-                    const SizedBox(height: 16),
-                    const Text('Elections with a clear purpose.',
+                    SizedBox(height: 16),
+                    Text('Elections with a clear purpose.',
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
-                            color: AppTheme.secondaryNavy)),
-                    const SizedBox(height: 8),
-                    const Text(
+                            color: KivoraColors.textPrimaryOf(context))),
+                    SizedBox(height: 8),
+                    Text(
                         'Bring candidates and members into a focused ballot experience. Make participation feel straightforward.',
                         style: TextStyle(
                             fontSize: 13,
-                            color: AppTheme.textSecondary,
+                            color: KivoraColors.textSecondaryOf(context),
                             height: 1.4)),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24),
 
                     // Mock Election Card
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppTheme.surfaceWhite,
+                        color: KivoraColors.surfaceOf(context),
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppTheme.borderLight),
+                        border: Border.all(color: KivoraColors.borderOf(context)),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -967,24 +968,24 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Expanded(
+                              Expanded(
                                 child: Text(
                                   'Student council 2026',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 13,
-                                      color: AppTheme.secondaryNavy),
+                                      color: KivoraColors.textPrimaryOf(context)),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: 8),
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 6, vertical: 2),
                                 decoration: BoxDecoration(
-                                    color: AppTheme.surfaceBlue,
+                                    color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                                     borderRadius: BorderRadius.circular(6)),
-                                child: const Text('Election',
+                                child: Text('Election',
                                     style: TextStyle(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
@@ -992,11 +993,11 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(height: 12),
                           _miniCandidateRow('A', 'Candidate A'),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8),
                           _miniCandidateRow('B', 'Candidate B'),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8),
                           _miniCandidateRow('C', 'Candidate C'),
                         ],
                       ),
@@ -1019,34 +1020,34 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppTheme.surfaceWhite,
+                        color: KivoraColors.surfaceOf(context),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.bar_chart_rounded,
+                      child: Icon(Icons.bar_chart_rounded,
                           color: AppTheme.primaryBlue, size: 20),
                     ),
-                    const SizedBox(height: 16),
-                    const Text('Everyday questions, shared answers.',
+                    SizedBox(height: 16),
+                    Text('Everyday questions, shared answers.',
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
-                            color: AppTheme.secondaryNavy)),
-                    const SizedBox(height: 8),
-                    const Text(
+                            color: KivoraColors.textPrimaryOf(context))),
+                    SizedBox(height: 8),
+                    Text(
                         'Use polls to hear what members think. Keep everyday input alongside your organization’s elections.',
                         style: TextStyle(
                             fontSize: 13,
-                            color: AppTheme.textSecondary,
+                            color: KivoraColors.textSecondaryOf(context),
                             height: 1.4)),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24),
 
                     // Mock Poll Card
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppTheme.surfaceWhite,
+                        color: KivoraColors.surfaceOf(context),
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppTheme.borderLight),
+                        border: Border.all(color: KivoraColors.borderOf(context)),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1054,24 +1055,24 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Expanded(
+                              Expanded(
                                 child: Text(
                                   'When should we meet?',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 13,
-                                      color: AppTheme.secondaryNavy),
+                                      color: KivoraColors.textPrimaryOf(context)),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: 8),
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 6, vertical: 2),
                                 decoration: BoxDecoration(
-                                    color: AppTheme.surfaceBlue,
+                                    color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                                     borderRadius: BorderRadius.circular(6)),
-                                child: const Text('Poll',
+                                child: Text('Poll',
                                     style: TextStyle(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
@@ -1079,11 +1080,11 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(height: 12),
                           _pollBarRow('Wednesday afternoon', 0.75),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8),
                           _pollBarRow('Thursday evening', 0.45),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8),
                           _pollBarRow('Friday morning', 0.30),
                         ],
                       ),
@@ -1102,28 +1103,28 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: KivoraColors.backgroundOf(context),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 10,
-            backgroundColor: AppTheme.surfaceBlue,
+            backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.12),
             child: Text(letter,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                     color: AppTheme.primaryBlue)),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           Expanded(
             child: Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: AppTheme.secondaryNavy),
+                  color: KivoraColors.textPrimaryOf(context)),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -1137,17 +1138,17 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w500,
-                color: AppTheme.secondaryNavy)),
-        const SizedBox(height: 4),
+                color: KivoraColors.textPrimaryOf(context))),
+        SizedBox(height: 4),
         ClipRRect(
           borderRadius: BorderRadius.circular(4),
           child: LinearProgressIndicator(
             value: ratio,
             minHeight: 6,
-            backgroundColor: AppTheme.borderLight,
+            backgroundColor: KivoraColors.borderOf(context),
             valueColor:
                 const AlwaysStoppedAnimation<Color>(AppTheme.primaryBlue),
           ),
@@ -1169,21 +1170,21 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppTheme.surfaceBlue,
+              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: AppTheme.primaryBlue, size: 24),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           Text(title,
-              style: const TextStyle(
+              style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
-                  color: AppTheme.secondaryNavy)),
-          const SizedBox(height: 8),
+                  color: KivoraColors.textPrimaryOf(context))),
+          SizedBox(height: 8),
           Text(description,
-              style: const TextStyle(
-                  fontSize: 13, color: AppTheme.textSecondary, height: 1.4)),
+              style: TextStyle(
+                  fontSize: 13, color: KivoraColors.textSecondaryOf(context), height: 1.4)),
         ],
       ),
     );
@@ -1195,7 +1196,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   Widget _buildHowItWorksSection(BuildContext context, {required Key key}) {
     return Container(
       key: key,
-      color: AppTheme.surfaceWhite,
+      color: KivoraColors.surfaceOf(context),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
       child: Center(
         child: ConstrainedBox(
@@ -1206,7 +1207,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -1224,14 +1225,14 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                           style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.w800,
-                              color: AppTheme.secondaryNavy,
+                              color: KivoraColors.textPrimaryOf(context),
                               letterSpacing: -0.6),
                         ),
                       ],
                     ),
                   ),
                   if (ResponsiveLayout.isWide(context)) ...[
-                    const SizedBox(width: 16),
+                    SizedBox(width: 16),
                     _AnimatedButton(
                       isPrimary: true,
                       label: 'Get started →',
@@ -1240,7 +1241,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                   ],
                 ],
               ),
-              const SizedBox(height: 48),
+              SizedBox(height: 48),
               LayoutBuilder(
                 builder: (context, constraints) {
                   final isWide = constraints.maxWidth >= 850;
@@ -1305,24 +1306,24 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(step,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.w800,
                   color: AppTheme.primaryBlue,
                   height: 1.0)),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Text(title,
-              style: const TextStyle(
+              style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
-                  color: AppTheme.secondaryNavy)),
-          const SizedBox(height: 8),
+                  color: KivoraColors.textPrimaryOf(context))),
+          SizedBox(height: 8),
           Text(description,
-              style: const TextStyle(
-                  fontSize: 13, color: AppTheme.textSecondary, height: 1.4)),
-          const SizedBox(height: 12),
+              style: TextStyle(
+                  fontSize: 13, color: KivoraColors.textSecondaryOf(context), height: 1.4)),
+          SizedBox(height: 12),
           Text(caption,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
                   color: AppTheme.primaryBlue)),
@@ -1345,28 +1346,28 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('FOR YOUR ORGANIZATION',
+              Text('FOR YOUR ORGANIZATION',
                   style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.primaryBlue,
                       letterSpacing: 1.0)),
-              const SizedBox(height: 8),
-              const Text(
+              SizedBox(height: 8),
+              Text(
                 'Different communities.\nA shared need to be heard.',
                 style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w800,
-                    color: AppTheme.secondaryNavy,
+                    color: KivoraColors.textPrimaryOf(context),
                     height: 1.15,
                     letterSpacing: -0.6),
               ),
-              const SizedBox(height: 12),
-              const Text(
+              SizedBox(height: 12),
+              Text(
                 'Kivora brings e-voting and polling to the groups that make decisions together.',
-                style: TextStyle(fontSize: 14, color: AppTheme.textSecondary),
+                style: TextStyle(fontSize: 14, color: KivoraColors.textSecondaryOf(context)),
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: 40),
 
               LayoutBuilder(
                 builder: (context, constraints) {
@@ -1383,16 +1384,16 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                                 child: Container(
                                   height: 240,
                                   decoration: BoxDecoration(
-                                    color: AppTheme.surfaceBlue,
+                                    color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                                     borderRadius: BorderRadius.circular(16),
                                   ),
-                                  child: const Center(
+                                  child: Center(
                                     child: Icon(Icons.groups_rounded,
                                         size: 80, color: AppTheme.primaryBlue),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 32),
+                              SizedBox(width: 32),
                               Expanded(
                                 flex: 6,
                                 child: _orgTypesQuoteCard(),
@@ -1405,22 +1406,22 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                                 height: 180,
                                 width: double.infinity,
                                 decoration: BoxDecoration(
-                                  color: AppTheme.surfaceBlue,
+                                  color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                                   borderRadius: BorderRadius.circular(16),
                                 ),
-                                child: const Center(
+                                child: Center(
                                   child: Icon(Icons.groups_rounded,
                                       size: 60, color: AppTheme.primaryBlue),
                                 ),
                               ),
-                              const SizedBox(height: 24),
+                              SizedBox(height: 24),
                               _orgTypesQuoteCard(),
                             ],
                           ),
                   );
                 },
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32),
 
               // 3 Sub-types
               LayoutBuilder(
@@ -1470,24 +1471,24 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-              color: AppTheme.surfaceBlue,
+              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12)),
-          child: const Icon(Icons.chat_bubble_outline_rounded,
+          child: Icon(Icons.chat_bubble_outline_rounded,
               color: AppTheme.primaryBlue, size: 20),
         ),
-        const SizedBox(height: 16),
-        const Text(
+        SizedBox(height: 16),
+        Text(
           'Good decisions start with people.',
           style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: AppTheme.secondaryNavy),
+              color: KivoraColors.textPrimaryOf(context)),
         ),
-        const SizedBox(height: 8),
-        const Text(
+        SizedBox(height: 8),
+        Text(
           'Build a space where your members can take part, not just stay informed.',
           style: TextStyle(
-              fontSize: 14, color: AppTheme.textSecondary, height: 1.4),
+              fontSize: 14, color: KivoraColors.textSecondaryOf(context), height: 1.4),
         ),
       ],
     );
@@ -1506,21 +1507,21 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                      color: AppTheme.secondaryNavy),
+                      color: KivoraColors.textPrimaryOf(context)),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Icon(icon, size: 18, color: AppTheme.primaryBlue),
             ],
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(subtitle,
-              style: const TextStyle(
-                  fontSize: 12, color: AppTheme.textSecondary, height: 1.3)),
+              style: TextStyle(
+                  fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.3)),
         ],
       ),
     );
@@ -1533,7 +1534,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
       {required Key key}) {
     return Container(
       key: key,
-      color: AppTheme.secondaryNavy,
+      color: KivoraColors.textPrimaryOf(context),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
       child: Center(
         child: ConstrainedBox(
@@ -1545,14 +1546,14 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('SECURITY & PRIVACY',
+                  Text('SECURITY & PRIVACY',
                       style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF8AB4FF),
                           letterSpacing: 1.0)),
-                  const SizedBox(height: 12),
-                  const Text(
+                  SizedBox(height: 12),
+                  Text(
                     'Private choices.\nAccountable actions.',
                     style: TextStyle(
                         fontSize: 36,
@@ -1561,19 +1562,19 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                         height: 1.15,
                         letterSpacing: -0.8),
                   ),
-                  const SizedBox(height: 16),
-                  const Text(
+                  SizedBox(height: 16),
+                  Text(
                     'Trust starts with Kivora’s clear rules: who administers your organization, how members vote, and what stays on record.',
                     style: TextStyle(
                         fontSize: 15, color: Color(0xFF94A3B8), height: 1.4),
                   ),
-                  const SizedBox(height: 48),
+                  SizedBox(height: 48),
                   if (isWide)
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(flex: 6, child: _securityFeaturesList()),
-                        const SizedBox(width: 48),
+                        SizedBox(width: 48),
                         Expanded(flex: 6, child: _securityPipelineCard()),
                       ],
                     )
@@ -1581,7 +1582,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     Column(
                       children: [
                         _securityFeaturesList(),
-                        const SizedBox(height: 40),
+                        SizedBox(height: 40),
                         _securityPipelineCard(),
                       ],
                     ),
@@ -1603,14 +1604,14 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           subtitle:
               'Organizations are verified with a phone number. Admins use two-step verification for an extra sign-in step.',
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: 24),
         _secFeatureItem(
           icon: Icons.lock_outline_rounded,
           title: 'Privacy is a choice, not an afterthought',
           subtitle:
               'Enable anonymous voting when a decision calls for it. Make the voting mode clear to members on their ballot.',
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: 24),
         _secFeatureItem(
           icon: Icons.history_rounded,
           title: 'A record members cannot rewrite',
@@ -1636,19 +1637,19 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           ),
           child: Icon(icon, color: const Color(0xFF8AB4FF), size: 20),
         ),
-        const SizedBox(width: 16),
+        SizedBox(width: 16),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
                       color: Colors.white)),
-              const SizedBox(height: 4),
+              SizedBox(height: 4),
               Text(subtitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 13, color: Color(0xFF94A3B8), height: 1.4)),
             ],
           ),
@@ -1668,7 +1669,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('SECURITY PIPELINE',
@@ -1680,7 +1681,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
               Icon(Icons.security_rounded, color: Color(0xFF8AB4FF), size: 18),
             ],
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
           _pipeStep('1. Authenticated User', 'Firebase Auth identity token'),
           _pipeArrow(),
           _pipeStep(
@@ -1712,17 +1713,17 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           Expanded(
             child: Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 13,
                   color: Colors.white),
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           Text(
             desc,
-            style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+            style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
           ),
         ],
       ),
@@ -1730,7 +1731,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   }
 
   Widget _pipeArrow() {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.symmetric(vertical: 4),
       child: Center(
         child: Icon(Icons.arrow_downward_rounded,
@@ -1744,7 +1745,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   // ===========================================================================
   Widget _buildAnonymousVotingSection(BuildContext context) {
     return Container(
-      color: AppTheme.backgroundLight,
+      color: KivoraColors.backgroundOf(context),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
       child: Center(
         child: ConstrainedBox(
@@ -1752,26 +1753,26 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('DATA SEPARATION ARCHITECTURE',
+              Text('DATA SEPARATION ARCHITECTURE',
                   style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.primaryBlue,
                       letterSpacing: 1.0)),
-              const SizedBox(height: 8),
-              const Text(
+              SizedBox(height: 8),
+              Text(
                 'How anonymous voting works in Kivora.',
                 style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w800,
-                    color: AppTheme.secondaryNavy),
+                    color: KivoraColors.textPrimaryOf(context)),
               ),
-              const SizedBox(height: 12),
-              const Text(
+              SizedBox(height: 12),
+              Text(
                 'Voter participation records are strictly separated from anonymous ballot records during server-side processing.',
-                style: TextStyle(fontSize: 14, color: AppTheme.textSecondary),
+                style: TextStyle(fontSize: 14, color: KivoraColors.textSecondaryOf(context)),
               ),
-              const SizedBox(height: 36),
+              SizedBox(height: 36),
               LayoutBuilder(
                 builder: (context, constraints) {
                   final isWide = constraints.maxWidth >= 800;
@@ -1815,15 +1816,15 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                   );
                 },
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppTheme.surfaceWhite,
+                  color: KivoraColors.surfaceOf(context),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppTheme.borderLight),
+                  border: Border.all(color: KivoraColors.borderOf(context)),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
                     Icon(Icons.info_outline_rounded,
                         color: AppTheme.primaryBlue, size: 20),
@@ -1834,7 +1835,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                         style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: AppTheme.secondaryNavy),
+                            color: KivoraColors.textPrimaryOf(context)),
                       ),
                     ),
                   ],
@@ -1861,45 +1862,45 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           Row(
             children: [
               Icon(icon, color: AppTheme.primaryBlue, size: 22),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(title,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
-                            color: AppTheme.secondaryNavy)),
+                            color: KivoraColors.textPrimaryOf(context))),
                     Text(subtitle,
-                        style: const TextStyle(
-                            fontSize: 12, color: AppTheme.textSecondary)),
+                        style: TextStyle(
+                            fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          const Divider(height: 1, color: AppTheme.borderLight),
-          const SizedBox(height: 16),
-          const Text('STORED FIELDS:',
+          SizedBox(height: 16),
+          Divider(height: 1, color: KivoraColors.borderOf(context)),
+          SizedBox(height: 16),
+          Text('STORED FIELDS:',
               style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.textSecondary)),
-          const SizedBox(height: 8),
+                  color: KivoraColors.textSecondaryOf(context))),
+          SizedBox(height: 8),
           ...fields.map((f) => Padding(
                 padding: const EdgeInsets.only(bottom: 6),
                 child: Row(
                   children: [
-                    const Icon(Icons.check_rounded,
+                    Icon(Icons.check_rounded,
                         size: 14, color: AppTheme.primaryBlue),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     Text(f,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 12,
                             fontFamily: 'monospace',
-                            color: AppTheme.secondaryNavy)),
+                            color: KivoraColors.textPrimaryOf(context))),
                   ],
                 ),
               )),
@@ -1913,7 +1914,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   // ===========================================================================
   Widget _buildProductShowcaseSection(BuildContext context) {
     return Container(
-      color: AppTheme.surfaceWhite,
+      color: KivoraColors.surfaceOf(context),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
       child: Center(
         child: ConstrainedBox(
@@ -1921,23 +1922,23 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('PRODUCT SHOWCASE',
+              Text('PRODUCT SHOWCASE',
                   style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.primaryBlue,
                       letterSpacing: 1.0)),
-              const SizedBox(height: 8),
-              const Text(
+              SizedBox(height: 8),
+              Text(
                 'A single administration suite for your organization.',
                 style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w800,
-                    color: AppTheme.secondaryNavy),
+                    color: KivoraColors.textPrimaryOf(context)),
               ),
-              const SizedBox(height: 36),
+              SizedBox(height: 36),
               _HoverContainer(
-                backgroundColor: AppTheme.backgroundLight,
+                backgroundColor: KivoraColors.backgroundOf(context),
                 padding: const EdgeInsets.all(28),
                 borderRadius: BorderRadius.circular(20),
                 child: Column(
@@ -1945,24 +1946,24 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Expanded(
+                        Expanded(
                           child: Text(
                             'KIVORA DASHBOARD DEMO',
                             style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
-                                color: AppTheme.textSecondary),
+                                color: KivoraColors.textSecondaryOf(context)),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                              color: AppTheme.surfaceBlue,
+                              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(8)),
-                          child: const Text('Admin View',
+                          child: Text('Admin View',
                               style: TextStyle(
                                   color: AppTheme.primaryBlue,
                                   fontSize: 11,
@@ -1970,7 +1971,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
                     Wrap(
                       spacing: 16,
                       runSpacing: 16,
@@ -1999,22 +2000,22 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 18, color: AppTheme.primaryBlue),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           Flexible(
             child: Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 13,
-                  color: AppTheme.secondaryNavy),
+                  color: KivoraColors.textPrimaryOf(context)),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -2057,7 +2058,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
 
     return Container(
       key: key,
-      color: AppTheme.surfaceWhite,
+      color: KivoraColors.surfaceOf(context),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
       child: Center(
         child: ConstrainedBox(
@@ -2065,19 +2066,19 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('A LITTLE MORE CLARITY',
+              Text('A LITTLE MORE CLARITY',
                   style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.primaryBlue,
                       letterSpacing: 1.0)),
-              const SizedBox(height: 8),
-              const Text('Good questions. Clear answers.',
+              SizedBox(height: 8),
+              Text('Good questions. Clear answers.',
                   style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.w800,
-                      color: AppTheme.secondaryNavy)),
-              const SizedBox(height: 36),
+                      color: KivoraColors.textPrimaryOf(context))),
+              SizedBox(height: 36),
               ...faqs.asMap().entries.map((entry) {
                 final idx = entry.key;
                 final faq = entry.value;
@@ -2099,10 +2100,10 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                             Expanded(
                               child: Text(
                                 faq['q']!,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
-                                    color: AppTheme.secondaryNavy),
+                                    color: KivoraColors.textPrimaryOf(context)),
                               ),
                             ),
                             Icon(
@@ -2120,13 +2121,13 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                         padding: const EdgeInsets.only(bottom: 20),
                         child: Text(
                           faq['a']!,
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 14,
-                              color: AppTheme.textSecondary,
+                              color: KivoraColors.textSecondaryOf(context),
                               height: 1.5),
                         ),
                       ),
-                    const Divider(height: 1, color: AppTheme.borderLight),
+                    Divider(height: 1, color: KivoraColors.borderOf(context)),
                   ],
                 );
               }),
@@ -2150,14 +2151,14 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           constraints: const BoxConstraints(maxWidth: 800),
           child: Column(
             children: [
-              const Text('YOUR NEXT DECISION STARTS HERE',
+              Text('YOUR NEXT DECISION STARTS HERE',
                   style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                       color: Colors.white70,
                       letterSpacing: 1.0)),
-              const SizedBox(height: 16),
-              const Text(
+              SizedBox(height: 16),
+              Text(
                 'Give your organization a voice. With Kivora.',
                 style: TextStyle(
                     fontSize: 36,
@@ -2166,14 +2167,14 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     height: 1.2),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16),
-              const Text(
+              SizedBox(height: 16),
+              Text(
                 'Create a home for your elections and polls. Bring your members in, and move forward together.',
                 style:
                     TextStyle(fontSize: 15, color: Colors.white70, height: 1.4),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 36),
+              SizedBox(height: 36),
 
               Wrap(
                 spacing: 16,
@@ -2201,13 +2202,13 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
 
               // Sub-link
               InkWell(
                 onTap: () => context.go('/login'),
                 borderRadius: BorderRadius.circular(6),
-                child: const Padding(
+                child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                   child: Text(
                     'Already invited? Join an organization →',
@@ -2230,7 +2231,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   // ===========================================================================
   Widget _buildFooter(BuildContext context) {
     return Container(
-      color: AppTheme.surfaceWhite,
+      color: KivoraColors.surfaceOf(context),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
       child: Center(
         child: ConstrainedBox(
@@ -2258,22 +2259,22 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          const Text('Kivora',
+                          SizedBox(width: 8),
+                          Text('Kivora',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,
-                                  color: AppTheme.secondaryNavy)),
+                                  color: KivoraColors.textPrimaryOf(context))),
                         ],
                       ),
-                      const SizedBox(height: 12),
-                      const SizedBox(
+                      SizedBox(height: 12),
+                      SizedBox(
                         width: 260,
                         child: Text(
                           'Secure e-voting and polling. For organizations. For every voice.',
                           style: TextStyle(
                               fontSize: 12,
-                              color: AppTheme.textSecondary,
+                              color: KivoraColors.textSecondaryOf(context),
                               height: 1.4),
                         ),
                       ),
@@ -2302,20 +2303,20 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 40),
-              const Divider(height: 1, color: AppTheme.borderLight),
-              const SizedBox(height: 24),
-              const Wrap(
+              SizedBox(height: 40),
+              Divider(height: 1, color: KivoraColors.borderOf(context)),
+              SizedBox(height: 24),
+              Wrap(
                 alignment: WrapAlignment.spaceBetween,
                 spacing: 16,
                 runSpacing: 8,
                 children: [
                   Text('© 2026 Kivora',
                       style: TextStyle(
-                          fontSize: 12, color: AppTheme.textSecondary)),
+                          fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
                   Text('Built for collective decisions',
                       style: TextStyle(
-                          fontSize: 12, color: AppTheme.textSecondary)),
+                          fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
                 ],
               ),
             ],
@@ -2330,11 +2331,11 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title,
-            style: const TextStyle(
+            style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
-                color: AppTheme.secondaryNavy)),
-        const SizedBox(height: 12),
+                color: KivoraColors.textPrimaryOf(context))),
+        SizedBox(height: 12),
         ...links,
       ],
     );
@@ -2347,7 +2348,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
         onTap: onTap,
         child: Text(label,
             style:
-                const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
       ),
     );
   }
@@ -2392,13 +2393,13 @@ class _HoverContainerState extends State<_HoverContainer> {
             : Matrix4.identity(),
         padding: widget.padding,
         decoration: BoxDecoration(
-          color: widget.backgroundColor ?? AppTheme.surfaceWhite,
+          color: widget.backgroundColor ?? KivoraColors.surfaceOf(context),
           borderRadius: widget.borderRadius,
           border: Border.all(
             color: _isHovered
                 ? (widget.hoverBorderColor ??
                     AppTheme.primaryBlue.withValues(alpha: 0.6))
-                : AppTheme.borderLight,
+                : KivoraColors.borderOf(context),
             width: _isHovered ? 1.5 : 1.0,
           ),
           boxShadow: [
@@ -2446,7 +2447,7 @@ class _AnimatedNavLinkState extends State<_AnimatedNavLink> {
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
               color: _isHovered
-                  ? AppTheme.surfaceBlue.withValues(alpha: 0.7)
+                  ? AppTheme.primaryBlue.withValues(alpha: 0.12).withValues(alpha: 0.7)
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(8),
             ),
@@ -2456,7 +2457,7 @@ class _AnimatedNavLinkState extends State<_AnimatedNavLink> {
                 fontSize: 14,
                 fontWeight: _isHovered ? FontWeight.bold : FontWeight.w500,
                 color:
-                    _isHovered ? AppTheme.primaryBlue : AppTheme.textSecondary,
+                    _isHovered ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context),
               ),
               child: Text(widget.label),
             ),
@@ -2498,11 +2499,11 @@ class _AnimatedButtonState extends State<_AnimatedButton> {
     final effectiveBg = widget.backgroundColor ??
         (widget.isPrimary
             ? (_isHovered ? AppTheme.primaryBlueDark : AppTheme.primaryBlue)
-            : (_isHovered ? AppTheme.surfaceBlue : AppTheme.surfaceWhite));
+            : (_isHovered ? AppTheme.primaryBlue.withValues(alpha: 0.12) : KivoraColors.surfaceOf(context)));
 
     final effectiveHoverBg = widget.backgroundColor != null
         ? (widget.backgroundColor == Colors.white
-            ? AppTheme.surfaceBlue
+            ? AppTheme.primaryBlue.withValues(alpha: 0.12)
             : widget.backgroundColor!.withValues(alpha: 0.2))
         : effectiveBg;
 
@@ -2534,7 +2535,7 @@ class _AnimatedButtonState extends State<_AnimatedButton> {
                       : Border.all(
                           color: _isHovered
                               ? AppTheme.primaryBlue
-                              : AppTheme.borderLight,
+                              : KivoraColors.borderOf(context),
                           width: 1.5)),
               boxShadow: widget.isPrimary && widget.backgroundColor == null
                   ? [
@@ -2559,7 +2560,7 @@ class _AnimatedButtonState extends State<_AnimatedButton> {
                         ? Colors.white
                         : (_isHovered
                             ? AppTheme.primaryBlue
-                            : AppTheme.secondaryNavy)),
+                            : KivoraColors.textPrimaryOf(context))),
               ),
             ),
           ),

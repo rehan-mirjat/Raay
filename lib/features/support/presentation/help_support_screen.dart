@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/utils/validators.dart';
 import '../../../services/auth_service.dart';
 import '../../../services/firebase_service.dart';
@@ -90,21 +91,21 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                   'Help & Support',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.secondaryNavy,
+                        color: KivoraColors.textPrimaryOf(context),
                       ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
 
                 // FAQ Section
-                const Text(
+                Text(
                   'Frequently Asked Questions',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.secondaryNavy,
+                    color: KivoraColors.textPrimaryOf(context),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 _buildFaqItem(
                   question: 'How do I cast my vote?',
                   answer:
@@ -121,49 +122,49 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                       'Navigate to the Account Settings page from the top-right profile dropdown menu to update your personal details.',
                 ),
 
-                const SizedBox(height: 32),
+                SizedBox(height: 32),
 
                 // Getting Started
-                const Text(
+                Text(
                   'Help & Guidance',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.secondaryNavy,
+                    color: KivoraColors.textPrimaryOf(context),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 ListTile(
-                  leading: const Icon(Icons.route_outlined,
+                  leading: Icon(Icons.route_outlined,
                       color: AppTheme.primaryBlue),
-                  title: const Text('Restart Product Tour',
+                  title: Text('Restart Product Tour',
                       style: TextStyle(fontWeight: FontWeight.w600)),
-                  subtitle: const Text(
+                  subtitle: Text(
                       'Replay the introductory walkthrough of the application features.'),
                   trailing:
-                      const Icon(Icons.arrow_forward_ios_rounded, size: 14),
+                      Icon(Icons.arrow_forward_ios_rounded, size: 14),
                   onTap: () {
                     ref.read(onboardingProvider.notifier).restartTour();
                     context.go('/home');
                   },
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: 32),
 
                 // Feedback Form
-                const Text(
+                Text(
                   'Send Feedback or Contact Support',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.secondaryNavy,
+                    color: KivoraColors.textPrimaryOf(context),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 Container(
                   decoration: BoxDecoration(
-                    color: AppTheme.surfaceWhite,
+                    color: KivoraColors.surfaceOf(context),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppTheme.borderLight),
+                    border: Border.all(color: KivoraColors.borderOf(context)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(24),
@@ -172,16 +173,16 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const Text(
+                          Text(
                             'SUBJECT',
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
-                              color: AppTheme.secondaryNavy,
+                              color: KivoraColors.textPrimaryOf(context),
                               letterSpacing: 0.5,
                             ),
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: 6),
                           TextFormField(
                             controller: _subjectController,
                             decoration: const InputDecoration(
@@ -190,17 +191,17 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                             validator: (value) =>
                                 Validators.required(value, 'Subject'),
                           ),
-                          const SizedBox(height: 20),
-                          const Text(
+                          SizedBox(height: 20),
+                          Text(
                             'MESSAGE',
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
-                              color: AppTheme.secondaryNavy,
+                              color: KivoraColors.textPrimaryOf(context),
                               letterSpacing: 0.5,
                             ),
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: 6),
                           TextFormField(
                             controller: _messageController,
                             maxLines: 5,
@@ -211,18 +212,18 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                             validator: (value) =>
                                 Validators.required(value, 'Message'),
                           ),
-                          const SizedBox(height: 24),
+                          SizedBox(height: 24),
                           Align(
                             alignment: Alignment.centerRight,
                             child: ElevatedButton.icon(
                               onPressed: _isSubmitting ? null : _submitFeedback,
                               icon: _isSubmitting
-                                  ? const SizedBox(
+                                  ? SizedBox(
                                       width: 16,
                                       height: 16,
                                       child: CircularProgressIndicator(
                                           color: Colors.white, strokeWidth: 2))
-                                  : const Icon(Icons.send_rounded, size: 18),
+                                  : Icon(Icons.send_rounded, size: 18),
                               label: Text(_isSubmitting
                                   ? 'Sending...'
                                   : 'Send Message'),
@@ -249,9 +250,9 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
       ),
       child: ExpansionTile(
         shape: const RoundedRectangleBorder(
@@ -259,20 +260,20 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
         collapsedShape: const RoundedRectangleBorder(side: BorderSide.none),
         title: Text(
           question,
-          style: const TextStyle(
+          style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 15,
-              color: AppTheme.secondaryNavy),
+              color: KivoraColors.textPrimaryOf(context)),
         ),
         iconColor: AppTheme.primaryBlue,
-        collapsedIconColor: AppTheme.textSecondary,
+        collapsedIconColor: KivoraColors.textSecondaryOf(context),
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Text(
               answer,
-              style: const TextStyle(
-                  color: AppTheme.textSecondary, height: 1.5, fontSize: 14),
+              style: TextStyle(
+                  color: KivoraColors.textSecondaryOf(context), height: 1.5, fontSize: 14),
             ),
           ),
         ],
