@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
@@ -73,7 +74,7 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
         title: Text('$label organization?'),
         content: Text('${organization['name'] ?? 'This organization'} will be marked as $resultingStatus.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text('Cancel')),
           FilledButton(
             style: destructive ? FilledButton.styleFrom(backgroundColor: Theme.of(ctx).colorScheme.error) : null,
             onPressed: () => Navigator.pop(ctx, true),
@@ -106,8 +107,8 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
   Widget build(BuildContext context) {
     final admin = ref.watch(platformAdminProvider);
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
-      appBar: AppBar(title: const Text('Platform organizations'), actions: [IconButton(onPressed: _loading ? null : _load, tooltip: 'Refresh', icon: const Icon(Icons.refresh_rounded))]),
+      backgroundColor: KivoraColors.backgroundOf(context),
+      appBar: AppBar(title: Text('Platform organizations'), actions: [IconButton(onPressed: _loading ? null : _load, tooltip: 'Refresh', icon: Icon(Icons.refresh_rounded))]),
       body: admin.when(
         loading: () => const LoadingView(message: 'Checking platform access…'),
         error: (_, __) => const ErrorView(type: ErrorViewType.accessDenied, title: 'Access denied', message: 'Could not verify platform administrator access.'),
@@ -150,16 +151,16 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
           Row(children: [Expanded(child: Text(name, style: Theme.of(context).textTheme.titleMedium)), Chip(label: Text(status.toUpperCase()))]),
           if ((organization['email'] as String? ?? '').isNotEmpty) Text(organization['email'] as String),
           if (address.isNotEmpty) Text(address, style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Wrap(spacing: 8, runSpacing: 8, children: [
             if (status == 'pending') ...[
-              FilledButton.tonal(onPressed: _busyId != null ? null : () => _review(organization, 'VERIFY'), child: const Text('Verify')),
-              OutlinedButton(onPressed: _busyId != null ? null : () => _review(organization, 'REJECT'), child: const Text('Reject')),
+              FilledButton.tonal(onPressed: _busyId != null ? null : () => _review(organization, 'VERIFY'), child: Text('Verify')),
+              OutlinedButton(onPressed: _busyId != null ? null : () => _review(organization, 'REJECT'), child: Text('Reject')),
             ],
             if (status == 'verified' || status == 'active')
-              OutlinedButton(onPressed: _busyId != null ? null : () => _review(organization, 'SUSPEND'), child: const Text('Suspend')),
+              OutlinedButton(onPressed: _busyId != null ? null : () => _review(organization, 'SUSPEND'), child: Text('Suspend')),
             if (status == 'suspended')
-              FilledButton.tonal(onPressed: _busyId != null ? null : () => _review(organization, 'REACTIVATE'), child: const Text('Reactivate')),
+              FilledButton.tonal(onPressed: _busyId != null ? null : () => _review(organization, 'REACTIVATE'), child: Text('Reactivate')),
           ]),
         ]),
       ),

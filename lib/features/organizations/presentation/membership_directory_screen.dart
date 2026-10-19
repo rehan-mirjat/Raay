@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
@@ -53,14 +54,14 @@ class _MembershipDirectoryScreenState
             'Member Directory',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.secondaryNavy,
+                  color: KivoraColors.textPrimaryOf(context),
                 ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4),
           Text(
             'Manage organization members, roles, and status.',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.textSecondary,
+                  color: KivoraColors.textSecondaryOf(context),
                 ),
           ),
         ],
@@ -101,13 +102,13 @@ class _MembershipDirectoryScreenState
         children: [
           OutlinedButton.icon(
             onPressed: () => _openAddExisting(context, orgId),
-            icon: const Icon(Icons.person_add_alt_rounded, size: 18),
-            label: const Text('Add existing'),
+            icon: Icon(Icons.person_add_alt_rounded, size: 18),
+            label: Text('Add existing'),
           ),
           FilledButton.icon(
             onPressed: () => _openInvite(context, orgId, orgName, role),
-            icon: const Icon(Icons.person_add_alt_1_rounded, size: 18),
-            label: const Text('Invite member'),
+            icon: Icon(Icons.person_add_alt_1_rounded, size: 18),
+            label: Text('Invite member'),
           ),
         ],
       );
@@ -118,31 +119,31 @@ class _MembershipDirectoryScreenState
           controller: _searchController,
           focusNode: _searchFocusNode,
           textInputAction: TextInputAction.search,
-          style: const TextStyle(fontSize: 14, color: AppTheme.secondaryNavy),
+          style: TextStyle(fontSize: 14, color: KivoraColors.textPrimaryOf(context)),
           decoration: InputDecoration(
             hintText: 'Search members by name or email',
-            hintStyle: const TextStyle(fontSize: 14, color: AppTheme.textSecondary),
-            prefixIcon: const Icon(Icons.search_rounded, size: 20),
+            hintStyle: TextStyle(fontSize: 14, color: KivoraColors.textSecondaryOf(context)),
+            prefixIcon: Icon(Icons.search_rounded, size: 20),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: AppTheme.borderLight),
+              borderSide: BorderSide(color: KivoraColors.borderOf(context)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: AppTheme.borderLight),
+              borderSide: BorderSide(color: KivoraColors.borderOf(context)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: AppTheme.primaryBlue, width: 1.5),
+              borderSide: BorderSide(color: AppTheme.primaryBlue, width: 1.5),
             ),
-            fillColor: AppTheme.surfaceWhite,
+            fillColor: KivoraColors.surfaceOf(context),
             filled: true,
             suffixIcon: _searchQuery.isEmpty
                 ? null
                 : IconButton(
                     tooltip: 'Clear search',
-                    icon: const Icon(Icons.close_rounded, size: 18),
+                    icon: Icon(Icons.close_rounded, size: 18),
                     onPressed: () {
                       _searchController.clear();
                       setState(() => _searchQuery = '');
@@ -159,9 +160,9 @@ class _MembershipDirectoryScreenState
         offset: const Offset(0, 52),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: const BorderSide(color: AppTheme.borderLight),
+          side: BorderSide(color: KivoraColors.borderOf(context)),
         ),
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         onSelected: (value) {
           setState(() => _selectedRoleFilter = value);
         },
@@ -174,10 +175,10 @@ class _MembershipDirectoryScreenState
           height: 48,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
-            color: _selectedRoleFilter != 'all' ? AppTheme.surfaceBlue : AppTheme.surfaceWhite,
+            color: _selectedRoleFilter != 'all' ? AppTheme.primaryBlue.withValues(alpha: 0.12) : KivoraColors.surfaceOf(context),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: _selectedRoleFilter != 'all' ? AppTheme.primaryBlue : AppTheme.borderLight,
+              color: _selectedRoleFilter != 'all' ? AppTheme.primaryBlue : KivoraColors.borderOf(context),
               width: _selectedRoleFilter != 'all' ? 1.5 : 1.0,
             ),
           ),
@@ -185,8 +186,8 @@ class _MembershipDirectoryScreenState
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.tune_rounded, size: 18, color: _selectedRoleFilter != 'all' ? AppTheme.primaryBlue : AppTheme.textSecondary),
-              const SizedBox(width: 8),
+              Icon(Icons.tune_rounded, size: 18, color: _selectedRoleFilter != 'all' ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context)),
+              SizedBox(width: 8),
               Text(
                 _selectedRoleFilter == 'all'
                     ? 'All roles'
@@ -194,11 +195,11 @@ class _MembershipDirectoryScreenState
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: _selectedRoleFilter != 'all' ? FontWeight.bold : FontWeight.w500,
-                  color: _selectedRoleFilter != 'all' ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
+                  color: _selectedRoleFilter != 'all' ? AppTheme.primaryBlue : KivoraColors.textPrimaryOf(context),
                 ),
               ),
-              const SizedBox(width: 8),
-              Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: _selectedRoleFilter != 'all' ? AppTheme.primaryBlue : AppTheme.textSecondary),
+              SizedBox(width: 8),
+              Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: _selectedRoleFilter != 'all' ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context)),
             ],
           ),
         ),
@@ -211,15 +212,15 @@ class _MembershipDirectoryScreenState
       child: Row(
         children: [
           if (isSelected)
-            const Icon(Icons.check_rounded, size: 16, color: AppTheme.primaryBlue)
+            Icon(Icons.check_rounded, size: 16, color: AppTheme.primaryBlue)
           else
-            const SizedBox(width: 16),
-          const SizedBox(width: 8),
+            SizedBox(width: 16),
+          SizedBox(width: 8),
           Text(
             label,
             style: TextStyle(
               fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-              color: isSelected ? AppTheme.primaryBlue : AppTheme.secondaryNavy,
+              color: isSelected ? AppTheme.primaryBlue : KivoraColors.textPrimaryOf(context),
               fontSize: 13,
             ),
           ),
@@ -326,7 +327,7 @@ class _MembershipDirectoryScreenState
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 _directoryHeading(context),
-                                const SizedBox(height: 14),
+                                SizedBox(height: 14),
                                 _memberActions(context, orgId, orgName, callerRole),
                               ],
                             )
@@ -344,7 +345,7 @@ class _MembershipDirectoryScreenState
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 _memberSearchField(),
-                                const SizedBox(height: 10),
+                                SizedBox(height: 10),
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: _roleFilter(context),
@@ -355,7 +356,7 @@ class _MembershipDirectoryScreenState
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Expanded(child: _memberSearchField()),
-                                const SizedBox(width: 12),
+                                SizedBox(width: 12),
                                 _roleFilter(context),
                               ],
                             ),
@@ -471,11 +472,11 @@ class _MemberCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: AppTheme.borderLight),
+        side: BorderSide(color: KivoraColors.borderOf(context)),
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        hoverColor: AppTheme.surfaceBlue.withValues(alpha: 0.3),
+        hoverColor: AppTheme.primaryBlue.withValues(alpha: 0.12).withValues(alpha: 0.3),
         onTap: onTap,
         child: Padding(
           padding: EdgeInsets.all(compact ? 12 : 20),
@@ -485,7 +486,7 @@ class _MemberCard extends StatelessWidget {
                 radius: compact ? 20 : 24,
                 backgroundColor: isInactive
                     ? Colors.grey.shade300
-                    : AppTheme.surfaceBlue,
+                    : AppTheme.primaryBlue.withValues(alpha: 0.12),
                 backgroundImage: photoUrl.isNotEmpty
                     ? NetworkImage(photoUrl)
                     : null,
@@ -512,15 +513,15 @@ class _MemberCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: isInactive ? Colors.grey : AppTheme.secondaryNavy,
+                        color: isInactive ? Colors.grey : KivoraColors.textPrimaryOf(context),
                         decoration: isInactive ? TextDecoration.lineThrough : null,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    _iconLine(Icons.email_outlined, email),
+                    SizedBox(height: 4),
+                    _iconLine(context, Icons.email_outlined, email),
                     if (deptName != null && deptName.isNotEmpty) ...[
-                      const SizedBox(height: 4),
-                      _iconLine(Icons.domain_outlined, deptName),
+                      SizedBox(height: 4),
+                      _iconLine(context, Icons.domain_outlined, deptName),
                     ],
                   ],
                 ),
@@ -530,7 +531,7 @@ class _MemberCard extends StatelessWidget {
                 children: [
                   StatusBadge.role(role),
                   if (isInactive) ...[
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6),
                     _pill('INACTIVE', AppTheme.error.withValues(alpha: 0.12),
                         AppTheme.error,
                         fontSize: 10),
@@ -538,7 +539,7 @@ class _MemberCard extends StatelessWidget {
                 ],
               ),
               SizedBox(width: compact ? 6 : 16),
-              const Icon(Icons.chevron_right, color: AppTheme.borderLight),
+              Icon(Icons.chevron_right, color: KivoraColors.borderOf(context)),
             ],
           ),
         ),
@@ -546,16 +547,16 @@ class _MemberCard extends StatelessWidget {
     );
   }
 
-  Widget _iconLine(IconData icon, String text) => Row(
+  Widget _iconLine(BuildContext context, IconData icon, String text) => Row(
         children: [
-          Icon(icon, size: 14, color: AppTheme.textSecondary),
+          Icon(icon, size: 14, color: KivoraColors.textSecondaryOf(context)),
           const SizedBox(width: 6),
           Flexible(
             child: Text(
               text,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+              style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 13),
             ),
           ),
         ],

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
@@ -63,7 +64,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     final isDesktop = ResponsiveLayout.isWide(context);
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: KivoraColors.backgroundOf(context),
       body: state.when(
         skipLoadingOnReload: true,
         loading: () => const LoadingView(message: 'Loading organization…'),
@@ -114,7 +115,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                     InkWell(
                       onTap: () => context.go('/orgs/dashboard'),
                       borderRadius: BorderRadius.circular(6),
-                      child: const Padding(
+                      child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 4, horizontal: 2),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -129,22 +130,22 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
 
                     // 2. Headline & Subtitle
                     Text(
                       'Organization branding',
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: AppTheme.secondaryNavy,
+                            color: KivoraColors.textPrimaryOf(context),
                           ),
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6),
                     Text(
                       'Shape how ${org.name} appears to members and voters.',
-                      style: const TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+                      style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14),
                     ),
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28),
 
                     // 3. Two-Column Layout (Form & Live Preview)
                     Form(
@@ -159,19 +160,19 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                                     crossAxisAlignment: CrossAxisAlignment.stretch,
                                     children: [
                                       _buildDetailsCard(context),
-                                      const SizedBox(height: 20),
+                                      SizedBox(height: 20),
                                       _buildLogoCard(context, org.id),
                                     ],
                                   ),
                                 ),
-                                const SizedBox(width: 28),
+                                SizedBox(width: 28),
                                 Expanded(
                                   flex: 5,
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.stretch,
                                     children: [
                                       _buildLivePreviewCard(context),
-                                      const SizedBox(height: 20),
+                                      SizedBox(height: 20),
                                       _buildPermissionsNoticeCard(context),
                                     ],
                                   ),
@@ -182,17 +183,17 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 _buildDetailsCard(context),
-                                const SizedBox(height: 20),
+                                SizedBox(height: 20),
                                 _buildLogoCard(context, org.id),
-                                const SizedBox(height: 20),
+                                SizedBox(height: 20),
                                 _buildLivePreviewCard(context),
-                                const SizedBox(height: 20),
+                                SizedBox(height: 20),
                                 _buildPermissionsNoticeCard(context),
                               ],
                             ),
                     ),
 
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32),
 
                     // 4. Bottom Sticky Unsaved Changes Banner
                     if (unsaved || _saving || _uploadingLogo)
@@ -214,9 +215,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     return Container(
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),
@@ -228,26 +229,26 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Organization details',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
           ),
-          const SizedBox(height: 4),
-          const Text(
+          SizedBox(height: 4),
+          Text(
             'Your public name and a short introduction to your organization.',
-            style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+            style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context)),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
 
           // Name
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Organization name *', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
-              Text('${_name.text.length} / 100', style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+              Text('Organization name *', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context))),
+              Text('${_name.text.length} / 100', style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
             ],
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           TextFormField(
             controller: _name,
             maxLength: 100,
@@ -261,17 +262,17 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               return name.length < 3 ? 'Use at least 3 characters.' : null;
             },
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
 
           // Description
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Description', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
-              Text('${_description.text.length} / 500', style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+              Text('Description', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context))),
+              Text('${_description.text.length} / 500', style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
             ],
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           TextFormField(
             controller: _description,
             maxLength: 500,
@@ -281,16 +282,16 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               counterText: '',
             ),
           ),
-          const SizedBox(height: 6),
-          const Text(
+          SizedBox(height: 6),
+          Text(
             'A short introduction shown on your organization profile.',
-            style: TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+            style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context)),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
 
           // Website
-          const Text('Website (optional)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
-          const SizedBox(height: 6),
+          Text('Website (optional)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context))),
+          SizedBox(height: 6),
           TextFormField(
             controller: _website,
             keyboardType: TextInputType.url,
@@ -313,9 +314,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     return Container(
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),
@@ -330,21 +331,21 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Organization logo',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
               ),
               Text(
                 hasLogo ? 'Logo active' : 'No logo uploaded',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: hasLogo ? AppTheme.success : AppTheme.textSecondary,
+                  color: hasLogo ? AppTheme.success : KivoraColors.textSecondaryOf(context),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
 
           // Dashed Upload Box
           Container(
@@ -352,7 +353,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
             decoration: BoxDecoration(
               color: const Color(0xFFF8FAFC),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppTheme.borderLight, width: 1.2),
+              border: Border.all(color: KivoraColors.borderOf(context), width: 1.2),
             ),
             child: Row(
               children: [
@@ -361,24 +362,24 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: AppTheme.surfaceBlue,
+                    color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: AppTheme.borderLight),
+                    border: Border.all(color: KivoraColors.borderOf(context)),
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: hasLogo
                       ? Image.network(
                           FirebaseService.sanitizeStorageUrl(_logoUrl.text),
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => const Center(
+                          errorBuilder: (context, error, stackTrace) => Center(
                             child: Icon(Icons.business_rounded, size: 32, color: AppTheme.primaryBlue),
                           ),
                         )
-                      : const Center(
+                      : Center(
                           child: Icon(Icons.business_rounded, size: 32, color: AppTheme.primaryBlue),
                         ),
                 ),
-                const SizedBox(width: 20),
+                SizedBox(width: 20),
 
                 // Upload & Remove Controls
                 Expanded(
@@ -397,7 +398,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                                     dimension: 16,
                                     child: CircularProgressIndicator(strokeWidth: 2),
                                   )
-                                : const Icon(Icons.upload_rounded, size: 18),
+                                : Icon(Icons.upload_rounded, size: 18),
                             label: Text(_uploadingLogo ? 'Uploading...' : 'Upload logo'),
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -413,17 +414,17 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                                       });
                                     },
                               borderRadius: BorderRadius.circular(6),
-                              child: const Padding(
+                              child: Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                                child: Text('Remove', style: TextStyle(fontSize: 13, color: AppTheme.textSecondary, fontWeight: FontWeight.bold)),
+                                child: Text('Remove', style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context), fontWeight: FontWeight.bold)),
                               ),
                             ),
                         ],
                       ),
-                      const SizedBox(height: 8),
-                      const Text(
+                      SizedBox(height: 8),
+                      Text(
                         'PNG, JPEG or WebP · Up to 5 MB\nUse a square image for the best result.',
-                        style: TextStyle(fontSize: 12, color: AppTheme.textSecondary, height: 1.3),
+                        style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.3),
                       ),
                     ],
                   ),
@@ -448,9 +449,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),
@@ -462,16 +463,16 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Member profile preview',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
           ),
-          const SizedBox(height: 4),
-          const Text(
+          SizedBox(height: 4),
+          Text(
             'How your organization will appear to members.',
-            style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+            style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
 
           // Preview Container
           Container(
@@ -479,7 +480,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
             decoration: BoxDecoration(
               color: const Color(0xFFF8FAFC),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppTheme.borderLight),
+              border: Border.all(color: KivoraColors.borderOf(context)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -489,7 +490,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: AppTheme.surfaceBlue,
+                    color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   clipBehavior: Clip.antiAlias,
@@ -497,15 +498,15 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                       ? Image.network(
                           FirebaseService.sanitizeStorageUrl(_logoUrl.text),
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => const Center(
+                          errorBuilder: (context, error, stackTrace) => Center(
                             child: Icon(Icons.business_rounded, size: 24, color: AppTheme.primaryBlue),
                           ),
                         )
-                      : const Center(
+                      : Center(
                           child: Icon(Icons.business_rounded, size: 24, color: AppTheme.primaryBlue),
                         ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -514,7 +515,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                     Expanded(
                       child: Text(
                         nameStr,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -522,45 +523,45 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: AppTheme.surfaceBlue,
+                        color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Text('Member', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue)),
+                      child: Text('Member', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue)),
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
 
                 Text(
                   descStr,
-                  style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary, height: 1.4),
+                  style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context), height: 1.4),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
 
                 Row(
                   children: [
-                    const Icon(Icons.language_rounded, size: 14, color: AppTheme.textSecondary),
-                    const SizedBox(width: 6),
+                    Icon(Icons.language_rounded, size: 14, color: KivoraColors.textSecondaryOf(context)),
+                    SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         websiteStr,
-                        style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                        style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                const Divider(height: 1, color: AppTheme.borderLight),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
+                Divider(height: 1, color: KivoraColors.borderOf(context)),
+                SizedBox(height: 16),
 
                 ElevatedButton.icon(
                   onPressed: null,
-                  icon: const Text('View events', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white)),
-                  label: const Icon(Icons.arrow_forward_rounded, size: 16, color: Colors.white),
+                  icon: Text('View events', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white)),
+                  label: Icon(Icons.arrow_forward_rounded, size: 16, color: Colors.white),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primaryBlue,
                     disabledBackgroundColor: AppTheme.primaryBlue,
@@ -571,16 +572,16 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
 
-          const Row(
+          Row(
             children: [
-              Icon(Icons.info_outline_rounded, size: 14, color: AppTheme.textSecondary),
+              Icon(Icons.info_outline_rounded, size: 14, color: KivoraColors.textSecondaryOf(context)),
               SizedBox(width: 8),
               Expanded(
                 child: Text(
                   'Preview only. Changes appear to members and voters after you save.',
-                  style: TextStyle(fontSize: 11, color: AppTheme.textSecondary, height: 1.3),
+                  style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context), height: 1.3),
                 ),
               ),
             ],
@@ -597,11 +598,11 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
       ),
-      child: const Row(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(Icons.verified_user_outlined, size: 20, color: AppTheme.primaryBlue),
@@ -612,12 +613,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               children: [
                 Text(
                   'Branding, not permissions',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
                 ),
                 SizedBox(height: 4),
                 Text(
                   'Access control and verification are managed separately. Updating your branding won\'t change either.',
-                  style: TextStyle(fontSize: 12, color: AppTheme.textSecondary, height: 1.4),
+                  style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.4),
                 ),
               ],
             ),
@@ -634,9 +635,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.06),
@@ -650,29 +651,29 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           Container(
             width: 8,
             height: 8,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppTheme.accentGold,
               shape: BoxShape.circle,
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'You have unsaved changes',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: 2),
                 Text(
                   _uploadingLogo ? 'Logo uploaded. Save to publish changes.' : 'Save to publish your branding, or reset to discard your changes.',
-                  style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                  style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16),
 
           OutlinedButton(
             onPressed: _saving || _uploadingLogo
@@ -688,15 +689,15 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             ),
-            child: const Text('Reset'),
+            child: Text('Reset'),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
 
           FilledButton.icon(
             onPressed: _saving || _uploadingLogo ? null : () => _save(org.id),
             icon: _saving
-                ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                : const Icon(Icons.check_rounded, size: 18),
+                ? SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                : Icon(Icons.check_rounded, size: 18),
             label: Text(_saving ? 'Saving...' : 'Save branding'),
             style: FilledButton.styleFrom(
               backgroundColor: AppTheme.primaryBlue,

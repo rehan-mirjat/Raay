@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/inline_error_banner.dart';
 import '../data/organization_repository.dart';
@@ -119,7 +120,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: KivoraColors.backgroundOf(context),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -127,9 +128,9 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
             constraints: const BoxConstraints(maxWidth: 540),
             child: Container(
               decoration: BoxDecoration(
-                color: AppTheme.surfaceWhite,
+                color: KivoraColors.surfaceOf(context),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppTheme.borderLight),
+                border: Border.all(color: KivoraColors.borderOf(context)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.04),
@@ -152,48 +153,48 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: AppTheme.surfaceBlue,
+                            color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(14),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.business_outlined,
                             size: 24,
                             color: AppTheme.primaryBlue,
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.close_rounded, color: AppTheme.textSecondary),
+                          icon: Icon(Icons.close_rounded, color: KivoraColors.textSecondaryOf(context)),
                           tooltip: 'Close',
                           onPressed: _handleCancel,
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
 
                     Text(
                       'Create an organization',
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: AppTheme.secondaryNavy,
+                            color: KivoraColors.textPrimaryOf(context),
                           ),
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
+                    SizedBox(height: 8),
+                    Text(
                       'Give your community a shared space for people, departments and activity.',
-                      style: TextStyle(color: AppTheme.textSecondary, fontSize: 14, height: 1.4),
+                      style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14, height: 1.4),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24),
 
-                    const Text(
+                    Text(
                       'ORGANIZATION NAME *',
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.secondaryNavy,
+                        color: KivoraColors.textPrimaryOf(context),
                         letterSpacing: 0.5,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6),
                     TextFormField(
                       controller: _nameController,
                       textInputAction: TextInputAction.next,
@@ -208,23 +209,23 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                         return null;
                       },
                     ),
-                    const SizedBox(height: 6),
-                    const Text(
+                    SizedBox(height: 6),
+                    Text(
                       'Use a name your members will recognize. 2–80 characters.',
-                      style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                      style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                     ),
-                    const SizedBox(height: 18),
+                    SizedBox(height: 18),
 
-                    const Text(
+                    Text(
                       'ORGANIZATION TYPE *',
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.secondaryNavy,
+                        color: KivoraColors.textPrimaryOf(context),
                         letterSpacing: 0.5,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6),
                     DropdownButtonFormField<String>(
                       initialValue: _selectedType,
                       decoration: const InputDecoration(
@@ -237,7 +238,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                         }
                       },
                     ),
-                    const SizedBox(height: 18),
+                    SizedBox(height: 18),
 
                     Row(
                       children: [
@@ -245,16 +246,16 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
+                              Text(
                                 'CITY (OPTIONAL)',
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
-                                  color: AppTheme.secondaryNavy,
+                                  color: KivoraColors.textPrimaryOf(context),
                                   letterSpacing: 0.5,
                                 ),
                               ),
-                              const SizedBox(height: 6),
+                              SizedBox(height: 6),
                               TextFormField(
                                 controller: _cityController,
                                 textInputAction: TextInputAction.next,
@@ -265,21 +266,21 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                             ],
                           ),
                         ),
-                        const SizedBox(width: 14),
+                        SizedBox(width: 14),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
+                              Text(
                                 'COUNTRY (OPTIONAL)',
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
-                                  color: AppTheme.secondaryNavy,
+                                  color: KivoraColors.textPrimaryOf(context),
                                   letterSpacing: 0.5,
                                 ),
                               ),
-                              const SizedBox(height: 6),
+                              SizedBox(height: 6),
                               TextFormField(
                                 controller: _countryController,
                                 textInputAction: TextInputAction.next,
@@ -292,7 +293,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
 
                     // Owner Callout Box
                     Container(
@@ -301,7 +302,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                         color: const Color(0xFFF0F5FF),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Row(
+                      child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Icon(Icons.check_circle_outline_rounded, color: AppTheme.primaryBlue, size: 18),
@@ -312,12 +313,12 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                               children: [
                                 Text(
                                   'Verified instantly, you\'ll be the owner',
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.secondaryNavy),
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: KivoraColors.textPrimaryOf(context)),
                                 ),
                                 SizedBox(height: 2),
                                 Text(
                                   'Since your account email is verified, your organization is created already verified - no manual review needed. Set up your workspace, branding and joining codes right after.',
-                                  style: TextStyle(fontSize: 12, color: AppTheme.textSecondary, height: 1.4),
+                                  style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.4),
                                 ),
                               ],
                             ),
@@ -325,19 +326,19 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
 
-                    const Text(
+                    Text(
                       '* Complete the required fields to create your organization.',
-                      style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                      style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                     ),
 
                     if (_error != null) ...[
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16),
                       InlineErrorBanner(message: _error!),
                     ],
 
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -347,9 +348,9 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                           ),
-                          child: const Text('Cancel'),
+                          child: Text('Cancel'),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12),
                         FilledButton(
                           onPressed: _isLoading ? null : _submit,
                           style: FilledButton.styleFrom(
@@ -357,12 +358,12 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                           ),
                           child: _isLoading
-                              ? const SizedBox(
+                              ? SizedBox(
                                   height: 16,
                                   width: 16,
                                   child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                                 )
-                              : const Text('Create organization'),
+                              : Text('Create organization'),
                         ),
                       ],
                     ),

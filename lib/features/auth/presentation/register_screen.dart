@@ -411,18 +411,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             : 'Create Identity Securely'),
                       ),
                       SizedBox(height: isMobile ? 16 : 20),
-                      const Row(
+                      Row(
                         children: [
-                          Expanded(child: Divider()),
+                          const Expanded(child: Divider()),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Text('OR',
                                 style: TextStyle(
                                     color: kc.textSecondary,
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold)),
                           ),
-                          Expanded(child: Divider()),
+                          const Expanded(child: Divider()),
                         ],
                       ),
                       SizedBox(height: isMobile ? 16 : 20),

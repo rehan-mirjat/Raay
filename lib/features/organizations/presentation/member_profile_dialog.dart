@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../data/organization_repository.dart';
 import '../domain/organization_enums.dart';
@@ -66,7 +67,7 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel')),
+              child: Text('Cancel')),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: AppTheme.error),
             onPressed: () => Navigator.pop(ctx, true),
@@ -111,9 +112,9 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
             backgroundColor: AppTheme.primaryBlue,
             child: Text(
                 displayName.isNotEmpty ? displayName[0].toUpperCase() : 'U',
-                style: const TextStyle(color: Colors.white)),
+                style: TextStyle(color: Colors.white)),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,13 +122,13 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                 Text(displayName,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold)),
                 Text(email,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontSize: 12, color: AppTheme.textSecondary)),
+                    style: TextStyle(
+                        fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
               ],
             ),
           ),
@@ -137,8 +138,8 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Divider(),
-          const SizedBox(height: 8),
+          Divider(),
+          SizedBox(height: 8),
           _infoRow('Role', roleStr.toUpperCase()),
           _infoRow('Status', statusStr.toUpperCase()),
           _infoRow('Department', deptName),
@@ -158,7 +159,7 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     newRole: 'admin'),
                 'Promoted to Admin successfully.',
               ),
-              child: const Text('Promote to Admin'),
+              child: Text('Promote to Admin'),
             ),
           if (canManageRole && isTargetAdmin)
             TextButton(
@@ -169,7 +170,7 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     newRole: 'member'),
                 'Demoted to Member successfully.',
               ),
-              child: const Text('Demote to Member'),
+              child: Text('Demote to Member'),
             ),
           if (canManageStatus && isTargetActive)
             TextButton(
@@ -180,7 +181,7 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     newStatus: 'inactive'),
                 'Deactivated member successfully.',
               ),
-              child: const Text('Deactivate',
+              child: Text('Deactivate',
                   style: TextStyle(color: Colors.orange)),
             ),
           if (canManageStatus && !isTargetActive)
@@ -192,7 +193,7 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     newStatus: 'active'),
                 'Reactivated member successfully.',
               ),
-              child: const Text('Reactivate',
+              child: Text('Reactivate',
                   style: TextStyle(color: AppTheme.success)),
             ),
           if (canRemove)
@@ -214,12 +215,12 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                 }
               },
               child:
-                  const Text('Remove', style: TextStyle(color: AppTheme.error)),
+                  Text('Remove', style: TextStyle(color: AppTheme.error)),
             ),
         ],
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Close'),
+          child: Text('Close'),
         ),
       ],
     );
@@ -232,13 +233,13 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context))),
           Expanded(
               child: Text(value,
                   textAlign: TextAlign.end,
                   softWrap: true,
-                  style: const TextStyle(color: AppTheme.textSecondary))),
+                  style: TextStyle(color: KivoraColors.textSecondaryOf(context)))),
         ],
       ),
     );

@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
@@ -28,8 +29,8 @@ class OrganizationDashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(activeOrganizationContextProvider);
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
-      appBar: AppBar(title: const Text('Organization dashboard')),
+      backgroundColor: KivoraColors.backgroundOf(context),
+      appBar: AppBar(title: Text('Organization dashboard')),
       body: state.when(
         loading: () => const LoadingView(message: 'Loading organization…'),
         error: (error, _) => ErrorView(
@@ -66,9 +67,9 @@ class OrganizationDashboardScreen extends ConsumerWidget {
                 padding: EdgeInsets.all(isWide ? 28 : 16),
                 children: [
                   _buildHeader(context, org, member),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
                   _buildMetricsRow(context, ref, org.id),
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32),
                   if (isWide)
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +78,7 @@ class OrganizationDashboardScreen extends ConsumerWidget {
                           flex: 7,
                           child: _buildLeftColumn(context, org, member),
                         ),
-                        const SizedBox(width: 32),
+                        SizedBox(width: 32),
                         Expanded(
                           flex: 4,
                           child: _buildRightColumn(context, ref, org),
@@ -89,7 +90,7 @@ class OrganizationDashboardScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildLeftColumn(context, org, member),
-                        const SizedBox(height: 32),
+                        SizedBox(height: 32),
                         _buildRightColumn(context, ref, org),
                       ],
                     ),
@@ -112,9 +113,9 @@ class OrganizationDashboardScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,7 +124,7 @@ class OrganizationDashboardScreen extends ConsumerWidget {
             width: 60,
             height: 60,
             decoration: BoxDecoration(
-              color: AppTheme.surfaceBlue,
+              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
@@ -134,17 +135,17 @@ class OrganizationDashboardScreen extends ConsumerWidget {
               size: 32,
             ),
           ),
-          const SizedBox(width: 20),
+          SizedBox(width: 20),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(org.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.secondaryNavy)),
-                const SizedBox(height: 8),
+                        color: KivoraColors.textPrimaryOf(context))),
+                SizedBox(height: 8),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -162,14 +163,14 @@ class OrganizationDashboardScreen extends ConsumerWidget {
           if (ResponsiveLayout.isWide(context)) ...[
             OutlinedButton.icon(
               onPressed: () => context.go('/orgs/members'),
-              icon: const Icon(Icons.person_add_outlined, size: 18),
-              label: const Text('Invite members'),
+              icon: Icon(Icons.person_add_outlined, size: 18),
+              label: Text('Invite members'),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             FilledButton.icon(
               onPressed: () => context.go('/admin/events/new'),
-              icon: const Icon(Icons.add, size: 18),
-              label: const Text('Create voting event'),
+              icon: Icon(Icons.add, size: 18),
+              label: Text('Create voting event'),
               style: FilledButton.styleFrom(
                 backgroundColor: AppTheme.primaryBlue,
                 shape: RoundedRectangleBorder(
@@ -180,12 +181,12 @@ class OrganizationDashboardScreen extends ConsumerWidget {
             Row(
               children: [
                 IconButton(
-                  icon: const Icon(Icons.person_add_outlined,
+                  icon: Icon(Icons.person_add_outlined,
                       color: AppTheme.primaryBlue),
                   onPressed: () => context.go('/orgs/members'),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.add_box_rounded,
+                  icon: Icon(Icons.add_box_rounded,
                       color: AppTheme.primaryBlue),
                   onPressed: () => context.go('/admin/events/new'),
                 ),
@@ -308,7 +309,7 @@ class OrganizationDashboardScreen extends ConsumerWidget {
                 Icons.domain_outlined, '/orgs/departments'),
           ],
         ),
-        const SizedBox(height: 32),
+        SizedBox(height: 32),
         _buildSectionGroup(
           context,
           title: 'ELECTIONS',
@@ -320,7 +321,7 @@ class OrganizationDashboardScreen extends ConsumerWidget {
                 '/admin/events'),
           ],
         ),
-        const SizedBox(height: 32),
+        SizedBox(height: 32),
         _buildSectionGroup(
           context,
           title: 'GOVERNANCE',
@@ -347,17 +348,17 @@ class OrganizationDashboardScreen extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 12),
           child: Text(title,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.textSecondary,
+                  color: KivoraColors.textSecondaryOf(context),
                   letterSpacing: 0.8)),
         ),
         Container(
           decoration: BoxDecoration(
-            color: AppTheme.surfaceWhite,
+            color: KivoraColors.surfaceOf(context),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppTheme.borderLight),
+            border: Border.all(color: KivoraColors.borderOf(context)),
           ),
           child: Column(
             children: items.asMap().entries.map((entry) {
@@ -379,39 +380,39 @@ class OrganizationDashboardScreen extends ConsumerWidget {
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                              color: AppTheme.surfaceBlue,
+                              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Icon(item.icon,
                                 color: AppTheme.primaryBlue, size: 20),
                           ),
-                          const SizedBox(width: 16),
+                          SizedBox(width: 16),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(item.title,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
-                                        color: AppTheme.secondaryNavy)),
-                                const SizedBox(height: 4),
+                                        color: KivoraColors.textPrimaryOf(context))),
+                                SizedBox(height: 4),
                                 Text(item.description,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         fontSize: 12,
-                                        color: AppTheme.textSecondary)),
+                                        color: KivoraColors.textSecondaryOf(context))),
                               ],
                             ),
                           ),
-                          const Icon(Icons.chevron_right_rounded,
-                              color: AppTheme.textSecondary, size: 20),
+                          Icon(Icons.chevron_right_rounded,
+                              color: KivoraColors.textSecondaryOf(context), size: 20),
                         ],
                       ),
                     ),
                   ),
                   if (idx < items.length - 1)
-                    const Divider(
-                        height: 1, color: AppTheme.borderLight, indent: 76),
+                    Divider(
+                        height: 1, color: KivoraColors.borderOf(context), indent: 76),
                 ],
               );
             }).toList(),
@@ -427,9 +428,9 @@ class OrganizationDashboardScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildLiveEventCard(context, ref, org),
-        const SizedBox(height: 24),
-        _buildAccountSecurityCard(),
-        const SizedBox(height: 24),
+        SizedBox(height: 24),
+        _buildAccountSecurityCard(context),
+        SizedBox(height: 24),
         _buildRecentActivityCard(context, ref, org),
       ],
     );
@@ -451,9 +452,9 @@ class OrganizationDashboardScreen extends ConsumerWidget {
           return Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: AppTheme.surfaceWhite,
+              color: KivoraColors.surfaceOf(context),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppTheme.borderLight),
+              border: Border.all(color: KivoraColors.borderOf(context)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -461,11 +462,11 @@ class OrganizationDashboardScreen extends ConsumerWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('LIVE EVENT',
+                    Text('LIVE EVENT',
                         style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.bold,
-                            color: AppTheme.textSecondary,
+                            color: KivoraColors.textSecondaryOf(context),
                             letterSpacing: 0.8)),
                     if (hasLive)
                       Container(
@@ -474,7 +475,7 @@ class OrganizationDashboardScreen extends ConsumerWidget {
                         decoration: BoxDecoration(
                             color: AppTheme.success.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8)),
-                        child: const Text('Active',
+                        child: Text('Active',
                             style: TextStyle(
                                 color: AppTheme.success,
                                 fontSize: 10,
@@ -482,27 +483,27 @@ class OrganizationDashboardScreen extends ConsumerWidget {
                       ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 if (hasLive) ...[
                   Text(activeEvents.first.title,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: AppTheme.secondaryNavy),
+                          color: KivoraColors.textPrimaryOf(context)),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   OutlinedButton(
                     onPressed: () => context
                         .go('/admin/events/${activeEvents.first.id}/monitor'),
                     style: OutlinedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 44)),
-                    child: const Text('Monitor participation'),
+                    child: Text('Monitor participation'),
                   ),
                 ] else ...[
-                  const Text('No live events at the moment.',
+                  Text('No live events at the moment.',
                       style: TextStyle(
-                          color: AppTheme.textSecondary, fontSize: 13)),
+                          color: KivoraColors.textSecondaryOf(context), fontSize: 13)),
                 ],
               ],
             ),
@@ -510,7 +511,7 @@ class OrganizationDashboardScreen extends ConsumerWidget {
         });
   }
 
-  Widget _buildAccountSecurityCard() {
+  Widget _buildAccountSecurityCard(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     final emailVerified = user?.emailVerified ?? false;
     final phoneVerified =
@@ -519,31 +520,31 @@ class OrganizationDashboardScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('ACCOUNT SECURITY',
+          Text('ACCOUNT SECURITY',
               style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.textSecondary,
+                  color: KivoraColors.textSecondaryOf(context),
                   letterSpacing: 0.8)),
           const SizedBox(height: 16),
-          _buildSecurityItem(
+          _buildSecurityItem(context,
               emailVerified ? 'Email verified' : 'Email not verified',
               emailVerified),
-          if (phoneVerified) _buildSecurityItem('Phone number verified', true),
-          _buildSecurityItem('Secure account session', true),
+          if (phoneVerified) _buildSecurityItem(context, 'Phone number verified', true),
+          _buildSecurityItem(context, 'Secure account session', true),
         ],
       ),
     );
   }
 
-  Widget _buildSecurityItem(String text, bool isSecure) {
+  Widget _buildSecurityItem(BuildContext context, String text, bool isSecure) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -557,7 +558,7 @@ class OrganizationDashboardScreen extends ConsumerWidget {
           const SizedBox(width: 12),
           Text(text,
               style:
-                  const TextStyle(fontSize: 13, color: AppTheme.secondaryNavy)),
+                  TextStyle(fontSize: 13, color: KivoraColors.textPrimaryOf(context))),
         ],
       ),
     );
@@ -571,9 +572,9 @@ class OrganizationDashboardScreen extends ConsumerWidget {
       return Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: AppTheme.surfaceWhite,
+          color: KivoraColors.surfaceOf(context),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppTheme.borderLight),
+          border: Border.all(color: KivoraColors.borderOf(context)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -581,15 +582,15 @@ class OrganizationDashboardScreen extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('RECENT ACTIVITY',
+                Text('RECENT ACTIVITY',
                     style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.textSecondary,
+                        color: KivoraColors.textSecondaryOf(context),
                         letterSpacing: 0.8)),
                 InkWell(
                   onTap: () => context.go('/orgs/audit'),
-                  child: const Text('View all',
+                  child: Text('View all',
                       style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -597,18 +598,18 @@ class OrganizationDashboardScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             logsAsync.when(
               loading: () => const LoadingView(),
-              error: (_, __) => const Text('Could not load activity.',
+              error: (_, __) => Text('Could not load activity.',
                   style:
-                      TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+                      TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context))),
               data: (snapshot) {
                 final logs = snapshot.docs;
                 if (logs.isEmpty) {
-                  return const Text('No recent activity.',
+                  return Text('No recent activity.',
                       style: TextStyle(
-                          fontSize: 13, color: AppTheme.textSecondary));
+                          fontSize: 13, color: KivoraColors.textSecondaryOf(context)));
                 }
                 return Column(
                   children: logs.take(3).map((doc) {
@@ -633,25 +634,25 @@ class OrganizationDashboardScreen extends ConsumerWidget {
                             margin: const EdgeInsets.only(top: 4),
                             width: 8,
                             height: 8,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                                 color: AppTheme.primaryBlue,
                                 shape: BoxShape.circle),
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: 12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(actionFormatted,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 13,
-                                        color: AppTheme.secondaryNavy)),
-                                const SizedBox(height: 2),
+                                        color: KivoraColors.textPrimaryOf(context))),
+                                SizedBox(height: 2),
                                 Text(dateStr,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         fontSize: 11,
-                                        color: AppTheme.textSecondary)),
+                                        color: KivoraColors.textSecondaryOf(context))),
                               ],
                             ),
                           ),
@@ -682,30 +683,30 @@ class _StatCardLayout extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.textSecondary,
+                  color: KivoraColors.textSecondaryOf(context),
                   letterSpacing: 0.8)),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Text(value,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.secondaryNavy,
+                  color: KivoraColors.textPrimaryOf(context),
                   height: 1.0)),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(subtitle,
               style:
-                  const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                  TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
               maxLines: 1,
               overflow: TextOverflow.ellipsis),
         ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../data/organization_repository.dart';
 
@@ -54,19 +55,19 @@ class _PendingInvitationsWidgetState
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Revoke this invitation?'),
+        title: Text('Revoke this invitation?'),
         content: Text(
           '${email.isEmpty ? 'The recipient' : email} will no longer be able to accept it. You can invite them again later.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Keep'),
+            child: Text('Keep'),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: AppTheme.error),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Revoke'),
+            child: Text('Revoke'),
           ),
         ],
       ),
@@ -112,7 +113,7 @@ class _PendingInvitationsWidgetState
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: AppTheme.borderLight),
+        side: BorderSide(color: KivoraColors.borderOf(context)),
       ),
       child: Padding(
         padding: EdgeInsets.all(compact ? 14 : 20),
@@ -122,22 +123,22 @@ class _PendingInvitationsWidgetState
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'Pending Invitations',
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.secondaryNavy),
+                      color: KivoraColors.textPrimaryOf(context)),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.refresh, size: 20),
+                  icon: Icon(Icons.refresh, size: 20),
                   tooltip: 'Refresh Invitations',
                   onPressed: () => ref.invalidate(
                       pendingInvitationsProvider(widget.organizationId)),
                 ),
               ],
             ),
-            const Divider(height: 20),
+            Divider(height: 20),
             invitationsAsync.when(
               loading: () => const LoadingView(),
               error: (err, stack) => Padding(
@@ -145,28 +146,28 @@ class _PendingInvitationsWidgetState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Could not load pending invitations.',
                       style: TextStyle(color: AppTheme.error),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     TextButton.icon(
                       onPressed: () => ref.invalidate(
                           pendingInvitationsProvider(widget.organizationId)),
-                      icon: const Icon(Icons.refresh_rounded),
-                      label: const Text('Try again'),
+                      icon: Icon(Icons.refresh_rounded),
+                      label: Text('Try again'),
                     ),
                   ],
                 ),
               ),
               data: (invitations) {
                 if (invitations.isEmpty) {
-                  return const Padding(
+                  return Padding(
                     padding: EdgeInsets.symmetric(vertical: 12),
                     child: Text(
                       'No pending invitations found for this organization.',
                       style: TextStyle(
-                          color: AppTheme.textSecondary, fontSize: 13),
+                          color: KivoraColors.textSecondaryOf(context), fontSize: 13),
                     ),
                   );
                 }
@@ -175,7 +176,7 @@ class _PendingInvitationsWidgetState
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: invitations.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
+                  separatorBuilder: (_, __) => Divider(height: 1),
                   itemBuilder: (context, index) {
                     final item = invitations[index];
                     final email = item['email'] as String? ?? '';
@@ -191,7 +192,7 @@ class _PendingInvitationsWidgetState
 
                     return ListTile(
                       contentPadding: const EdgeInsets.symmetric(vertical: 4),
-                      leading: const Icon(Icons.mark_email_unread_outlined,
+                      leading: Icon(Icons.mark_email_unread_outlined,
                           color: AppTheme.primaryBlue, size: 22),
                       title: Row(
                         children: [
@@ -200,13 +201,13 @@ class _PendingInvitationsWidgetState
                               email,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
+                              style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
-                                  color: AppTheme.secondaryNavy),
+                                  color: KivoraColors.textPrimaryOf(context)),
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(width: 8),
                           Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 2),
@@ -223,7 +224,7 @@ class _PendingInvitationsWidgetState
                                   fontWeight: FontWeight.bold,
                                   color: isAdminRole
                                       ? AppTheme.primaryBlue
-                                      : AppTheme.secondaryNavy),
+                                      : KivoraColors.textPrimaryOf(context)),
                             ),
                           ),
                         ],
@@ -234,7 +235,7 @@ class _PendingInvitationsWidgetState
                                   fontSize: 12,
                                   color: isExpired
                                       ? AppTheme.error
-                                      : AppTheme.textSecondary))
+                                      : KivoraColors.textSecondaryOf(context)))
                           : null,
                       trailing: canRevoke
                           ? OutlinedButton(
@@ -243,7 +244,7 @@ class _PendingInvitationsWidgetState
                                   : () => _revoke(invitationId, email),
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: AppTheme.error,
-                                side: const BorderSide(color: AppTheme.error),
+                                side: BorderSide(color: AppTheme.error),
                               ),
                               child: isWorking
                                   ? const SizedBox.square(
@@ -253,11 +254,11 @@ class _PendingInvitationsWidgetState
                                     )
                                   : Text(isExpired ? 'Remove' : 'Revoke'),
                             )
-                          : const Tooltip(
+                          : Tooltip(
                               message:
                                   'Only Owner can revoke Admin-level invitations',
                               child: Icon(Icons.lock_outline,
-                                  size: 18, color: AppTheme.textSecondary),
+                                  size: 18, color: KivoraColors.textSecondaryOf(context)),
                             ),
                     );
                   },

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
@@ -35,7 +36,7 @@ class OrganizationListScreen extends ConsumerWidget {
     final activeOrgId = activeOrgStateAsync.valueOrNull?.context?.organization.id;
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: KivoraColors.backgroundOf(context),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
         child: Center(
@@ -70,21 +71,21 @@ class OrganizationListScreen extends ConsumerWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Row(
+                            Row(
                               children: [
-                                Icon(Icons.corporate_fare_outlined, size: 16, color: AppTheme.textSecondary),
+                                Icon(Icons.corporate_fare_outlined, size: 16, color: KivoraColors.textSecondaryOf(context)),
                                 SizedBox(width: 8),
-                                Text('Organization', style: TextStyle(fontSize: 13, color: AppTheme.textSecondary, fontWeight: FontWeight.w500)),
+                                Text('Organization', style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context), fontWeight: FontWeight.w500)),
                                 SizedBox(width: 6),
-                                Icon(Icons.chevron_right, size: 14, color: AppTheme.textSecondary),
+                                Icon(Icons.chevron_right, size: 14, color: KivoraColors.textSecondaryOf(context)),
                                 SizedBox(width: 6),
-                                Text('Overview', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.secondaryNavy)),
+                                Text('Overview', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context))),
                               ],
                             ),
                             if (isDesktop) const OrganizationContextSwitcher(),
                           ],
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: 24),
 
                         // Main Header Title & Actions
                         if (isDesktop)
@@ -100,13 +101,13 @@ class OrganizationListScreen extends ConsumerWidget {
                                       'Your organizations',
                                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                             fontWeight: FontWeight.bold,
-                                            color: AppTheme.secondaryNavy,
+                                            color: KivoraColors.textPrimaryOf(context),
                                           ),
                                     ),
-                                    const SizedBox(height: 6),
-                                    const Text(
+                                    SizedBox(height: 6),
+                                    Text(
                                       'Choose your workspace. Connect with your community.',
-                                      style: TextStyle(color: AppTheme.textSecondary, fontSize: 15),
+                                      style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 15),
                                     ),
                                   ],
                                 ),
@@ -115,13 +116,13 @@ class OrganizationListScreen extends ConsumerWidget {
                                 children: [
                                   OutlinedButton.icon(
                                     onPressed: () => context.go('/orgs/join'),
-                                    icon: const Icon(Icons.key_outlined, size: 16),
-                                    label: const Text('Join with code'),
+                                    icon: Icon(Icons.key_outlined, size: 16),
+                                    label: Text('Join with code'),
                                     style: OutlinedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                                     ),
                                   ),
-                                  const SizedBox(width: 12),
+                                  SizedBox(width: 12),
                                   FilledButton.icon(
                                     onPressed: () {
                                       if (onCreateOrgTap != null) {
@@ -130,8 +131,8 @@ class OrganizationListScreen extends ConsumerWidget {
                                         context.go('/orgs/create');
                                       }
                                     },
-                                    icon: const Icon(Icons.add_rounded, size: 18),
-                                    label: const Text('Create organization'),
+                                    icon: Icon(Icons.add_rounded, size: 18),
+                                    label: Text('Create organization'),
                                     style: FilledButton.styleFrom(
                                       backgroundColor: AppTheme.primaryBlue,
                                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -149,23 +150,23 @@ class OrganizationListScreen extends ConsumerWidget {
                                 'Your organizations',
                                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                       fontWeight: FontWeight.bold,
-                                      color: AppTheme.secondaryNavy,
+                                      color: KivoraColors.textPrimaryOf(context),
                                     ),
                               ),
-                              const SizedBox(height: 4),
-                              const Text(
+                              SizedBox(height: 4),
+                              Text(
                                 'Choose your workspace. Connect with your community.',
-                                style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                                style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 13),
                               ),
-                              const SizedBox(height: 16),
+                              SizedBox(height: 16),
                               Wrap(
                                 spacing: 10,
                                 runSpacing: 10,
                                 children: [
                                   OutlinedButton.icon(
                                     onPressed: () => context.go('/orgs/join'),
-                                    icon: const Icon(Icons.key_outlined, size: 16),
-                                    label: const Text('Join with code'),
+                                    icon: Icon(Icons.key_outlined, size: 16),
+                                    label: Text('Join with code'),
                                   ),
                                   FilledButton.icon(
                                     onPressed: () {
@@ -175,8 +176,8 @@ class OrganizationListScreen extends ConsumerWidget {
                                         context.go('/orgs/create');
                                       }
                                     },
-                                    icon: const Icon(Icons.add_rounded, size: 18),
-                                    label: const Text('Create organization'),
+                                    icon: Icon(Icons.add_rounded, size: 18),
+                                    label: Text('Create organization'),
                                     style: FilledButton.styleFrom(
                                       backgroundColor: AppTheme.primaryBlue,
                                     ),
@@ -185,7 +186,7 @@ class OrganizationListScreen extends ConsumerWidget {
                               ),
                             ],
                           ),
-                        const SizedBox(height: 28),
+                        SizedBox(height: 28),
 
                         // Content Grid
                         if (isDesktop)
@@ -204,17 +205,17 @@ class OrganizationListScreen extends ConsumerWidget {
                                       _buildNoWorkspaceSelectedCard(context),
 
                                     if (otherOrgs.isNotEmpty) ...[
-                                      const SizedBox(height: 32),
+                                      SizedBox(height: 32),
                                       Text(
                                         activeOrg != null ? 'OTHER ORGANIZATIONS' : 'YOUR ORGANIZATIONS',
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 11,
                                           fontWeight: FontWeight.bold,
-                                          color: AppTheme.textSecondary,
+                                          color: KivoraColors.textSecondaryOf(context),
                                           letterSpacing: 1.0,
                                         ),
                                       ),
-                                      const SizedBox(height: 16),
+                                      SizedBox(height: 16),
                                       ...otherOrgs.map((org) {
                                         final matchingMember = memberships.where((m) => m.organizationId == org.id).firstOrNull;
                                         return _buildOtherOrgCard(context, ref, org, matchingMember);
@@ -223,7 +224,7 @@ class OrganizationListScreen extends ConsumerWidget {
                                   ],
                                 ),
                               ),
-                              const SizedBox(width: 32),
+                              SizedBox(width: 32),
                               // RIGHT SIDEBAR: Workspace info & invitations callout
                               SizedBox(
                                 width: 320,
@@ -231,17 +232,17 @@ class OrganizationListScreen extends ConsumerWidget {
                                   crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
                                     _buildOneWorkspacePanel(context, activeOrg),
-                                    const SizedBox(height: 20),
+                                    SizedBox(height: 20),
                                     _buildInvitationsCalloutPanel(context),
-                                    const SizedBox(height: 20),
-                                    const Row(
+                                    SizedBox(height: 20),
+                                    Row(
                                       children: [
-                                        Icon(Icons.info_outline_rounded, size: 15, color: AppTheme.textSecondary),
+                                        Icon(Icons.info_outline_rounded, size: 15, color: KivoraColors.textSecondaryOf(context)),
                                         SizedBox(width: 8),
                                         Expanded(
                                           child: Text(
                                             'Have a joining code? Get it from your organization\'s owner, then choose Join with code.',
-                                            style: TextStyle(fontSize: 12, color: AppTheme.textSecondary, height: 1.4),
+                                            style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.4),
                                           ),
                                         ),
                                       ],
@@ -261,42 +262,42 @@ class OrganizationListScreen extends ConsumerWidget {
                                 _buildNoWorkspaceSelectedCard(context),
 
                               if (otherOrgs.isNotEmpty) ...[
-                                const SizedBox(height: 32),
+                                SizedBox(height: 32),
                                 Text(
                                   activeOrg != null ? 'OTHER ORGANIZATIONS' : 'YOUR ORGANIZATIONS',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.bold,
-                                    color: AppTheme.textSecondary,
+                                    color: KivoraColors.textSecondaryOf(context),
                                     letterSpacing: 1.0,
                                   ),
                                 ),
-                                const SizedBox(height: 16),
+                                SizedBox(height: 16),
                                 ...otherOrgs.map((org) {
                                   final matchingMember = memberships.where((m) => m.organizationId == org.id).firstOrNull;
                                   return _buildOtherOrgCard(context, ref, org, matchingMember);
                                 }),
                               ],
 
-                              const SizedBox(height: 24),
+                              SizedBox(height: 24),
                               _buildInvitationsCalloutPanel(context),
                             ],
                           ),
-                        const SizedBox(height: 48),
+                        SizedBox(height: 48),
 
                         // Bottom Footer
-                        const Wrap(
+                        Wrap(
                           alignment: WrapAlignment.spaceBetween,
                           spacing: 12,
                           runSpacing: 8,
                           children: [
                             Text(
                               'Switch organizations anytime from the menu above.',
-                              style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                              style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                             ),
                             Text(
                               'Your community, connected.',
-                              style: TextStyle(fontSize: 12, color: AppTheme.textSecondary, fontWeight: FontWeight.w500),
+                              style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context), fontWeight: FontWeight.w500),
                             ),
                           ],
                         ),
@@ -337,7 +338,7 @@ class OrganizationListScreen extends ConsumerWidget {
                 width: 52,
                 height: 52,
                 decoration: BoxDecoration(
-                  color: AppTheme.surfaceBlue,
+                  color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 clipBehavior: Clip.antiAlias,
@@ -361,25 +362,25 @@ class OrganizationListScreen extends ConsumerWidget {
                         ),
                       ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       org.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.secondaryNavy,
+                        color: KivoraColors.textPrimaryOf(context),
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4),
                     Text(
                       '${org.type[0].toUpperCase()}${org.type.substring(1)} · ${org.city}, ${org.country}',
-                      style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+                      style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context)),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
                     Wrap(
                       spacing: 8,
                       runSpacing: 6,
@@ -387,7 +388,7 @@ class OrganizationListScreen extends ConsumerWidget {
                       children: [
                         if (role != null) StatusBadge.role(role.value),
                         _buildOrgStatusBadge(org.status),
-                        const Text(
+                        Text(
                           'Current workspace',
                           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue),
                         ),
@@ -404,26 +405,26 @@ class OrganizationListScreen extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 28),
-          const Divider(height: 1, color: AppTheme.borderLight),
-          const SizedBox(height: 20),
+          SizedBox(height: 28),
+          Divider(height: 1, color: KivoraColors.borderOf(context)),
+          SizedBox(height: 20),
 
           Wrap(
             alignment: WrapAlignment.spaceBetween,
             spacing: 12,
             runSpacing: 6,
             children: [
-              const Text(
+              Text(
                 'Explore your workspace',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.secondaryNavy),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: KivoraColors.textPrimaryOf(context)),
               ),
               Text(
                 'You\'re working in ${org.name}',
-                style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
 
           // Workspace Action Cards Grid
           if (role == OrganizationRole.owner || role == OrganizationRole.admin)
@@ -490,9 +491,9 @@ class OrganizationListScreen extends ConsumerWidget {
   Widget _buildNoWorkspaceSelectedCard(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppTheme.borderLight, width: 1.2),
+        border: Border.all(color: KivoraColors.borderOf(context), width: 1.2),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
@@ -506,32 +507,32 @@ class OrganizationListScreen extends ConsumerWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(14),
-            decoration: const BoxDecoration(
-              color: AppTheme.surfaceBlue,
+            decoration: BoxDecoration(
+              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.business_outlined,
               size: 32,
               color: AppTheme.primaryBlue,
             ),
           ),
-          const SizedBox(height: 16),
-          const Text(
+          SizedBox(height: 16),
+          Text(
             'Select an organization workspace to get started',
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.bold,
-              color: AppTheme.secondaryNavy,
+              color: KivoraColors.textPrimaryOf(context),
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 6),
-          const Text(
+          SizedBox(height: 6),
+          Text(
             'Choose an organization from the list below to select your workspace and access its options.',
             style: TextStyle(
               fontSize: 13,
-              color: AppTheme.textSecondary,
+              color: KivoraColors.textSecondaryOf(context),
               height: 1.4,
             ),
             textAlign: TextAlign.center,
@@ -545,9 +546,9 @@ class OrganizationListScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -555,28 +556,28 @@ class OrganizationListScreen extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppTheme.surfaceBlue,
+              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.layers_outlined, color: AppTheme.primaryBlue, size: 20),
+            child: Icon(Icons.layers_outlined, color: AppTheme.primaryBlue, size: 20),
           ),
-          const SizedBox(height: 16),
-          const Text('One workspace at a time.', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.secondaryNavy)),
-          const SizedBox(height: 8),
-          const Text('Your directory, departments and activity follow your selected organization.', style: TextStyle(color: AppTheme.textSecondary, fontSize: 13, height: 1.4)),
-          const SizedBox(height: 16),
-          const Divider(height: 1, color: AppTheme.borderLight),
-          const SizedBox(height: 16),
-          const Text('YOU\'RE CURRENTLY IN', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppTheme.textSecondary, letterSpacing: 0.5)),
-          const SizedBox(height: 8),
+          SizedBox(height: 16),
+          Text('One workspace at a time.', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: KivoraColors.textPrimaryOf(context))),
+          SizedBox(height: 8),
+          Text('Your directory, departments and activity follow your selected organization.', style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 13, height: 1.4)),
+          SizedBox(height: 16),
+          Divider(height: 1, color: KivoraColors.borderOf(context)),
+          SizedBox(height: 16),
+          Text('YOU\'RE CURRENTLY IN', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: KivoraColors.textSecondaryOf(context), letterSpacing: 0.5)),
+          SizedBox(height: 8),
           Row(
             children: [
-              const Icon(Icons.check_circle, size: 16, color: AppTheme.primaryBlue),
-              const SizedBox(width: 8),
+              Icon(Icons.check_circle, size: 16, color: AppTheme.primaryBlue),
+              SizedBox(width: 8),
               Expanded(
                 child: Text(
                   activeOrg?.name ?? 'None',
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppTheme.secondaryNavy),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: KivoraColors.textPrimaryOf(context)),
                   maxLines: 1, overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -591,9 +592,9 @@ class OrganizationListScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceWhite,
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.borderLight),
+        border: Border.all(color: KivoraColors.borderOf(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -601,22 +602,22 @@ class OrganizationListScreen extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppTheme.surfaceBlue,
+              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.mail_outline_rounded, color: AppTheme.primaryBlue, size: 20),
+            child: Icon(Icons.mail_outline_rounded, color: AppTheme.primaryBlue, size: 20),
           ),
-          const SizedBox(height: 16),
-          const Text('Invited to a workspace?', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.secondaryNavy)),
-          const SizedBox(height: 8),
-          const Text('Review organization invitations sent to your account, all in one place.', style: TextStyle(color: AppTheme.textSecondary, fontSize: 13, height: 1.4)),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
+          Text('Invited to a workspace?', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: KivoraColors.textPrimaryOf(context))),
+          SizedBox(height: 8),
+          Text('Review organization invitations sent to your account, all in one place.', style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 13, height: 1.4)),
+          SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: () => context.go('/orgs/invitations'),
-              icon: const Icon(Icons.east_rounded, size: 16),
-              label: const Text('View invitations'),
+              icon: Icon(Icons.east_rounded, size: 16),
+              label: Text('View invitations'),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
@@ -659,7 +660,7 @@ class OrganizationListScreen extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 12, color: color),
-          const SizedBox(width: 4),
+          SizedBox(width: 4),
           Text(
             label,
             style: TextStyle(
@@ -720,10 +721,10 @@ class _ActionCardState extends State<_ActionCard> {
                 : Matrix4.identity(),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppTheme.surfaceWhite,
+              color: KivoraColors.surfaceOf(context),
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: _isHovered ? AppTheme.primaryBlue.withValues(alpha: 0.4) : AppTheme.borderLight,
+                color: _isHovered ? AppTheme.primaryBlue.withValues(alpha: 0.4) : KivoraColors.borderOf(context),
                 width: _isHovered ? 1.4 : 1.0,
               ),
               boxShadow: [
@@ -751,29 +752,29 @@ class _ActionCardState extends State<_ActionCard> {
                           : Offset.zero,
                       duration: const Duration(milliseconds: 150),
                       curve: Curves.easeOutCubic,
-                      child: const Icon(
+                      child: Icon(
                         Icons.north_east_rounded,
                         size: 14,
-                        color: AppTheme.textSecondary,
+                        color: KivoraColors.textSecondaryOf(context),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 Text(
                   widget.title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
-                    color: AppTheme.secondaryNavy,
+                    color: KivoraColors.textPrimaryOf(context),
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   widget.subtitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: AppTheme.textSecondary,
+                    color: KivoraColors.textSecondaryOf(context),
                     height: 1.3,
                   ),
                   maxLines: 2,
@@ -799,7 +800,7 @@ Widget _buildOrgPopupMenu({
   final isAdminOrOwner = role?.isAdmin ?? false;
 
   return PopupMenuButton<String>(
-    icon: const Icon(Icons.more_horiz_rounded, color: AppTheme.textSecondary),
+    icon: Icon(Icons.more_horiz_rounded, color: KivoraColors.textSecondaryOf(context)),
     tooltip: 'Show menu',
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     onSelected: (val) async {
@@ -814,13 +815,13 @@ Widget _buildOrgPopupMenu({
     },
     itemBuilder: (context) => [
       if (isAdminOrOwner)
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'edit',
           child: Row(
             children: [
-              Icon(Icons.edit_outlined, size: 18, color: AppTheme.secondaryNavy),
-              SizedBox(width: 10),
-              Text('Edit organization'),
+              Icon(Icons.edit_outlined, size: 18, color: KivoraColors.textPrimaryOf(context)),
+              const SizedBox(width: 10),
+              const Text('Edit organization'),
             ],
           ),
         ),
@@ -862,12 +863,12 @@ Future<void> _confirmAndLeaveOrg(
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(ctx, false),
-          child: const Text('Cancel'),
+          child: Text('Cancel'),
         ),
         FilledButton(
           onPressed: () => Navigator.pop(ctx, true),
           style: FilledButton.styleFrom(backgroundColor: AppTheme.error),
-          child: const Text('Leave Organization'),
+          child: Text('Leave Organization'),
         ),
       ],
     ),
@@ -914,12 +915,12 @@ Future<void> _confirmAndDeleteOrg(
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(ctx, false),
-          child: const Text('Cancel'),
+          child: Text('Cancel'),
         ),
         FilledButton(
           onPressed: () => Navigator.pop(ctx, true),
           style: FilledButton.styleFrom(backgroundColor: AppTheme.error),
-          child: const Text('Delete Organization'),
+          child: Text('Delete Organization'),
         ),
       ],
     ),
@@ -985,10 +986,10 @@ class _OtherOrgCardState extends ConsumerState<_OtherOrgCard> {
         curve: Curves.easeOutCubic,
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: AppTheme.surfaceWhite,
+          color: KivoraColors.surfaceOf(context),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: _isHovered ? AppTheme.primaryBlue.withValues(alpha: 0.3) : AppTheme.borderLight,
+            color: _isHovered ? AppTheme.primaryBlue.withValues(alpha: 0.3) : KivoraColors.borderOf(context),
             width: _isHovered ? 1.4 : 1.0,
           ),
           boxShadow: [
@@ -1008,7 +1009,7 @@ class _OtherOrgCardState extends ConsumerState<_OtherOrgCard> {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: AppTheme.surfaceBlue,
+                    color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   clipBehavior: Clip.antiAlias,
@@ -1028,21 +1029,21 @@ class _OtherOrgCardState extends ConsumerState<_OtherOrgCard> {
                           size: 22,
                         ),
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         widget.org.name,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.secondaryNavy),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: KivoraColors.textPrimaryOf(context)),
                       ),
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2),
                       Text(
                         '${widget.org.type[0].toUpperCase()}${widget.org.type.substring(1)} · ${widget.org.city}, ${widget.org.country}',
-                        style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                        style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
                         runSpacing: 6,
@@ -1061,13 +1062,13 @@ class _OtherOrgCardState extends ConsumerState<_OtherOrgCard> {
                   member: widget.member,
                 ),
                 if (isDesktop) ...[
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   OutlinedButton.icon(
                     onPressed: widget.onSwitch,
                     icon: AnimatedSlide(
                       offset: (_isHovered && !isReducedMotion) ? const Offset(0.15, 0) : Offset.zero,
                       duration: const Duration(milliseconds: 150),
-                      child: const Icon(Icons.east_rounded, size: 16),
+                      child: Icon(Icons.east_rounded, size: 16),
                     ),
                     label: Text(ref.watch(activeOrgIdProvider) == null ? 'Select workspace' : 'Switch organization'),
                     style: OutlinedButton.styleFrom(
@@ -1078,12 +1079,12 @@ class _OtherOrgCardState extends ConsumerState<_OtherOrgCard> {
               ],
             ),
             if (!isDesktop) ...[
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
                   onPressed: widget.onSwitch,
-                  icon: const Icon(Icons.east_rounded, size: 16),
+                  icon: Icon(Icons.east_rounded, size: 16),
                   label: Text(ref.watch(activeOrgIdProvider) == null ? 'Select workspace' : 'Switch organization'),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -1129,7 +1130,7 @@ class _OtherOrgCardState extends ConsumerState<_OtherOrgCard> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 12, color: color),
-          const SizedBox(width: 4),
+          SizedBox(width: 4),
           Text(
             label,
             style: TextStyle(

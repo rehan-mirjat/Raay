@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../data/organization_repository.dart';
 import 'providers/organization_providers.dart';
 
@@ -78,7 +79,7 @@ class _AcceptInvitationLinkScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
+      backgroundColor: KivoraColors.backgroundOf(context),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -86,9 +87,9 @@ class _AcceptInvitationLinkScreenState
             constraints: const BoxConstraints(maxWidth: 480),
             child: Container(
               decoration: BoxDecoration(
-                color: AppTheme.surfaceWhite,
+                color: KivoraColors.surfaceOf(context),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppTheme.borderLight),
+                border: Border.all(color: KivoraColors.borderOf(context)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.04),
@@ -119,26 +120,26 @@ class _AcceptInvitationLinkScreenState
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: AppTheme.surfaceBlue,
+            color: AppTheme.primaryBlue.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(14),
           ),
-          child: const Icon(Icons.mail_outline_rounded,
+          child: Icon(Icons.mail_outline_rounded,
               size: 24, color: AppTheme.primaryBlue),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
         Text(
           'You\'ve been invited',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppTheme.secondaryNavy,
+                color: KivoraColors.textPrimaryOf(context),
               ),
         ),
-        const SizedBox(height: 8),
-        const Text(
+        SizedBox(height: 8),
+        Text(
           'Accept to join this organization with the email address you\'re signed in with.',
-          style: TextStyle(color: AppTheme.textSecondary, fontSize: 14, height: 1.4),
+          style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14, height: 1.4),
         ),
-        const SizedBox(height: 28),
+        SizedBox(height: 28),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -147,16 +148,16 @@ class _AcceptInvitationLinkScreenState
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
-              child: const Text('Not now'),
+              child: Text('Not now'),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             FilledButton(
               onPressed: _accept,
               style: FilledButton.styleFrom(
                 backgroundColor: AppTheme.primaryBlue,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
-              child: const Text('Accept invitation'),
+              child: Text('Accept invitation'),
             ),
           ],
         ),
@@ -165,7 +166,7 @@ class _AcceptInvitationLinkScreenState
   }
 
   Widget _buildWorking() {
-    return const SizedBox(
+    return SizedBox(
       height: 160,
       child: Center(
         child: Column(
@@ -174,7 +175,7 @@ class _AcceptInvitationLinkScreenState
             CircularProgressIndicator(),
             SizedBox(height: 16),
             Text('Accepting invitation…',
-                style: TextStyle(color: AppTheme.textSecondary)),
+                style: TextStyle(color: KivoraColors.textSecondaryOf(context))),
           ],
         ),
       ),
@@ -186,22 +187,22 @@ class _AcceptInvitationLinkScreenState
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(Icons.check_circle_rounded,
+        Icon(Icons.check_circle_rounded,
             size: 40, color: AppTheme.success),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
         Text(
           'Welcome to ${_organizationName ?? 'the organization'}!',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppTheme.secondaryNavy,
+                color: KivoraColors.textPrimaryOf(context),
               ),
         ),
-        const SizedBox(height: 8),
-        const Text(
+        SizedBox(height: 8),
+        Text(
           'You\'ve successfully joined. You can start exploring right away.',
-          style: TextStyle(color: AppTheme.textSecondary, fontSize: 14, height: 1.4),
+          style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14, height: 1.4),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: 24),
         Align(
           alignment: Alignment.centerRight,
           child: FilledButton(
@@ -210,7 +211,7 @@ class _AcceptInvitationLinkScreenState
               backgroundColor: AppTheme.primaryBlue,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
-            child: const Text('Continue'),
+            child: Text('Continue'),
           ),
         ),
       ],
@@ -222,21 +223,21 @@ class _AcceptInvitationLinkScreenState
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(Icons.error_outline_rounded, size: 40, color: AppTheme.error),
-        const SizedBox(height: 16),
-        const Text(
+        Icon(Icons.error_outline_rounded, size: 40, color: AppTheme.error),
+        SizedBox(height: 16),
+        Text(
           'Couldn\'t accept this invitation',
           style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: AppTheme.secondaryNavy),
+              color: KivoraColors.textPrimaryOf(context)),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         Text(
           _error ?? 'Something went wrong. Please try again.',
-          style: const TextStyle(color: AppTheme.textSecondary, fontSize: 14, height: 1.4),
+          style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14, height: 1.4),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: 24),
         Align(
           alignment: Alignment.centerRight,
           child: FilledButton(
@@ -245,7 +246,7 @@ class _AcceptInvitationLinkScreenState
               backgroundColor: AppTheme.primaryBlue,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
-            child: const Text('Go to home'),
+            child: Text('Go to home'),
           ),
         ),
       ],
