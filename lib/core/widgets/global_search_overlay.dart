@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/organizations/data/organization_repository.dart';
 import '../../features/organizations/presentation/providers/organization_providers.dart';
+import '../../features/organizations/domain/organization.dart';
 import '../../features/voting_events/data/voting_event_repository.dart';
 import '../theme/app_theme.dart';
 import '../theme/kivora_colors.dart';
@@ -63,7 +64,7 @@ const _staticRoutes = [
 
 final _searchIndexProvider =
     FutureProvider.autoDispose<List<_SearchResult>>((ref) async {
-  final orgs = await ref.watch(userOrganizationsProvider.future).catchError((_) => <dynamic>[]);
+  final orgs = await ref.watch(userOrganizationsProvider.future).catchError((_) => <Organization>[]);
 
   final activeCtx = ref.read(activeOrganizationContextProvider).valueOrNull?.context;
   final orgId = activeCtx?.organization.id;

@@ -57,61 +57,73 @@ class AppNavigationShell extends ConsumerWidget {
             bottom: false,
             child: Column(
               children: [
-                const _TopHeader(),
-                if (!isDesktop) ...[
-                  Container(
-                    width: double.infinity,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite,
-                      border: Border(
-                          bottom: BorderSide(
-                              color: isDark
-                                  ? AppTheme.darkBorder
-                                  : AppTheme.borderLight,
-                              width: 1)),
-                    ),
-                    child: Row(
-                      children: [
-                        const Expanded(child: OrganizationContextSwitcher()),
-                        if (isManager) ...[
-                          const SizedBox(width: 8),
-                          _MobileQuickNavButton(
-                            navKey: TourKeys.directoryKey,
-                            icon: Icons.groups_outlined,
-                            tooltip: 'Directory',
-                            route: '/orgs/members',
-                          ),
-                          const SizedBox(width: 6),
-                          _MobileQuickNavButton(
-                            navKey: TourKeys.departmentsKey,
-                            icon: Icons.apartment_outlined,
-                            tooltip: 'Departments',
-                            route: '/orgs/departments',
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
                 Expanded(
                   child: isDesktop
-                      ? Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      ? Column(
                           children: [
-                            _DesktopSidebar(
-                              collapsed: collapsed,
-                              isManager: isManager,
-                              canCreateEvent: canCreateEvent,
-                              onToggleCollapse: () => ref
-                                  .read(_sidebarCollapsedProvider.notifier)
-                                  .state = !collapsed,
+                            const _TopHeader(),
+                            Expanded(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _DesktopSidebar(
+                                    collapsed: collapsed,
+                                    isManager: isManager,
+                                    canCreateEvent: canCreateEvent,
+                                    onToggleCollapse: () => ref
+                                        .read(_sidebarCollapsedProvider.notifier)
+                                        .state = !collapsed,
+                                  ),
+                                  Expanded(child: navigationShell),
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
+                      : Column(
+                          children: [
+                            const _TopHeader(),
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? AppTheme.darkSurface
+                                    : AppTheme.surfaceWhite,
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: isDark
+                                            ? AppTheme.darkBorder
+                                            : AppTheme.borderLight,
+                                        width: 1)),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Expanded(
+                                      child: OrganizationContextSwitcher()),
+                                  if (isManager) ...[
+                                    const SizedBox(width: 8),
+                                    _MobileQuickNavButton(
+                                      navKey: TourKeys.directoryKey,
+                                      icon: Icons.groups_outlined,
+                                      tooltip: 'Directory',
+                                      route: '/orgs/members',
+                                    ),
+                                    const SizedBox(width: 6),
+                                    _MobileQuickNavButton(
+                                      navKey: TourKeys.departmentsKey,
+                                      icon: Icons.apartment_outlined,
+                                      tooltip: 'Departments',
+                                      route: '/orgs/departments',
+                                    ),
+                                  ],
+                                ],
+                              ),
                             ),
                             Expanded(child: navigationShell),
                           ],
-                        )
-                      : navigationShell,
+                        ),
                 ),
               ],
             ),

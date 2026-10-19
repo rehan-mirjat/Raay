@@ -260,30 +260,32 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                     Icon(Icons.business_rounded,
                         color: AppTheme.primaryBlue, size: 16),
                     SizedBox(width: 8),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'CURRENT ORGANIZATION',
-                          style: TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                            color: KivoraColors.textSecondaryOf(context),
-                            letterSpacing: 0.5,
+                    Flexible(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'CURRENT ORGANIZATION',
+                            style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                              color: KivoraColors.textSecondaryOf(context),
+                              letterSpacing: 0.5,
+                            ),
                           ),
-                        ),
-                        Text(
-                          orgName,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                            color: KivoraColors.textPrimaryOf(context),
+                          Text(
+                            orgName,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                              color: KivoraColors.textPrimaryOf(context),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     SizedBox(width: 8),
                     Icon(Icons.unfold_more_rounded,
