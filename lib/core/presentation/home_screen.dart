@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +15,7 @@ import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../services/auth_service.dart';
 import '../../features/organizations/domain/organization_enums.dart';
+import '../../features/organizations/presentation/organization_audit_screen.dart';
 import '../../features/organizations/presentation/providers/organization_providers.dart';
 import '../../features/organizations/presentation/widgets/members_growth_chart.dart';
 import '../../features/voting_events/data/voting_event_repository.dart';
@@ -88,8 +90,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       MembersGrowthChart(
                                           organizationId: orgContext.organization.id),
                                       const SizedBox(height: 24),
+                                      _buildRecentActivityFeed(
+                                          context, orgContext.organization.id),
                                     ],
-                                    _buildRecentActivityFeed(context),
                                   ],
                                 ),
                               ),
@@ -103,9 +106,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 const SizedBox(height: 24),
                                 MembersGrowthChart(
                                     organizationId: orgContext.organization.id),
+                                const SizedBox(height: 24),
+                                _buildRecentActivityFeed(
+                                    context, orgContext.organization.id),
                               ],
-                              const SizedBox(height: 24),
-                              _buildRecentActivityFeed(context),
                             ],
                           ),
                   ],
@@ -270,9 +274,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildRecentActivityFeed(BuildContext context) {
+  Widget _buildRecentActivityFeed(BuildContext context, String organizationId) {
     final kc = KivoraColors.of(context);
-    
+    final logsAsync = ref.watch(organizationAuditLogsProvider(organizationId));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -296,22 +301,66 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         const SizedBox(height: 16),
         KivoraCard(
           padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              _buildActivityRow(context, 'You joined the organization', '2 hours ago', KivoraIcons.userCheck),
-              const Divider(height: 1),
-              _buildActivityRow(context, 'New event scheduled: Board Election', '4 hours ago', KivoraIcons.calendar),
-              const Divider(height: 1),
-              _buildActivityRow(context, 'Results published for Department Head', '1 day ago', KivoraIcons.barChart2),
-            ],
+          child: logsAsync.when(
+            loading: () => const Padding(
+              padding: EdgeInsets.all(24.0),
+              child: Center(
+                  child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2))),
+            ),
+            error: (_, __) => Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text('Unable to load recent activity.',
+                  style: TextStyle(color: kc.textSecondary, fontSize: 13)),
+            ),
+            data: (snapshot) {
+              final docs = snapshot.docs.take(3).toList();
+              if (docs.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text('No recent activity yet.',
+                      style: TextStyle(color: kc.textSecondary, fontSize: 13)),
+                );
+              }
+              return Column(
+                children: [
+                  for (var i = 0; i < docs.length; i++) ...[
+                    if (i > 0) const Divider(height: 1),
+                    _buildActivityRow(context, docs[i].data()),
+                  ],
+                ],
+              );
+            },
           ),
         ),
       ],
     );
   }
 
-  Widget _buildActivityRow(BuildContext context, String action, String time, IconData icon) {
+  String _formatActivityAction(String raw) {
+    if (raw.isEmpty) return 'Admin action';
+    final words = raw.split('_').map((w) => w.isEmpty
+        ? w
+        : '${w[0].toUpperCase()}${w.substring(1).toLowerCase()}');
+    return words.join(' ');
+  }
+
+  String _formatRelativeTime(Timestamp? stamp) {
+    if (stamp == null) return '';
+    final diff = DateTime.now().difference(stamp.toDate().toLocal());
+    if (diff.inMinutes < 1) return 'Just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
+    if (diff.inHours < 24) return '${diff.inHours}h ago';
+    if (diff.inDays < 7) return '${diff.inDays}d ago';
+    return '${(diff.inDays / 7).floor()}w ago';
+  }
+
+  Widget _buildActivityRow(BuildContext context, Map<String, dynamic> data) {
     final kc = KivoraColors.of(context);
+    final action = _formatActivityAction(data['action'] as String? ?? '');
+    final time = _formatRelativeTime(data['timestamp'] as Timestamp?);
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -322,7 +371,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               color: AppTheme.primaryBlue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, size: 16, color: AppTheme.primaryBlue),
+            child: Icon(KivoraIcons.barChart2, size: 16, color: AppTheme.primaryBlue),
           ),
           const SizedBox(width: 16),
           Expanded(

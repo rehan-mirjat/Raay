@@ -77,8 +77,21 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
     }
 
     if (!role.isAdmin) {
-      return const Scaffold(
-          body: Center(child: Text('Unauthorized: Admins only.')));
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Unauthorized: Admins only.'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => context.go('/home'),
+                child: const Text('Return Home'),
+              ),
+            ],
+          ),
+        ),
+      );
     }
 
     final draftState = ref.watch(draftEventProvider(orgId));
@@ -216,8 +229,20 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                                             final success = await ref
                                                 .read(draftEventProvider(orgId).notifier)
                                                 .createServerDraft();
-                                            if (success && mounted) {
+                                            if (!mounted) return;
+                                            if (success) {
                                               setState(() {});
+                                            } else {
+                                              final error = ref
+                                                  .read(draftEventProvider(orgId))
+                                                  .error;
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(error ??
+                                                      'Could not create draft. Please try again.'),
+                                                  backgroundColor: AppTheme.error,
+                                                ),
+                                              );
                                             }
                                           },
                                           child: Text('Create Draft Now'),

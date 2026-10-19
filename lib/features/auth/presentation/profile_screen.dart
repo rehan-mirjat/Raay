@@ -838,17 +838,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               const SizedBox(height: 16),
               ...languages.map((lang) {
                 final isSelected = currentLocale?.languageCode == lang.code;
-                return RadioListTile<String?>(
-                  value: lang.code,
-                  groupValue: currentLocale?.languageCode,
-                  onChanged: (_) => ref
+                return ListTile(
+                  onTap: () => ref
                       .read(localeProvider.notifier)
                       .setLocale(lang.code == null ? null : Locale(lang.code!)),
+                  leading: Icon(
+                    isSelected
+                        ? Icons.radio_button_checked
+                        : Icons.radio_button_unchecked,
+                    color: isSelected
+                        ? AppTheme.primaryBlue
+                        : kc.textSecondary,
+                  ),
                   title: Text(lang.label,
                       style: TextStyle(
                           color: kc.textPrimary,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
-                  activeColor: AppTheme.primaryBlue,
                   contentPadding: EdgeInsets.zero,
                   dense: true,
                 );

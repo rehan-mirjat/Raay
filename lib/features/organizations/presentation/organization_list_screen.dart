@@ -40,7 +40,60 @@ class OrganizationListScreen extends ConsumerWidget {
             ),
             data: (organizations) {
               if (organizations.isEmpty) {
-                return const Center(child: Text('No organizations found.'));
+                return Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 500),
+                    child: KivoraCard(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(24),
+                            decoration: BoxDecoration(
+                              color: AppTheme.primaryBlue.withValues(alpha: 0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(KivoraIcons.building2,
+                                size: 48, color: AppTheme.primaryBlue),
+                          ),
+                          const SizedBox(height: 24),
+                          Text(
+                            'No organizations yet',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900,
+                              color: kc.textPrimary,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Join an existing workspace or create a new one to begin participating in secure elections.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: kc.textSecondary,
+                              height: 1.5,
+                            ),
+                          ),
+                          const SizedBox(height: 32),
+                          KivoraButton(
+                            icon: KivoraIcons.plus,
+                            label: 'Create Organization',
+                            onPressed: () => context.go('/orgs/create'),
+                          ),
+                          const SizedBox(height: 12),
+                          KivoraButton(
+                            type: KivoraButtonType.secondary,
+                            icon: KivoraIcons.logIn,
+                            label: 'Join via Code',
+                            onPressed: () => context.go('/orgs/join'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
               }
 
               return SingleChildScrollView(
@@ -141,17 +194,25 @@ class OrganizationListScreen extends ConsumerWidget {
                                         decoration: BoxDecoration(
                                           color: member.role == OrganizationRole.owner
                                               ? AppTheme.accentGold.withValues(alpha: 0.1)
-                                              : kc.border,
+                                              : member.role == OrganizationRole.admin
+                                                  ? AppTheme.primaryBlue.withValues(alpha: 0.1)
+                                                  : kc.border,
                                           borderRadius: BorderRadius.circular(20),
                                         ),
                                         child: Text(
-                                          member.role == OrganizationRole.owner ? 'Owner' : 'Member',
+                                          member.role == OrganizationRole.owner
+                                              ? 'Owner'
+                                              : member.role == OrganizationRole.admin
+                                                  ? 'Admin'
+                                                  : 'Member',
                                           style: TextStyle(
                                             fontSize: 11,
                                             fontWeight: FontWeight.bold,
                                             color: member.role == OrganizationRole.owner
                                                 ? AppTheme.accentGold
-                                                : kc.textSecondary,
+                                                : member.role == OrganizationRole.admin
+                                                    ? AppTheme.primaryBlue
+                                                    : kc.textSecondary,
                                           ),
                                         ),
                                       ),

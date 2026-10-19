@@ -483,6 +483,7 @@ class _MemberCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         hoverColor: AppTheme.primaryBlue.withValues(alpha: 0.06),
+        onTap: onTap,
         child: Padding(
           padding: EdgeInsets.all(compact ? 12 : 20),
           child: Row(
