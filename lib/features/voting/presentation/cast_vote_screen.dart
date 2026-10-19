@@ -43,100 +43,32 @@ class CastVoteScreen extends ConsumerStatefulWidget {
   ConsumerState<CastVoteScreen> createState() => _CastVoteScreenState();
 }
 
+enum _BallotStep { select, review }
+
 class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
   String? _selectedCandidateId;
   String? _selectedPollOptionId;
   String? _selectedChoiceName;
 
+  _BallotStep _step = _BallotStep.select;
   bool _isSubmitting = false;
   String? _errorMessage;
 
-  Future<void> _submitBallot(VotingEvent event) async {
+  void _goToReview() {
     if (_selectedCandidateId == null && _selectedPollOptionId == null) {
       setState(() => _errorMessage =
-          'Please select an option before casting your ballot.');
+          'Please select an option before continuing.');
       return;
     }
+    setState(() {
+      _errorMessage = null;
+      _step = _BallotStep.review;
+    });
+  }
 
-    // Show Confirmation Dialog
-    final isIdentifiable = event.privacyMode == PrivacyMode.identifiable;
-
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-        title: Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 8,
-          runSpacing: 4,
-          children: [
-            Icon(Icons.how_to_vote, color: AppTheme.primaryBlue),
-            Text('Confirm Ballot Submission'),
-          ],
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (isIdentifiable)
-                Text(
-                  'This voting event records your selected choice against your account. Your selection will be associated with your identity and cannot be changed after submission.',
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.deepOrange),
-                )
-              else
-                Text(
-                  'The ballot is anonymous and cannot be changed after submission.',
-                  style: TextStyle(fontSize: 14),
-                ),
-              SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryBlue.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                      color: AppTheme.primaryBlue.withValues(alpha: 0.2)),
-                ),
-                child: Row(
-                  children: [
-                    Text('Selection: ',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 13)),
-                    Expanded(
-                      child: Text(
-                        _selectedChoiceName ?? 'Selected Choice',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: AppTheme.primaryBlue,
-                            fontSize: 13),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style:
-                ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryBlue),
-            child: Text('Confirm & Cast Ballot'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed != true) return;
+  Future<void> _submitBallot(VotingEvent event) async {
+    if (_isSubmitting) return; // re-entry guard against rapid double-taps
+    if (_selectedCandidateId == null && _selectedPollOptionId == null) return;
 
     setState(() {
       _isSubmitting = true;
@@ -164,13 +96,51 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
         );
       }
     } catch (e) {
-      if (mounted) {
+      final alreadyHandledByRecovery = await _tryRecoverOrShowError(event, e);
+      if (!alreadyHandledByRecovery && mounted) {
         setState(() {
           _isSubmitting = false;
           _errorMessage = e.toString().replaceAll('Exception: ', '');
         });
       }
     }
+  }
+
+  /// A network failure here is ambiguous - the request may have actually
+  /// reached the server and been committed before the response was lost.
+  /// castVote is already idempotent server-side (a deterministic
+  /// organizationId_eventId_userId participation doc makes a resubmission
+  /// fail with "already voted" rather than double-counting), but silently
+  /// telling the user "something went wrong, try again" when their vote in
+  /// fact succeeded would be actively misleading. So on any failure, before
+  /// showing an error, re-check the authoritative receipt state and route to
+  /// it if it turns out the vote did go through. Returns true if recovery
+  /// found a real receipt and already navigated away, meaning the caller
+  /// should NOT also show an error message.
+  Future<bool> _tryRecoverOrShowError(VotingEvent event, Object error) async {
+    final uid = ref.read(authServiceProvider).currentUser?.uid;
+    if (uid == null) return false;
+    try {
+      final receipt = await ref.read(votingRepositoryProvider).getUserReceipt(
+            organizationId: event.organizationId,
+            eventId: event.id,
+            userId: uid,
+          );
+      if (receipt != null && mounted) {
+        setState(() => _isSubmitting = false);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (ctx) =>
+                VoteReceiptScreen(receipt: receipt, eventTitle: event.title),
+          ),
+        );
+        return true;
+      }
+    } catch (_) {
+      // Ignore - fall through to showing the original error.
+    }
+    return false;
   }
 
   @override
@@ -279,6 +249,15 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                 icon: Icon(Icons.receipt_long),
                 label: Text('View Your Confirmation Receipt'),
               ),
+              if (event.status == VotingEventStatus.closed ||
+                  event.status == VotingEventStatus.archived) ...[
+                SizedBox(height: 12),
+                OutlinedButton.icon(
+                  onPressed: () => context.go('/elections/${event.id}/results'),
+                  icon: Icon(Icons.bar_chart_rounded),
+                  label: Text('View Results'),
+                ),
+              ],
               SizedBox(height: 12),
               OutlinedButton(
                 onPressed: () => context.go('/home'),
@@ -293,7 +272,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
   Widget _buildBallotView(BuildContext context, VotingEvent event) {
     // We remove the strict local clock `now.isBefore(event.endAt)` check here.
-    // If the local clock is fast, we shouldn't block the user. The backend 
+    // If the local clock is fast, we shouldn't block the user. The backend
     // `FieldValue.serverTimestamp()` transaction will definitively accept or reject it.
     final isWindowOpen = event.status == VotingEventStatus.active;
 
@@ -305,6 +284,39 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              _buildStepIndicator(context),
+              SizedBox(height: 20),
+
+              if (!isWindowOpen) ...[
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: AppTheme.warning.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                        color: AppTheme.warning.withValues(alpha: 0.3)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.info_outline_rounded, color: AppTheme.warning),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          event.status == VotingEventStatus.scheduled
+                              ? 'Voting has not opened yet for this election. You can review the ballot below, but submission is disabled until it becomes active.'
+                              : 'Voting is no longer open for this election.',
+                          style: TextStyle(
+                              color: KivoraColors.textPrimaryOf(context),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 16),
+              ],
+
               // Event Header Card
               Card(
                 child: Padding(
@@ -419,28 +431,187 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                 SizedBox(height: 16),
               ],
 
-              Text(
-                'MAKE YOUR SELECTION',
-                style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: KivoraColors.textSecondaryOf(context),
-                    letterSpacing: 1.1),
+              if (_step == _BallotStep.select) ...[
+                Text(
+                  'MAKE YOUR SELECTION',
+                  style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: KivoraColors.textSecondaryOf(context),
+                      letterSpacing: 1.1),
+                ),
+                SizedBox(height: 12),
+
+                // Dynamic Options rendering based on event type
+                if (event.votingType == VotingType.candidateElection)
+                  _buildCandidateOptions(event)
+                else if (event.votingType == VotingType.yesNoPoll)
+                  _buildYesNoOptions(event)
+                else
+                  _buildPollOptions(event),
+
+                SizedBox(height: 32),
+
+                ElevatedButton.icon(
+                  onPressed: !isWindowOpen ? null : _goToReview,
+                  icon: Icon(Icons.arrow_forward_rounded),
+                  label: Text('Review Ballot'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: AppTheme.primaryBlue,
+                  ),
+                ),
+              ] else
+                _buildReviewStep(context, event, isWindowOpen),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStepIndicator(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    Widget step(int number, String label, bool active, bool complete) {
+      final color = active || complete ? AppTheme.primaryBlue : kc.textSecondary;
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 12,
+            backgroundColor: active || complete
+                ? AppTheme.primaryBlue
+                : kc.border,
+            child: complete
+                ? Icon(Icons.check, size: 14, color: Colors.white)
+                : Text('$number',
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: active ? Colors.white : kc.textSecondary)),
+          ),
+          SizedBox(width: 6),
+          Text(label,
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: active ? FontWeight.bold : FontWeight.normal,
+                  color: color)),
+        ],
+      );
+    }
+
+    final isReview = _step == _BallotStep.review;
+    return Semantics(
+      label: isReview
+          ? 'Step 2 of 2: Review your ballot'
+          : 'Step 1 of 2: Select your choice',
+      child: Row(
+        children: [
+          step(1, 'Select', !isReview, isReview),
+          SizedBox(width: 12),
+          Container(width: 24, height: 1, color: kc.border),
+          SizedBox(width: 12),
+          step(2, 'Review & Submit', isReview, false),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReviewStep(
+      BuildContext context, VotingEvent event, bool isWindowOpen) {
+    final kc = KivoraColors.of(context);
+    final isIdentifiable = event.privacyMode == PrivacyMode.identifiable;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'REVIEW YOUR BALLOT',
+          style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: kc.textSecondary,
+              letterSpacing: 1.1),
+        ),
+        SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppTheme.primaryBlue.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.2)),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.how_to_vote, color: AppTheme.primaryBlue),
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Your selection',
+                        style: TextStyle(fontSize: 12, color: kc.textSecondary)),
+                    Text(
+                      _selectedChoiceName ?? 'Selected choice',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.primaryBlue,
+                          fontSize: 16),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: 12),
-
-              // Dynamic Options rendering based on event type
-              if (event.votingType == VotingType.candidateElection)
-                _buildCandidateOptions(event)
-              else if (event.votingType == VotingType.yesNoPoll)
-                _buildYesNoOptions(event)
-              else
-                _buildPollOptions(event),
-
-              SizedBox(height: 32),
-
-              // Submit Button
-              ElevatedButton.icon(
+            ],
+          ),
+        ),
+        SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: isIdentifiable
+                ? Colors.deepOrange.withValues(alpha: 0.08)
+                : AppTheme.success.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                isIdentifiable ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                color: isIdentifiable ? Colors.deepOrange : AppTheme.success,
+                size: 20,
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  isIdentifiable
+                      ? 'This is an identifiable ballot. Your selection will be recorded against your account and cannot be changed after submission.'
+                      : 'This ballot is anonymous. Your selection is never linked to your identity in the tally, and cannot be changed after submission.',
+                  style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: isIdentifiable ? Colors.deepOrange : AppTheme.success),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 28),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: _isSubmitting
+                    ? null
+                    : () => setState(() => _step = _BallotStep.select),
+                icon: Icon(Icons.arrow_back_rounded, size: 18),
+                label: Text('Back'),
+              ),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              flex: 2,
+              child: ElevatedButton.icon(
                 onPressed: (!isWindowOpen || _isSubmitting)
                     ? null
                     : () => _submitBallot(event),
@@ -454,16 +625,16 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                     : Icon(Icons.send_rounded),
                 label: Text(_isSubmitting
                     ? 'Submitting Ballot...'
-                    : 'Submit Official Ballot'),
+                    : 'Confirm & Cast Ballot'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: AppTheme.primaryBlue,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ),
+      ],
     );
   }
 
@@ -485,6 +656,9 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
             return _SelectableCard(
               isSelected: isSelected,
+              semanticLabel: isSelected
+                  ? '${cand.name}, candidate, selected'
+                  : '${cand.name}, candidate',
               onTap: () {
                 setState(() {
                   _selectedCandidateId = cand.id;
@@ -579,6 +753,9 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
             return _SelectableCard(
               isSelected: isSelected,
+              semanticLabel: isSelected
+                  ? '${opt.label}, option, selected'
+                  : '${opt.label}, option',
               onTap: () {
                 setState(() {
                   _selectedPollOptionId = opt.id;
@@ -665,6 +842,9 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
     return _SelectableCard(
       isSelected: isSelected,
       accentColor: color,
+      semanticLabel: isSelected
+          ? '$title, $subtitle, selected'
+          : '$title, $subtitle',
       onTap: () {
         setState(() {
           _selectedPollOptionId = id;
@@ -724,12 +904,18 @@ class _SelectableCard extends StatefulWidget {
     required this.onTap,
     required this.child,
     this.accentColor = AppTheme.primaryBlue,
+    this.semanticLabel,
   });
 
   final bool isSelected;
   final VoidCallback onTap;
   final Widget child;
   final Color accentColor;
+
+  /// Announced by screen readers along with the selected state, e.g.
+  /// "Jane Doe, candidate" - WCAG 2.2's "selection is announced correctly"
+  /// requirement for ballot options (Package A3 / C3).
+  final String? semanticLabel;
 
   @override
   State<_SelectableCard> createState() => _SelectableCardState();
@@ -744,45 +930,54 @@ class _SelectableCardState extends State<_SelectableCard> {
     final isReducedMotion = MediaQuery.of(context).disableAnimations;
     final highlighted = widget.isSelected || _isHovered;
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTapDown: (_) => setState(() => _isPressed = true),
-        onTapUp: (_) => setState(() => _isPressed = false),
-        onTapCancel: () => setState(() => _isPressed = false),
-        onTap: widget.onTap,
-        child: AnimatedScale(
-          scale: (_isPressed && !isReducedMotion) ? 0.985 : 1.0,
-          duration: const Duration(milliseconds: 120),
-          curve: Curves.easeOutCubic,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
+    return Semantics(
+      button: true,
+      selected: widget.isSelected,
+      label: widget.semanticLabel,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        cursor: SystemMouseCursors.click,
+        child: InkWell(
+          onTapDown: (_) => setState(() => _isPressed = true),
+          onTapUp: (_) => setState(() => _isPressed = false),
+          onTapCancel: () => setState(() => _isPressed = false),
+          onTap: widget.onTap,
+          borderRadius: BorderRadius.circular(12),
+          splashColor: Colors.transparent,
+          highlightColor: widget.accentColor.withValues(alpha: 0.05),
+          focusColor: widget.accentColor.withValues(alpha: 0.12),
+          child: AnimatedScale(
+            scale: (_isPressed && !isReducedMotion) ? 0.985 : 1.0,
+            duration: const Duration(milliseconds: 120),
             curve: Curves.easeOutCubic,
-            margin: const EdgeInsets.only(bottom: 12),
-            decoration: BoxDecoration(
-              color: KivoraColors.surfaceOf(context),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: widget.isSelected
-                    ? widget.accentColor
-                    : (_isHovered
-                        ? widget.accentColor.withValues(alpha: 0.4)
-                        : KivoraColors.borderOf(context)),
-                width: widget.isSelected ? 2.0 : (_isHovered ? 1.4 : 1.0),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              curve: Curves.easeOutCubic,
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                color: KivoraColors.surfaceOf(context),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: widget.isSelected
+                      ? widget.accentColor
+                      : (_isHovered
+                          ? widget.accentColor.withValues(alpha: 0.4)
+                          : KivoraColors.borderOf(context)),
+                  width: widget.isSelected ? 2.0 : (_isHovered ? 1.4 : 1.0),
+                ),
+                boxShadow: highlighted
+                    ? [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.06),
+                          blurRadius: 10,
+                          offset: const Offset(0, 3),
+                        ),
+                      ]
+                    : null,
               ),
-              boxShadow: highlighted
-                  ? [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.06),
-                        blurRadius: 10,
-                        offset: const Offset(0, 3),
-                      ),
-                    ]
-                  : null,
+              child: widget.child,
             ),
-            child: widget.child,
           ),
         ),
       ),
