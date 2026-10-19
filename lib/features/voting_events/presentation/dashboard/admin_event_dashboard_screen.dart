@@ -12,6 +12,7 @@ import '../../../organizations/presentation/providers/organization_providers.dar
 import '../../domain/voting_event.dart';
 import '../../data/voting_event_repository.dart';
 import '../providers/event_lifecycle_provider.dart';
+import '../voter_portal_screen.dart';
 import 'event_card.dart';
 
 enum _EventFilter { all, active, scheduled, draft, closed, archived }
@@ -79,10 +80,13 @@ class _AdminEventDashboardScreenState
     }
 
     if (!role.isAdmin) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-         context.go('/home'); 
-      });
-      return const Scaffold(body: LoadingView(message: 'Verifying administrative access...'));
+      // Members land on the same "Events" nav destination as admins, but see
+      // their own cross-organization voting portal instead of the admin
+      // management console - not a silent bounce back to /home.
+      return Scaffold(
+        backgroundColor: KivoraColors.backgroundOf(context),
+        body: const SafeArea(child: VoterPortalScreen(embedded: true)),
+      );
     }
 
     final eventsAsync = ref.watch(votingEventRepositoryProvider).watchOrganizationVotingEvents(orgId, includeDrafts: true);

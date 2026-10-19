@@ -127,6 +127,42 @@ class VotingEventRepository {
         .map((snapshot) => snapshot.docs.map((doc) => VotingEvent.fromFirestore(doc)).toList());
   }
 
+  /// One-shot fetch of non-draft events across every organization the caller
+  /// belongs to, for the member-facing "My Voting Portal". Firestore's
+  /// `whereIn` caps at 30 values, so membership lists longer than that are
+  /// split into chunks and fetched in parallel; results are merged and
+  /// re-sorted client-side. Drafts are excluded unconditionally - this is a
+  /// voter-facing aggregate, and Firestore rules already hide drafts from
+  /// non-admins anyway, so this just keeps admins' own drafts out of a view
+  /// that's meant to show what's open to vote on, not what they're building.
+  Future<List<VotingEvent>> fetchEventsAcrossOrganizations(
+    List<String> organizationIds,
+  ) async {
+    if (organizationIds.isEmpty) return [];
+
+    final chunks = <List<String>>[];
+    for (var i = 0; i < organizationIds.length; i += 30) {
+      chunks.add(organizationIds.sublist(
+          i, (i + 30).clamp(0, organizationIds.length)));
+    }
+
+    final snapshots = await Future.wait(chunks.map((chunk) => _firebase
+        .firestore
+        .collection('votingEvents')
+        .where('organizationId', whereIn: chunk)
+        .orderBy('startAt', descending: true)
+        .limit(200)
+        .get()));
+
+    final events = snapshots
+        .expand((snap) => snap.docs.map((d) => VotingEvent.fromFirestore(d)))
+        .where((e) => e.status != VotingEventStatus.draft)
+        .toList()
+      ..sort((a, b) => b.startAt.compareTo(a.startAt));
+
+    return events;
+  }
+
   Stream<VotingEvent?> watchVotingEvent(String eventId) {
     return _firebase.firestore
         .collection('votingEvents')

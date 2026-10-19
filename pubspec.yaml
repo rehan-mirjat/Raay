@@ -35,6 +35,8 @@ dependencies:
   app_links: ^6.3.2
   qr_flutter: ^4.1.0
   mobile_scanner: ^7.4.2
+  table_calendar: ^3.3.0
+  share_plus: ^11.0.0
   lucide_icons: ^0.257.0
 
 dev_dependencies:
