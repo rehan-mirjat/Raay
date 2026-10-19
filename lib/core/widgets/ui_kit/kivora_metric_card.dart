@@ -1,0 +1,99 @@
+import 'package:flutter/material.dart';
+import '../../theme/app_theme.dart';
+import '../../theme/kivora_colors.dart';
+
+class KivoraMetricCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final IconData icon;
+  final String? subtitle;
+  final Color? iconColor;
+  final Color? iconBgColor;
+
+  const KivoraMetricCard({
+    super.key,
+    required this.title,
+    required this.value,
+    required this.icon,
+    this.subtitle,
+    this.iconColor,
+    this.iconBgColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    final isDark = kc.isDark;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: kc.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+        border: Border.all(
+            color: isDark ? AppTheme.darkBorder : AppTheme.borderLight, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.04),
+            blurRadius: 15,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: iconBgColor ??
+                      (iconColor ?? AppTheme.primaryBlue)
+                          .withValues(alpha: isDark ? 0.2 : 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  size: 22,
+                  color: iconColor ?? AppTheme.primaryBlue,
+                ),
+              ),
+              const Spacer(),
+              if (subtitle != null)
+                Text(
+                  subtitle!,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.accentTeal,
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: kc.textPrimary,
+              letterSpacing: -0.5,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: kc.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

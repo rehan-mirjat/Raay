@@ -73,3 +73,4 @@ export * from "./platform/getPlatformAnalytics";
 export * from "./platform/listPlatformUsers";
 export * from "./admin/createAdmin";
 export * from "./admin/removeAdmin";
+export * from \./voting/verifyReceipt\;

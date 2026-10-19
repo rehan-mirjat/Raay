@@ -292,10 +292,10 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
   }
 
   Widget _buildBallotView(BuildContext context, VotingEvent event) {
-    final now = DateTime.now();
-    final isWindowOpen = event.status == VotingEventStatus.active &&
-        now.isAfter(event.startAt) &&
-        now.isBefore(event.endAt);
+    // We remove the strict local clock `now.isBefore(event.endAt)` check here.
+    // If the local clock is fast, we shouldn't block the user. The backend 
+    // `FieldValue.serverTimestamp()` transaction will definitively accept or reject it.
+    final isWindowOpen = event.status == VotingEventStatus.active;
 
     return SingleChildScrollView(
       padding: ResponsiveLayout.pagePadding(context),

@@ -615,15 +615,21 @@ class OrganizationRepository {
       return _orgCache[organizationId];
     }
 
-    final doc = await _firebase.firestore
-        .collection(AppConstants.organizationsCollection)
-        .doc(organizationId)
-        .get();
+    try {
+      final doc = await _firebase.firestore
+          .collection(AppConstants.organizationsCollection)
+          .doc(organizationId)
+          .get();
 
-    if (doc.exists) {
-      final org = Organization.fromFirestore(doc);
-      _orgCache[organizationId] = org;
-      return org;
+      if (doc.exists) {
+        final org = Organization.fromFirestore(doc);
+        _orgCache[organizationId] = org;
+        return org;
+      }
+    } catch (e) {
+      // Catch permission-denied or network errors to prevent crashing
+      // providers that parallelize these requests.
+      return null;
     }
     return null;
   }

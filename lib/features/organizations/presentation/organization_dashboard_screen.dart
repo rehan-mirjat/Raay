@@ -1,26 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
+import 'package:kivora/core/theme/kivora_icons.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
-import '../../../core/widgets/status_badge.dart';
-import '../domain/organization.dart';
+import '../../../core/widgets/ui_kit/kivora_button.dart';
+import '../../../core/widgets/ui_kit/kivora_card.dart';
+import '../../../core/widgets/ui_kit/kivora_metric_card.dart';
+import '../../../core/widgets/ui_kit/kivora_election_card.dart';
 import '../domain/organization_enums.dart';
-import '../domain/organization_member.dart';
 import 'providers/organization_providers.dart';
-import 'membership_directory_screen.dart';
-import 'pending_invitations_widget.dart';
-import '../../departments/presentation/providers/department_providers.dart';
 import '../../voting_events/data/voting_event_repository.dart';
-import '../../voting_events/domain/voting_event.dart';
-import 'organization_audit_screen.dart';
 
 class OrganizationDashboardScreen extends ConsumerWidget {
   const OrganizationDashboardScreen({super.key});
@@ -28,697 +22,271 @@ class OrganizationDashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(activeOrganizationContextProvider);
-    return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
-      appBar: AppBar(title: Text('Organization dashboard')),
-      body: state.when(
-        loading: () => const LoadingView(message: 'Loading organization…'),
-        error: (error, _) => ErrorView(
-          type: ErrorViewType.generic,
-          message: 'Could not load the active organization: $error',
-          onRetry: () => ref.invalidate(activeOrganizationContextProvider),
-        ),
-        data: (active) {
-          final org = active.context?.organization;
-          final member = active.context?.member;
-          if (org == null || member == null) {
-            return const ErrorView(
-              type: ErrorViewType.organizationRequired,
-              title: 'No active organization',
-              message:
-                  'Choose an organization to open its administration dashboard.',
-            );
-          }
-          if (!member.isAdmin) {
-            return const ErrorView(
-              type: ErrorViewType.accessDenied,
-              title: 'Access denied',
-              message:
-                  'This dashboard is available to the organization Owner and Admins.',
-            );
-          }
+    final kc = KivoraColors.of(context);
+    final isDesktop = ResponsiveLayout.isWide(context);
 
-          final isWide = ResponsiveLayout.isWide(context);
+    return state.when(
+      loading: () => const LoadingView(message: 'Loading workspace...'),
+      error: (e, _) => ErrorView(type: ErrorViewType.generic, message: 'Failed to load organization: $e'),
+      data: (orgState) {
+        if (orgState.context == null) {
+          return const Center(child: Text('No active organization.'));
+        }
 
-          return Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1120),
-              child: ListView(
-                padding: EdgeInsets.all(isWide ? 28 : 16),
-                children: [
-                  _buildHeader(context, org, member),
-                  SizedBox(height: 24),
-                  _buildMetricsRow(context, ref, org.id),
-                  SizedBox(height: 32),
-                  if (isWide)
+        final org = orgState.context!.organization;
+        final member = orgState.context!.member;
+        final isAdmin = member.role == OrganizationRole.owner || member.role == OrganizationRole.admin;
+        
+        final eventsArgs = (orgId: org.id, includeDrafts: isAdmin);
+        final eventsAsync = ref.watch(organizationVotingEventsProvider(eventsArgs));
+
+        return RefreshIndicator(
+          onRefresh: () async {
+            ref.invalidate(activeOrganizationContextProvider);
+            ref.invalidate(organizationVotingEventsProvider(eventsArgs));
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.all(isDesktop ? 40 : 20),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1200),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Expanded(
-                          flex: 7,
-                          child: _buildLeftColumn(context, org, member),
-                        ),
-                        SizedBox(width: 32),
-                        Expanded(
-                          flex: 4,
-                          child: _buildRightColumn(context, ref, org),
-                        ),
-                      ],
-                    )
-                  else
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildLeftColumn(context, org, member),
-                        SizedBox(height: 32),
-                        _buildRightColumn(context, ref, org),
-                      ],
-                    ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildHeader(
-      BuildContext context, Organization org, OrganizationMember member) {
-    final user = FirebaseAuth.instance.currentUser;
-    final bool phoneVerified =
-        user?.phoneNumber != null && user!.phoneNumber!.isNotEmpty;
-    final bool emailVerified = user?.emailVerified ?? false;
-
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: KivoraColors.borderOf(context)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(
-              org.type == 'academic'
-                  ? Icons.school_outlined
-                  : Icons.business_outlined,
-              color: AppTheme.primaryBlue,
-              size: 32,
-            ),
-          ),
-          SizedBox(width: 20),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(org.name,
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: KivoraColors.textPrimaryOf(context))),
-                SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    StatusBadge.role(member.role.value),
-                    if (phoneVerified)
-                      _buildPillBadge('Phone verified', AppTheme.success)
-                    else if (emailVerified)
-                      _buildPillBadge('Email verified', AppTheme.success),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          if (ResponsiveLayout.isWide(context)) ...[
-            OutlinedButton.icon(
-              onPressed: () => context.go('/orgs/members'),
-              icon: Icon(Icons.person_add_outlined, size: 18),
-              label: Text('Invite members'),
-            ),
-            SizedBox(width: 12),
-            FilledButton.icon(
-              onPressed: () => context.go('/admin/events/new'),
-              icon: Icon(Icons.add, size: 18),
-              label: Text('Create voting event'),
-              style: FilledButton.styleFrom(
-                backgroundColor: AppTheme.primaryBlue,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-              ),
-            ),
-          ] else ...[
-            Row(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.person_add_outlined,
-                      color: AppTheme.primaryBlue),
-                  onPressed: () => context.go('/orgs/members'),
-                ),
-                IconButton(
-                  icon: Icon(Icons.add_box_rounded,
-                      color: AppTheme.primaryBlue),
-                  onPressed: () => context.go('/admin/events/new'),
-                ),
-              ],
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPillBadge(String label, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        label,
-        style:
-            TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-
-  Widget _buildMetricsRow(BuildContext context, WidgetRef ref, String orgId) {
-    final isWide = ResponsiveLayout.isWide(context);
-    final isTablet = ResponsiveLayout.isMedium(context);
-
-    return LayoutBuilder(builder: (context, constraints) {
-      final columns = isWide ? 4 : (isTablet ? 2 : 1);
-      const spacing = 16.0;
-      final width = (constraints.maxWidth - (columns - 1) * spacing) / columns;
-
-      return Wrap(
-        spacing: spacing,
-        runSpacing: spacing,
-        children: [
-          SizedBox(
-              width: width,
-              child: _buildStatCard(context, ref, 'MEMBERS', orgId)),
-          SizedBox(
-              width: width,
-              child: _buildStatCard(context, ref, 'ACTIVE EVENTS', orgId)),
-          SizedBox(
-              width: width,
-              child:
-                  _buildStatCard(context, ref, 'PENDING INVITATIONS', orgId)),
-          SizedBox(
-              width: width,
-              child: _buildStatCard(context, ref, 'DEPARTMENTS', orgId)),
-        ],
-      );
-    });
-  }
-
-  Widget _buildStatCard(
-      BuildContext context, WidgetRef ref, String title, String orgId) {
-    return Consumer(builder: (context, ref, _) {
-      String value = '-';
-      String subtitle = 'Loading...';
-
-      if (title == 'MEMBERS') {
-        final state = ref.watch(organizationMembersDirectoryProvider(orgId));
-        value = state.maybeWhen(
-            data: (d) => d.length.toString(), orElse: () => '-');
-        subtitle = 'Total accounts';
-      } else if (title == 'ACTIVE EVENTS') {
-        return StreamBuilder<List<VotingEvent>>(
-            stream: ref
-                .watch(votingEventRepositoryProvider)
-                .watchOrganizationVotingEvents(orgId),
-            builder: (ctx, snap) {
-              final count = snap.hasData
-                  ? snap.data!
-                      .where((e) => e.status == VotingEventStatus.active)
-                      .length
-                      .toString()
-                  : '-';
-              return _StatCardLayout(
-                  title: title, value: count, subtitle: 'Ongoing events');
-            });
-      } else if (title == 'PENDING INVITATIONS') {
-        final state = ref.watch(pendingInvitationsProvider(orgId));
-        value = state.maybeWhen(
-            data: (d) => d.length.toString(), orElse: () => '-');
-        subtitle = 'Awaiting response';
-      } else if (title == 'DEPARTMENTS') {
-        final state = ref.watch(activeOrganizationDepartmentsProvider);
-        value = state.maybeWhen(
-            data: (d) => d.length.toString(), orElse: () => '-');
-        subtitle = 'Active groups';
-      }
-
-      return _StatCardLayout(title: title, value: value, subtitle: subtitle);
-    });
-  }
-
-  Widget _buildLeftColumn(
-      BuildContext context, Organization org, OrganizationMember member) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSectionGroup(
-          context,
-          title: 'PEOPLE',
-          items: [
-            _SectionItem(
-                'Members & invitations',
-                'Manage members and review invitations.',
-                Icons.people_outline_rounded,
-                '/orgs/members'),
-            _SectionItem(
-                'Joining codes',
-                'Create, review and revoke access codes.',
-                Icons.key_outlined,
-                '/orgs/joining-codes'),
-            _SectionItem('Departments', 'Organize members into groups.',
-                Icons.domain_outlined, '/orgs/departments'),
-          ],
-        ),
-        SizedBox(height: 32),
-        _buildSectionGroup(
-          context,
-          title: 'ELECTIONS',
-          items: [
-            _SectionItem(
-                'Voting events',
-                'Create events and monitor participation.',
-                Icons.how_to_vote_outlined,
-                '/admin/events'),
-          ],
-        ),
-        SizedBox(height: 32),
-        _buildSectionGroup(
-          context,
-          title: 'GOVERNANCE',
-          items: [
-            _SectionItem('Activity log', 'Review administrative changes.',
-                Icons.history_rounded, '/orgs/audit'),
-            if (member.role == OrganizationRole.owner)
-              _SectionItem(
-                  'Organization branding',
-                  'Update name, logo and colors.',
-                  Icons.palette_outlined,
-                  '/orgs/settings'),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSectionGroup(BuildContext context,
-      {required String title, required List<_SectionItem> items}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 12),
-          child: Text(title,
-              style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  color: KivoraColors.textSecondaryOf(context),
-                  letterSpacing: 0.8)),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            color: KivoraColors.surfaceOf(context),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: KivoraColors.borderOf(context)),
-          ),
-          child: Column(
-            children: items.asMap().entries.map((entry) {
-              final idx = entry.key;
-              final item = entry.value;
-              return Column(
-                children: [
-                  InkWell(
-                    onTap: () => context.go(item.route),
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(idx == 0 ? 16 : 0),
-                      bottom: Radius.circular(idx == items.length - 1 ? 16 : 0),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Row(
-                        children: [
+                        if (org.logoUrl != null)
                           Container(
-                            width: 40,
-                            height: 40,
+                            width: 64,
+                            height: 64,
+                            margin: const EdgeInsets.only(right: 20),
                             decoration: BoxDecoration(
-                              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(16),
+                              image: DecorationImage(
+                                image: NetworkImage(org.logoUrl!),
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                            child: Icon(item.icon,
-                                color: AppTheme.primaryBlue, size: 20),
-                          ),
-                          SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(item.title,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        color: KivoraColors.textPrimaryOf(context))),
-                                SizedBox(height: 4),
-                                Text(item.description,
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: KivoraColors.textSecondaryOf(context))),
-                              ],
-                            ),
-                          ),
-                          Icon(Icons.chevron_right_rounded,
-                              color: KivoraColors.textSecondaryOf(context), size: 20),
-                        ],
-                      ),
-                    ),
-                  ),
-                  if (idx < items.length - 1)
-                    Divider(
-                        height: 1, color: KivoraColors.borderOf(context), indent: 76),
-                ],
-              );
-            }).toList(),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRightColumn(
-      BuildContext context, WidgetRef ref, Organization org) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildLiveEventCard(context, ref, org),
-        SizedBox(height: 24),
-        _buildAccountSecurityCard(context),
-        SizedBox(height: 24),
-        _buildRecentActivityCard(context, ref, org),
-      ],
-    );
-  }
-
-  Widget _buildLiveEventCard(
-      BuildContext context, WidgetRef ref, Organization org) {
-    return StreamBuilder<List<VotingEvent>>(
-        stream: ref
-            .watch(votingEventRepositoryProvider)
-            .watchOrganizationVotingEvents(org.id),
-        builder: (ctx, snap) {
-          final activeEvents = snap.data
-                  ?.where((e) => e.status == VotingEventStatus.active)
-                  .toList() ??
-              [];
-          final hasLive = activeEvents.isNotEmpty;
-
-          return Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: KivoraColors.surfaceOf(context),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: KivoraColors.borderOf(context)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('LIVE EVENT',
-                        style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: KivoraColors.textSecondaryOf(context),
-                            letterSpacing: 0.8)),
-                    if (hasLive)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                            color: AppTheme.success.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Text('Active',
-                            style: TextStyle(
-                                color: AppTheme.success,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold)),
-                      ),
-                  ],
-                ),
-                SizedBox(height: 16),
-                if (hasLive) ...[
-                  Text(activeEvents.first.title,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: KivoraColors.textPrimaryOf(context)),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
-                  SizedBox(height: 16),
-                  OutlinedButton(
-                    onPressed: () => context
-                        .go('/admin/events/${activeEvents.first.id}/monitor'),
-                    style: OutlinedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 44)),
-                    child: Text('Monitor participation'),
-                  ),
-                ] else ...[
-                  Text('No live events at the moment.',
-                      style: TextStyle(
-                          color: KivoraColors.textSecondaryOf(context), fontSize: 13)),
-                ],
-              ],
-            ),
-          );
-        });
-  }
-
-  Widget _buildAccountSecurityCard(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    final emailVerified = user?.emailVerified ?? false;
-    final phoneVerified =
-        user?.phoneNumber != null && user!.phoneNumber!.isNotEmpty;
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: KivoraColors.borderOf(context)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('ACCOUNT SECURITY',
-              style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  color: KivoraColors.textSecondaryOf(context),
-                  letterSpacing: 0.8)),
-          const SizedBox(height: 16),
-          _buildSecurityItem(context,
-              emailVerified ? 'Email verified' : 'Email not verified',
-              emailVerified),
-          if (phoneVerified) _buildSecurityItem(context, 'Phone number verified', true),
-          _buildSecurityItem(context, 'Secure account session', true),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSecurityItem(BuildContext context, String text, bool isSecure) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        children: [
-          Icon(
-              isSecure
-                  ? Icons.check_circle_outline_rounded
-                  : Icons.warning_amber_rounded,
-              color: isSecure ? AppTheme.success : AppTheme.warning,
-              size: 18),
-          const SizedBox(width: 12),
-          Text(text,
-              style:
-                  TextStyle(fontSize: 13, color: KivoraColors.textPrimaryOf(context))),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRecentActivityCard(
-      BuildContext context, WidgetRef ref, Organization org) {
-    return Consumer(builder: (context, ref, child) {
-      final logsAsync = ref.watch(organizationAuditLogsProvider(org.id));
-
-      return Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: KivoraColors.surfaceOf(context),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: KivoraColors.borderOf(context)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('RECENT ACTIVITY',
-                    style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: KivoraColors.textSecondaryOf(context),
-                        letterSpacing: 0.8)),
-                InkWell(
-                  onTap: () => context.go('/orgs/audit'),
-                  child: Text('View all',
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.primaryBlue)),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            logsAsync.when(
-              loading: () => const LoadingView(),
-              error: (_, __) => Text('Could not load activity.',
-                  style:
-                      TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context))),
-              data: (snapshot) {
-                final logs = snapshot.docs;
-                if (logs.isEmpty) {
-                  return Text('No recent activity.',
-                      style: TextStyle(
-                          fontSize: 13, color: KivoraColors.textSecondaryOf(context)));
-                }
-                return Column(
-                  children: logs.take(3).map((doc) {
-                    final data = doc.data();
-                    final action = (data['action'] as String? ?? 'ADMIN_ACTION')
-                        .replaceAll('_', ' ')
-                        .toLowerCase();
-                    final actionFormatted =
-                        '${action[0].toUpperCase()}${action.substring(1)}';
-                    final stamp = data['timestamp'];
-                    final dateStr = stamp is Timestamp
-                        ? DateFormat('MMM d, h:mm a')
-                            .format(stamp.toDate().toLocal())
-                        : '';
-
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                          )
+                        else
                           Container(
-                            margin: const EdgeInsets.only(top: 4),
-                            width: 8,
-                            height: 8,
+                            width: 64,
+                            height: 64,
+                            margin: const EdgeInsets.only(right: 20),
                             decoration: BoxDecoration(
-                                color: AppTheme.primaryBlue,
-                                shape: BoxShape.circle),
+                              color: AppTheme.primaryBlue.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: const Icon(KivoraIcons.building2, size: 28, color: AppTheme.primaryBlue),
                           ),
-                          SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(actionFormatted,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13,
-                                        color: KivoraColors.textPrimaryOf(context))),
-                                SizedBox(height: 2),
-                                Text(dateStr,
-                                    style: TextStyle(
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                org.name,
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w900,
+                                  color: kc.textPrimary,
+                                  letterSpacing: -0.5,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: member.role == OrganizationRole.owner 
+                                          ? AppTheme.accentGold.withValues(alpha: 0.1)
+                                          : AppTheme.primaryBlue.withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Text(
+                                      member.role.name.toUpperCase(),
+                                      style: TextStyle(
                                         fontSize: 11,
-                                        color: KivoraColors.textSecondaryOf(context))),
-                              ],
-                            ),
+                                        fontWeight: FontWeight.bold,
+                                        color: member.role == OrganizationRole.owner ? AppTheme.accentGold : AppTheme.primaryBlue,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    'Joined ${org.createdAt.year}',
+                                    style: TextStyle(fontSize: 13, color: kc.textSecondary),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (isAdmin)
+                          KivoraButton(
+                            type: KivoraButtonType.secondary,
+                            icon: KivoraIcons.settings,
+                            label: 'Settings',
+                            isExpanded: false,
+                            onPressed: () => context.go('/orgs/settings'),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+                    if (isDesktop)
+                      Row(
+                        children: [
+                          const Expanded(child: KivoraMetricCard(title: 'Total Members', value: '128', icon: KivoraIcons.users, subtitle: '+6 this week')),
+                          const SizedBox(width: 16),
+                          const Expanded(child: KivoraMetricCard(title: 'Departments', value: '4', icon: KivoraIcons.network, iconColor: AppTheme.accentGold)),
+                          const SizedBox(width: 16),
+                          const Expanded(child: KivoraMetricCard(title: 'Active Events', value: '2', icon: KivoraIcons.vote, iconColor: AppTheme.accentTeal)),
+                          const SizedBox(width: 16),
+                          const Expanded(child: KivoraMetricCard(title: 'Pending Invites', value: '9', icon: KivoraIcons.mail, iconColor: AppTheme.warning)),
+                        ],
+                      )
+                    else
+                      Column(
+                        children: const [
+                          Row(
+                            children: [
+                              Expanded(child: KivoraMetricCard(title: 'Total Members', value: '128', icon: KivoraIcons.users)),
+                              SizedBox(width: 16),
+                              Expanded(child: KivoraMetricCard(title: 'Departments', value: '4', icon: KivoraIcons.network, iconColor: AppTheme.accentGold)),
+                            ],
+                          ),
+                          SizedBox(height: 16),
+                          Row(
+                            children: [
+                              Expanded(child: KivoraMetricCard(title: 'Active Events', value: '2', icon: KivoraIcons.vote, iconColor: AppTheme.accentTeal)),
+                              SizedBox(width: 16),
+                              Expanded(child: KivoraMetricCard(title: 'Pending Invites', value: '9', icon: KivoraIcons.mail, iconColor: AppTheme.warning)),
+                            ],
                           ),
                         ],
                       ),
-                    );
-                  }).toList(),
-                );
-              },
+                    const SizedBox(height: 32),
+                    
+                    isDesktop ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(flex: 2, child: _buildEventsFeed(context, eventsAsync, isAdmin)),
+                        const SizedBox(width: 24),
+                        Expanded(flex: 1, child: _buildQuickActions(context, isAdmin)),
+                      ],
+                    ) : Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildQuickActions(context, isAdmin),
+                        const SizedBox(height: 24),
+                        _buildEventsFeed(context, eventsAsync, isAdmin),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+    );
+  }
+
+  Widget _buildQuickActions(BuildContext context, bool isAdmin) {
+    final kc = KivoraColors.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Quick Actions', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+        const SizedBox(height: 16),
+        KivoraCard(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            children: [
+              if (isAdmin) ...[
+                ListTile(
+                  leading: const Icon(KivoraIcons.userPlus, color: AppTheme.primaryBlue),
+                  title: const Text('Invite Members', style: TextStyle(fontWeight: FontWeight.w600)),
+                  trailing: const Icon(KivoraIcons.chevronRight, size: 16),
+                  onTap: () => context.go('/orgs/invitations'),
+                ),
+                ListTile(
+                  leading: const Icon(KivoraIcons.qrCode, color: AppTheme.primaryBlue),
+                  title: const Text('Joining Codes', style: TextStyle(fontWeight: FontWeight.w600)),
+                  trailing: const Icon(KivoraIcons.chevronRight, size: 16),
+                  onTap: () => context.go('/orgs/joining-codes'),
+                ),
+                ListTile(
+                  leading: const Icon(KivoraIcons.plusSquare, color: AppTheme.primaryBlue),
+                  title: const Text('Create Event', style: TextStyle(fontWeight: FontWeight.w600)),
+                  trailing: const Icon(KivoraIcons.chevronRight, size: 16),
+                  onTap: () => context.go('/admin/events/new'),
+                ),
+              ],
+              ListTile(
+                leading: const Icon(KivoraIcons.users, color: AppTheme.primaryBlue),
+                title: const Text('Member Directory', style: TextStyle(fontWeight: FontWeight.w600)),
+                trailing: const Icon(KivoraIcons.chevronRight, size: 16),
+                onTap: () => context.go('/orgs/members'),
+              ),
+              ListTile(
+                leading: const Icon(KivoraIcons.network, color: AppTheme.primaryBlue),
+                title: const Text('Departments', style: TextStyle(fontWeight: FontWeight.w600)),
+                trailing: const Icon(KivoraIcons.chevronRight, size: 16),
+                onTap: () => context.go('/orgs/departments'),
+              ),
+              ListTile(
+                leading: const Icon(KivoraIcons.history, color: AppTheme.primaryBlue),
+                title: const Text('Audit Log', style: TextStyle(fontWeight: FontWeight.w600)),
+                trailing: const Icon(KivoraIcons.chevronRight, size: 16),
+                onTap: () => context.go('/orgs/audit'),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEventsFeed(BuildContext context, AsyncValue eventsAsync, bool isAdmin) {
+    final kc = KivoraColors.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Upcoming & Active Events', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+            TextButton(
+              onPressed: () => context.go('/admin/events'),
+              child: const Text('View All'),
             ),
           ],
         ),
-      );
-    });
-  }
-}
-
-class _StatCardLayout extends StatelessWidget {
-  final String title;
-  final String value;
-  final String subtitle;
-
-  const _StatCardLayout(
-      {required this.title, required this.value, required this.subtitle});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: KivoraColors.borderOf(context)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title,
-              style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  color: KivoraColors.textSecondaryOf(context),
-                  letterSpacing: 0.8)),
-          SizedBox(height: 12),
-          Text(value,
-              style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: KivoraColors.textPrimaryOf(context),
-                  height: 1.0)),
-          SizedBox(height: 8),
-          Text(subtitle,
-              style:
-                  TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis),
-        ],
-      ),
+        const SizedBox(height: 16),
+        eventsAsync.when(
+          loading: () => const LoadingView(message: 'Loading events...'),
+          error: (e, _) => ErrorView(type: ErrorViewType.generic, message: 'Failed: $e'),
+          data: (events) {
+            if (events.isEmpty) {
+              return KivoraCard(
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Center(child: Text('No active events.', style: TextStyle(color: kc.textSecondary))),
+                ),
+              );
+            }
+            return Column(
+              children: events.take(5).map((e) => Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: KivoraElectionCard(event: e, isAdmin: isAdmin),
+              )).toList(),
+            );
+          },
+        ),
+      ],
     );
   }
-}
-
-class _SectionItem {
-  final String title;
-  final String description;
-  final IconData icon;
-  final String route;
-  _SectionItem(this.title, this.description, this.icon, this.route);
 }

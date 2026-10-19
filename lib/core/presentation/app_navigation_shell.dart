@@ -59,21 +59,21 @@ class AppNavigationShell extends ConsumerWidget {
               children: [
                 Expanded(
                   child: isDesktop
-                      ? Column(
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const _TopHeader(),
+                            _DesktopSidebar(
+                              collapsed: collapsed,
+                              isManager: isManager,
+                              canCreateEvent: canCreateEvent,
+                              onToggleCollapse: () => ref
+                                  .read(_sidebarCollapsedProvider.notifier)
+                                  .state = !collapsed,
+                            ),
                             Expanded(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Column(
                                 children: [
-                                  _DesktopSidebar(
-                                    collapsed: collapsed,
-                                    isManager: isManager,
-                                    canCreateEvent: canCreateEvent,
-                                    onToggleCollapse: () => ref
-                                        .read(_sidebarCollapsedProvider.notifier)
-                                        .state = !collapsed,
-                                  ),
+                                  const _TopHeader(),
                                   Expanded(child: navigationShell),
                                 ],
                               ),

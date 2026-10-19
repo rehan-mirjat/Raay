@@ -148,7 +148,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                         label: 'Security & Privacy',
                         onTap: () => _scrollToSection(_securityKey)),
                     _AnimatedNavLink(
-                        label: 'FAQ', onTap: () => _scrollToSection(_faqKey)),
+                        label: 'Verify Receipt', onTap: () => context.go('/receipt-verify')),
                   ],
                 ),
 

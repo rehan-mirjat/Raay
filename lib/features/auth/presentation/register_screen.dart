@@ -7,8 +7,10 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/utils/error_utils.dart';
 import '../../../core/utils/validators.dart';
-import '../../../core/widgets/google_g_logo.dart';
 import '../../../core/widgets/inline_error_banner.dart';
+import '../../../core/widgets/ui_kit/kivora_button.dart';
+import '../../../core/widgets/ui_kit/kivora_text_field.dart';
+import 'package:kivora/core/theme/kivora_icons.dart';
 import '../../../services/auth_service.dart';
 import 'widgets/auth_split_layout.dart';
 
@@ -238,55 +240,25 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           children: [
                             LayoutBuilder(
                               builder: (context, constraints) {
-                                final firstName = Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('FIRST NAME',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 11,
-                                            color: kc.textPrimary,
-                                            letterSpacing: 0.5)),
-                                    const SizedBox(height: 6),
-                                    TextFormField(
-                                      controller: _firstNameController,
-                                      textInputAction: TextInputAction.next,
-                                      autofillHints: const [
-                                        AutofillHints.givenName
-                                      ],
-                                      decoration: const InputDecoration(
-                                          hintText: 'First',
-                                          prefixIcon: Icon(Icons.person_outline,
-                                              size: 20)),
-                                      validator: (v) =>
-                                          Validators.required(v, 'First Name'),
-                                    ),
-                                  ],
+                                final firstName = KivoraTextField(
+                                  label: 'First name',
+                                  controller: _firstNameController,
+                                  textInputAction: TextInputAction.next,
+                                  autofillHints: const [AutofillHints.givenName],
+                                  hint: 'First',
+                                  prefixIcon: KivoraIcons.user,
+                                  validator: (v) =>
+                                      Validators.required(v, 'First Name'),
                                 );
-                                final lastName = Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('LAST NAME',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 11,
-                                            color: kc.textPrimary,
-                                            letterSpacing: 0.5)),
-                                    const SizedBox(height: 6),
-                                    TextFormField(
-                                      controller: _lastNameController,
-                                      textInputAction: TextInputAction.next,
-                                      autofillHints: const [
-                                        AutofillHints.familyName
-                                      ],
-                                      decoration: const InputDecoration(
-                                          hintText: 'Last',
-                                          prefixIcon: Icon(Icons.person_outline,
-                                              size: 20)),
-                                      validator: (v) =>
-                                          Validators.required(v, 'Last Name'),
-                                    ),
-                                  ],
+                                final lastName = KivoraTextField(
+                                  label: 'Last name',
+                                  controller: _lastNameController,
+                                  textInputAction: TextInputAction.next,
+                                  autofillHints: const [AutofillHints.familyName],
+                                  hint: 'Last',
+                                  prefixIcon: KivoraIcons.user,
+                                  validator: (v) =>
+                                      Validators.required(v, 'Last Name'),
                                 );
                                 if (constraints.maxWidth < 400) {
                                   return Column(children: [
@@ -303,87 +275,61 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               },
                             ),
                             const SizedBox(height: 16),
-                            Text('EMAIL ADDRESS',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 11,
-                                    color: kc.textPrimary,
-                                    letterSpacing: 0.5)),
-                            const SizedBox(height: 6),
-                            TextFormField(
+                            KivoraTextField(
+                              label: 'Email address',
                               controller: _emailController,
                               textInputAction: TextInputAction.next,
                               autofillHints: const [AutofillHints.email],
-                              decoration: const InputDecoration(
-                                  hintText: 'user@email.com',
-                                  prefixIcon:
-                                      Icon(Icons.email_outlined, size: 20)),
+                              hint: 'user@email.com',
+                              prefixIcon: KivoraIcons.mail,
                               keyboardType: TextInputType.emailAddress,
                               validator: Validators.email,
                             ),
                             const SizedBox(height: 16),
-                            Text('PASSWORD',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 11,
-                                    color: kc.textPrimary,
-                                    letterSpacing: 0.5)),
-                            const SizedBox(height: 6),
-                            TextFormField(
+                            KivoraTextField(
+                              label: 'Password',
                               controller: _passwordController,
                               obscureText: _obscurePassword,
                               textInputAction: TextInputAction.next,
                               autofillHints: const [AutofillHints.newPassword],
-                              decoration: InputDecoration(
-                                hintText: '••••••••',
-                                prefixIcon:
-                                    const Icon(Icons.lock_outline, size: 20),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                      _obscurePassword
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                      size: 20),
-                                  tooltip: _obscurePassword
-                                      ? 'Show password'
-                                      : 'Hide password',
-                                  onPressed: () => setState(() =>
-                                      _obscurePassword = !_obscurePassword),
-                                ),
+                              hint: '••••••••',
+                              prefixIcon: KivoraIcons.lock,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                    _obscurePassword
+                                        ? KivoraIcons.eyeOff
+                                        : KivoraIcons.eye,
+                                    size: 20),
+                                tooltip: _obscurePassword
+                                    ? 'Show password'
+                                    : 'Hide password',
+                                onPressed: () => setState(() =>
+                                    _obscurePassword = !_obscurePassword),
                               ),
                               validator: Validators.password,
                             ),
                             const SizedBox(height: 16),
-                            Text('CONFIRM PASSWORD',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 11,
-                                    color: kc.textPrimary,
-                                    letterSpacing: 0.5)),
-                            const SizedBox(height: 6),
-                            TextFormField(
+                            KivoraTextField(
+                              label: 'Confirm Password',
                               controller: _confirmPasswordController,
                               obscureText: _obscureConfirmPassword,
                               textInputAction: TextInputAction.done,
                               onFieldSubmitted: (_) => _submit(),
                               autofillHints: const [AutofillHints.newPassword],
-                              decoration: InputDecoration(
-                                hintText: '••••••••',
-                                prefixIcon:
-                                    const Icon(Icons.lock_outline, size: 20),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                      _obscureConfirmPassword
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                      size: 20),
-                                  tooltip: _obscureConfirmPassword
-                                      ? 'Show password'
-                                      : 'Hide password',
-                                  onPressed: () => setState(() =>
-                                      _obscureConfirmPassword =
-                                          !_obscureConfirmPassword),
-                                ),
+                              hint: '••••••••',
+                              prefixIcon: KivoraIcons.lock,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                    _obscureConfirmPassword
+                                        ? KivoraIcons.eyeOff
+                                        : KivoraIcons.eye,
+                                    size: 20),
+                                tooltip: _obscureConfirmPassword
+                                    ? 'Show password'
+                                    : 'Hide password',
+                                onPressed: () => setState(() =>
+                                    _obscureConfirmPassword =
+                                        !_obscureConfirmPassword),
                               ),
                               validator: (v) => Validators.confirmPassword(
                                   v, _passwordController.text),
@@ -396,19 +342,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         InlineErrorBanner(message: _error!),
                       ],
                       SizedBox(height: isMobile ? 20 : 28),
-                      ElevatedButton.icon(
-                        onPressed: _isLoading ? null : _submit,
-                        icon: _isLoading
-                            ? const SizedBox(
-                                height: 16,
-                                width: 16,
-                                child: CircularProgressIndicator(
-                                    color: Colors.white, strokeWidth: 2),
-                              )
-                            : const Icon(Icons.shield_outlined, size: 18),
-                        label: Text(_isLoading
-                            ? 'Creating Identity...'
-                            : 'Create Identity Securely'),
+                      KivoraButton(
+                        onPressed: _submit,
+                        isLoading: _isLoading,
+                        icon: KivoraIcons.userPlus,
+                        label: 'Create Account',
                       ),
                       SizedBox(height: isMobile ? 16 : 20),
                       Row(
@@ -426,10 +364,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ],
                       ),
                       SizedBox(height: isMobile ? 16 : 20),
-                      OutlinedButton.icon(
+                      KivoraButton(
+                        type: KivoraButtonType.secondary,
                         onPressed: _isLoading ? null : _googleSignIn,
-                        icon: const GoogleGLogo(size: 18),
-                        label: const Text('Continue with Google'),
+                        icon: null,
+                        label: 'Continue with Google',
                       ),
                       SizedBox(height: isMobile ? 20 : 28),
                       Center(
