@@ -92,6 +92,7 @@ export const createDepartment = onCall(async (request) => {
     return { status: "success", departmentId: deptId };
   } catch (error: any) {
     if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to create department.", error);
+    console.error("createDepartment failed", error);
+    throw new HttpsError("internal", "Failed to create department.");
   }
 });

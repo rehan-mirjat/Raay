@@ -79,6 +79,7 @@ export const removeMember = onCall(async (request) => {
     return { status: "success" };
   } catch (error: any) {
     if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to remove member.", error);
+    console.error("removeMember failed", error);
+    throw new HttpsError("internal", "Failed to remove member.");
   }
 });

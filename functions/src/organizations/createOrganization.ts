@@ -246,6 +246,7 @@ function isValidUrl(input: string): boolean {
     return { status: "success", organizationId: createdOrgId };
   } catch (error: any) {
     if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to create organization.", error);
+    console.error("createOrganization failed", error);
+    throw new HttpsError("internal", "Failed to create organization.");
   }
 });

@@ -75,6 +75,7 @@ export const removeMemberFromDepartment = onCall(async (request) => {
     return { status: "success" };
   } catch (error: any) {
     if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to remove member from department.", error);
+    console.error("removeMemberFromDepartment failed", error);
+    throw new HttpsError("internal", "Failed to remove member from department.");
   }
 });

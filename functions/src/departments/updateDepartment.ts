@@ -108,6 +108,7 @@ export const updateDepartment = onCall(async (request) => {
     return { status: "success" };
   } catch (error: any) {
     if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to update department.", error);
+    console.error("updateDepartment failed", error);
+    throw new HttpsError("internal", "Failed to update department.");
   }
 });

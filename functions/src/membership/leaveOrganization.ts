@@ -68,6 +68,7 @@ export const leaveOrganization = onCall(async (request) => {
     return { status: "success" };
   } catch (error: any) {
     if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to leave organization.", error);
+    console.error("leaveOrganization failed", error);
+    throw new HttpsError("internal", "Failed to leave organization.");
   }
 });

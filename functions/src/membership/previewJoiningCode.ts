@@ -174,7 +174,8 @@ export const previewJoiningCode = onCall(
         transaction.set(orgThrottleRef, { windowStart, failures }, { merge: true });
       });
       if (error instanceof HttpsError) throw error;
-      throw new HttpsError("internal", "Failed to preview this joining code.", error);
+      console.error("previewJoiningCode failed", error);
+      throw new HttpsError("internal", "Failed to preview this joining code.");
     }
   }
 );

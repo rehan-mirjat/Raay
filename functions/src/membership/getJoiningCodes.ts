@@ -55,6 +55,7 @@ export const getJoiningCodes = onCall(async (request) => {
     return { status: "success", codes };
   } catch (error: any) {
     if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Unable to load joining codes.", error);
+    console.error("getJoiningCodes failed", error);
+    throw new HttpsError("internal", "Unable to load joining codes.");
   }
 });

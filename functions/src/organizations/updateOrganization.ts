@@ -151,6 +151,7 @@ function isValidUrl(input: string): boolean {
     return { status: "success", organizationId: orgId };
   } catch (error: any) {
     if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to update organization metadata.", error);
+    console.error("updateOrganization failed", error);
+    throw new HttpsError("internal", "Failed to update organization metadata.");
   }
 });

@@ -60,6 +60,7 @@ export const completeRegistration = onCall(async (request) => {
     return { status: "success" };
   } catch (error: any) {
     if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to complete user registration.", error);
+    console.error("completeRegistration failed", error);
+    throw new HttpsError("internal", "Failed to complete user registration.");
   }
 });

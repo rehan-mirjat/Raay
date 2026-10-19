@@ -237,7 +237,8 @@ export const acceptInvitation = onCall(
   } catch (error: any) {
     if (error instanceof HttpsError) throw error;
     await recordFailedAttempt();
-    throw new HttpsError("internal", "Failed to accept invitation.", error);
+    console.error("acceptInvitation failed", error);
+    throw new HttpsError("internal", "Failed to accept invitation.");
   }
   },
 );

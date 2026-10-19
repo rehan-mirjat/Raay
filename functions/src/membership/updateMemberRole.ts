@@ -84,6 +84,7 @@ export const updateMemberRole = onCall(async (request) => {
     return { status: "success" };
   } catch (error: any) {
     if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to update member role.", error);
+    console.error("updateMemberRole failed", error);
+    throw new HttpsError("internal", "Failed to update member role.");
   }
 });

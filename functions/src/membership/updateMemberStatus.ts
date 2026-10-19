@@ -90,6 +90,7 @@ export const updateMemberStatus = onCall(async (request) => {
     return { status: "success" };
   } catch (error: any) {
     if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to update member status.", error);
+    console.error("updateMemberStatus failed", error);
+    throw new HttpsError("internal", "Failed to update member status.");
   }
 });

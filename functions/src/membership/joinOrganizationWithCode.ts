@@ -205,7 +205,8 @@ export const joinOrganizationWithCode = onCall(
       });
     }
     if (error instanceof HttpsError) throw error;
-    throw new HttpsError("internal", "Failed to join organization.", error);
+    console.error("joinOrganizationWithCode failed", error);
+    throw new HttpsError("internal", "Failed to join organization.");
   }
   },
 );
