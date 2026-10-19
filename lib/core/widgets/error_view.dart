@@ -182,7 +182,7 @@ class ErrorView extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                     decoration: BoxDecoration(
-                      color: Color(0xFFF8FAFC),
+                      color: KivoraColors.surfaceOf(context),
                       borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
                     ),
                     child: Row(

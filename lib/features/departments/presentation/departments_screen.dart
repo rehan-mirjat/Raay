@@ -642,7 +642,7 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                   decoration: BoxDecoration(
                     color: widget.eventsCount > 0
                         ? AppTheme.primaryBlue.withValues(alpha: 0.12)
-                        : const Color(0xFFF1F5F9),
+                        : KivoraColors.surfaceOf(context),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -907,7 +907,7 @@ class _NewDepartmentDashedCardState extends State<_NewDepartmentDashedCard> {
           decoration: BoxDecoration(
             color: _isHovered
                 ? AppTheme.primaryBlue.withValues(alpha: 0.12).withValues(alpha: 0.5)
-                : const Color(0xFFF8FAFC),
+                : KivoraColors.surfaceOf(context),
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
               color: _isHovered ? AppTheme.primaryBlue : KivoraColors.borderOf(context),

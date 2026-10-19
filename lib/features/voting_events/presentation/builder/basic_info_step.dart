@@ -419,7 +419,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFF),
+        color: AppTheme.primaryBlue.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: KivoraColors.borderOf(context)),
       ),

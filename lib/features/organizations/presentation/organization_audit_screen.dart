@@ -907,7 +907,7 @@ class _OrganizationAuditScreenState
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 24, vertical: 10),
-                        color: const Color(0xFFF8FAFC),
+                        color: KivoraColors.surfaceOf(context),
                         child: Row(
                           children: [
                             Text(
@@ -1044,7 +1044,7 @@ class _OrganizationAuditScreenState
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
               color: isExpanded
-                  ? const Color(0xFFF1F5F9)
+                  ? AppTheme.primaryBlue.withValues(alpha: 0.1)
                   : (isHovered
                       ? AppTheme.primaryBlue.withValues(alpha: 0.12).withValues(alpha: 0.5)
                       : KivoraColors.surfaceOf(context)),
@@ -1207,7 +1207,7 @@ class _OrganizationAuditScreenState
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              color: const Color(0xFFF8FAFC),
+              color: KivoraColors.surfaceOf(context),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

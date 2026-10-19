@@ -335,7 +335,7 @@ class _SwitcherOrgItemState extends State<_SwitcherOrgItem> {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: widget.isSelected
-                ? const Color(0xFFF0F5FF)
+                ? AppTheme.primaryBlue.withValues(alpha: 0.1)
                 : (_isHovered
                     ? AppTheme.primaryBlue.withValues(alpha: 0.12).withValues(alpha: 0.5)
                     : KivoraColors.surfaceOf(context)),

@@ -673,7 +673,7 @@ class _MobileOnboardingScreenState
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFFF3F6FE),
+        color: AppTheme.primaryBlue.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: KivoraColors.borderOf(context)),
       ),

@@ -451,7 +451,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   // Interactive Mock Product Preview
   Widget _buildHeroInteractiveWidget(BuildContext context) {
     return _HoverContainer(
-      backgroundColor: const Color(0xFFEDF2FE),
+      backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.08),
       padding: const EdgeInsets.all(24),
       borderRadius: BorderRadius.circular(24),
       hoverBorderColor: AppTheme.primaryBlue.withValues(alpha: 0.3),
@@ -924,7 +924,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
             SizedBox(
               width: width,
               child: _HoverContainer(
-                backgroundColor: const Color(0xFFF3F6FE),
+                backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.08),
                 padding: const EdgeInsets.all(28),
                 borderRadius: BorderRadius.circular(20),
                 child: Column(
@@ -1011,7 +1011,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
             SizedBox(
               width: width,
               child: _HoverContainer(
-                backgroundColor: const Color(0xFFF3F6FE),
+                backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.08),
                 padding: const EdgeInsets.all(28),
                 borderRadius: BorderRadius.circular(20),
                 child: Column(

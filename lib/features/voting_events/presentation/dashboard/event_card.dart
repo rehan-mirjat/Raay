@@ -156,9 +156,7 @@ class EventCard extends ConsumerWidget {
               label: Text('Cancel Event', style: TextStyle(color: AppTheme.error)),
             ),
             OutlinedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Details view coming in Milestone 6.')));
-              },
+              onPressed: () => context.go('/elections/${event.id}'),
               child: Text('View Details'),
             ),
           ],
@@ -200,9 +198,7 @@ class EventCard extends ConsumerWidget {
           runSpacing: 8,
           children: [
             OutlinedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Details view coming in Milestone 6.')));
-              },
+              onPressed: () => context.go('/elections/${event.id}'),
               child: Text('View Details'),
             ),
           ],

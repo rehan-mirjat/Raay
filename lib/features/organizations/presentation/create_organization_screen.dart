@@ -299,7 +299,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                     Container(
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF0F5FF),
+                        color: AppTheme.primaryBlue.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
