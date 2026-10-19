@@ -14,6 +14,7 @@ class OrganizationMember {
     this.departmentId,
     required this.joinedAt,
     required this.updatedAt,
+    this.isObserver = false,
   });
 
   final String membershipId;
@@ -25,6 +26,12 @@ class OrganizationMember {
   final String? departmentId;
   final DateTime joinedAt;
   final DateTime updatedAt;
+
+  /// Package D2: a narrow read-only capability flag, NOT a role. Grants
+  /// access to live election monitoring aggregates (via getEventMonitoring)
+  /// on top of whatever this member's actual role already allows - see
+  /// setObserverStatus.ts for why this isn't a new entry in [role] instead.
+  final bool isObserver;
 
   // UI Convenience Helpers ONLY (Never used as the source of security/authorization)
   bool get isOwner => role == OrganizationRole.owner;
@@ -44,6 +51,7 @@ class OrganizationMember {
       departmentId: data['departmentId'] as String?,
       joinedAt: (data['joinedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      isObserver: data['isObserver'] as bool? ?? false,
     );
   }
 

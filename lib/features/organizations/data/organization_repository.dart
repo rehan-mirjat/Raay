@@ -527,6 +527,28 @@ class OrganizationRepository {
     }
   }
 
+  /// Grants/revokes Package D2's Observer capability via [setObserverStatus].
+  /// This is NOT a role change - it layers read-only access to live election
+  /// monitoring aggregates on top of the member's existing role.
+  Future<void> setObserverStatus({
+    required String organizationId,
+    required String targetUid,
+    required bool isObserver,
+  }) async {
+    try {
+      final callable = _firebase.functions.httpsCallable('setObserverStatus');
+      await callable.call({
+        'organizationId': organizationId.trim(),
+        'targetUid': targetUid.trim(),
+        'isObserver': isObserver,
+      });
+    } on FirebaseFunctionsException catch (e) {
+      throw Exception(mapFirebaseFunctionsError(e));
+    } catch (_) {
+      throw Exception('Unable to update observer status.');
+    }
+  }
+
   /// Removes a member via [removeMember] Cloud Function.
   Future<void> removeMember({
     required String organizationId,

@@ -46,6 +46,7 @@ export * from "./departments/removeMemberFromDepartment";
 export * from "./membership/getOrganizationMembers";
 export * from "./membership/updateMemberRole";
 export * from "./membership/updateMemberStatus";
+export * from "./membership/setObserverStatus";
 export * from "./membership/removeMember";
 export * from "./membership/leaveOrganization";
 export * from "./voting_events/createVotingEvent";

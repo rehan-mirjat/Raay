@@ -30,8 +30,10 @@ import '../../features/organizations/presentation/organization_dashboard_screen.
 import '../../features/organizations/presentation/create_organization_screen.dart';
 import '../../features/voting_events/presentation/dashboard/admin_event_dashboard_screen.dart';
 import '../../features/voting_events/presentation/builder/event_builder_screen.dart';
+import '../../features/transparency/presentation/transparency_center_screen.dart';
 import '../../features/voting_events/presentation/election_calendar_screen.dart';
 import '../../features/voting_events/presentation/election_command_center_screen.dart';
+import '../../features/voting_events/presentation/observer_dashboard_screen.dart';
 import '../../features/voting_events/presentation/event_detail_screen.dart';
 import '../../features/voting_events/presentation/event_results_screen.dart';
 import '../../features/voting_events/presentation/event_monitoring_screen.dart';
@@ -250,6 +252,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const ReceiptVerificationScreen(),
       ),
       GoRoute(
+        path: '/transparency',
+        builder: (context, state) => const TransparencyCenterScreen(),
+      ),
+      GoRoute(
         path: '/receipt',
         builder: (context, state) {
           final extra = state.extra as Map<String, dynamic>? ?? {};
@@ -288,6 +294,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/calendar',
                 builder: (context, state) => const ElectionCalendarScreen(),
+              ),
+              GoRoute(
+                path: '/observer',
+                builder: (context, state) => const ObserverDashboardScreen(),
               ),
               GoRoute(
                 path: '/elections/:eventId',

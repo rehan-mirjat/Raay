@@ -37,6 +37,7 @@ class AppNavigationShell extends ConsumerWidget {
             memberRole == OrganizationRole.admin);
     final isManager = memberRole == OrganizationRole.owner ||
         memberRole == OrganizationRole.admin;
+    final isObserver = activeOrgContext?.member.isObserver ?? false;
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bgColor = isDark ? AppTheme.darkBackground : AppTheme.backgroundLight;
@@ -65,6 +66,7 @@ class AppNavigationShell extends ConsumerWidget {
                             _DesktopSidebar(
                               collapsed: collapsed,
                               isManager: isManager,
+                              isObserver: isObserver,
                               canCreateEvent: canCreateEvent,
                               onToggleCollapse: () => ref
                                   .read(_sidebarCollapsedProvider.notifier)
@@ -194,11 +196,13 @@ class _DesktopSidebar extends StatelessWidget {
   const _DesktopSidebar({
     required this.collapsed,
     required this.isManager,
+    required this.isObserver,
     required this.canCreateEvent,
     required this.onToggleCollapse,
   });
   final bool collapsed;
   final bool isManager;
+  final bool isObserver;
   final bool canCreateEvent;
   final VoidCallback onToggleCollapse;
 
@@ -227,6 +231,17 @@ class _DesktopSidebar extends StatelessWidget {
           iconActive: Icons.how_to_vote_rounded,
           label: 'Events',
           route: '/admin/events'),
+      _SidebarItem(
+          icon: Icons.calendar_month_outlined,
+          iconActive: Icons.calendar_month_rounded,
+          label: 'Calendar',
+          route: '/calendar'),
+      if (isObserver)
+        _SidebarItem(
+            icon: Icons.visibility_outlined,
+            iconActive: Icons.visibility_rounded,
+            label: 'Observer',
+            route: '/observer'),
       if (isManager) ...[
         _SidebarItem(
             icon: Icons.groups_outlined,
@@ -711,6 +726,17 @@ class _TopHeader extends ConsumerWidget {
                 // Global search button
                 _SearchButton(),
                 const SizedBox(width: 8),
+
+                if (user != null) ...[
+                  Tooltip(
+                    message: 'Election Calendar',
+                    child: IconButton(
+                      icon: const Icon(Icons.calendar_month_outlined),
+                      onPressed: () => context.go('/calendar'),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                ],
 
                 // Theme toggle
                 _ThemeToggleButton(),
@@ -1314,6 +1340,8 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
             context.go('/orgs/invitations');
           } else if (value == 'help') {
             context.go('/help');
+          } else if (value == 'transparency') {
+            context.go('/transparency');
           } else if (value == 'platform_admin') {
             context.go('/platform/admin');
           } else if (value == 'platform_organizations') {
@@ -1356,6 +1384,8 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                 Icons.settings_outlined, 'Account settings'),
             _buildMenuItem(
                 context, isDark, 'help', Icons.help_outline, 'Help & support'),
+            _buildMenuItem(context, isDark, 'transparency',
+                Icons.verified_outlined, 'Trust & Transparency'),
             if (ref.watch(platformAdminProvider).valueOrNull == true) ...[
               const PopupMenuDivider(),
               _buildMenuItem(context, isDark, 'platform_admin',

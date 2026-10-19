@@ -17,16 +17,26 @@ class HelpSupportScreen extends ConsumerStatefulWidget {
   ConsumerState<HelpSupportScreen> createState() => _HelpSupportScreenState();
 }
 
+const _kReportCategories = [
+  'General feedback',
+  'Election issue',
+  'Technical problem',
+  'Account issue',
+];
+
 class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
   final _formKey = GlobalKey<FormState>();
   final _subjectController = TextEditingController();
   final _messageController = TextEditingController();
+  final _receiptRefController = TextEditingController();
+  String _category = _kReportCategories.first;
   bool _isSubmitting = false;
 
   @override
   void dispose() {
     _subjectController.dispose();
     _messageController.dispose();
+    _receiptRefController.dispose();
     super.dispose();
   }
 
@@ -41,8 +51,11 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
         await FirebaseService().firestore.collection('userReports').add({
           'userId': user.uid,
           'userEmail': user.email ?? '',
+          'category': _category,
           'subject': _subjectController.text.trim(),
           'message': _messageController.text.trim(),
+          if (_receiptRefController.text.trim().isNotEmpty)
+            'receiptReference': _receiptRefController.text.trim(),
           'createdAt': FieldValue.serverTimestamp(),
           'status': 'open',
         });
@@ -114,7 +127,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                 _buildFaqItem(
                   question: 'Are my votes anonymous?',
                   answer:
-                      'Yes, Kivora uses cryptographic receipts to ensure that all votes are completely anonymous and tamper-evident.',
+                      'In an anonymous election, your ballot choice is never linked to your account - the system can confirm you voted without recording what you chose. Identifiable elections are clearly labeled before you vote. See the Trust & Transparency Center for full detail on what your receipt does and doesn\'t prove.',
                 ),
                 _buildFaqItem(
                   question: 'How can I change my profile information?',
@@ -174,6 +187,24 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
+                            'CATEGORY',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: KivoraColors.textPrimaryOf(context),
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          SizedBox(height: 6),
+                          DropdownButtonFormField<String>(
+                            initialValue: _category,
+                            items: _kReportCategories
+                                .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                                .toList(),
+                            onChanged: (v) => setState(() => _category = v ?? _category),
+                          ),
+                          SizedBox(height: 20),
+                          Text(
                             'SUBJECT',
                             style: TextStyle(
                               fontSize: 11,
@@ -191,6 +222,31 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                             validator: (value) =>
                                 Validators.required(value, 'Subject'),
                           ),
+                          if (_category == 'Election issue') ...[
+                            SizedBox(height: 20),
+                            Text(
+                              'RECEIPT ID (OPTIONAL)',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: KivoraColors.textPrimaryOf(context),
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                            SizedBox(height: 6),
+                            TextFormField(
+                              controller: _receiptRefController,
+                              decoration: const InputDecoration(
+                                hintText: 'Paste a receipt ID if this relates to a specific vote',
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'Never include your ballot choice here - a receipt confirms your vote was recorded, it does not reveal what you selected.',
+                              style: TextStyle(
+                                  fontSize: 11, color: KivoraColors.textSecondaryOf(context)),
+                            ),
+                          ],
                           SizedBox(height: 20),
                           Text(
                             'MESSAGE',

@@ -20,7 +20,21 @@ export const getEventMonitoring = onCall(async (request) => {
   if (!eventSnap.exists) throw new HttpsError("not-found", "Voting event not found.");
   const event = eventSnap.data()!;
   const organizationId = event.organizationId as string;
-  await requireActiveMembership(db, organizationId, uid, ["owner", "admin"]);
+
+  // Package D2: owners/admins see full detail; an Observer (a narrow
+  // read-only capability flag on an existing membership, not a new role -
+  // see setObserverStatus.ts) gets aggregate-only numbers. isObserver is
+  // checked here rather than added to requireActiveMembership's allowedRoles
+  // because the two callers need DIFFERENT response shapes, not just a
+  // yes/no gate.
+  const { role: callerRole } = await requireActiveMembership(db, organizationId, uid);
+  const memberSnap = await db.collection("organizationMembers").doc(`${organizationId}_${uid}`).get();
+  const isAdminCaller = callerRole === "owner" || callerRole === "admin";
+  const isObserverCaller = memberSnap.data()?.isObserver === true;
+  if (!isAdminCaller && !isObserverCaller) {
+    throw new HttpsError("permission-denied", "Insufficient organization role.");
+  }
+
   const organization = await db.collection("organizations").doc(organizationId).get();
   if (!organization.exists || !["verified", "active"].includes(organization.data()?.status)) {
     throw new HttpsError("failed-precondition", "The organization is not currently authorized to manage voting events.");
@@ -54,10 +68,19 @@ export const getEventMonitoring = onCall(async (request) => {
   const participationCount = votedUserIds.size;
   const turnoutPercent = eligibleCount === 0 ? 0 : Math.round((participationCount / eligibleCount) * 10000) / 100;
 
-  const departmentBreakdown = buildDepartmentBreakdown(eligibleMembers, votedUserIds, departmentNames);
-
+  // Per-department counts and vote-timing history can re-identify who voted
+  // in a small department or pinpoint a single voter's timestamp - an
+  // accepted tradeoff for the org's own owners/admins, but exactly what
+  // Package D's spec says an Observer must never see ("do not expose...
+  // small-group turnout breakdowns that could reveal sensitive participation
+  // patterns"). Only computed for admin callers.
+  const departmentBreakdown = isAdminCaller
+    ? buildDepartmentBreakdown(eligibleMembers, votedUserIds, departmentNames)
+    : [];
   const openedAtMs = (event.startAt instanceof Timestamp ? event.startAt.toMillis() : null) ?? (votedAtMs[0] ?? Date.now());
-  const participationHistory = buildParticipationHistory(votedAtMs, openedAtMs, Date.now(), PARTICIPATION_HISTORY_POINTS);
+  const participationHistory = isAdminCaller
+    ? buildParticipationHistory(votedAtMs, openedAtMs, Date.now(), PARTICIPATION_HISTORY_POINTS)
+    : [];
 
   return {
     eventId,

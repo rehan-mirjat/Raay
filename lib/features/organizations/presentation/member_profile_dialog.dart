@@ -87,6 +87,7 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
     final roleStr = widget.memberData['role'] as String? ?? 'member';
     final statusStr = widget.memberData['status'] as String? ?? 'active';
     final deptName = widget.memberData['departmentName'] as String? ?? 'None';
+    final isTargetObserver = widget.memberData['isObserver'] as bool? ?? false;
 
     final isTargetOwner = roleStr.toLowerCase() == 'owner';
     final isTargetAdmin = roleStr.toLowerCase() == 'admin';
@@ -101,6 +102,7 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
         (isCallerOwner && !isTargetOwner) || (isCallerAdmin && isTargetMember);
     final canRemove =
         (isCallerOwner && !isTargetOwner) || (isCallerAdmin && isTargetMember);
+    final canManageObserver = (isCallerOwner || isCallerAdmin) && !isTargetOwner;
 
     final repo = ref.read(organizationRepositoryProvider);
 
@@ -143,6 +145,7 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
           _infoRow('Role', roleStr.toUpperCase()),
           _infoRow('Status', statusStr.toUpperCase()),
           _infoRow('Department', deptName),
+          _infoRow('Observer', isTargetObserver ? 'Yes' : 'No'),
           if (_isLoading) ...[
             const LoadingView(),
           ],
@@ -195,6 +198,29 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
               ),
               child: Text('Reactivate',
                   style: TextStyle(color: AppTheme.success)),
+            ),
+          if (canManageObserver && !isTargetObserver)
+            TextButton(
+              onPressed: () => _performAction(
+                () => repo.setObserverStatus(
+                    organizationId: widget.organizationId,
+                    targetUid: targetUid,
+                    isObserver: true),
+                'Granted observer access.',
+              ),
+              child: Text('Grant Observer Access'),
+            ),
+          if (canManageObserver && isTargetObserver)
+            TextButton(
+              onPressed: () => _performAction(
+                () => repo.setObserverStatus(
+                    organizationId: widget.organizationId,
+                    targetUid: targetUid,
+                    isObserver: false),
+                'Revoked observer access.',
+              ),
+              child: Text('Revoke Observer Access',
+                  style: TextStyle(color: Colors.orange)),
             ),
           if (canRemove)
             TextButton(

@@ -90,6 +90,7 @@ export const getOrganizationMembers = onCall(async (request) => {
         departmentId: deptId || null,
         departmentName: departmentName,
         joinedAt: memberData.joinedAt ? memberData.joinedAt.toDate().toISOString() : null,
+        isObserver: memberData.isObserver === true,
       });
     }
   }
