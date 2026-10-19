@@ -14,7 +14,12 @@ import '../../../core/widgets/ui_kit/kivora_metric_card.dart';
 import '../../../core/widgets/ui_kit/kivora_election_card.dart';
 import '../domain/organization_enums.dart';
 import 'providers/organization_providers.dart';
+import 'membership_directory_screen.dart' show organizationMembersDirectoryProvider;
+import 'pending_invitations_widget.dart' show pendingInvitationsProvider;
+import 'widgets/members_growth_chart.dart';
+import '../../departments/presentation/providers/department_providers.dart';
 import '../../voting_events/data/voting_event_repository.dart';
+import '../../voting_events/domain/voting_event.dart';
 
 class OrganizationDashboardScreen extends ConsumerWidget {
   const OrganizationDashboardScreen({super.key});
@@ -39,6 +44,16 @@ class OrganizationDashboardScreen extends ConsumerWidget {
         
         final eventsArgs = (orgId: org.id, includeDrafts: isAdmin);
         final eventsAsync = ref.watch(organizationVotingEventsProvider(eventsArgs));
+        final membersAsync = ref.watch(organizationMembersDirectoryProvider(org.id));
+        final departmentsAsync = ref.watch(activeOrganizationDepartmentsProvider);
+        final pendingInvitesAsync = ref.watch(pendingInvitationsProvider(org.id));
+
+        final totalMembers = membersAsync.valueOrNull?.length;
+        final totalDepartments = departmentsAsync.valueOrNull?.length;
+        final activeEventCount = eventsAsync.valueOrNull
+            ?.where((e) => e.status == VotingEventStatus.active)
+            .length;
+        final pendingInviteCount = pendingInvitesAsync.valueOrNull?.length;
 
         return RefreshIndicator(
           onRefresh: () async {
@@ -138,37 +153,41 @@ class OrganizationDashboardScreen extends ConsumerWidget {
                     if (isDesktop)
                       Row(
                         children: [
-                          const Expanded(child: KivoraMetricCard(title: 'Total Members', value: '128', icon: KivoraIcons.users, subtitle: '+6 this week')),
+                          Expanded(child: KivoraMetricCard(title: 'Total Members', value: totalMembers?.toString() ?? '—', icon: KivoraIcons.users)),
                           const SizedBox(width: 16),
-                          const Expanded(child: KivoraMetricCard(title: 'Departments', value: '4', icon: KivoraIcons.network, iconColor: AppTheme.accentGold)),
+                          Expanded(child: KivoraMetricCard(title: 'Departments', value: totalDepartments?.toString() ?? '—', icon: KivoraIcons.network, iconColor: AppTheme.accentGold)),
                           const SizedBox(width: 16),
-                          const Expanded(child: KivoraMetricCard(title: 'Active Events', value: '2', icon: KivoraIcons.vote, iconColor: AppTheme.accentTeal)),
+                          Expanded(child: KivoraMetricCard(title: 'Active Events', value: activeEventCount?.toString() ?? '—', icon: KivoraIcons.vote, iconColor: AppTheme.accentTeal)),
                           const SizedBox(width: 16),
-                          const Expanded(child: KivoraMetricCard(title: 'Pending Invites', value: '9', icon: KivoraIcons.mail, iconColor: AppTheme.warning)),
+                          Expanded(child: KivoraMetricCard(title: 'Pending Invites', value: pendingInviteCount?.toString() ?? '—', icon: KivoraIcons.mail, iconColor: AppTheme.warning)),
                         ],
                       )
                     else
                       Column(
-                        children: const [
+                        children: [
                           Row(
                             children: [
-                              Expanded(child: KivoraMetricCard(title: 'Total Members', value: '128', icon: KivoraIcons.users)),
-                              SizedBox(width: 16),
-                              Expanded(child: KivoraMetricCard(title: 'Departments', value: '4', icon: KivoraIcons.network, iconColor: AppTheme.accentGold)),
+                              Expanded(child: KivoraMetricCard(title: 'Total Members', value: totalMembers?.toString() ?? '—', icon: KivoraIcons.users)),
+                              const SizedBox(width: 16),
+                              Expanded(child: KivoraMetricCard(title: 'Departments', value: totalDepartments?.toString() ?? '—', icon: KivoraIcons.network, iconColor: AppTheme.accentGold)),
                             ],
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           Row(
                             children: [
-                              Expanded(child: KivoraMetricCard(title: 'Active Events', value: '2', icon: KivoraIcons.vote, iconColor: AppTheme.accentTeal)),
-                              SizedBox(width: 16),
-                              Expanded(child: KivoraMetricCard(title: 'Pending Invites', value: '9', icon: KivoraIcons.mail, iconColor: AppTheme.warning)),
+                              Expanded(child: KivoraMetricCard(title: 'Active Events', value: activeEventCount?.toString() ?? '—', icon: KivoraIcons.vote, iconColor: AppTheme.accentTeal)),
+                              const SizedBox(width: 16),
+                              Expanded(child: KivoraMetricCard(title: 'Pending Invites', value: pendingInviteCount?.toString() ?? '—', icon: KivoraIcons.mail, iconColor: AppTheme.warning)),
                             ],
                           ),
                         ],
                       ),
                     const SizedBox(height: 32),
                     
+                    if (isAdmin) ...[
+                      MembersGrowthChart(organizationId: org.id),
+                      const SizedBox(height: 24),
+                    ],
                     isDesktop ? Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

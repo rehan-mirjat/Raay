@@ -15,6 +15,7 @@ import '../../../core/widgets/loading_view.dart';
 import '../../services/auth_service.dart';
 import '../../features/organizations/domain/organization_enums.dart';
 import '../../features/organizations/presentation/providers/organization_providers.dart';
+import '../../features/organizations/presentation/widgets/members_growth_chart.dart';
 import '../../features/voting_events/data/voting_event_repository.dart';
 import '../../features/voting_events/domain/voting_event.dart';
 
@@ -67,7 +68,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   children: [
                     _buildWelcomeHeader(context, user?.displayName ?? 'User'),
                     const SizedBox(height: 32),
-                    _buildMetricsRow(context, orgContext.organization.name),
+                    _buildMetricsRow(context, orgContext.organization.name, eventsAsync),
                     const SizedBox(height: 32),
                     ResponsiveLayout.isWide(context)
                         ? Row(
@@ -80,7 +81,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               const SizedBox(width: 24),
                               Expanded(
                                 flex: 1,
-                                child: _buildRecentActivityFeed(context),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    if (isAdmin) ...[
+                                      MembersGrowthChart(
+                                          organizationId: orgContext.organization.id),
+                                      const SizedBox(height: 24),
+                                    ],
+                                    _buildRecentActivityFeed(context),
+                                  ],
+                                ),
                               ),
                             ],
                           )
@@ -88,6 +99,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               _buildEventsFeed(context, eventsAsync, isAdmin),
+                              if (isAdmin) ...[
+                                const SizedBox(height: 24),
+                                MembersGrowthChart(
+                                    organizationId: orgContext.organization.id),
+                              ],
                               const SizedBox(height: 24),
                               _buildRecentActivityFeed(context),
                             ],
@@ -128,9 +144,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildMetricsRow(BuildContext context, String orgName) {
+  Widget _buildMetricsRow(
+    BuildContext context,
+    String orgName,
+    AsyncValue<List<VotingEvent>> eventsAsync,
+  ) {
     final isDesktop = ResponsiveLayout.isWide(context);
-    
+    final liveElections = eventsAsync.valueOrNull
+            ?.where((e) => e.status == VotingEventStatus.active)
+            .length ??
+        0;
+    final pendingInvites = ref.watch(memberInvitationsProvider).valueOrNull?.length ?? 0;
+
     final metrics = [
       KivoraMetricCard(
         title: 'Active Context',
@@ -138,16 +163,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         icon: KivoraIcons.building,
         subtitle: 'Workspace',
       ),
-      const KivoraMetricCard(
+      KivoraMetricCard(
         title: 'Live Elections',
-        value: '3',
+        value: '$liveElections',
         icon: KivoraIcons.vote,
         subtitle: 'Requires action',
         iconColor: AppTheme.accentTeal,
       ),
-      const KivoraMetricCard(
+      KivoraMetricCard(
         title: 'Pending Invites',
-        value: '2',
+        value: '$pendingInvites',
         icon: KivoraIcons.mail,
         subtitle: 'Review',
         iconColor: AppTheme.warning,

@@ -10,6 +10,7 @@ import '../../../core/utils/error_utils.dart';
 import '../../../services/firebase_service.dart';
 import '../domain/organization.dart';
 import '../domain/organization_member.dart';
+import '../domain/member_growth_point.dart';
 
 class OrganizationRepository {
   OrganizationRepository({FirebaseService? firebase, Uuid? uuid})
@@ -605,6 +606,30 @@ class OrganizationRepository {
       _orgCache.remove(organizationId);
       return null;
     });
+  }
+
+  /// Streams the last [days] daily member-count snapshots written by the
+  /// snapshotMemberGrowth Cloud Function, oldest first, for the "Members
+  /// Growth" chart. Returns whatever history exists - a freshly created
+  /// organization will have few or no points until the scheduler has run.
+  Stream<List<MemberGrowthPoint>> watchMemberGrowth(
+    String organizationId, {
+    int days = 30,
+  }) {
+    if (organizationId.isEmpty) return Stream.value(const []);
+
+    return _firebase.firestore
+        .collection(AppConstants.organizationsCollection)
+        .doc(organizationId)
+        .collection('memberGrowthSnapshots')
+        .orderBy('date', descending: true)
+        .limit(days)
+        .snapshots()
+        .map((snap) => snap.docs
+            .map(MemberGrowthPoint.fromFirestore)
+            .toList()
+            .reversed
+            .toList());
   }
 
   /// Fetches a single organization document once with high-performance cache.

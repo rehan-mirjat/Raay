@@ -7,6 +7,7 @@ import '../../data/organization_repository.dart';
 import '../../domain/active_organization_context.dart';
 import '../../domain/organization.dart';
 import '../../domain/organization_member.dart';
+import '../../domain/member_growth_point.dart';
 
 /// Streams the list of active organization memberships for the current user.
 final userMembershipsProvider = StreamProvider<List<OrganizationMember>>((ref) {
@@ -211,4 +212,10 @@ final activeOrganizationContextProvider = StreamProvider<ActiveOrgState>((ref) a
     selectionState: ActiveOrgSelectionState.needsSelection,
     availableMemberships: memberships,
   );
+});
+
+/// Last 30 days of member-count snapshots for the "Members Growth" chart.
+final memberGrowthProvider =
+    StreamProvider.family<List<MemberGrowthPoint>, String>((ref, orgId) {
+  return ref.watch(organizationRepositoryProvider).watchMemberGrowth(orgId);
 });

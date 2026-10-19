@@ -137,6 +137,13 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // Daily member-count snapshots used by the "Members Growth" chart.
+    // Written only by the snapshotMemberGrowth scheduled function.
+    match /organizations/{organizationId}/memberGrowthSnapshots/{date} {
+      allow read: if isPlatformAdmin() || isActiveMember(organizationId);
+      allow create, update, delete: if false;
+    }
+
     // Minimal public projection for join flow / verification-status screen.
     // Written only by functions; contains no sensitive fields.
     match /organizationPublic/{organizationId} {
