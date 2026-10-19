@@ -26,6 +26,7 @@ import '../data/voting_event_repository.dart';
 import '../domain/voting_event.dart';
 import 'dashboard/event_card.dart';
 import 'providers/command_center_providers.dart';
+import 'utils/events_csv_export.dart';
 
 /// Package B1: an integrated operational view of elections, distinct from
 /// OrganizationDashboardScreen (a general org home) - this is scoped
@@ -118,6 +119,7 @@ class _ElectionCommandCenterScreenState
                           membersAsync.valueOrNull?.length,
                           pendingInvitesAsync.valueOrNull?.length,
                           auditAsync.valueOrNull,
+                          orgContext.organization.name,
                         ),
                       ),
                     ],
@@ -212,6 +214,7 @@ class _ElectionCommandCenterScreenState
     int? totalMembers,
     int? pendingInvites,
     dynamic auditSnapshot,
+    String organizationName,
   ) {
     final isDesktop = ResponsiveLayout.isWide(context);
 
@@ -338,6 +341,16 @@ class _ElectionCommandCenterScreenState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton.icon(
+            onPressed: filteredByDate.isEmpty
+                ? null
+                : () => exportEventsReportCsv(filteredByDate, organizationName),
+            icon: const Icon(Icons.file_download_outlined, size: 18),
+            label: const Text('Export report (CSV)'),
+          ),
+        ),
         statsRow,
         const SizedBox(height: 24),
         isDesktop
