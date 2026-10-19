@@ -8,8 +8,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/theme/accessibility_providers.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/locale_provider.dart';
 import 'core/theme/theme_provider.dart';
+import 'l10n/app_localizations.dart';
 import 'core/router/app_router.dart';
 import 'core/deep_link/deep_link_handler.dart';
 import 'core/presentation/session_lock_screen.dart';
@@ -168,23 +171,47 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
     final isLocked = ref.watch(sessionLockProvider);
     final hasSignedInUser = ref.watch(authStateChangesProvider).valueOrNull != null;
     final themeMode = ref.watch(themeModeProvider);
+    final locale = ref.watch(localeProvider);
+    final reducedMotion = ref.watch(reducedMotionProvider);
+    final highContrast = ref.watch(highContrastProvider);
+
+    var lightTheme = AppTheme.withOrganizationBranding(AppTheme.lightTheme, brandColors);
+    var darkTheme = AppTheme.withOrganizationBranding(AppTheme.darkTheme, brandColors);
+    if (highContrast) {
+      lightTheme = AppTheme.withHighContrast(lightTheme);
+      darkTheme = AppTheme.withHighContrast(darkTheme);
+    }
 
     return MaterialApp.router(
       title: 'Kivora',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.withOrganizationBranding(AppTheme.lightTheme, brandColors),
-      darkTheme: AppTheme.withOrganizationBranding(AppTheme.darkTheme, brandColors),
+      theme: lightTheme,
+      darkTheme: darkTheme,
       themeMode: themeMode,
+      locale: locale,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: goRouter,
       builder: (context, child) {
         // The app was backgrounded/closed past the idle timeout - block all
         // content behind a re-authentication gate until it's cleared. Only
         // applies when someone is actually signed in; an already-signed-out
         // user just sees the normal /login redirect.
-        if (isLocked && hasSignedInUser) {
-          return const SessionLockScreen();
+        Widget content = isLocked && hasSignedInUser
+            ? const SessionLockScreen()
+            : (child ?? const SizedBox.shrink());
+
+        // Package C3: "Reduce motion" is a user preference layered on top of
+        // the OS-level signal MediaQuery already carries, since that signal
+        // isn't exposed on every platform this app targets.
+        if (reducedMotion) {
+          final mq = MediaQuery.of(context);
+          content = MediaQuery(
+            data: mq.copyWith(disableAnimations: true),
+            child: content,
+          );
         }
-        return child ?? const SizedBox.shrink();
+        return content;
       },
     );
   }

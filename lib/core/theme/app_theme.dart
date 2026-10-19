@@ -115,6 +115,33 @@ class AppTheme {
     );
   }
 
+  /// Package C3's "High contrast" accessibility setting. Boosts border/
+  /// divider contrast and text emphasis beyond the normal theme - applied
+  /// on top of (after) withOrganizationBranding so it always wins.
+  static ThemeData withHighContrast(ThemeData base) {
+    final isDark = base.brightness == Brightness.dark;
+    final outline = isDark ? Colors.white : Colors.black;
+    final scheme = base.colorScheme.copyWith(
+      outline: outline.withValues(alpha: 0.87),
+      outlineVariant: outline.withValues(alpha: 0.6),
+    );
+    return base.copyWith(
+      colorScheme: scheme,
+      dividerColor: outline.withValues(alpha: 0.4),
+      dividerTheme: base.dividerTheme.copyWith(color: outline.withValues(alpha: 0.4)),
+      textTheme: base.textTheme.apply(
+        bodyColor: isDark ? Colors.white : Colors.black,
+        displayColor: isDark ? Colors.white : Colors.black,
+      ),
+      inputDecorationTheme: base.inputDecorationTheme.copyWith(
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusInput),
+          borderSide: BorderSide(color: outline.withValues(alpha: 0.6), width: 1.4),
+        ),
+      ),
+    );
+  }
+
   static Color _parseBrandColor(String? value, Color fallback) {
     if (value == null || !RegExp(r'^#[0-9a-fA-F]{6}$').hasMatch(value)) {
       return fallback;

@@ -7,6 +7,8 @@ import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/theme/kivora_icons.dart';
+import '../../../core/theme/accessibility_providers.dart';
+import '../../../core/theme/locale_provider.dart';
 import '../../../core/theme/theme_provider.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/error_view.dart';
@@ -778,6 +780,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       );
     }
 
+    final currentLocale = ref.watch(localeProvider);
+    final reducedMotion = ref.watch(reducedMotionProvider);
+    final highContrast = ref.watch(highContrastProvider);
+
+    const languages = [
+      (code: null, label: 'System default'),
+      (code: 'en', label: 'English'),
+      (code: 'ur', label: 'اردو (Urdu)'),
+      (code: 'sd', label: 'سنڌي (Sindhi)'),
+      (code: 'ar', label: 'العربية (Arabic)'),
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -804,6 +818,77 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ThemeMode.system, Icons.brightness_auto_outlined, 'System'),
                 ],
               ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        KivoraCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Language',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: kc.textPrimary)),
+              const SizedBox(height: 6),
+              Text(
+                  'Urdu, Sindhi, and Arabic translations are machine-assisted and have not yet been reviewed by a native speaker - please report anything that reads incorrectly.',
+                  style: TextStyle(fontSize: 12, color: kc.textSecondary, height: 1.4)),
+              const SizedBox(height: 16),
+              ...languages.map((lang) {
+                final isSelected = currentLocale?.languageCode == lang.code;
+                return RadioListTile<String?>(
+                  value: lang.code,
+                  groupValue: currentLocale?.languageCode,
+                  onChanged: (_) => ref
+                      .read(localeProvider.notifier)
+                      .setLocale(lang.code == null ? null : Locale(lang.code!)),
+                  title: Text(lang.label,
+                      style: TextStyle(
+                          color: kc.textPrimary,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+                  activeColor: AppTheme.primaryBlue,
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
+                );
+              }),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        KivoraCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Accessibility',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: kc.textPrimary)),
+              const SizedBox(height: 16),
+              SwitchListTile(
+                value: reducedMotion,
+                onChanged: (v) => ref.read(reducedMotionProvider.notifier).setEnabled(v),
+                title: Text('Reduce motion', style: TextStyle(color: kc.textPrimary)),
+                subtitle: Text('Minimize animations throughout the app.',
+                    style: TextStyle(fontSize: 12, color: kc.textSecondary)),
+                activeThumbColor: AppTheme.primaryBlue,
+                contentPadding: EdgeInsets.zero,
+              ),
+              SwitchListTile(
+                value: highContrast,
+                onChanged: (v) => ref.read(highContrastProvider.notifier).setEnabled(v),
+                title: Text('High contrast', style: TextStyle(color: kc.textPrimary)),
+                subtitle: Text('Increase text and border contrast for better visibility.',
+                    style: TextStyle(fontSize: 12, color: kc.textSecondary)),
+                activeThumbColor: AppTheme.primaryBlue,
+                contentPadding: EdgeInsets.zero,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                  'Text size follows your device\'s own accessibility settings. Candidate/option selections on the ballot screen are already labeled for screen readers.',
+                  style: TextStyle(fontSize: 12, color: kc.textSecondary, height: 1.4)),
             ],
           ),
         ),

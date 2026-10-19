@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/loading_view.dart';
@@ -196,6 +197,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
   Widget _buildAlreadyVotedView(
       BuildContext context, VotingEvent event, String userId) {
+    final l10n = AppLocalizations.of(context);
     return SingleChildScrollView(
       padding: ResponsiveLayout.pagePadding(context),
       child: Center(
@@ -207,7 +209,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                   size: 72, color: AppTheme.success),
               SizedBox(height: 20),
               Text(
-                'You Have Already Voted',
+                l10n.voteAlreadyVotedTitle,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: KivoraColors.textPrimaryOf(context),
@@ -216,7 +218,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
               ),
               SizedBox(height: 12),
               Text(
-                'Your ballot for "${event.title}" has already been cast and accepted into the anonymous tally.',
+                l10n.voteAlreadyVotedMessage(event.title),
                 style:
                     TextStyle(color: KivoraColors.textSecondaryOf(context), height: 1.4),
                 textAlign: TextAlign.center,
@@ -247,7 +249,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                   }
                 },
                 icon: Icon(Icons.receipt_long),
-                label: Text('View Your Confirmation Receipt'),
+                label: Text(l10n.voteViewReceipt),
               ),
               if (event.status == VotingEventStatus.closed ||
                   event.status == VotingEventStatus.archived) ...[
@@ -255,13 +257,13 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                 OutlinedButton.icon(
                   onPressed: () => context.go('/elections/${event.id}/results'),
                   icon: Icon(Icons.bar_chart_rounded),
-                  label: Text('View Results'),
+                  label: Text(l10n.voteViewResults),
                 ),
               ],
               SizedBox(height: 12),
               OutlinedButton(
                 onPressed: () => context.go('/home'),
-                child: Text('Return to Home Feed'),
+                child: Text(l10n.receiptReturnHome),
               ),
             ],
           ),
@@ -275,6 +277,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
     // If the local clock is fast, we shouldn't block the user. The backend
     // `FieldValue.serverTimestamp()` transaction will definitively accept or reject it.
     final isWindowOpen = event.status == VotingEventStatus.active;
+    final l10n = AppLocalizations.of(context);
 
     return SingleChildScrollView(
       padding: ResponsiveLayout.pagePadding(context),
@@ -303,8 +306,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                       Expanded(
                         child: Text(
                           event.status == VotingEventStatus.scheduled
-                              ? 'Voting has not opened yet for this election. You can review the ballot below, but submission is disabled until it becomes active.'
-                              : 'Voting is no longer open for this election.',
+                              ? l10n.voteNotOpenYet
+                              : l10n.voteClosed,
                           style: TextStyle(
                               color: KivoraColors.textPrimaryOf(context),
                               fontWeight: FontWeight.w600,
@@ -433,7 +436,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
               if (_step == _BallotStep.select) ...[
                 Text(
-                  'MAKE YOUR SELECTION',
+                  l10n.voteSelectionPrompt.toUpperCase(),
                   style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
@@ -455,7 +458,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                 ElevatedButton.icon(
                   onPressed: !isWindowOpen ? null : _goToReview,
                   icon: Icon(Icons.arrow_forward_rounded),
-                  label: Text('Review Ballot'),
+                  label: Text(l10n.voteReviewBallot),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     backgroundColor: AppTheme.primaryBlue,
@@ -500,6 +503,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
       );
     }
 
+    final l10n = AppLocalizations.of(context);
     final isReview = _step == _BallotStep.review;
     return Semantics(
       label: isReview
@@ -507,11 +511,11 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
           : 'Step 1 of 2: Select your choice',
       child: Row(
         children: [
-          step(1, 'Select', !isReview, isReview),
+          step(1, l10n.voteStepSelect, !isReview, isReview),
           SizedBox(width: 12),
           Container(width: 24, height: 1, color: kc.border),
           SizedBox(width: 12),
-          step(2, 'Review & Submit', isReview, false),
+          step(2, l10n.voteStepReview, isReview, false),
         ],
       ),
     );
@@ -520,13 +524,14 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
   Widget _buildReviewStep(
       BuildContext context, VotingEvent event, bool isWindowOpen) {
     final kc = KivoraColors.of(context);
+    final l10n = AppLocalizations.of(context);
     final isIdentifiable = event.privacyMode == PrivacyMode.identifiable;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'REVIEW YOUR BALLOT',
+          l10n.voteReviewYourBallot.toUpperCase(),
           style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.bold,
@@ -549,10 +554,10 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Your selection',
+                    Text(l10n.voteYourSelection,
                         style: TextStyle(fontSize: 12, color: kc.textSecondary)),
                     Text(
-                      _selectedChoiceName ?? 'Selected choice',
+                      _selectedChoiceName ?? l10n.voteYourSelection,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: AppTheme.primaryBlue,
@@ -585,8 +590,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
               Expanded(
                 child: Text(
                   isIdentifiable
-                      ? 'This is an identifiable ballot. Your selection will be recorded against your account and cannot be changed after submission.'
-                      : 'This ballot is anonymous. Your selection is never linked to your identity in the tally, and cannot be changed after submission.',
+                      ? l10n.voteIdentifiableExplanation
+                      : l10n.voteAnonymousExplanation,
                   style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -605,7 +610,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                     ? null
                     : () => setState(() => _step = _BallotStep.select),
                 icon: Icon(Icons.arrow_back_rounded, size: 18),
-                label: Text('Back'),
+                label: Text(l10n.actionBack),
               ),
             ),
             SizedBox(width: 12),
@@ -624,8 +629,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                       )
                     : Icon(Icons.send_rounded),
                 label: Text(_isSubmitting
-                    ? 'Submitting Ballot...'
-                    : 'Confirm & Cast Ballot'),
+                    ? l10n.voteSubmitting
+                    : l10n.voteConfirmAndCast),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: AppTheme.primaryBlue,

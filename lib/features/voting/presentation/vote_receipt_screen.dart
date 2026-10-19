@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
+import '../../../l10n/app_localizations.dart';
 import '../domain/vote_receipt.dart';
 
 class VoteReceiptScreen extends ConsumerWidget {
@@ -21,10 +22,11 @@ class VoteReceiptScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Vote Confirmation Receipt'),
+        title: Text(l10n.receiptTitle),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -123,7 +125,7 @@ class VoteReceiptScreen extends ConsumerWidget {
                         // Receipt ID
                         _buildDetailTile(
                           context,
-                          label: 'Receipt ID',
+                          label: l10n.receiptId,
                           value: receipt.receiptId,
                           copyable: true,
                         ),
@@ -155,7 +157,7 @@ class VoteReceiptScreen extends ConsumerWidget {
                 ElevatedButton.icon(
                   onPressed: () => context.go('/home'),
                   icon: Icon(Icons.home),
-                  label: Text('Return to Home Feed'),
+                  label: Text(l10n.receiptReturnHome),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
