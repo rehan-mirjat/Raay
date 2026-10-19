@@ -240,6 +240,7 @@ class _DesktopSidebar extends StatelessWidget {
       duration: const Duration(milliseconds: 240),
       curve: Curves.easeOutCubic,
       width: collapsed ? _collapsedWidth : _expandedWidth,
+      clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         color: sidebarBg,
         border: Border(right: BorderSide(color: borderColor, width: 1)),

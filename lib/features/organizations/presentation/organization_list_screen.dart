@@ -324,7 +324,7 @@ class OrganizationListScreen extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFF), // Subtle blue-tinted container
+        color: KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.2), width: 1.5),
       ),
