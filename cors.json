@@ -1,7 +1,11 @@
 [
   {
-    "origin": ["*"],
+    "origin": [
+      "https://vote-d1ae4.web.app",
+      "https://vote-d1ae4.firebaseapp.com"
+    ],
     "method": ["GET"],
+    "responseHeader": ["Content-Type"],
     "maxAgeSeconds": 3600
   }
 ]
