@@ -18,6 +18,9 @@ class AppLocalizationsUr extends AppLocalizations {
   String get navOrganizations => 'تنظیمیں';
 
   @override
+  String get navOrgsShort => 'تنظیمیں';
+
+  @override
   String get navEvents => 'انتخابات';
 
   @override

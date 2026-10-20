@@ -18,6 +18,9 @@ class AppLocalizationsSd extends AppLocalizations {
   String get navOrganizations => 'تنظيمون';
 
   @override
+  String get navOrgsShort => 'تنظيمون';
+
+  @override
   String get navEvents => 'اليڪشن';
 
   @override

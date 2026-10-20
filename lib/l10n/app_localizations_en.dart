@@ -18,6 +18,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navOrganizations => 'Organizations';
 
   @override
+  String get navOrgsShort => 'Orgs';
+
+  @override
   String get navEvents => 'Events';
 
   @override

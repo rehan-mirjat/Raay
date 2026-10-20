@@ -120,6 +120,12 @@ abstract class AppLocalizations {
   /// **'Organizations'**
   String get navOrganizations;
 
+  /// No description provided for @navOrgsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Orgs'**
+  String get navOrgsShort;
+
   /// No description provided for @navEvents.
   ///
   /// In en, this message translates to:

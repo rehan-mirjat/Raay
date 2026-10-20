@@ -488,7 +488,7 @@ class _FloatingMobileNavBar extends StatelessWidget {
                       1,
                       Icons.business_outlined,
                       Icons.business_rounded,
-                      l10n.navOrganizations,
+                      l10n.navOrgsShort,
                       currentIndex),
                   if (showCreateEventButton) const SizedBox(width: 52),
                   _navItem(context, 3, Icons.how_to_vote_outlined,
