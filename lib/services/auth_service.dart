@@ -357,6 +357,8 @@ class AuthService {
       }
 
       await user.getIdToken(true);
+    } on FirebaseAuthMultiFactorException catch (e) {
+      throw MfaRequiredException(e.resolver);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
         throw Exception('Incorrect password.');
@@ -389,6 +391,15 @@ class AuthService {
     await _googleSignOutSafe();
     await _firebase.auth.signOut();
   }
+}
+
+/// Thrown by [AuthService.reauthenticate] when the account has a second factor
+/// enrolled; callers resolve it with showTotpChallengeDialog.
+class MfaRequiredException implements Exception {
+  final MultiFactorResolver resolver;
+  const MfaRequiredException(this.resolver);
+  @override
+  String toString() => 'Two-factor verification is required to continue.';
 }
 
 final authServiceProvider = Provider<AuthService>((ref) => AuthService());

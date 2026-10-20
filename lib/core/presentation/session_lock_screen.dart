@@ -6,6 +6,7 @@ import '../theme/app_theme.dart';
 import '../../core/theme/kivora_colors.dart';
 import '../widgets/inline_error_banner.dart';
 import '../../services/auth_service.dart';
+import '../widgets/totp_challenge_dialog.dart';
 
 /// Full-screen gate shown when the app was backgrounded or closed for
 /// longer than [sessionIdleTimeout]. Blocks all app content until the
@@ -32,6 +33,10 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
   }
 
   Future<void> _verify() async {
+    if (!_isGoogleUser && _passwordController.text.isEmpty) {
+      setState(() => _error = 'Enter your password to continue.');
+      return;
+    }
     setState(() {
       _isVerifying = true;
       _error = null;
@@ -41,6 +46,16 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
       await authService.reauthenticate(password: _passwordController.text);
       if (mounted) {
         ref.read(sessionLockProvider.notifier).unlock();
+      }
+    } on MfaRequiredException catch (e) {
+      final credential = mounted
+          ? await showTotpChallengeDialog(context, e.resolver)
+          : null;
+      if (!mounted) return;
+      if (credential != null) {
+        ref.read(sessionLockProvider.notifier).unlock();
+      } else {
+        setState(() => _isVerifying = false);
       }
     } catch (e) {
       if (mounted) {
@@ -63,11 +78,15 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
     }
   }
 
+  bool get _isGoogleUser =>
+      ref.read(authServiceProvider).currentUser?.providerData
+          .any((p) => p.providerId == 'google.com') ??
+      false;
+
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(authServiceProvider).currentUser;
-    final isGoogleUser =
-        user?.providerData.any((p) => p.providerId == 'google.com') ?? false;
+    final isGoogleUser = _isGoogleUser;
     final busy = _isVerifying || _isSigningOut;
 
     return Scaffold(
