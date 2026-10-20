@@ -160,7 +160,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       final isPublicLanding = location == '/';
       final isVerifyRoute = location == '/verify-email';
       final isSplashRoute = location == '/splash';
-      final isAdminRoute = location.startsWith('/admin');
+      final isAdminRoute = location.startsWith('/admin') && location != '/admin/events';
       final isInviteRoute = location == '/invite';
 
       if (isInviteRoute) {

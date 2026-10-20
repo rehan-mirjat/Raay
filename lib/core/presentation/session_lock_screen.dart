@@ -90,10 +90,10 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                       border: Border.all(
                           color: AppTheme.primaryBlue.withValues(alpha: 0.25)),
                     ),
-                    child: Icon(Icons.lock_outline_rounded,
+                    child: const Icon(Icons.lock_outline_rounded,
                         size: 32, color: AppTheme.primaryBlue),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   Text(
                     'Welcome back',
                     style: TextStyle(
@@ -102,7 +102,7 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                         color: KivoraColors.textPrimaryOf(context)),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
                     'For your security, please verify it\'s you to continue'
                     '${user?.email != null ? ' as ${user!.email}' : ''}.',
@@ -110,7 +110,7 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                         fontSize: 14, color: KivoraColors.textSecondaryOf(context), height: 1.4),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 28),
+                  const SizedBox(height: 28),
                   if (!isGoogleUser) ...[
                     TextField(
                       controller: _passwordController,
@@ -120,11 +120,11 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                       decoration: const InputDecoration(labelText: 'Password'),
                       onSubmitted: (_) => _verify(),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                   ],
                   if (_error != null) ...[
                     InlineErrorBanner(message: _error!),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                   ],
                   SizedBox(
                     width: double.infinity,
@@ -136,7 +136,7 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: _isVerifying
-                          ? SizedBox(
+                          ? const SizedBox(
                               height: 18,
                               width: 18,
                               child: CircularProgressIndicator(
@@ -144,15 +144,15 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                           : Text(isGoogleUser ? 'Verify with Google' : 'Verify'),
                     ),
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   TextButton(
                     onPressed: busy ? null : _signOutInstead,
                     child: _isSigningOut
-                        ? SizedBox(
+                        ? const SizedBox(
                             height: 16,
                             width: 16,
                             child: CircularProgressIndicator(strokeWidth: 2))
-                        : Text('Sign out instead'),
+                        : const Text('Sign out instead'),
                   ),
                 ],
               ),

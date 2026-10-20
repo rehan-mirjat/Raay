@@ -142,13 +142,13 @@ class _AdminEventDashboardScreenState
                                     color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                                     borderRadius: BorderRadius.circular(14),
                                   ),
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.calendar_today_rounded,
                                     color: AppTheme.primaryBlue,
                                     size: 22,
                                   ),
                                 ),
-                                SizedBox(width: 16),
+                                const SizedBox(width: 16),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -159,7 +159,7 @@ class _AdminEventDashboardScreenState
                                             color: KivoraColors.textPrimaryOf(context),
                                           ),
                                     ),
-                                    SizedBox(height: 4),
+                                    const SizedBox(height: 4),
                                     Text(
                                       'Create, manage and organize events for your community.',
                                       style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14),
@@ -185,12 +185,12 @@ class _AdminEventDashboardScreenState
                             ),
                           ],
                         ),
-                        SizedBox(height: 32),
+                        const SizedBox(height: 32),
 
                         if (events.isEmpty)
                           Column(
                             children: [
-                              SizedBox(height: 24),
+                              const SizedBox(height: 24),
                               // Illustration Treatment
                               Stack(
                                 alignment: Alignment.center,
@@ -223,7 +223,7 @@ class _AdminEventDashboardScreenState
                                     child: Stack(
                                       clipBehavior: Clip.none,
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.calendar_month_rounded,
                                           size: 52,
                                           color: AppTheme.primaryBlue,
@@ -233,11 +233,11 @@ class _AdminEventDashboardScreenState
                                           right: -4,
                                           child: Container(
                                             padding: const EdgeInsets.all(3),
-                                            decoration: BoxDecoration(
+                                            decoration: const BoxDecoration(
                                               color: AppTheme.primaryBlue,
                                               shape: BoxShape.circle,
                                             ),
-                                            child: Icon(
+                                            child: const Icon(
                                               Icons.add,
                                               size: 14,
                                               color: Colors.white,
@@ -249,7 +249,7 @@ class _AdminEventDashboardScreenState
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 24),
+                              const SizedBox(height: 24),
                               Text(
                                 'No voting events found.',
                                 style: TextStyle(
@@ -258,7 +258,7 @@ class _AdminEventDashboardScreenState
                                   color: KivoraColors.textPrimaryOf(context),
                                 ),
                               ),
-                              SizedBox(height: 8),
+                              const SizedBox(height: 8),
                               Text(
                                 'Get started by creating a new voting event\nfor your organization members.',
                                 textAlign: TextAlign.center,
@@ -268,21 +268,21 @@ class _AdminEventDashboardScreenState
                                   height: 1.4,
                                 ),
                               ),
-                              SizedBox(height: 28),
+                              const SizedBox(height: 28),
 
                               _AnimatedCreateButton(
                                 onPressed: () => context.go('/admin/events/new'),
                                 isPrimaryCta: true,
                               ),
 
-                              SizedBox(height: 48),
+                              const SizedBox(height: 48),
 
                               _buildGuidanceCardsGrid(context),
                             ],
                           )
                         else ...[
                           _buildFilterAndSearchRow(context, events),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Builder(builder: (context) {
                             final filtered = _applyFilter(events);
                             if (filtered.isEmpty) {
@@ -394,7 +394,7 @@ class _AdminEventDashboardScreenState
       return Row(
         children: [
           Expanded(child: chips),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           search,
         ],
       );
@@ -403,7 +403,7 @@ class _AdminEventDashboardScreenState
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         chips,
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         search,
       ],
     );
@@ -482,7 +482,7 @@ Widget _buildInfoCard(
           ),
           child: Icon(icon, color: AppTheme.primaryBlue, size: 20),
         ),
-        SizedBox(width: 12),
+        const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -495,7 +495,7 @@ Widget _buildInfoCard(
                   color: KivoraColors.textPrimaryOf(context),
                 ),
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
                 subtitle,
                 style: TextStyle(
@@ -572,9 +572,9 @@ class _AnimatedCreateButtonState extends State<_AnimatedCreateButton> {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 1.5),
                   ),
-                  child: Icon(Icons.add, size: 12, color: Colors.white),
+                  child: const Icon(Icons.add, size: 12, color: Colors.white),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
                   'Create Voting Event',
                   style: TextStyle(
@@ -583,13 +583,13 @@ class _AnimatedCreateButtonState extends State<_AnimatedCreateButton> {
                     fontSize: widget.isPrimaryCta ? 14 : 13,
                   ),
                 ),
-                SizedBox(width: 6),
+                const SizedBox(width: 6),
                 AnimatedSlide(
                   offset: (_isHovered && !isReducedMotion)
                       ? const Offset(0.2, 0)
                       : Offset.zero,
                   duration: const Duration(milliseconds: 150),
-                  child: Icon(Icons.east_rounded, size: 16, color: Colors.white),
+                  child: const Icon(Icons.east_rounded, size: 16, color: Colors.white),
                 ),
               ],
             ),

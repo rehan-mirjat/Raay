@@ -107,7 +107,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                         color: KivoraColors.textPrimaryOf(context),
                       ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 // FAQ Section
                 Text(
@@ -118,7 +118,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                     color: KivoraColors.textPrimaryOf(context),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 _buildFaqItem(
                   question: 'How do I cast my vote?',
                   answer:
@@ -135,7 +135,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                       'Navigate to the Account Settings page from the top-right profile dropdown menu to update your personal details.',
                 ),
 
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
 
                 // Getting Started
                 Text(
@@ -146,22 +146,22 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                     color: KivoraColors.textPrimaryOf(context),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 ListTile(
-                  leading: Icon(Icons.route_outlined,
+                  leading: const Icon(Icons.route_outlined,
                       color: AppTheme.primaryBlue),
-                  title: Text('Restart Product Tour',
+                  title: const Text('Restart Product Tour',
                       style: TextStyle(fontWeight: FontWeight.w600)),
-                  subtitle: Text(
+                  subtitle: const Text(
                       'Replay the introductory walkthrough of the application features.'),
                   trailing:
-                      Icon(Icons.arrow_forward_ios_rounded, size: 14),
+                      const Icon(Icons.arrow_forward_ios_rounded, size: 14),
                   onTap: () {
                     ref.read(onboardingProvider.notifier).restartTour();
                     context.go('/home');
                   },
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
 
                 // Feedback Form
                 Text(
@@ -172,7 +172,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                     color: KivoraColors.textPrimaryOf(context),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Container(
                   decoration: BoxDecoration(
                     color: KivoraColors.surfaceOf(context),
@@ -195,7 +195,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                               letterSpacing: 0.5,
                             ),
                           ),
-                          SizedBox(height: 6),
+                          const SizedBox(height: 6),
                           DropdownButtonFormField<String>(
                             initialValue: _category,
                             items: _kReportCategories
@@ -203,7 +203,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                                 .toList(),
                             onChanged: (v) => setState(() => _category = v ?? _category),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Text(
                             'SUBJECT',
                             style: TextStyle(
@@ -213,7 +213,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                               letterSpacing: 0.5,
                             ),
                           ),
-                          SizedBox(height: 6),
+                          const SizedBox(height: 6),
                           TextFormField(
                             controller: _subjectController,
                             decoration: const InputDecoration(
@@ -223,7 +223,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                                 Validators.required(value, 'Subject'),
                           ),
                           if (_category == 'Election issue') ...[
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             Text(
                               'RECEIPT ID (OPTIONAL)',
                               style: TextStyle(
@@ -233,21 +233,21 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                                 letterSpacing: 0.5,
                               ),
                             ),
-                            SizedBox(height: 6),
+                            const SizedBox(height: 6),
                             TextFormField(
                               controller: _receiptRefController,
                               decoration: const InputDecoration(
                                 hintText: 'Paste a receipt ID if this relates to a specific vote',
                               ),
                             ),
-                            SizedBox(height: 4),
+                            const SizedBox(height: 4),
                             Text(
                               'Never include your ballot choice here - a receipt confirms your vote was recorded, it does not reveal what you selected.',
                               style: TextStyle(
                                   fontSize: 11, color: KivoraColors.textSecondaryOf(context)),
                             ),
                           ],
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Text(
                             'MESSAGE',
                             style: TextStyle(
@@ -257,7 +257,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                               letterSpacing: 0.5,
                             ),
                           ),
-                          SizedBox(height: 6),
+                          const SizedBox(height: 6),
                           TextFormField(
                             controller: _messageController,
                             maxLines: 5,
@@ -268,18 +268,18 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                             validator: (value) =>
                                 Validators.required(value, 'Message'),
                           ),
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
                           Align(
                             alignment: Alignment.centerRight,
                             child: ElevatedButton.icon(
                               onPressed: _isSubmitting ? null : _submitFeedback,
                               icon: _isSubmitting
-                                  ? SizedBox(
+                                  ? const SizedBox(
                                       width: 16,
                                       height: 16,
                                       child: CircularProgressIndicator(
                                           color: Colors.white, strokeWidth: 2))
-                                  : Icon(Icons.send_rounded, size: 18),
+                                  : const Icon(Icons.send_rounded, size: 18),
                               label: Text(_isSubmitting
                                   ? 'Sending...'
                                   : 'Send Message'),

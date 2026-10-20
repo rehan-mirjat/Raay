@@ -197,7 +197,7 @@ class _ElectionCalendarScreenState
         formatButtonShowsNext: false,
         titleTextStyle: TextStyle(
             color: kc.textPrimary, fontWeight: FontWeight.bold, fontSize: 16),
-        formatButtonTextStyle: TextStyle(color: AppTheme.primaryBlue),
+        formatButtonTextStyle: const TextStyle(color: AppTheme.primaryBlue),
         formatButtonDecoration: BoxDecoration(
           border: Border.all(color: AppTheme.primaryBlue),
           borderRadius: BorderRadius.circular(8),
@@ -230,7 +230,7 @@ class _ElectionCalendarScreenState
     final sorted = [...entries]
       ..sort((a, b) => a.event.startAt.compareTo(b.event.startAt));
     if (sorted.isEmpty) {
-      return EmptyView(
+      return const EmptyView(
         icon: KivoraIcons.calendar,
         title: 'No elections to show',
         message: 'There are no elections in your organizations yet.',
@@ -265,7 +265,7 @@ class _ElectionCalendarScreenState
           const SizedBox(height: 16),
           Expanded(
             child: selectedEvents.isEmpty
-                ? EmptyView(
+                ? const EmptyView(
                     icon: KivoraIcons.calendar,
                     title: 'No elections on this day',
                     message: 'Pick another date to see what\'s scheduled.',

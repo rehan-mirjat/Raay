@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kivora/core/theme/kivora_icons.dart';
+import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
@@ -58,7 +60,7 @@ class _MembershipDirectoryScreenState
                   color: KivoraColors.textPrimaryOf(context),
                 ),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             'Manage organization members, roles, and status.',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -101,15 +103,18 @@ class _MembershipDirectoryScreenState
         spacing: 12,
         runSpacing: 10,
         children: [
-          OutlinedButton.icon(
+          KivoraButton(
+            type: KivoraButtonType.secondary,
+            icon: KivoraIcons.userPlus,
+            label: 'Add Existing',
+            isExpanded: false,
             onPressed: () => _openAddExisting(context, orgId),
-            icon: Icon(Icons.person_add_alt_rounded, size: 18),
-            label: Text('Add existing'),
           ),
-          FilledButton.icon(
+          KivoraButton(
+            icon: KivoraIcons.mail,
+            label: 'Invite Member',
+            isExpanded: false,
             onPressed: () => _openInvite(context, orgId, orgName, role),
-            icon: Icon(Icons.person_add_alt_1_rounded, size: 18),
-            label: Text('Invite member'),
           ),
         ],
       );
@@ -124,7 +129,7 @@ class _MembershipDirectoryScreenState
           decoration: InputDecoration(
             hintText: 'Search members by name or email',
             hintStyle: TextStyle(fontSize: 14, color: KivoraColors.textSecondaryOf(context)),
-            prefixIcon: Icon(Icons.search_rounded, size: 20),
+            prefixIcon: const Icon(Icons.search_rounded, size: 20),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
@@ -136,7 +141,7 @@ class _MembershipDirectoryScreenState
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: AppTheme.primaryBlue, width: 1.5),
+              borderSide: const BorderSide(color: AppTheme.primaryBlue, width: 1.5),
             ),
             fillColor: KivoraColors.surfaceOf(context),
             filled: true,
@@ -144,7 +149,7 @@ class _MembershipDirectoryScreenState
                 ? null
                 : IconButton(
                     tooltip: 'Clear search',
-                    icon: Icon(Icons.close_rounded, size: 18),
+                    icon: const Icon(Icons.close_rounded, size: 18),
                     onPressed: () {
                       _searchController.clear();
                       setState(() => _searchQuery = '');
@@ -188,7 +193,7 @@ class _MembershipDirectoryScreenState
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.tune_rounded, size: 18, color: _selectedRoleFilter != 'all' ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context)),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
                 _selectedRoleFilter == 'all'
                     ? 'All roles'
@@ -199,7 +204,7 @@ class _MembershipDirectoryScreenState
                   color: _selectedRoleFilter != 'all' ? AppTheme.primaryBlue : KivoraColors.textPrimaryOf(context),
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: _selectedRoleFilter != 'all' ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context)),
             ],
           ),
@@ -213,10 +218,10 @@ class _MembershipDirectoryScreenState
       child: Row(
         children: [
           if (isSelected)
-            Icon(Icons.check_rounded, size: 16, color: AppTheme.primaryBlue)
+            const Icon(Icons.check_rounded, size: 16, color: AppTheme.primaryBlue)
           else
-            SizedBox(width: 16),
-          SizedBox(width: 8),
+            const SizedBox(width: 16),
+          const SizedBox(width: 8),
           Text(
             label,
             style: TextStyle(
@@ -328,7 +333,7 @@ class _MembershipDirectoryScreenState
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 _directoryHeading(context),
-                                SizedBox(height: 14),
+                                const SizedBox(height: 14),
                                 _memberActions(context, orgId, orgName, callerRole),
                               ],
                             )
@@ -346,7 +351,7 @@ class _MembershipDirectoryScreenState
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 _memberSearchField(),
-                                SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: _roleFilter(context),
@@ -357,7 +362,7 @@ class _MembershipDirectoryScreenState
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Expanded(child: _memberSearchField()),
-                                SizedBox(width: 12),
+                                const SizedBox(width: 12),
                                 _roleFilter(context),
                               ],
                             ),
@@ -523,10 +528,10 @@ class _MemberCard extends StatelessWidget {
                         decoration: isInactive ? TextDecoration.lineThrough : null,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     _iconLine(context, Icons.email_outlined, email),
                     if (deptName != null && deptName.isNotEmpty) ...[
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       _iconLine(context, Icons.domain_outlined, deptName),
                     ],
                   ],
@@ -537,7 +542,7 @@ class _MemberCard extends StatelessWidget {
                 children: [
                   StatusBadge.role(role),
                   if (isInactive) ...[
-                    SizedBox(height: 6),
+                    const SizedBox(height: 6),
                     _pill('INACTIVE', AppTheme.error.withValues(alpha: 0.12),
                         AppTheme.error,
                         fontSize: 10),

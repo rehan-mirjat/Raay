@@ -6,6 +6,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/date_utils.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
@@ -198,8 +199,9 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
             tooltip: 'Refresh joining codes',
             onPressed: () {
               final orgId = contextState.valueOrNull?.context?.organization.id;
-              if (orgId != null)
+              if (orgId != null) {
                 ref.invalidate(organizationJoiningCodesProvider(orgId));
+              }
             },
             icon: const Icon(Icons.refresh_rounded),
           ),
@@ -353,7 +355,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
     final rawStatus = code['status'] as String? ?? 'unknown';
     final uses = (code['currentUses'] as num?)?.toInt() ?? 0;
     final maxUses = (code['maxUses'] as num?)?.toInt() ?? 0;
-    final expiry = DateTime.tryParse(code['expiresAt'] as String? ?? '');
+    final expiry = parseFirestoreDate(code['expiresAt']);
     // The server status can lag behind reality, so derive what the code can
     // actually do right now.
     var status = rawStatus;

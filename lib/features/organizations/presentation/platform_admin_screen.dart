@@ -124,7 +124,7 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
       builder: (ctx) => AlertDialog(
         insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         scrollable: true,
-        title: Text('Grant platform admin access'),
+        title: const Text('Grant platform admin access'),
         content: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 360),
           child: TextField(
@@ -141,11 +141,11 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: Text('Cancel')),
+              child: const Text('Cancel')),
           FilledButton(
             onPressed: () =>
                 Navigator.pop(ctx, emailController.text.trim()),
-            child: Text('Grant access'),
+            child: const Text('Grant access'),
           ),
         ],
       ),
@@ -185,7 +185,7 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-        title: Text('Revoke platform admin access?'),
+        title: const Text('Revoke platform admin access?'),
         content: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 360),
           child: Text('$email will lose Platform Super Admin privileges.'),
@@ -193,12 +193,12 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: Text('Cancel')),
+              child: const Text('Cancel')),
           FilledButton(
             style:
                 FilledButton.styleFrom(backgroundColor: AppTheme.error),
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text('Revoke'),
+            child: const Text('Revoke'),
           ),
         ],
       ),
@@ -233,12 +233,12 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
     return Scaffold(
       backgroundColor: KivoraColors.backgroundOf(context),
       appBar: AppBar(
-        title: Text('Platform administration'),
+        title: const Text('Platform administration'),
         actions: [
           IconButton(
             onPressed: _loading ? null : _load,
             tooltip: 'Refresh',
-            icon: Icon(Icons.refresh_rounded),
+            icon: const Icon(Icons.refresh_rounded),
           ),
         ],
       ),
@@ -276,31 +276,31 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
           padding: const EdgeInsets.all(16),
           children: [
         if (_analytics != null) _buildAnalytics(_analytics!),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('Accounts', style: Theme.of(context).textTheme.titleMedium),
             FilledButton.icon(
               onPressed: _busyUid != null ? null : _grantAdmin,
-              icon: Icon(Icons.admin_panel_settings_outlined, size: 18),
-              label: Text('Grant admin access'),
+              icon: const Icon(Icons.admin_panel_settings_outlined, size: 18),
+              label: const Text('Grant admin access'),
             ),
           ],
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         for (final user in _users) _userCard(user),
         if (_nextPageToken != null) ...[
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Center(
             child: OutlinedButton(
               onPressed: _loadingMore ? null : _loadMoreUsers,
               child: _loadingMore
-                  ? SizedBox(
+                  ? const SizedBox(
                       height: 16,
                       width: 16,
                       child: CircularProgressIndicator(strokeWidth: 2))
-                  : Text('Load more'),
+                  : const Text('Load more'),
             ),
           ),
         ],
@@ -324,7 +324,7 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
                           color: KivoraColors.textPrimaryOf(context))),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(label,
                       style: TextStyle(
                           fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
@@ -374,20 +374,20 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
                     .characters
                     .first
                     .toUpperCase(),
-                style: TextStyle(color: AppTheme.primaryBlue),
+                style: const TextStyle(color: AppTheme.primaryBlue),
               ),
             ),
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(displayName.isNotEmpty ? displayName : email,
-                      style: TextStyle(fontWeight: FontWeight.w600)),
+                      style: const TextStyle(fontWeight: FontWeight.w600)),
                   Text(email,
                       style: TextStyle(
                           fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Wrap(
                     spacing: 6,
                     children: [
@@ -407,11 +407,11 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
                 onPressed: busy ? null : () => _revokeAdmin(user),
                 style: OutlinedButton.styleFrom(foregroundColor: AppTheme.error),
                 child: busy
-                    ? SizedBox(
+                    ? const SizedBox(
                         height: 14,
                         width: 14,
                         child: CircularProgressIndicator(strokeWidth: 2))
-                    : Text('Revoke'),
+                    : const Text('Revoke'),
               ),
           ],
         ),

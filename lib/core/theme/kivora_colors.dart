@@ -1,8 +1,8 @@
-/// Theme-context-aware color accessors.
-/// Usage: KivoraColors.of(context).surface
 import 'package:flutter/material.dart';
 import 'app_theme.dart';
 
+/// Theme-context-aware color accessors.
+/// Usage: KivoraColors.of(context).surface
 class KivoraColors {
   KivoraColors._(this._isDark);
 

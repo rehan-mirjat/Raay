@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
+import '../../../core/utils/date_utils.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../data/organization_repository.dart';
 
@@ -33,9 +34,8 @@ class _PendingInvitationsWidgetState
     extends ConsumerState<PendingInvitationsWidget> {
   String? _revokingId;
 
-  String _formatExpiry(String? isoDate) {
-    if (isoDate == null || isoDate.isEmpty) return '';
-    final expires = DateTime.tryParse(isoDate);
+  String _formatExpiry(dynamic rawDate) {
+    final expires = parseFirestoreDate(rawDate);
     if (expires == null) return '';
     final diff = expires.difference(DateTime.now());
     if (diff.isNegative) return 'Expired';
@@ -55,19 +55,19 @@ class _PendingInvitationsWidgetState
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Revoke this invitation?'),
+        title: const Text('Revoke this invitation?'),
         content: Text(
           '${email.isEmpty ? 'The recipient' : email} will no longer be able to accept it. You can invite them again later.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text('Keep'),
+            child: const Text('Keep'),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: AppTheme.error),
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text('Revoke'),
+            child: const Text('Revoke'),
           ),
         ],
       ),
@@ -131,14 +131,14 @@ class _PendingInvitationsWidgetState
                       color: KivoraColors.textPrimaryOf(context)),
                 ),
                 IconButton(
-                  icon: Icon(Icons.refresh, size: 20),
+                  icon: const Icon(Icons.refresh, size: 20),
                   tooltip: 'Refresh Invitations',
                   onPressed: () => ref.invalidate(
                       pendingInvitationsProvider(widget.organizationId)),
                 ),
               ],
             ),
-            Divider(height: 20),
+            const Divider(height: 20),
             invitationsAsync.when(
               loading: () => const LoadingView(),
               error: (err, stack) => Padding(
@@ -146,16 +146,16 @@ class _PendingInvitationsWidgetState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Could not load pending invitations.',
                       style: TextStyle(color: AppTheme.error),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     TextButton.icon(
                       onPressed: () => ref.invalidate(
                           pendingInvitationsProvider(widget.organizationId)),
-                      icon: Icon(Icons.refresh_rounded),
-                      label: Text('Try again'),
+                      icon: const Icon(Icons.refresh_rounded),
+                      label: const Text('Try again'),
                     ),
                   ],
                 ),
@@ -163,7 +163,7 @@ class _PendingInvitationsWidgetState
               data: (invitations) {
                 if (invitations.isEmpty) {
                   return Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                     child: Text(
                       'No pending invitations found for this organization.',
                       style: TextStyle(
@@ -176,7 +176,7 @@ class _PendingInvitationsWidgetState
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: invitations.length,
-                  separatorBuilder: (_, __) => Divider(height: 1),
+                  separatorBuilder: (_, __) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final item = invitations[index];
                     final email = item['email'] as String? ?? '';
@@ -184,7 +184,7 @@ class _PendingInvitationsWidgetState
                         (item['role'] as String? ?? 'member').toLowerCase();
                     final invitationId = item['invitationId'] as String? ?? '';
                     final expiryText =
-                        _formatExpiry(item['expiresAt'] as String?);
+                        _formatExpiry(item['expiresAt']);
                     final isExpired = expiryText == 'Expired';
                     final isAdminRole = role == 'admin';
                     final canRevoke = widget.isOwner || !isAdminRole;
@@ -192,7 +192,7 @@ class _PendingInvitationsWidgetState
 
                     return ListTile(
                       contentPadding: const EdgeInsets.symmetric(vertical: 4),
-                      leading: Icon(Icons.mark_email_unread_outlined,
+                      leading: const Icon(Icons.mark_email_unread_outlined,
                           color: AppTheme.primaryBlue, size: 22),
                       title: Row(
                         children: [
@@ -207,7 +207,7 @@ class _PendingInvitationsWidgetState
                                   color: KivoraColors.textPrimaryOf(context)),
                             ),
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 2),
@@ -244,7 +244,7 @@ class _PendingInvitationsWidgetState
                                   : () => _revoke(invitationId, email),
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: AppTheme.error,
-                                side: BorderSide(color: AppTheme.error),
+                                side: const BorderSide(color: AppTheme.error),
                               ),
                               child: isWorking
                                   ? const SizedBox.square(

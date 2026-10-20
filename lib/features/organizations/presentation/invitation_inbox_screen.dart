@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
+import '../../../core/utils/date_utils.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 
@@ -34,18 +35,18 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (dialogContext) => AlertDialog(
-          title: Text('Decline this invitation?'),
+          title: const Text('Decline this invitation?'),
           content: Text(
             'You will not join ${invitation['organizationName'] ?? 'this organization'}. The administrator can invite you again later.',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext, false),
-              child: Text('Keep invitation'),
+              child: const Text('Keep invitation'),
             ),
             FilledButton.tonal(
               onPressed: () => Navigator.pop(dialogContext, true),
-              child: Text('Decline'),
+              child: const Text('Decline'),
             ),
           ],
         ),
@@ -109,7 +110,7 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
+                    const Row(
                       children: [
                         Icon(Icons.mark_email_unread_outlined,
                             color: AppTheme.primaryBlue, size: 16),
@@ -124,7 +125,7 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,7 +144,7 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                       color: KivoraColors.textPrimaryOf(context),
                                     ),
                               ),
-                              SizedBox(height: 8),
+                              const SizedBox(height: 8),
                               Text(
                                 'Review invitations to join a new workspace and choose how you\'d like to respond.',
                                 style: TextStyle(
@@ -157,7 +158,7 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
                 invitations.when(
                   loading: () => const LoadingView(
                       message: 'Checking your notifications…'),
@@ -180,12 +181,12 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                 color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                                 shape: BoxShape.circle,
                               ),
-                              child: Icon(
+                              child: const Icon(
                                   Icons.notifications_none_rounded,
                                   size: 40,
                                   color: AppTheme.primaryBlue),
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             Text(
                               'You’re all caught up',
                               style: TextStyle(
@@ -194,7 +195,7 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                 color: KivoraColors.textPrimaryOf(context),
                               ),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Text(
                               'Organization invitations will appear here. You can accept or decline each one.',
                               textAlign: TextAlign.center,
@@ -223,11 +224,11 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                               Container(
                                 width: 8,
                                 height: 8,
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                     color: AppTheme.primaryBlue,
                                     shape: BoxShape.circle),
                               ),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Text(
                                 '${items.length} pending',
                                 style: TextStyle(
@@ -238,13 +239,13 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 12),
                         ListView.separated(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: items.length,
                           separatorBuilder: (_, __) =>
-                              SizedBox(height: 24),
+                              const SizedBox(height: 24),
                           itemBuilder: (context, index) {
                             final invitation = items[index];
                             final organizationName =
@@ -257,9 +258,7 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                 : '${roleValue[0].toUpperCase()}${roleValue.substring(1)}';
                             final isWorking =
                                 _respondingTo == invitation['invitationId'];
-                            final expiresAt = DateTime.tryParse(
-                              invitation['expiresAt'] as String? ?? '',
-                            );
+                            final expiresAt = parseFirestoreDate(invitation['expiresAt']);
                             final isExpired = expiresAt != null &&
                                 expiresAt.isBefore(DateTime.now());
 
@@ -280,9 +279,9 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 20, vertical: 12),
                                         decoration: BoxDecoration(
-                                          color: Color(
+                                          color: const Color(
                                               0xFFF0F5FF), // Light blue tint
-                                          borderRadius: BorderRadius.vertical(
+                                          borderRadius: const BorderRadius.vertical(
                                               top: Radius.circular(16)),
                                           border: Border(
                                               bottom: BorderSide(
@@ -290,16 +289,16 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                         ),
                                         child: Row(
                                           children: [
-                                            Icon(Icons.info_outline,
+                                            const Icon(Icons.info_outline,
                                                 color: AppTheme.primaryBlue,
                                                 size: 18),
-                                            SizedBox(width: 8),
-                                            Text('Action required',
+                                            const SizedBox(width: 8),
+                                            const Text('Action required',
                                                 style: TextStyle(
                                                     color: AppTheme.primaryBlue,
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 13)),
-                                            SizedBox(width: 12),
+                                            const SizedBox(width: 12),
                                             Expanded(
                                               child: Text(
                                                 'Respond before the invitation expires',
@@ -339,7 +338,7 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                                           ? organizationName[0]
                                                               .toUpperCase()
                                                           : 'O',
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold,
                                                         fontSize: 20,
@@ -349,7 +348,7 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                                     ),
                                                   ),
                                                 ),
-                                                SizedBox(width: 16),
+                                                const SizedBox(width: 16),
                                                 Expanded(
                                                   child: Column(
                                                     crossAxisAlignment:
@@ -358,7 +357,7 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                                     children: [
                                                       Text(
                                                         organizationName,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           fontSize: 18,
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -366,8 +365,8 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                                               .secondaryNavy,
                                                         ),
                                                       ),
-                                                      SizedBox(height: 4),
-                                                      Text(
+                                                      const SizedBox(height: 4),
+                                                      const Text(
                                                         'You\'ve been invited to join this organization.',
                                                         style: TextStyle(
                                                           fontSize: 14,
@@ -394,13 +393,13 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                                           width: 6,
                                                           height: 6,
                                                           decoration:
-                                                              BoxDecoration(
+                                                              const BoxDecoration(
                                                                   color: Color(
                                                                       0xFFC2410C),
                                                                   shape: BoxShape
                                                                       .circle)),
-                                                      SizedBox(width: 6),
-                                                      Text(
+                                                      const SizedBox(width: 6),
+                                                      const Text(
                                                           'Awaiting response',
                                                           style: TextStyle(
                                                               color: Color(
@@ -412,11 +411,11 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                                     ]))
                                               ],
                                             ),
-                                            SizedBox(height: 24),
+                                            const SizedBox(height: 24),
                                             Divider(
                                                 height: 1,
                                                 color: KivoraColors.borderOf(context)),
-                                            SizedBox(height: 24),
+                                            const SizedBox(height: 24),
                                             if (isMobile)
                                               Column(
                                                 crossAxisAlignment:
@@ -441,21 +440,21 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                                                       BorderRadius
                                                                           .circular(
                                                                               8)),
-                                                              child: Icon(
+                                                              child: const Icon(
                                                                   Icons
                                                                       .person_outline,
                                                                   color: AppTheme
                                                                       .primaryBlue,
                                                                   size: 20),
                                                             ),
-                                                            SizedBox(
+                                                            const SizedBox(
                                                                 width: 12),
                                                             Column(
                                                               crossAxisAlignment:
                                                                   CrossAxisAlignment
                                                                       .start,
                                                               children: [
-                                                                Text(
+                                                                const Text(
                                                                     'Role',
                                                                     style: TextStyle(
                                                                         fontSize:
@@ -464,7 +463,7 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                                                             .textSecondary)),
                                                                 Text(
                                                                     roleDisplay,
-                                                                    style: TextStyle(
+                                                                    style: const TextStyle(
                                                                         fontSize:
                                                                             14,
                                                                         fontWeight:
@@ -491,21 +490,21 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                                                       BorderRadius
                                                                           .circular(
                                                                               8)),
-                                                              child: Icon(
+                                                              child: const Icon(
                                                                   Icons
                                                                       .event_available_outlined,
                                                                   color: Color(
                                                                       0xFFB45309),
                                                                   size: 20),
                                                             ),
-                                                            SizedBox(
+                                                            const SizedBox(
                                                                 width: 12),
                                                             Column(
                                                               crossAxisAlignment:
                                                                   CrossAxisAlignment
                                                                       .start,
                                                               children: [
-                                                                Text(
+                                                                const Text(
                                                                     'Expires',
                                                                     style: TextStyle(
                                                                         fontSize:
@@ -541,7 +540,7 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                                       ),
                                                     ],
                                                   ),
-                                                  SizedBox(height: 24),
+                                                  const SizedBox(height: 24),
                                                   Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment.end,
@@ -573,28 +572,28 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                                                   BorderRadius
                                                                       .circular(
                                                                           8)),
-                                                          child: Icon(
+                                                          child: const Icon(
                                                               Icons
                                                                   .person_outline,
                                                               color: AppTheme
                                                                   .primaryBlue,
                                                               size: 20),
                                                         ),
-                                                        SizedBox(
+                                                        const SizedBox(
                                                             width: 12),
                                                         Column(
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
                                                                   .start,
                                                           children: [
-                                                            Text('Role',
+                                                            const Text('Role',
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                         12,
                                                                     color: AppTheme
                                                                         .textSecondary)),
                                                             Text(roleDisplay,
-                                                                style: TextStyle(
+                                                                style: const TextStyle(
                                                                     fontSize:
                                                                         14,
                                                                     fontWeight:
@@ -612,7 +611,7 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                                       height: 40,
                                                       color:
                                                           KivoraColors.borderOf(context)),
-                                                  SizedBox(width: 24),
+                                                  const SizedBox(width: 24),
                                                   Expanded(
                                                     child: Row(
                                                       children: [
@@ -627,21 +626,21 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                                                   BorderRadius
                                                                       .circular(
                                                                           8)),
-                                                          child: Icon(
+                                                          child: const Icon(
                                                               Icons
                                                                   .event_available_outlined,
                                                               color: Color(
                                                                   0xFFB45309),
                                                               size: 20),
                                                         ),
-                                                        SizedBox(
+                                                        const SizedBox(
                                                             width: 12),
                                                         Column(
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
                                                                   .start,
                                                           children: [
-                                                            Text(
+                                                            const Text(
                                                                 'Expires',
                                                                 style: TextStyle(
                                                                     fontSize:
@@ -686,7 +685,7 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                     ],
                                   ),
                                 ),
-                                SizedBox(height: 12),
+                                const SizedBox(height: 12),
                                 Container(
                                   padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
@@ -697,10 +696,10 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                   ),
                                   child: Row(
                                     children: [
-                                      Icon(Icons.verified_user_outlined,
+                                      const Icon(Icons.verified_user_outlined,
                                           color: AppTheme.primaryBlue,
                                           size: 20),
-                                      SizedBox(width: 12),
+                                      const SizedBox(width: 12),
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment:
@@ -713,7 +712,7 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                                                   color: KivoraColors.textPrimaryOf(context),
                                                   fontSize: 14),
                                             ),
-                                            SizedBox(height: 2),
+                                            const SizedBox(height: 2),
                                             Text(
                                               'Accepting adds $organizationName to your organizations. You can switch workspaces at any time.',
                                               style: TextStyle(
@@ -734,13 +733,13 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                     );
                   },
                 ),
-                SizedBox(height: 48),
+                const SizedBox(height: 48),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.help_outline,
                         size: 16, color: KivoraColors.textSecondaryOf(context)),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Text(
                         'Need help with an invitation? Contact Kivora support.',
                         style: TextStyle(
@@ -765,13 +764,13 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
         icon: isWorking
             ? const SizedBox.square(
                 dimension: 16, child: CircularProgressIndicator(strokeWidth: 2))
-            : Icon(Icons.close_rounded, size: 18),
-        label: Text('Decline'),
+            : const Icon(Icons.close_rounded, size: 18),
+        label: const Text('Decline'),
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
       ),
-      SizedBox(width: 12),
+      const SizedBox(width: 12),
       FilledButton.icon(
         onPressed: _respondingTo == null && !isExpired
             ? () => _respond(context, invitation, true)
@@ -781,8 +780,8 @@ class _InvitationInboxScreenState extends ConsumerState<InvitationInboxScreen> {
                 dimension: 16,
                 child: CircularProgressIndicator(
                     color: Colors.white, strokeWidth: 2))
-            : Icon(Icons.check_rounded, size: 18),
-        label: Text('Accept invitation'),
+            : const Icon(Icons.check_rounded, size: 18),
+        label: const Text('Accept invitation'),
         style: FilledButton.styleFrom(
           backgroundColor: AppTheme.primaryBlue,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),

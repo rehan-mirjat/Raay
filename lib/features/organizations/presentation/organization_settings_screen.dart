@@ -115,7 +115,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                     InkWell(
                       onTap: () => context.go('/orgs/dashboard'),
                       borderRadius: BorderRadius.circular(6),
-                      child: Padding(
+                      child: const Padding(
                         padding: EdgeInsets.symmetric(vertical: 4, horizontal: 2),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -130,7 +130,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                         ),
                       ),
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
 
                     // 2. Headline & Subtitle
                     Text(
@@ -140,12 +140,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                             color: KivoraColors.textPrimaryOf(context),
                           ),
                     ),
-                    SizedBox(height: 6),
+                    const SizedBox(height: 6),
                     Text(
                       'Shape how ${org.name} appears to members and voters.',
                       style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14),
                     ),
-                    SizedBox(height: 28),
+                    const SizedBox(height: 28),
 
                     // 3. Two-Column Layout (Form & Live Preview)
                     Form(
@@ -160,19 +160,21 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                                     crossAxisAlignment: CrossAxisAlignment.stretch,
                                     children: [
                                       _buildDetailsCard(context),
-                                      SizedBox(height: 20),
+                                      const SizedBox(height: 20),
                                       _buildLogoCard(context, org.id),
+                                      const SizedBox(height: 20),
+                                      _buildDangerZoneCard(context, org),
                                     ],
                                   ),
                                 ),
-                                SizedBox(width: 28),
+                                const SizedBox(width: 28),
                                 Expanded(
                                   flex: 5,
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.stretch,
                                     children: [
                                       _buildLivePreviewCard(context),
-                                      SizedBox(height: 20),
+                                      const SizedBox(height: 20),
                                       _buildPermissionsNoticeCard(context),
                                     ],
                                   ),
@@ -183,17 +185,19 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 _buildDetailsCard(context),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                                 _buildLogoCard(context, org.id),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                                 _buildLivePreviewCard(context),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                                 _buildPermissionsNoticeCard(context),
+                                const SizedBox(height: 20),
+                                _buildDangerZoneCard(context, org),
                               ],
                             ),
                     ),
 
-                    SizedBox(height: 32),
+                    const SizedBox(height: 32),
 
                     // 4. Bottom Sticky Unsaved Changes Banner
                     if (unsaved || _saving || _uploadingLogo)
@@ -233,12 +237,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
             'Organization details',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             'Your public name and a short introduction to your organization.',
             style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context)),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
 
           // Name
           Row(
@@ -248,7 +252,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               Text('${_name.text.length} / 100', style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
             ],
           ),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           TextFormField(
             controller: _name,
             maxLength: 100,
@@ -262,7 +266,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               return name.length < 3 ? 'Use at least 3 characters.' : null;
             },
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
 
           // Description
           Row(
@@ -272,7 +276,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               Text('${_description.text.length} / 500', style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
             ],
           ),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           TextFormField(
             controller: _description,
             maxLength: 500,
@@ -282,16 +286,16 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               counterText: '',
             ),
           ),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           Text(
             'A short introduction shown on your organization profile.',
             style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context)),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
 
           // Website
           Text('Website (optional)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context))),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           TextFormField(
             controller: _website,
             keyboardType: TextInputType.url,
@@ -345,7 +349,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               ),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
 
           // Dashed Upload Box
           Container(
@@ -371,15 +375,15 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                       ? Image.network(
                           FirebaseService.sanitizeStorageUrl(_logoUrl.text),
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Center(
+                          errorBuilder: (context, error, stackTrace) => const Center(
                             child: Icon(Icons.business_rounded, size: 32, color: AppTheme.primaryBlue),
                           ),
                         )
-                      : Center(
+                      : const Center(
                           child: Icon(Icons.business_rounded, size: 32, color: AppTheme.primaryBlue),
                         ),
                 ),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
 
                 // Upload & Remove Controls
                 Expanded(
@@ -398,7 +402,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                                     dimension: 16,
                                     child: CircularProgressIndicator(strokeWidth: 2),
                                   )
-                                : Icon(Icons.upload_rounded, size: 18),
+                                : const Icon(Icons.upload_rounded, size: 18),
                             label: Text(_uploadingLogo ? 'Uploading...' : 'Upload logo'),
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -415,13 +419,13 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                                     },
                               borderRadius: BorderRadius.circular(6),
                               child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                                 child: Text('Remove', style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context), fontWeight: FontWeight.bold)),
                               ),
                             ),
                         ],
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         'PNG, JPEG or WebP · Up to 5 MB\nUse a square image for the best result.',
                         style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.3),
@@ -467,12 +471,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
             'Member profile preview',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             'How your organization will appear to members.',
             style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
 
           // Preview Container
           Container(
@@ -498,15 +502,15 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                       ? Image.network(
                           FirebaseService.sanitizeStorageUrl(_logoUrl.text),
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Center(
+                          errorBuilder: (context, error, stackTrace) => const Center(
                             child: Icon(Icons.business_rounded, size: 24, color: AppTheme.primaryBlue),
                           ),
                         )
-                      : Center(
+                      : const Center(
                           child: Icon(Icons.business_rounded, size: 24, color: AppTheme.primaryBlue),
                         ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -526,11 +530,11 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                         color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text('Member', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue)),
+                      child: const Text('Member', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue)),
                     ),
                   ],
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
 
                 Text(
                   descStr,
@@ -538,12 +542,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
 
                 Row(
                   children: [
                     Icon(Icons.language_rounded, size: 14, color: KivoraColors.textSecondaryOf(context)),
-                    SizedBox(width: 6),
+                    const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         websiteStr,
@@ -554,14 +558,14 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Divider(height: 1, color: KivoraColors.borderOf(context)),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
                 ElevatedButton.icon(
                   onPressed: null,
-                  icon: Text('View events', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white)),
-                  label: Icon(Icons.arrow_forward_rounded, size: 16, color: Colors.white),
+                  icon: const Text('View events', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white)),
+                  label: const Icon(Icons.arrow_forward_rounded, size: 16, color: Colors.white),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primaryBlue,
                     disabledBackgroundColor: AppTheme.primaryBlue,
@@ -572,12 +576,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               ],
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           Row(
             children: [
               Icon(Icons.info_outline_rounded, size: 14, color: KivoraColors.textSecondaryOf(context)),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   'Preview only. Changes appear to members and voters after you save.',
@@ -605,8 +609,8 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.verified_user_outlined, size: 20, color: AppTheme.primaryBlue),
-          SizedBox(width: 14),
+          const Icon(Icons.verified_user_outlined, size: 20, color: AppTheme.primaryBlue),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -615,7 +619,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                   'Branding, not permissions',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
                   'Access control and verification are managed separately. Updating your branding won\'t change either.',
                   style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.4),
@@ -651,12 +655,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           Container(
             width: 8,
             height: 8,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppTheme.accentGold,
               shape: BoxShape.circle,
             ),
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -665,7 +669,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                   'You have unsaved changes',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
                 ),
-                SizedBox(height: 2),
+                const SizedBox(height: 2),
                 Text(
                   _uploadingLogo ? 'Logo uploaded. Save to publish changes.' : 'Save to publish your branding, or reset to discard your changes.',
                   style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
@@ -673,7 +677,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               ],
             ),
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
 
           OutlinedButton(
             onPressed: _saving || _uploadingLogo
@@ -689,15 +693,15 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             ),
-            child: Text('Reset'),
+            child: const Text('Reset'),
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
 
           FilledButton.icon(
             onPressed: _saving || _uploadingLogo ? null : () => _save(org.id),
             icon: _saving
-                ? SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                : Icon(Icons.check_rounded, size: 18),
+                ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                : const Icon(Icons.check_rounded, size: 18),
             label: Text(_saving ? 'Saving...' : 'Save branding'),
             style: FilledButton.styleFrom(
               backgroundColor: AppTheme.primaryBlue,
@@ -781,6 +785,95 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not save branding.')));
     } finally {
       if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  Widget _buildDangerZoneCard(BuildContext context, Organization org) {
+    return Container(
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: AppTheme.error.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppTheme.error.withValues(alpha: 0.25)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Icon(Icons.warning_amber_rounded, color: AppTheme.error, size: 22),
+              SizedBox(width: 10),
+              Text(
+                'Danger Zone',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.error,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Deleting this organization will archive its workspace. Active elections will stop accepting ballots.',
+            style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context), height: 1.4),
+          ),
+          const SizedBox(height: 20),
+          OutlinedButton.icon(
+            onPressed: () => _confirmDeleteOrganization(org),
+            icon: const Icon(Icons.delete_forever_rounded, color: AppTheme.error, size: 18),
+            label: const Text('Delete Organization', style: TextStyle(color: AppTheme.error, fontWeight: FontWeight.bold)),
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: AppTheme.error),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _confirmDeleteOrganization(Organization org) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Organization?'),
+        content: Text(
+          'Are you sure you want to delete "${org.name}"?\n\nThis will archive the organization workspace. This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
+            child: const Text('Delete Organization', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      try {
+        await ref.read(organizationRepositoryProvider).deleteOrganization(organizationId: org.id);
+        ref.read(activeOrgIdProvider.notifier).clearSelection();
+        ref.invalidate(userOrganizationsProvider);
+        if (!mounted) return;
+        context.go('/orgs');
+        messenger.showSnackBar(
+          const SnackBar(content: Text('Organization has been deleted.')),
+        );
+      } catch (e) {
+        if (!mounted) return;
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceAll('Exception: ', '')),
+            backgroundColor: AppTheme.error,
+          ),
+        );
+      }
     }
   }
 }

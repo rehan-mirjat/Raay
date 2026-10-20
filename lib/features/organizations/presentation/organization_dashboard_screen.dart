@@ -139,7 +139,7 @@ class OrganizationDashboardScreen extends ConsumerWidget {
                             ],
                           ),
                         ),
-                        if (isAdmin)
+                        if (member.role == OrganizationRole.owner)
                           KivoraButton(
                             type: KivoraButtonType.secondary,
                             icon: KivoraIcons.settings,
@@ -243,24 +243,31 @@ class OrganizationDashboardScreen extends ConsumerWidget {
                   trailing: const Icon(KivoraIcons.chevronRight, size: 16),
                   onTap: () => context.go('/admin/events/new'),
                 ),
+                ListTile(
+                  leading: const Icon(KivoraIcons.users, color: AppTheme.primaryBlue),
+                  title: const Text('Member Directory', style: TextStyle(fontWeight: FontWeight.w600)),
+                  trailing: const Icon(KivoraIcons.chevronRight, size: 16),
+                  onTap: () => context.go('/orgs/members'),
+                ),
+                ListTile(
+                  leading: const Icon(KivoraIcons.history, color: AppTheme.primaryBlue),
+                  title: const Text('Audit Log', style: TextStyle(fontWeight: FontWeight.w600)),
+                  trailing: const Icon(KivoraIcons.chevronRight, size: 16),
+                  onTap: () => context.go('/orgs/audit'),
+                ),
+              ] else ...[
+                ListTile(
+                  leading: const Icon(KivoraIcons.mail, color: AppTheme.primaryBlue),
+                  title: const Text('My Invitations', style: TextStyle(fontWeight: FontWeight.w600)),
+                  trailing: const Icon(KivoraIcons.chevronRight, size: 16),
+                  onTap: () => context.go('/orgs/invitations'),
+                ),
               ],
-              ListTile(
-                leading: const Icon(KivoraIcons.users, color: AppTheme.primaryBlue),
-                title: const Text('Member Directory', style: TextStyle(fontWeight: FontWeight.w600)),
-                trailing: const Icon(KivoraIcons.chevronRight, size: 16),
-                onTap: () => context.go('/orgs/members'),
-              ),
               ListTile(
                 leading: const Icon(KivoraIcons.network, color: AppTheme.primaryBlue),
                 title: const Text('Departments', style: TextStyle(fontWeight: FontWeight.w600)),
                 trailing: const Icon(KivoraIcons.chevronRight, size: 16),
                 onTap: () => context.go('/orgs/departments'),
-              ),
-              ListTile(
-                leading: const Icon(KivoraIcons.history, color: AppTheme.primaryBlue),
-                title: const Text('Audit Log', style: TextStyle(fontWeight: FontWeight.w600)),
-                trailing: const Icon(KivoraIcons.chevronRight, size: 16),
-                onTap: () => context.go('/orgs/audit'),
               ),
             ],
           ),
@@ -269,7 +276,7 @@ class OrganizationDashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildEventsFeed(BuildContext context, AsyncValue eventsAsync, bool isAdmin) {
+  Widget _buildEventsFeed(BuildContext context, AsyncValue<List<VotingEvent>> eventsAsync, bool isAdmin) {
     final kc = KivoraColors.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -298,7 +305,7 @@ class OrganizationDashboardScreen extends ConsumerWidget {
               );
             }
             return Column(
-              children: events.take(5).map((e) => Padding(
+              children: events.take(5).map<Widget>((e) => Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: KivoraElectionCard(event: e, isAdmin: isAdmin),
               )).toList(),

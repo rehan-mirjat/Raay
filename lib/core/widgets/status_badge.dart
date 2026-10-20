@@ -117,7 +117,7 @@ class StatusBadge extends StatelessWidget {
         children: [
           if (icon != null) ...[
             Icon(icon, size: 13, color: textColor),
-            SizedBox(width: 4),
+            const SizedBox(width: 4),
           ],
           Text(
             label,

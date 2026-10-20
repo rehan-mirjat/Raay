@@ -34,7 +34,7 @@ class WelcomeDialog extends ConsumerWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               Text(
                 'Welcome to Kivora',
                 style: TextStyle(
@@ -44,7 +44,7 @@ class WelcomeDialog extends ConsumerWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               Text(
                 'Manage your organization, members, and secure voting events in one place.',
                 style: TextStyle(
@@ -54,7 +54,7 @@ class WelcomeDialog extends ConsumerWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
@@ -65,10 +65,10 @@ class WelcomeDialog extends ConsumerWidget {
                     backgroundColor: AppTheme.primaryBlue,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  child: Text('Take a quick tour'),
+                  child: const Text('Take a quick tour'),
                 ),
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
                 child: TextButton(
@@ -79,7 +79,7 @@ class WelcomeDialog extends ConsumerWidget {
                   style: TextButton.styleFrom(
                     foregroundColor: KivoraColors.textSecondaryOf(context),
                   ),
-                  child: Text('Skip for now'),
+                  child: const Text('Skip for now'),
                 ),
               ),
             ],

@@ -157,7 +157,7 @@ class MembersGrowthChart extends ConsumerWidget {
           LineChartBarData(
             spots: spots,
             isCurved: true,
-            gradient: LinearGradient(
+            gradient: const LinearGradient(
               colors: [AppTheme.primaryBlue, AppTheme.accentCyan],
             ),
             barWidth: 2.5,

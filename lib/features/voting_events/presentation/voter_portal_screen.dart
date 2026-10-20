@@ -45,11 +45,11 @@ class VoterPortalScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final body = const _VoterPortalBody();
+    const body = _VoterPortalBody();
     if (embedded) return body;
     return Scaffold(
       backgroundColor: KivoraColors.backgroundOf(context),
-      body: SafeArea(child: body),
+      body: const SafeArea(child: body),
     );
   }
 }
@@ -121,8 +121,8 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
         ),
         data: (entries) {
           if (entries.isEmpty) {
-            return SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
+            return const SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
               child: SizedBox(
                 height: 420,
                 child: EmptyView(
@@ -223,8 +223,8 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
                 ),
                 const SizedBox(height: 20),
                 if (filtered.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 40),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40),
                     child: EmptyView(
                       icon: KivoraIcons.search,
                       title: 'No matching elections',

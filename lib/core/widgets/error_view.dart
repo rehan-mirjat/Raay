@@ -145,7 +145,7 @@ class ErrorView extends StatelessWidget {
                               size: 20,
                             ),
                           ),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           Text(
                             statusLabel,
                             style: TextStyle(
@@ -156,7 +156,7 @@ class ErrorView extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Text(
                         effectiveTitle,
                         style: TextStyle(
@@ -165,7 +165,7 @@ class ErrorView extends StatelessWidget {
                           color: KivoraColors.textPrimaryOf(context),
                         ),
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Text(
                         message ?? '',
                         style: TextStyle(
@@ -183,7 +183,7 @@ class ErrorView extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                     decoration: BoxDecoration(
                       color: KivoraColors.surfaceOf(context),
-                      borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+                      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -198,7 +198,7 @@ class ErrorView extends StatelessWidget {
                             ),
                             child: Text(secondaryActionLabel!),
                           ),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                         ],
                         if (onRetry != null)
                           FilledButton.icon(

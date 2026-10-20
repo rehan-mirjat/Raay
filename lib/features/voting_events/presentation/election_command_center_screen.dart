@@ -190,10 +190,10 @@ class _ElectionCommandCenterScreenState
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppTheme.error.withValues(alpha: 0.3)),
             ),
-            child: Row(
+            child: const Row(
               children: [
-                const Icon(Icons.warning_amber_rounded, color: AppTheme.error),
-                const SizedBox(width: 10),
+                Icon(Icons.warning_amber_rounded, color: AppTheme.error),
+                SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     'This organization is suspended. Voting event management is disabled until it is reinstated.',

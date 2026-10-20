@@ -50,7 +50,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Delete Department',
+        title: const Text('Delete Department',
             style: TextStyle(color: AppTheme.error)),
         content: Text(
           'Are you sure you want to delete "${dept.name}"?\n\nThis permanently deletes the department. Existing member records may retain a reference to the deleted department, but the deleted department will no longer be valid for assignment or voting eligibility.',
@@ -58,7 +58,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -86,7 +86,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
-            child: Text('Delete Permanently'),
+            child: const Text('Delete Permanently'),
           ),
         ],
       ),
@@ -208,7 +208,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                           color: KivoraColors.textPrimaryOf(context),
                                         ),
                                   ),
-                                  SizedBox(height: 6),
+                                  const SizedBox(height: 6),
                                   Text(
                                     'Group members into departments to limit who is eligible to vote in an event.',
                                     style: TextStyle(
@@ -219,7 +219,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                               ),
                             ),
                             if (isManager) ...[
-                              SizedBox(width: 16),
+                              const SizedBox(width: 16),
                               FilledButton.icon(
                                 onPressed: () {
                                   showDialog(
@@ -231,8 +231,8 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                     ),
                                   );
                                 },
-                                icon: Icon(Icons.add_rounded, size: 18),
-                                label: Text('New department'),
+                                icon: const Icon(Icons.add_rounded, size: 18),
+                                label: const Text('New department'),
                                 style: FilledButton.styleFrom(
                                   backgroundColor: AppTheme.primaryBlue,
                                   padding: const EdgeInsets.symmetric(
@@ -244,7 +244,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                             ],
                           ],
                         ),
-                        SizedBox(height: 28),
+                        const SizedBox(height: 28),
 
                         // 2. Toolbar (Search Input & Sort Dropdown)
                         Row(
@@ -270,7 +270,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         color: AppTheme.primaryBlue,
                                         width: 1.5),
                                   ),
@@ -279,7 +279,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                 ),
                               ),
                             ),
-                            SizedBox(width: 12),
+                            const SizedBox(width: 12),
 
                             // Sort Dropdown
                             PopupMenuButton<String>(
@@ -316,7 +316,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                     Icon(Icons.swap_vert_rounded,
                                         size: 16,
                                         color: KivoraColors.textSecondaryOf(context)),
-                                    SizedBox(width: 8),
+                                    const SizedBox(width: 8),
                                     Text(
                                       _getSortLabel(_selectedSort),
                                       style: TextStyle(
@@ -324,7 +324,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                           fontWeight: FontWeight.w600,
                                           color: KivoraColors.textPrimaryOf(context)),
                                     ),
-                                    SizedBox(width: 6),
+                                    const SizedBox(width: 6),
                                     Icon(
                                         Icons.keyboard_arrow_down_rounded,
                                         size: 16,
@@ -335,7 +335,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
 
                         // 3. Sub-header Counter & Hint
                         Row(
@@ -347,7 +347,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                                   fontSize: 13,
                                   color: KivoraColors.textPrimaryOf(context)),
                             ),
-                            SizedBox(width: 12),
+                            const SizedBox(width: 12),
                             Expanded(
                               child: Text(
                                 'Manage members directly, or use ••• for more actions',
@@ -360,7 +360,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
 
                         // 4. Department Cards Grid
                         if (userDepts.isEmpty)
@@ -493,11 +493,11 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
       child: Row(
         children: [
           if (isSelected)
-            Icon(Icons.check_rounded,
+            const Icon(Icons.check_rounded,
                 size: 16, color: AppTheme.primaryBlue)
           else
-            SizedBox(width: 16),
-          SizedBox(width: 8),
+            const SizedBox(width: 16),
+          const SizedBox(width: 8),
           Text(
             label,
             style: TextStyle(
@@ -592,7 +592,7 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                     color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Center(
+                  child: const Center(
                     child: Icon(
                       Icons.apartment_rounded,
                       color: AppTheme.primaryBlue,
@@ -600,7 +600,7 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                     ),
                   ),
                 ),
-                SizedBox(width: 14),
+                const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -615,7 +615,7 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 2),
+                      const SizedBox(height: 2),
                       Text(
                         '$memberCount ${memberCount == 1 ? 'member' : 'members'}',
                         style: TextStyle(
@@ -626,7 +626,7 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Middle Row: Avatars Stack & Event Usage Badge
             Row(
@@ -660,9 +660,9 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Divider(height: 1, color: KivoraColors.borderOf(context)),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
 
             // Footer Row: Manage Members Link & Popup Menu
             Row(
@@ -671,7 +671,7 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                 InkWell(
                   onTap: widget.onManageMembers,
                   borderRadius: BorderRadius.circular(8),
-                  child: Padding(
+                  child: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -760,7 +760,7 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                             color: AppTheme.error.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Row(
+                          child: const Row(
                             children: [
                               Icon(Icons.delete_outline_rounded,
                                   size: 16, color: AppTheme.error),
@@ -793,7 +793,7 @@ class _DepartmentCardState extends State<_DepartmentCard> {
           color: AppTheme.primaryBlue.withValues(alpha: 0.12),
           shape: BoxShape.circle,
         ),
-        child: Icon(Icons.person_outline_rounded,
+        child: const Icon(Icons.person_outline_rounded,
             size: 16, color: AppTheme.primaryBlue),
       );
     }
@@ -830,7 +830,7 @@ class _DepartmentCardState extends State<_DepartmentCard> {
                     child: Center(
                       child: Text(
                         initials,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
@@ -843,7 +843,7 @@ class _DepartmentCardState extends State<_DepartmentCard> {
             ),
           ),
           if (remaining > 0) ...[
-            SizedBox(width: 4),
+            const SizedBox(width: 4),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
               decoration: BoxDecoration(
@@ -852,7 +852,7 @@ class _DepartmentCardState extends State<_DepartmentCard> {
               ),
               child: Text(
                 '+$remaining',
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                     color: AppTheme.primaryBlue),
@@ -926,11 +926,11 @@ class _NewDepartmentDashedCardState extends State<_NewDepartmentDashedCard> {
                   border: Border.all(
                       color: AppTheme.primaryBlue.withValues(alpha: 0.3)),
                 ),
-                child: Icon(Icons.add_rounded,
+                child: const Icon(Icons.add_rounded,
                     color: AppTheme.primaryBlue, size: 22),
               ),
-              SizedBox(height: 12),
-              Text(
+              const SizedBox(height: 12),
+              const Text(
                 'New department',
                 style: TextStyle(
                   fontSize: 15,
@@ -938,7 +938,7 @@ class _NewDepartmentDashedCardState extends State<_NewDepartmentDashedCard> {
                   color: AppTheme.primaryBlue,
                 ),
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
                 'Create a group for your members',
                 style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),

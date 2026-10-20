@@ -36,7 +36,7 @@ class EventCard extends ConsumerWidget {
                 Expanded(
                   child: Text(
                     event.title,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -44,26 +44,26 @@ class EventCard extends ConsumerWidget {
                 _buildStatusBadge(event.status),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               _getTypeLabel(event.votingType),
               style: TextStyle(fontWeight: FontWeight.w600, color: KivoraColors.textPrimaryOf(context)),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Row(
               children: [
                 Icon(Icons.schedule, size: 16, color: KivoraColors.textSecondaryOf(context)),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text('${format.format(event.startAt)} to', style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
               ],
             ),
             Row(
               children: [
-                SizedBox(width: 24),
+                const SizedBox(width: 24),
                 Text(format.format(event.endAt), style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
               ],
             ),
-            Divider(height: 32),
+            const Divider(height: 32),
             _buildActionButtons(context, ref),
           ],
         ),
@@ -127,20 +127,20 @@ class EventCard extends ConsumerWidget {
           children: [
             TextButton.icon(
               onPressed: () => _confirmDelete(context, ref),
-              icon: Icon(Icons.delete, color: AppTheme.error, size: 18),
-              label: Text('Delete', style: TextStyle(color: AppTheme.error)),
+              icon: const Icon(Icons.delete, color: AppTheme.error, size: 18),
+              label: const Text('Delete', style: TextStyle(color: AppTheme.error)),
             ),
             OutlinedButton(
               onPressed: () => context.go('/admin/events/${event.id}/choices'),
-              child: Text('Manage Choices'),
+              child: const Text('Manage Choices'),
             ),
             ElevatedButton(
               onPressed: () => context.go('/admin/events/${event.id}/edit'),
-              child: Text('Edit Config'),
+              child: const Text('Edit Config'),
             ),
             ElevatedButton(
               onPressed: () => context.go('/admin/events/${event.id}/review'),
-              child: Text('Publish'),
+              child: const Text('Publish'),
             ),
           ],
         );
@@ -152,12 +152,12 @@ class EventCard extends ConsumerWidget {
           children: [
             TextButton.icon(
               onPressed: () => _confirmCancel(context, ref),
-              icon: Icon(Icons.cancel, color: AppTheme.error, size: 18),
-              label: Text('Cancel Event', style: TextStyle(color: AppTheme.error)),
+              icon: const Icon(Icons.cancel, color: AppTheme.error, size: 18),
+              label: const Text('Cancel Event', style: TextStyle(color: AppTheme.error)),
             ),
             OutlinedButton(
               onPressed: () => context.go('/elections/${event.id}'),
-              child: Text('View Details'),
+              child: const Text('View Details'),
             ),
           ],
         );
@@ -169,12 +169,12 @@ class EventCard extends ConsumerWidget {
           children: [
             TextButton.icon(
               onPressed: () => _confirmClose(context, ref),
-              icon: Icon(Icons.stop_circle, color: AppTheme.error, size: 18),
-              label: Text('Close Early', style: TextStyle(color: AppTheme.error)),
+              icon: const Icon(Icons.stop_circle, color: AppTheme.error, size: 18),
+              label: const Text('Close Early', style: TextStyle(color: AppTheme.error)),
             ),
             ElevatedButton(
               onPressed: () => context.go('/admin/events/${event.id}/monitor'),
-              child: Text('Monitor Turnout'),
+              child: const Text('Monitor Turnout'),
             ),
           ],
         );
@@ -187,7 +187,7 @@ class EventCard extends ConsumerWidget {
           children: [
             ElevatedButton(
               onPressed: () => context.go('/elections/${event.id}/results'),
-              child: Text('View Results'),
+              child: const Text('View Results'),
             ),
           ],
         );
@@ -199,7 +199,7 @@ class EventCard extends ConsumerWidget {
           children: [
             OutlinedButton(
               onPressed: () => context.go('/elections/${event.id}'),
-              child: Text('View Details'),
+              child: const Text('View Details'),
             ),
           ],
         );
@@ -210,13 +210,13 @@ class EventCard extends ConsumerWidget {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Delete Draft Event?'),
+        title: const Text('Delete Draft Event?'),
         content: Text('Are you sure you want to permanently delete "${event.title}"? This cannot be undone.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text('Delete', style: TextStyle(color: AppTheme.error)),
+            child: const Text('Delete', style: TextStyle(color: AppTheme.error)),
           ),
         ],
       )
@@ -230,13 +230,13 @@ class EventCard extends ConsumerWidget {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Cancel Scheduled Event?'),
+        title: const Text('Cancel Scheduled Event?'),
         content: Text('Are you sure you want to cancel "${event.title}"? It will not become active.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text('Keep Scheduled')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Keep Scheduled')),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text('Cancel Event', style: TextStyle(color: AppTheme.error)),
+            child: const Text('Cancel Event', style: TextStyle(color: AppTheme.error)),
           ),
         ],
       )
@@ -250,13 +250,13 @@ class EventCard extends ConsumerWidget {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Close Event Early?'),
+        title: const Text('Close Event Early?'),
         content: Text('Are you sure you want to close "${event.title}"? No further votes will be accepted.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text('Close Early', style: TextStyle(color: AppTheme.error)),
+            child: const Text('Close Early', style: TextStyle(color: AppTheme.error)),
           ),
         ],
       )

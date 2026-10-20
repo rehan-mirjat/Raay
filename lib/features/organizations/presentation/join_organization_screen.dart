@@ -225,7 +225,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                   color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.key_outlined,
                   size: 24,
                   color: AppTheme.primaryBlue,
@@ -238,7 +238,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
               ),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
 
           Text(
             'Join organization with code',
@@ -247,12 +247,12 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                   color: KivoraColors.textPrimaryOf(context),
                 ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             'Enter the joining code shared by your organization\'s owner to find your workspace.',
             style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14, height: 1.4),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
 
           Text(
             'JOINING CODE',
@@ -263,7 +263,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
               letterSpacing: 0.5,
             ),
           ),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           TextFormField(
             controller: _codeController,
             textCapitalization: TextCapitalization.characters,
@@ -276,19 +276,19 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
             ),
             validator: (v) => Validators.required(v, 'Joining Code'),
           ),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           Text(
             'Paste the complete code exactly as it was shared with you.',
             style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           TextButton.icon(
             onPressed: () => context.go('/orgs/join/scan'),
-            icon: Icon(KivoraIcons.qrCode, size: 18),
+            icon: const Icon(KivoraIcons.qrCode, size: 18),
             label: const Text('Scan QR code instead'),
             style: TextButton.styleFrom(padding: EdgeInsets.zero),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
 
           // Info Callout Box
           Container(
@@ -300,8 +300,8 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.info_outline_rounded, color: AppTheme.primaryBlue, size: 18),
-                SizedBox(width: 10),
+                const Icon(Icons.info_outline_rounded, color: AppTheme.primaryBlue, size: 18),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,7 +310,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                         'Don\'t have a code?',
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: KivoraColors.textPrimaryOf(context)),
                       ),
-                      SizedBox(height: 2),
+                      const SizedBox(height: 2),
                       Text(
                         'Ask your organization\'s owner for one. If a code is invalid or expired, request a new code.',
                         style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.4),
@@ -321,7 +321,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
               ],
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           Text(
             'You\'ll review the organization before confirming that you want to join.',
@@ -329,11 +329,11 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
           ),
 
           if (_error != null) ...[
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             InlineErrorBanner(message: _error!),
           ],
 
-          SizedBox(height: 28),
+          const SizedBox(height: 28),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -343,9 +343,9 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 ),
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               FilledButton(
                 onPressed: canSubmit ? _findOrganization : null,
                 style: FilledButton.styleFrom(
@@ -353,12 +353,12 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
                 child: _isLoading
-                    ? SizedBox(
+                    ? const SizedBox(
                         height: 16,
                         width: 16,
                         child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                       )
-                    : Text('Find organization'),
+                    : const Text('Find organization'),
               ),
             ],
           ),
@@ -382,7 +382,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                 color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.domain_verification_outlined,
                 size: 24,
                 color: AppTheme.primaryBlue,
@@ -395,7 +395,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
             ),
           ],
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Text(
           'Is this your organization?',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -403,12 +403,12 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                 color: KivoraColors.textPrimaryOf(context),
               ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(
           'Confirm this is the workspace you want to join before continuing.',
           style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14, height: 1.4),
         ),
-        SizedBox(height: 24),
+        const SizedBox(height: 24),
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -425,11 +425,11 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                     ? NetworkImage(preview.logoUrl!)
                     : null,
                 child: preview.logoUrl == null
-                    ? Icon(Icons.business_outlined,
+                    ? const Icon(Icons.business_outlined,
                         color: AppTheme.primaryBlue)
                     : null,
               ),
-              SizedBox(width: 14),
+              const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -441,7 +441,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                           fontSize: 16,
                           color: KivoraColors.textPrimaryOf(context)),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
                         Icon(
@@ -453,7 +453,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                               ? AppTheme.success
                               : KivoraColors.textSecondaryOf(context),
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Text(
                           preview.verified ? 'Verified' : 'Pending verification',
                           style: TextStyle(
@@ -472,11 +472,11 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
         ),
 
         if (_error != null) ...[
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           InlineErrorBanner(message: _error!),
         ],
 
-        SizedBox(height: 28),
+        const SizedBox(height: 28),
 
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -486,9 +486,9 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
-              child: Text('Use a different code'),
+              child: const Text('Use a different code'),
             ),
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             FilledButton(
               onPressed: _isLoading ? null : _confirmJoin,
               style: FilledButton.styleFrom(
@@ -496,7 +496,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
               child: _isLoading
-                  ? SizedBox(
+                  ? const SizedBox(
                       height: 16,
                       width: 16,
                       child: CircularProgressIndicator(

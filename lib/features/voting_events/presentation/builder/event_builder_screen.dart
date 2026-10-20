@@ -103,19 +103,19 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
         final confirm = await showDialog<bool>(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: Text('Discard Changes?'),
-            content: Text(
+            title: const Text('Discard Changes?'),
+            content: const Text(
                 'Are you sure you want to leave the builder? Unsaved progress will be lost.'),
             actions: [
               TextButton(
                   onPressed: () => Navigator.pop(ctx, false),
-                  child: Text('Cancel')),
+                  child: const Text('Cancel')),
               TextButton(
                 onPressed: () {
                   ref.read(draftEventProvider(orgId).notifier).reset();
                   Navigator.pop(ctx, true);
                 },
-                child: Text('Leave',
+                child: const Text('Leave',
                     style: TextStyle(color: AppTheme.error)),
               ),
             ],
@@ -156,7 +156,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                           }
                         },
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Text(
                         draftState.serverEventId != null
                             ? 'Edit Event Draft'
@@ -168,7 +168,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Expanded(
                     child: Theme(
                       data: Theme.of(context).copyWith(
@@ -190,14 +190,14 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                             const SizedBox.shrink(), // Custom controls in each step
                         steps: [
                           Step(
-                            title: Text('Basic Info'),
+                            title: const Text('Basic Info'),
                             content: BasicInfoStep(
                                 orgId: orgId, onNext: () => setState(() => _currentStep = 1)),
                             isActive: _currentStep >= 0,
                             state: _currentStep > 0 ? StepState.complete : StepState.indexed,
                           ),
                           Step(
-                            title: Text('Schedule'),
+                            title: const Text('Schedule'),
                             content: ScheduleStep(
                                 orgId: orgId,
                                 onNext: () => setState(() => _currentStep = 2),
@@ -206,7 +206,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                             state: _currentStep > 1 ? StepState.complete : StepState.indexed,
                           ),
                           Step(
-                            title: Text('Eligibility'),
+                            title: const Text('Eligibility'),
                             content: EligibilityStep(
                                 orgId: orgId,
                                 onNext: () => setState(() => _currentStep = 3),
@@ -215,15 +215,15 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                             state: _currentStep > 2 ? StepState.complete : StepState.indexed,
                           ),
                           Step(
-                            title: Text('Choices'),
+                            title: const Text('Choices'),
                             content: draftState.serverEventId == null
                                 ? Padding(
                                     padding: const EdgeInsets.symmetric(vertical: 24),
                                     child: Column(
                                       children: [
-                                        Text(
+                                        const Text(
                                             'Please complete the Eligibility step and tap "Create Draft & Continue" first.'),
-                                        SizedBox(height: 16),
+                                        const SizedBox(height: 16),
                                         ElevatedButton(
                                           onPressed: () async {
                                             final success = await ref
@@ -233,6 +233,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                                             if (success) {
                                               setState(() {});
                                             } else {
+                                              if (!context.mounted) return;
                                               final error = ref
                                                   .read(draftEventProvider(orgId))
                                                   .error;
@@ -245,7 +246,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                                               );
                                             }
                                           },
-                                          child: Text('Create Draft Now'),
+                                          child: const Text('Create Draft Now'),
                                         ),
                                       ],
                                     ),
@@ -258,9 +259,9 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                             state: _currentStep > 3 ? StepState.complete : StepState.indexed,
                           ),
                           Step(
-                            title: Text('Review'),
+                            title: const Text('Review'),
                             content: draftState.serverEventId == null
-                                ? Center(child: Text('Create Draft first.'))
+                                ? const Center(child: Text('Create Draft first.'))
                                 : ReviewStep(
                                     orgId: orgId,
                                     onBack: () => setState(() => _currentStep = 3)),

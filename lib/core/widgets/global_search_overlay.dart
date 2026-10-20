@@ -355,11 +355,11 @@ class _GlobalSearchDialogState extends ConsumerState<_GlobalSearchDialog> {
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Row(
                     children: [
-                      _Kbd('↑↓'),
+                      const _Kbd('↑↓'),
                       const SizedBox(width: 4),
                       Text('navigate', style: TextStyle(fontSize: 11, color: kc.textSecondary)),
                       const SizedBox(width: 12),
-                      _Kbd('↵'),
+                      const _Kbd('↵'),
                       const SizedBox(width: 4),
                       Text('open', style: TextStyle(fontSize: 11, color: kc.textSecondary)),
                       const Spacer(),
@@ -458,7 +458,7 @@ class _ResultTile extends StatelessWidget {
                 ),
               ),
               if (isSelected)
-                Icon(Icons.keyboard_return_rounded,
+                const Icon(Icons.keyboard_return_rounded,
                     size: 14, color: AppTheme.primaryBlue),
             ],
           ),

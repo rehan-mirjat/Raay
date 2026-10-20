@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kivora/core/theme/kivora_icons.dart';
+import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
+import 'package:kivora/core/widgets/ui_kit/kivora_text_field.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
@@ -83,265 +86,221 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
 
   @override
   Widget build(BuildContext context) {
-    if (_invitedEmail != null) {
-      return AlertDialog(
-        backgroundColor: Colors.white,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-        scrollable: true,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Icon(Icons.check_circle_outline, color: AppTheme.success, size: 24),
-            SizedBox(width: 10),
-            Expanded(
-                child: Text('Invitation Created',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: KivoraColors.textPrimaryOf(context)))),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'An invitation was created for $_invitedEmail.',
-              style:
-                  TextStyle(fontSize: 14, color: KivoraColors.textSecondaryOf(context)),
-            ),
-            SizedBox(height: 16),
-            Text(
-              'The invitee will see it in Kivora Notifications after creating or signing into a verified account with this email address. They can accept or decline it there.',
-              style: TextStyle(
-                  fontSize: 13, color: KivoraColors.textSecondaryOf(context), height: 1.45),
-            ),
-            if (_inviteLink != null) ...[
-              SizedBox(height: 16),
-              Text(
-                'Or share this invite link directly - there\'s no automatic email, so share it however you prefer (email, chat, etc.):',
-                style: TextStyle(
-                    fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.4),
-              ),
-              SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: KivoraColors.backgroundOf(context),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: KivoraColors.borderOf(context)),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _inviteLink!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 12, color: KivoraColors.textPrimaryOf(context)),
-                      ),
-                    ),
-                    SizedBox(width: 4),
-                    IconButton(
-                      tooltip: _linkCopied ? 'Copied' : 'Copy link',
-                      onPressed: () async {
-                        await Clipboard.setData(
-                            ClipboardData(text: _inviteLink!));
-                        if (mounted) setState(() => _linkCopied = true);
-                      },
-                      constraints: const BoxConstraints(
-                          minWidth: 44, minHeight: 44),
-                      icon: Icon(
-                        _linkCopied
-                            ? Icons.check_rounded
-                            : Icons.copy_rounded,
-                        size: 18,
-                        color: _linkCopied
-                            ? AppTheme.success
-                            : AppTheme.primaryBlue,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ],
-        ),
-        actions: [
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text('Done'),
-          ),
-        ],
-      );
-    }
+    final kc = KivoraColors.of(context);
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
-    return AlertDialog(
-      backgroundColor: Colors.white,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      scrollable: true,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  'Invite a new member',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: KivoraColors.textPrimaryOf(context)),
-                ),
-              ),
-              IconButton(
-                icon: Icon(Icons.close,
-                    color: KivoraColors.textSecondaryOf(context), size: 20),
-                onPressed: _isLoading ? null : () => Navigator.pop(context),
-              ),
-            ],
-          ),
-          SizedBox(height: 4),
-          Text(
-            'Invite someone to your organization. They can respond from Notifications.',
-            style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context)),
-          ),
-        ],
-      ),
-      content: SingleChildScrollView(
+    if (_invitedEmail != null) {
+      return Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        backgroundColor: kc.surface,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 440),
-          child: Form(
-            key: _formKey,
+          constraints: const BoxConstraints(maxWidth: 480),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(height: 8),
-                Text('EMAIL ADDRESS',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 11,
-                        color: KivoraColors.textPrimaryOf(context),
-                        letterSpacing: 0.5)),
-                SizedBox(height: 8),
-                TextFormField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Recipient Email Address *',
-                    hintText: 'voter@organization.com',
-                    prefixIcon: Icon(Icons.email_outlined, size: 20),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) => _submit(),
-                  validator: Validators.email,
-                ),
-                SizedBox(height: 20),
-                Text('ORGANIZATION',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 11,
-                        color: KivoraColors.textPrimaryOf(context),
-                        letterSpacing: 0.5)),
-                SizedBox(height: 8),
-                TextFormField(
-                  initialValue: widget.organizationName,
-                  readOnly: true,
-                  enabled: false,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.business_outlined, size: 20),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Text('ROLE',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 11,
-                        color: KivoraColors.textPrimaryOf(context),
-                        letterSpacing: 0.5)),
-                SizedBox(height: 8),
-                if (widget.isOwner)
-                  DropdownButtonFormField<String>(
-                    initialValue: _selectedRole,
-                    decoration: const InputDecoration(
-                      prefixIcon:
-                          Icon(Icons.admin_panel_settings_outlined, size: 20),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppTheme.success.withValues(alpha: 0.12),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(KivoraIcons.checkCircle2,
+                          color: AppTheme.success, size: 22),
                     ),
-                    items: const [
-                      DropdownMenuItem(value: 'member', child: Text('Member')),
-                      DropdownMenuItem(value: 'admin', child: Text('Admin')),
-                    ],
-                    onChanged: (val) {
-                      if (val != null) setState(() => _selectedRole = val);
-                    },
-                  )
-                else
-                  TextFormField(
-                    initialValue: 'Member',
-                    readOnly: true,
-                    enabled: false,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.person_outline, size: 20),
-                      suffixIcon: Tooltip(
-                        message: 'Admins can invite Member role only',
-                        child: Icon(Icons.lock_outline,
-                            size: 18, color: KivoraColors.textSecondaryOf(context)),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Invitation Created',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: kc.textPrimary,
                       ),
                     ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'An invitation was created for $_invitedEmail.',
+                  style: TextStyle(fontSize: 14, color: kc.textPrimary, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'The invitee will see it in Kivora Notifications after logging in. They can accept or decline there.',
+                  style: TextStyle(fontSize: 13, color: kc.textSecondary, height: 1.4),
+                ),
+                if (_inviteLink != null) ...[
+                  const SizedBox(height: 16),
+                  Text(
+                    'Share this direct link with the invitee:',
+                    style: TextStyle(fontSize: 12, color: kc.textSecondary),
                   ),
-                if (_error != null) ...[
-                  SizedBox(height: 20),
+                  const SizedBox(height: 8),
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
-                      color: AppTheme.error.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                          color: AppTheme.error.withValues(alpha: 0.3)),
+                      color: kc.background,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: kc.border),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.error_outline,
-                            color: AppTheme.error, size: 20),
-                        SizedBox(width: 8),
                         Expanded(
-                          child: Text(_error!,
-                              style: TextStyle(
-                                  color: AppTheme.error,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold)),
+                          child: Text(
+                            _inviteLink!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 12, color: kc.textPrimary),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            _linkCopied ? KivoraIcons.check : KivoraIcons.copy,
+                            size: 18,
+                            color: _linkCopied ? AppTheme.success : AppTheme.primaryBlue,
+                          ),
+                          onPressed: () async {
+                            await Clipboard.setData(ClipboardData(text: _inviteLink!));
+                            if (mounted) setState(() => _linkCopied = true);
+                          },
                         ),
                       ],
                     ),
                   ),
                 ],
+                const SizedBox(height: 24),
+                KivoraButton(
+                  label: 'Done',
+                  onPressed: () => Navigator.pop(context, true),
+                ),
               ],
             ),
           ),
         ),
+      );
+    }
+
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: kc.surface,
+      child: SizedBox(
+        width: (screenWidth - 80).clamp(280.0, 480.0),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: AppTheme.primaryBlue.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(KivoraIcons.userPlus,
+                                color: AppTheme.primaryBlue, size: 20),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Invite Member',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: kc.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                        icon: const Icon(KivoraIcons.x, size: 20),
+                        onPressed: _isLoading ? null : () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Invite someone to join your workspace.',
+                    style: TextStyle(fontSize: 13, color: kc.textSecondary),
+                  ),
+                  const SizedBox(height: 20),
+                  KivoraTextField(
+                    controller: _emailController,
+                    label: 'Recipient Email Address *',
+                    hint: 'voter@organization.com',
+                    prefixIcon: KivoraIcons.mail,
+                    keyboardType: TextInputType.emailAddress,
+                    validator: Validators.email,
+                  ),
+                  const SizedBox(height: 16),
+                  KivoraTextField(
+                    label: 'Organization',
+                    controller: TextEditingController(text: widget.organizationName),
+                    prefixIcon: KivoraIcons.building,
+                  ),
+                  const SizedBox(height: 16),
+                  if (widget.isOwner) ...[
+                    const Text(
+                      'Role Permission',
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 8),
+                    DropdownButtonFormField<String>(
+                      initialValue: _selectedRole,
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(KivoraIcons.shieldCheck, size: 20),
+                      ),
+                      items: const [
+                        DropdownMenuItem(value: 'member', child: Text('Member')),
+                        DropdownMenuItem(value: 'admin', child: Text('Admin')),
+                      ],
+                      onChanged: (val) {
+                        if (val != null) setState(() => _selectedRole = val);
+                      },
+                    ),
+                  ],
+                  if (_error != null) ...[
+                    const SizedBox(height: 16),
+                    Text(_error!, style: const TextStyle(color: AppTheme.error, fontSize: 13)),
+                  ],
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: KivoraButton(
+                          type: KivoraButtonType.secondary,
+                          label: 'Cancel',
+                          onPressed: _isLoading ? null : () => Navigator.pop(context),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: KivoraButton(
+                          label: 'Send Invitation',
+                          icon: KivoraIcons.send,
+                          isLoading: _isLoading,
+                          onPressed: _submit,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
-      actions: [
-        TextButton(
-          onPressed: _isLoading ? null : () => Navigator.pop(context),
-          child: Text('Cancel'),
-        ),
-        ElevatedButton.icon(
-          onPressed: _isLoading ? null : _submit,
-          icon: _isLoading
-              ? SizedBox(
-                  height: 16,
-                  width: 16,
-                  child: CircularProgressIndicator(
-                      color: Colors.white, strokeWidth: 2))
-              : Icon(Icons.send_outlined, size: 18),
-          label: Text(_isLoading ? 'Sending...' : 'Send Invitation'),
-        ),
-      ],
     );
   }
 }

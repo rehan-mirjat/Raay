@@ -188,7 +188,7 @@ class OrganizationListScreen extends ConsumerWidget {
                                             ? const Icon(KivoraIcons.building2, color: AppTheme.primaryBlue)
                                             : null,
                                       ),
-                                      const Spacer(),
+                                      const Expanded(child: SizedBox()),
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                         decoration: BoxDecoration(
@@ -218,7 +218,7 @@ class OrganizationListScreen extends ConsumerWidget {
                                       ),
                                     ],
                                   ),
-                                  const Spacer(),
+                                  const Expanded(child: SizedBox()),
                                   Text(
                                     org.name,
                                     style: TextStyle(

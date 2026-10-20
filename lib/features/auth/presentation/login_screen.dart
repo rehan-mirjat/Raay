@@ -12,6 +12,7 @@ import '../../../core/widgets/totp_challenge_dialog.dart';
 import '../../../core/widgets/ui_kit/kivora_button.dart';
 import '../../../core/widgets/ui_kit/kivora_text_field.dart';
 import 'package:kivora/core/theme/kivora_icons.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../services/auth_service.dart';
 import 'email_verification_screen.dart';
 import 'widgets/auth_split_layout.dart';
@@ -171,6 +172,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     final isMobile = ResponsiveLayout.isCompact(context);
     final kc = KivoraColors.of(context);
+    final l10n = AppLocalizations.of(context);
 
     return AuthSplitLayout(
       child: Center(
@@ -218,7 +220,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       SizedBox(height: isMobile ? 16 : 20),
                       Text(
-                        'Welcome Back',
+                        l10n.authSignInTitle,
                         style:
                             Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
@@ -227,7 +229,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        'Access your account and start voting',
+                        l10n.authSignInSubtitle,
                         style: TextStyle(color: kc.textSecondary, fontSize: 14),
                         textAlign: TextAlign.center,
                       ),
@@ -237,7 +239,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             KivoraTextField(
-                              label: 'Email address',
+                              label: l10n.authEmail,
                               controller: _emailController,
                               hint: 'user@email.com',
                               prefixIcon: KivoraIcons.mail,
@@ -248,7 +250,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                             const SizedBox(height: 16),
                             KivoraTextField(
-                              label: 'Password',
+                              label: l10n.authPassword,
                               controller: _passwordController,
                               obscureText: _obscurePassword,
                               textInputAction: TextInputAction.done,
@@ -282,8 +284,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             padding: EdgeInsets.zero,
                             minimumSize: const Size(0, 0),
                           ),
-                          child: const Text('Forgot Password?',
-                              style: TextStyle(fontSize: 13)),
+                          child: Text(l10n.authForgotPassword,
+                              style: const TextStyle(fontSize: 13)),
                         ),
                       ),
                       if (_error != null) ...[
@@ -295,7 +297,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         onPressed: _submit,
                         isLoading: _isLoading,
                         icon: KivoraIcons.shieldCheck,
-                        label: 'Sign In Securely',
+                        label: l10n.authSignInButton,
                       ),
                       SizedBox(height: isMobile ? 16 : 20),
                       Row(
@@ -317,7 +319,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         type: KivoraButtonType.secondary,
                         onPressed: _isLoading ? null : _googleSignIn,
                         icon: null,
-                        label: 'Continue with Google',
+                        label: l10n.authContinueWithGoogle,
                       ),
                       SizedBox(height: isMobile ? 20 : 28),
                       Center(

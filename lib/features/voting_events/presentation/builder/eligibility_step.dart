@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kivora/core/theme/kivora_icons.dart';
+import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
 
 import '../../../../core/widgets/loading_view.dart';
 import '../../../departments/presentation/providers/department_providers.dart';
 import '../../../organizations/presentation/membership_directory_screen.dart';
 import '../../domain/voting_event.dart';
 import '../providers/draft_event_provider.dart';
+import 'csv_import/csv_import_modal.dart';
 
 class EligibilityStep extends ConsumerStatefulWidget {
   final String orgId;
@@ -195,34 +198,71 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
           return const Text('No active members found.');
         }
 
-        return ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: 300),
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: activeMembers.length,
-            itemBuilder: (ctx, i) {
-              final m = activeMembers[i];
-              final uid = m['userId'] as String;
-              final name = m['displayName'] as String;
-              return CheckboxListTile(
-                title: Text(name),
-                subtitle: Text(m['email'] as String),
-                value: _selectedUsers.contains(uid),
-                onChanged: isDraft
-                    ? (val) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${_selectedUsers.length} selected of ${activeMembers.length} active members',
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                ),
+                if (isDraft)
+                  KivoraButton(
+                    type: KivoraButtonType.ghost,
+                    icon: KivoraIcons.fileSpreadsheet,
+                    label: 'CSV Bulk Import',
+                    isExpanded: false,
+                    onPressed: () async {
+                      final matchedUids = await showDialog<List<String>>(
+                        context: context,
+                        builder: (ctx) => CsvImportModal(
+                          organizationMembers: activeMembers,
+                        ),
+                      );
+                      if (matchedUids != null && mounted) {
                         setState(() {
-                          if (val == true) {
-                            _selectedUsers.add(uid);
-                          } else {
-                            _selectedUsers.remove(uid);
-                          }
+                          // Merge imported UIDs with existing selected users
+                          _selectedUsers = {..._selectedUsers, ...matchedUids}.toList();
                         });
                         _saveSelection();
                       }
-                    : null,
-              );
-            },
-          ),
+                    },
+                  ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 300),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: activeMembers.length,
+                itemBuilder: (ctx, i) {
+                  final m = activeMembers[i];
+                  final uid = m['userId'] as String;
+                  final name = m['displayName'] as String;
+                  return CheckboxListTile(
+                    title: Text(name),
+                    subtitle: Text(m['email'] as String),
+                    value: _selectedUsers.contains(uid),
+                    onChanged: isDraft
+                        ? (val) {
+                            setState(() {
+                              if (val == true) {
+                                _selectedUsers.add(uid);
+                              } else {
+                                _selectedUsers.remove(uid);
+                              }
+                            });
+                            _saveSelection();
+                          }
+                        : null,
+                  );
+                },
+              ),
+            ),
+          ],
         );
       },
     );

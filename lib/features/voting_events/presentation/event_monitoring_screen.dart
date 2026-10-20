@@ -81,17 +81,17 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Close voting now?'),
-        content: Text(
+        title: const Text('Close voting now?'),
+        content: const Text(
             'Closing is final. Members will no longer be able to vote, and this cannot be undone. Results stay hidden until you calculate and publish them.'),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: Text('Cancel')),
+              child: const Text('Cancel')),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text('Close voting'),
+            child: const Text('Close voting'),
           ),
         ],
       ),
@@ -183,21 +183,21 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 _buildHeader(event),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                                 _buildPrivacyBanner(),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                                 _buildStatsRow(),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                                 _buildMainGrid(event),
                                 if (event?.status ==
                                     VotingEventStatus.active) ...[
-                                  SizedBox(height: 20),
+                                  const SizedBox(height: 20),
                                   _buildCloseEarlyBanner(),
                                 ],
                                 if (_error != null) ...[
-                                  SizedBox(height: 12),
+                                  const SizedBox(height: 12),
                                   Text('Refresh issue: $_error',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: AppTheme.error, fontSize: 12)),
                                 ],
                               ],
@@ -218,14 +218,14 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Icon(Icons.lock_outline_rounded,
               size: 44, color: KivoraColors.textSecondaryOf(context)),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Text('Turnout could not be loaded: $_error',
               textAlign: TextAlign.center),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           OutlinedButton.icon(
               onPressed: _refresh,
-              icon: Icon(Icons.refresh),
-              label: Text('Try again')),
+              icon: const Icon(Icons.refresh),
+              label: const Text('Try again')),
         ]),
       ),
     );
@@ -249,7 +249,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
               children: [
                 Icon(Icons.arrow_back_rounded,
                     size: 16, color: KivoraColors.textSecondaryOf(context)),
-                SizedBox(width: 6),
+                const SizedBox(width: 6),
                 Text(event?.title ?? 'Back',
                     style: TextStyle(
                         color: KivoraColors.textSecondaryOf(context), fontSize: 13)),
@@ -257,7 +257,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
             ),
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: 12,
@@ -270,7 +270,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
             if (event != null) _statusChip(event.status),
           ],
         ),
-        SizedBox(height: 4),
+        const SizedBox(height: 4),
         Text(
           [
             if (event != null) event.title,
@@ -278,7 +278,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
           ].join(' · '),
           style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 13),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -287,10 +287,10 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
                 Container(
                   width: 8,
                   height: 8,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       color: AppTheme.success, shape: BoxShape.circle),
                 ),
-                SizedBox(width: 6),
+                const SizedBox(width: 6),
                 Text(
                   _refreshedAt == null
                       ? 'Live'
@@ -302,8 +302,8 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
             ),
             OutlinedButton.icon(
               onPressed: _loading ? null : _refresh,
-              icon: Icon(Icons.refresh_rounded, size: 16),
-              label: Text('Refresh'),
+              icon: const Icon(Icons.refresh_rounded, size: 16),
+              label: const Text('Refresh'),
             ),
           ],
         ),
@@ -339,9 +339,9 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
       ),
       child: Row(
         children: [
-          Icon(Icons.lock_outline_rounded,
+          const Icon(Icons.lock_outline_rounded,
               size: 18, color: AppTheme.primaryBlue),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Expanded(
             child: Text(
               'Counts only. No voter identities or ballot selections are visible. Results stay hidden until this event is closed and published.',
@@ -367,11 +367,11 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
       child: Row(
         children: [
           Text('${turnout.toStringAsFixed(0)}%',
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
                   color: AppTheme.primaryBlue)),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -380,7 +380,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
                 Text('Eligible members who participated',
                     style:
                         TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 LinearProgressIndicator(
                   value: eligible == 0
                       ? 0
@@ -388,7 +388,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
                   minHeight: 6,
                   borderRadius: BorderRadius.circular(999),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text('$voted of $eligible',
                     style: TextStyle(
                         fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
@@ -404,11 +404,11 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
         Expanded(
             child: _miniStat('Eligible', '$eligible', Icons.groups_outlined,
                 'All active members')),
-        SizedBox(width: 12),
+        const SizedBox(width: 12),
         Expanded(
             child: _miniStat('Voted', '$voted',
                 Icons.check_circle_outline_rounded, 'Ballots submitted')),
-        SizedBox(width: 12),
+        const SizedBox(width: 12),
         Expanded(
             child: _miniStat('Not yet', '$notYet', Icons.schedule_rounded,
                 'Members remaining')),
@@ -426,14 +426,14 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(flex: 2, child: turnoutCard),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(flex: 3, child: miniStats),
           ],
         ),
       );
     }
     return Column(
-        children: [turnoutCard, SizedBox(height: 12), miniStats]);
+        children: [turnoutCard, const SizedBox(height: 12), miniStats]);
   }
 
   Widget _miniStat(String label, String value, IconData icon, String caption) {
@@ -446,19 +446,19 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
           Row(
             children: [
               Icon(icon, size: 14, color: KivoraColors.textSecondaryOf(context)),
-              SizedBox(width: 6),
+              const SizedBox(width: 6),
               Text(label,
                   style: TextStyle(
                       fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
             ],
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(value,
               style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: KivoraColors.textPrimaryOf(context))),
-          SizedBox(height: 2),
+          const SizedBox(height: 2),
           Text(caption,
               style:
                   TextStyle(fontSize: 10, color: KivoraColors.textSecondaryOf(context))),
@@ -472,7 +472,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildParticipationChart(),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         _buildDepartmentBreakdown(),
       ],
     );
@@ -480,7 +480,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (event != null) _buildEventDetailsCard(event),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         _buildBoostTurnoutCard(),
       ],
     );
@@ -490,12 +490,12 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(flex: 2, child: left),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           Expanded(flex: 1, child: right),
         ],
       );
     }
-    return Column(children: [left, SizedBox(height: 16), right]);
+    return Column(children: [left, const SizedBox(height: 16), right]);
   }
 
   Widget _buildParticipationChart() {
@@ -535,7 +535,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: KivoraColors.textPrimaryOf(context))),
-                  SizedBox(height: 2),
+                  const SizedBox(height: 2),
                   Text('Cumulative participation since the event opened',
                       style: TextStyle(
                           fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
@@ -549,14 +549,14 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text('$total voted',
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.white,
                         fontSize: 11,
                         fontWeight: FontWeight.bold)),
               ),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           SizedBox(
             height: 180,
             child: LineChart(
@@ -619,14 +619,14 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
           Text('Turnout by department',
               style: TextStyle(
                   fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context))),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           if (rows.isEmpty)
             Text('No department data available for this event.',
                 style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context)))
           else ...[
             for (final raw in rows)
               _departmentRow(Map<String, dynamic>.from(raw as Map)),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
                 'Groups with fewer than 5 eligible members are combined.',
                 style: TextStyle(fontSize: 10, color: KivoraColors.textSecondaryOf(context))),
@@ -651,7 +651,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
             children: [
               Expanded(
                   child: Text(name,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 13, fontWeight: FontWeight.w600),
                       overflow: TextOverflow.ellipsis)),
               Text(
@@ -660,7 +660,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
                       fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
             ],
           ),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           LinearProgressIndicator(
             value: eligible == 0
                 ? 0
@@ -684,13 +684,13 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
           Row(children: [
             Icon(Icons.info_outline_rounded,
                 size: 16, color: KivoraColors.textPrimaryOf(context)),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Text('Event details',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: KivoraColors.textPrimaryOf(context))),
           ]),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _detailRow('Voting window',
               '${dateFormat.format(event.startAt)} – ${dateFormat.format(event.endAt)}'),
           _detailRow(
@@ -714,10 +714,10 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
           Text(label,
               style:
                   TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
-          SizedBox(height: 2),
+          const SizedBox(height: 2),
           Text(value,
               style:
-                  TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                  const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
         ],
       ),
     );
@@ -733,38 +733,38 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
           Row(children: [
             Icon(Icons.notifications_outlined,
                 size: 16, color: KivoraColors.textPrimaryOf(context)),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Text('Boost turnout',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: KivoraColors.textPrimaryOf(context))),
           ]),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
             "Remind members who haven't voted. Reminders go to non-voters automatically; you won't see who has or hasn't.",
             style: TextStyle(
                 fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.4),
           ),
-          SizedBox(height: 14),
+          const SizedBox(height: 14),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: _isReminding ? null : _remindNonVoters,
               icon: _isReminding
-                  ? SizedBox(
+                  ? const SizedBox(
                       height: 14,
                       width: 14,
                       child: CircularProgressIndicator(
                           color: Colors.white, strokeWidth: 2))
-                  : Icon(Icons.campaign_outlined, size: 16),
+                  : const Icon(Icons.campaign_outlined, size: 16),
               label: Text(_isReminding ? 'Sending…' : 'Remind non-voters'),
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Row(children: [
             Icon(Icons.shield_outlined,
                 size: 12, color: KivoraColors.textSecondaryOf(context)),
-            SizedBox(width: 4),
+            const SizedBox(width: 4),
             Text('Participation stays private',
                 style: TextStyle(fontSize: 10, color: KivoraColors.textSecondaryOf(context))),
           ]),
@@ -788,7 +788,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: KivoraColors.textPrimaryOf(context))),
-              SizedBox(height: 2),
+              const SizedBox(height: 2),
               Text(
                 "Closing is final. You'll need to sign in again if your last sign-in was over 15 minutes ago. Results remain hidden until the event is closed and published.",
                 style: TextStyle(
@@ -803,12 +803,12 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
       style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
       onPressed: _isClosing ? null : _closeVotingNow,
       child: _isClosing
-          ? SizedBox(
+          ? const SizedBox(
               height: 16,
               width: 16,
               child: CircularProgressIndicator(
                   color: Colors.white, strokeWidth: 2))
-          : Text('Close voting now'),
+          : const Text('Close voting now'),
     );
 
     return Container(
@@ -821,12 +821,12 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
       child: isWide
           ? Row(children: [
               Expanded(child: warning),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               button
             ])
           : Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               warning,
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               button,
             ]),
     );

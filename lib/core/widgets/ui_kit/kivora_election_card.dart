@@ -89,8 +89,9 @@ class KivoraElectionCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 20),
+          ] else ...[
+            const SizedBox(height: 12),
           ],
-          const Spacer(),
           Row(
             children: [
               if (isActive && !isAdmin)

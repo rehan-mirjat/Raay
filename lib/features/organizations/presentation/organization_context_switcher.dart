@@ -51,7 +51,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                                 fontWeight: FontWeight.bold,
                                 color: KivoraColors.textPrimaryOf(context)),
                           ),
-                          SizedBox(height: 2),
+                          const SizedBox(height: 2),
                           Text(
                             'Choose the workspace you want to work in.',
                             style: TextStyle(
@@ -60,7 +60,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                         ],
                       ),
                       IconButton(
-                        icon: Icon(Icons.close_rounded, size: 20),
+                        icon: const Icon(Icons.close_rounded, size: 20),
                         onPressed: () => Navigator.pop(context),
                         style: IconButton.styleFrom(
                           foregroundColor: KivoraColors.textSecondaryOf(context),
@@ -69,29 +69,29 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   if (orgsLoading) ...[
                     const LoadingView(),
                   ] else if (orgsError) ...[
                     Column(
                       children: [
-                        Text(
+                        const Text(
                           'Could not load your organizations.',
                           textAlign: TextAlign.center,
                           style: TextStyle(color: AppTheme.error),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         TextButton.icon(
                           onPressed: () =>
                               ref.invalidate(userOrganizationsProvider),
-                          icon: Icon(Icons.refresh_rounded, size: 18),
-                          label: Text('Try again'),
+                          icon: const Icon(Icons.refresh_rounded, size: 18),
+                          label: const Text('Try again'),
                         ),
                       ],
                     ),
                   ] else if (organizations.isEmpty) ...[
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 24),
+                      padding: const EdgeInsets.symmetric(vertical: 24),
                       child: Text(
                         'No joined organizations found.',
                         textAlign: TextAlign.center,
@@ -105,7 +105,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             for (int i = 0; i < organizations.length; i++) ...[
-                              if (i > 0) SizedBox(height: 8),
+                              if (i > 0) const SizedBox(height: 8),
                               Builder(builder: (context) {
                                 final org = organizations[i];
                                 final isSelected = org.id == activeOrgId;
@@ -127,9 +127,9 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                       ),
                     ),
                   ],
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Divider(height: 1, color: KivoraColors.borderOf(context)),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   _buildMenuItem(
                     context,
                     icon: Icons.key_outlined,
@@ -206,7 +206,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
         child: Row(
           children: [
             Icon(icon, size: 18, color: AppTheme.primaryBlue),
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             Text(
               label,
               style: TextStyle(
@@ -225,15 +225,15 @@ class OrganizationContextSwitcher extends ConsumerWidget {
     final activeContextState = ref.watch(activeOrganizationContextProvider);
 
     return activeContextState.when(
-      loading: () => SizedBox(
+      loading: () => const SizedBox(
         height: 24,
         width: 24,
         child: CircularProgressIndicator(strokeWidth: 2),
       ),
       error: (_, __) => TextButton.icon(
         onPressed: () => ref.invalidate(activeOrganizationContextProvider),
-        icon: Icon(Icons.refresh_rounded, size: 18),
-        label: Text('Retry'),
+        icon: const Icon(Icons.refresh_rounded, size: 18),
+        label: const Text('Retry'),
       ),
       data: (state) {
         final contextObj = state.context;
@@ -257,9 +257,9 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.business_rounded,
+                    const Icon(Icons.business_rounded,
                         color: AppTheme.primaryBlue, size: 16),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Flexible(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -287,7 +287,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Icon(Icons.unfold_more_rounded,
                         color: KivoraColors.textSecondaryOf(context), size: 16),
                   ],
@@ -390,7 +390,7 @@ class _SwitcherOrgItemState extends State<_SwitcherOrgItem> {
                         ),
                       ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -407,7 +407,7 @@ class _SwitcherOrgItemState extends State<_SwitcherOrgItem> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 2),
+                    const SizedBox(height: 2),
                     Text(
                       widget.isSelected
                           ? 'Current organization'

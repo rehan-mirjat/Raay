@@ -13,6 +13,7 @@ import '../widgets/ui_kit/kivora_metric_card.dart';
 import '../widgets/ui_kit/kivora_election_card.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
+import '../../l10n/app_localizations.dart';
 import '../../services/auth_service.dart';
 import '../../features/organizations/domain/organization_enums.dart';
 import '../../features/organizations/presentation/organization_audit_screen.dart';
@@ -124,11 +125,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildWelcomeHeader(BuildContext context, String name) {
     final kc = KivoraColors.of(context);
+    final l10n = AppLocalizations.of(context);
+    final welcomeTitle = '${l10n.authSignInTitle}, ${name.split(' ').first}! 👋';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Welcome Back, ${name.split(' ').first}! 👋',
+          welcomeTitle,
           style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w900,
@@ -185,14 +188,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     if (isDesktop) {
       return Row(
-        children: metrics.map((m) => Expanded(child: Padding(
+        children: metrics.map<Widget>((m) => Expanded(child: Padding(
           padding: const EdgeInsets.only(right: 16.0),
           child: m,
         ))).toList(),
       );
     } else {
       return Column(
-        children: metrics.map((m) => Padding(
+        children: metrics.map<Widget>((m) => Padding(
           padding: const EdgeInsets.only(bottom: 16.0),
           child: m,
         )).toList(),
@@ -260,7 +263,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             }
 
             return Column(
-              children: activeEvents.map((event) => Padding(
+              children: activeEvents.map<Widget>((event) => Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: KivoraElectionCard(
                   event: event,
@@ -371,7 +374,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               color: AppTheme.primaryBlue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(KivoraIcons.barChart2, size: 16, color: AppTheme.primaryBlue),
+            child: const Icon(KivoraIcons.barChart2, size: 16, color: AppTheme.primaryBlue),
           ),
           const SizedBox(width: 16),
           Expanded(

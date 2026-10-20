@@ -22,45 +22,45 @@ class TransparencyCenterScreen extends StatelessWidget {
   const TransparencyCenterScreen({super.key});
 
   static final _sections = <_TopicSection>[
-    _TopicSection(Icons.timeline_rounded, 'Election Lifecycle', [
+    const _TopicSection(Icons.timeline_rounded, 'Election Lifecycle', [
       'Every election moves through a fixed sequence of states, enforced by the server, not the app: Draft → Scheduled → Active → Closed → Archived.',
       'An election cannot accept ballots outside the Active state, and the server - not your device\'s clock - decides when that window opens and closes.',
       'Draft elections are never visible to anyone except the organization\'s own owners and admins.',
     ]),
-    _TopicSection(Icons.how_to_vote_outlined, 'Voter Eligibility', [
+    const _TopicSection(Icons.how_to_vote_outlined, 'Voter Eligibility', [
       'Each election is configured with one eligibility rule: every active member of the organization, a specific list of departments, or a specific list of members.',
       'Eligibility is re-checked by the server at the moment you submit a ballot. What the app shows you beforehand (such as a "Vote Now" button) is a convenience - it is never the actual authorization check.',
     ]),
-    _TopicSection(Icons.security_rounded, 'How a Vote Is Processed', [
+    const _TopicSection(Icons.security_rounded, 'How a Vote Is Processed', [
       'Casting a ballot runs as a single atomic server-side transaction: it verifies your session hasn\'t been revoked, confirms you\'re eligible and haven\'t already voted, and records your choice - all or nothing.',
       'A duplicate submission (for example, from a retried request after a network error) is rejected by the server rather than counted twice, because each voter\'s participation record for a given election has a fixed, predictable ID that can only be created once.',
     ]),
-    _TopicSection(Icons.visibility_off_outlined, 'Anonymous vs. Identifiable Voting', [
+    const _TopicSection(Icons.visibility_off_outlined, 'Anonymous vs. Identifiable Voting', [
       'Anonymous elections: your ballot choice is stored without any field linking it back to your account. The system can confirm you participated (to prevent double-voting) without recording what you chose.',
       'Identifiable elections: your choice is recorded against your account. This mode exists for governance contexts that require attributable votes (for example, certain formal resolutions) and is clearly labeled before you vote.',
       'An election\'s privacy mode is fixed when it\'s created and shown to you before you ever select a choice.',
     ]),
-    _TopicSection(Icons.receipt_long_outlined, 'Vote Receipts', [
+    const _TopicSection(Icons.receipt_long_outlined, 'Vote Receipts', [
       'After voting, you receive a receipt: a receipt ID and a cryptographic hash generated from your ballot record at the moment it was recorded.',
       'The receipt confirms your ballot was accepted and exists in the system\'s records. It is not a copy of your ballot choice, and in an anonymous election it cannot be used by anyone - including Kivora administrators - to determine what you selected.',
     ]),
-    _TopicSection(Icons.fact_check_outlined, 'What Receipt Verification Does and Does Not Prove', [
+    const _TopicSection(Icons.fact_check_outlined, 'What Receipt Verification Does and Does Not Prove', [
       'Verifying a receipt confirms that a ballot matching that receipt exists in the ledger. That is the full extent of what it proves.',
       'It does NOT prove who cast that ballot, what choice was selected, that no other issue occurred elsewhere in the process, or provide independent cryptographic audit of the full tally beyond what is described here. Treat it as a record-existence check, not a formal proof of election integrity.',
     ]),
-    _TopicSection(Icons.bar_chart_rounded, 'When Results Become Available', [
+    const _TopicSection(Icons.bar_chart_rounded, 'When Results Become Available', [
       'Results are calculated after an election closes, and are only visible to ordinary members once an organization admin explicitly publishes them.',
       'Organization owners and admins may review computed results before publishing, in order to catch configuration problems - this is a normal part of the workflow, not evidence of hidden tallies.',
     ]),
-    _TopicSection(Icons.admin_panel_settings_outlined, 'Administrative Accountability', [
+    const _TopicSection(Icons.admin_panel_settings_outlined, 'Administrative Accountability', [
       'Sensitive administrative actions - publishing or closing an election, changing a member\'s role, granting Observer access, and similar actions - are written to an organization-scoped audit log, visible to that organization\'s owners and admins.',
       'This is an operational log for the organization\'s own oversight, not a public, tamper-proof ledger - see "Known Limitations" below.',
     ]),
-    _TopicSection(Icons.privacy_tip_outlined, 'Privacy & Data Handling', [
+    const _TopicSection(Icons.privacy_tip_outlined, 'Privacy & Data Handling', [
       'Each organization\'s data is isolated from every other organization at the server level; membership in one organization never grants visibility into another\'s elections, members, or results.',
       'Observers (a limited, admin-granted capability) see only organization-wide aggregate turnout numbers for active elections and published results - never individual ballots, voter identities, or small-group breakdowns that could reveal how a specific person or small group voted.',
     ]),
-    _TopicSection(Icons.flag_outlined, 'Known Limitations', [
+    const _TopicSection(Icons.flag_outlined, 'Known Limitations', [
       'Audit logs are ordinary database records, not a cryptographically tamper-evident ledger - they describe operational history, not mathematical proof against retroactive modification.',
       'Kivora is not independently certified by any national or third-party election-standards body, and receipt verification is not a substitute for an independent cryptographic audit of the full tally.',
       'Some interface languages are provided via machine-assisted translation pending native-speaker review - see Settings → Preferences → Language.',

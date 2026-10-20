@@ -398,13 +398,13 @@ class AppTheme {
           side: const BorderSide(color: darkBorder, width: 1),
         ),
       ),
-      bottomSheetTheme: BottomSheetThemeData(
+      bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: darkSurface,
         elevation: 16,
         surfaceTintColor: Colors.transparent,
         showDragHandle: true,
         dragHandleColor: darkBorder,
-        shape: const RoundedRectangleBorder(
+        shape: RoundedRectangleBorder(
           borderRadius:
               BorderRadius.vertical(top: Radius.circular(radiusSheet)),
         ),

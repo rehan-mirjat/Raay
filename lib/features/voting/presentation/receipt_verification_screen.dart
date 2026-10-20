@@ -80,7 +80,7 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
                           color: AppTheme.primaryBlue.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(KivoraIcons.shieldCheck, size: 32, color: AppTheme.primaryBlue),
+                        child: const Icon(KivoraIcons.shieldCheck, size: 32, color: AppTheme.primaryBlue),
                       ),
                       const SizedBox(height: 24),
                       Text(
@@ -121,9 +121,9 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
                     KivoraCard(
                       child: Column(
                         children: [
-                          Icon(KivoraIcons.checkCircle, size: 48, color: AppTheme.success),
+                          const Icon(KivoraIcons.checkCircle, size: 48, color: AppTheme.success),
                           const SizedBox(height: 16),
-                          Text(
+                          const Text(
                             'Receipt Verified',
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.success),
                           ),
@@ -140,9 +140,9 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
                     KivoraCard(
                       child: Column(
                         children: [
-                          Icon(KivoraIcons.alertCircle, size: 48, color: AppTheme.error),
+                          const Icon(KivoraIcons.alertCircle, size: 48, color: AppTheme.error),
                           const SizedBox(height: 16),
-                          Text(
+                          const Text(
                             'Receipt Not Found',
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.error),
                           ),

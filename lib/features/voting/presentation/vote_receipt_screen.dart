@@ -30,7 +30,7 @@ class VoteReceiptScreen extends ConsumerWidget {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: Icon(Icons.close),
+            icon: const Icon(Icons.close),
             tooltip: 'Close',
             onPressed: () => context.go('/home'),
           ),
@@ -45,14 +45,14 @@ class VoteReceiptScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Success Banner Icon
-                Center(
+                const Center(
                   child: CircleAvatar(
                     radius: 40,
                     backgroundColor: AppTheme.success,
                     child: Icon(Icons.check, size: 48, color: Colors.white),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 Text(
                   'Ballot Successfully Cast!',
@@ -62,19 +62,19 @@ class VoteReceiptScreen extends ConsumerWidget {
                       ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
 
                 if (eventTitle != null && eventTitle!.isNotEmpty) ...[
                   Text(
                     eventTitle!,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: AppTheme.primaryBlue,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                 ],
 
                 // Non-revealing Secrecy Banner
@@ -87,8 +87,8 @@ class VoteReceiptScreen extends ConsumerWidget {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.shield_outlined, color: AppTheme.primaryBlue, size: 28),
-                      SizedBox(width: 12),
+                      const Icon(Icons.shield_outlined, color: AppTheme.primaryBlue, size: 28),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           'This digital receipt confirms your participation and ballot acceptance without revealing or encoding your selected choice.',
@@ -98,7 +98,7 @@ class VoteReceiptScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
 
                 // Receipt Data Card
                 Card(
@@ -120,7 +120,7 @@ class VoteReceiptScreen extends ConsumerWidget {
                             letterSpacing: 1.1,
                           ),
                         ),
-                        Divider(height: 24),
+                        const Divider(height: 24),
 
                         // Receipt ID
                         _buildDetailTile(
@@ -129,7 +129,7 @@ class VoteReceiptScreen extends ConsumerWidget {
                           value: receipt.receiptId,
                           copyable: true,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
 
                         // Verification Hash
                         _buildDetailTile(
@@ -139,7 +139,7 @@ class VoteReceiptScreen extends ConsumerWidget {
                           copyable: true,
                           isCode: true,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
 
                         // Timestamp
                         _buildDetailTile(
@@ -151,12 +151,12 @@ class VoteReceiptScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
 
                 // Return to Home Action
                 ElevatedButton.icon(
                   onPressed: () => context.go('/home'),
-                  icon: Icon(Icons.home),
+                  icon: const Icon(Icons.home),
                   label: Text(l10n.receiptReturnHome),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -184,7 +184,7 @@ class VoteReceiptScreen extends ConsumerWidget {
           label,
           style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context), fontWeight: FontWeight.w500),
         ),
-        SizedBox(height: 4),
+        const SizedBox(height: 4),
         Row(
           children: [
             Expanded(
@@ -199,9 +199,9 @@ class VoteReceiptScreen extends ConsumerWidget {
               ),
             ),
             if (copyable) ...[
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               IconButton(
-                icon: Icon(Icons.copy, size: 18, color: AppTheme.primaryBlue),
+                icon: const Icon(Icons.copy, size: 18, color: AppTheme.primaryBlue),
                 tooltip: 'Copy $label',
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: value));

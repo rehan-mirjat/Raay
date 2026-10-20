@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kivora/core/theme/kivora_icons.dart';
+import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
@@ -31,7 +33,6 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
 
   Future<void> _performAction(
       Future<void> Function() action, String successMessage) async {
-    // Capture before awaiting: the dialog may be dismissed while the request runs.
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _isLoading = true);
@@ -67,11 +68,11 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: Text('Cancel')),
-          FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: AppTheme.error),
+              child: const Text('Cancel')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(confirmLabel),
+            child: Text(confirmLabel, style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -81,6 +82,9 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    final screenWidth = MediaQuery.sizeOf(context).width;
+
     final targetUid = widget.memberData['userId'] as String? ?? '';
     final displayName = widget.memberData['displayName'] as String? ?? 'User';
     final email = widget.memberData['email'] as String? ?? '';
@@ -106,166 +110,219 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
 
     final repo = ref.read(organizationRepositoryProvider);
 
-    return AlertDialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      title: Row(
-        children: [
-          CircleAvatar(
-            backgroundColor: AppTheme.primaryBlue,
-            child: Text(
-                displayName.isNotEmpty ? displayName[0].toUpperCase() : 'U',
-                style: TextStyle(color: Colors.white)),
-          ),
-          SizedBox(width: 12),
-          Expanded(
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: kc.surface,
+      child: SizedBox(
+        width: (screenWidth - 80).clamp(280.0, 480.0),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(displayName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
-                Text(email,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 24,
+                      backgroundColor: AppTheme.primaryBlue,
+                      child: Text(
+                        displayName.isNotEmpty ? displayName[0].toUpperCase() : 'U',
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            displayName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: kc.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            email,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 13, color: kc.textSecondary),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(KivoraIcons.x, size: 20),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                const Divider(height: 1),
+                const SizedBox(height: 16),
+                _infoRow(context, 'Role', roleStr.toUpperCase()),
+                _infoRow(context, 'Status', statusStr.toUpperCase()),
+                _infoRow(context, 'Department', deptName),
+                _infoRow(context, 'Observer Access', isTargetObserver ? 'Granted' : 'None'),
+                if (_isLoading) ...[
+                  const SizedBox(height: 16),
+                  const LoadingView(),
+                ],
+                const SizedBox(height: 24),
+                if (!_isLoading) ...[
+                  if (canManageRole && isTargetMember) ...[
+                    KivoraButton(
+                      type: KivoraButtonType.secondary,
+                      icon: KivoraIcons.shieldCheck,
+                      label: 'Promote to Admin',
+                      onPressed: () => _performAction(
+                        () => repo.updateMemberRole(
+                            organizationId: widget.organizationId,
+                            targetUid: targetUid,
+                            newRole: 'admin'),
+                        'Promoted to Admin successfully.',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                  if (canManageRole && isTargetAdmin) ...[
+                    KivoraButton(
+                      type: KivoraButtonType.secondary,
+                      icon: KivoraIcons.user,
+                      label: 'Demote to Member',
+                      onPressed: () => _performAction(
+                        () => repo.updateMemberRole(
+                            organizationId: widget.organizationId,
+                            targetUid: targetUid,
+                            newRole: 'member'),
+                        'Demoted to Member successfully.',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                  if (canManageObserver && !isTargetObserver) ...[
+                    KivoraButton(
+                      type: KivoraButtonType.secondary,
+                      icon: KivoraIcons.eye,
+                      label: 'Grant Observer Access',
+                      onPressed: () => _performAction(
+                        () => repo.setObserverStatus(
+                            organizationId: widget.organizationId,
+                            targetUid: targetUid,
+                            isObserver: true),
+                        'Granted observer access.',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                  if (canManageObserver && isTargetObserver) ...[
+                    KivoraButton(
+                      type: KivoraButtonType.secondary,
+                      icon: KivoraIcons.eyeOff,
+                      label: 'Revoke Observer Access',
+                      onPressed: () => _performAction(
+                        () => repo.setObserverStatus(
+                            organizationId: widget.organizationId,
+                            targetUid: targetUid,
+                            isObserver: false),
+                        'Revoked observer access.',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                  if (canManageStatus && isTargetActive) ...[
+                    KivoraButton(
+                      type: KivoraButtonType.secondary,
+                      icon: KivoraIcons.userX,
+                      label: 'Deactivate Member',
+                      onPressed: () => _performAction(
+                        () => repo.updateMemberStatus(
+                            organizationId: widget.organizationId,
+                            targetUid: targetUid,
+                            newStatus: 'inactive'),
+                        'Deactivated member successfully.',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                  if (canManageStatus && !isTargetActive) ...[
+                    KivoraButton(
+                      type: KivoraButtonType.secondary,
+                      icon: KivoraIcons.userCheck,
+                      label: 'Reactivate Member',
+                      onPressed: () => _performAction(
+                        () => repo.updateMemberStatus(
+                            organizationId: widget.organizationId,
+                            targetUid: targetUid,
+                            newStatus: 'active'),
+                        'Reactivated member successfully.',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                  if (canRemove) ...[
+                    KivoraButton(
+                      type: KivoraButtonType.destructive,
+                      icon: KivoraIcons.trash2,
+                      label: 'Remove Member',
+                      onPressed: () async {
+                        final confirmed = await _confirm(
+                          title: 'Remove $displayName?',
+                          message:
+                              'They will lose access to this organization immediately.',
+                          confirmLabel: 'Remove Member',
+                        );
+                        if (confirmed) {
+                          await _performAction(
+                            () => repo.removeMember(
+                                organizationId: widget.organizationId,
+                                targetUid: targetUid),
+                            'Member removed from organization.',
+                          );
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ],
+                KivoraButton(
+                  type: KivoraButtonType.ghost,
+                  label: 'Close',
+                  onPressed: () => Navigator.pop(context),
+                ),
               ],
             ),
           ),
-        ],
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Divider(),
-          SizedBox(height: 8),
-          _infoRow('Role', roleStr.toUpperCase()),
-          _infoRow('Status', statusStr.toUpperCase()),
-          _infoRow('Department', deptName),
-          _infoRow('Observer', isTargetObserver ? 'Yes' : 'No'),
-          if (_isLoading) ...[
-            const LoadingView(),
-          ],
-        ],
-      ),
-      actions: [
-        if (!_isLoading) ...[
-          if (canManageRole && isTargetMember)
-            TextButton(
-              onPressed: () => _performAction(
-                () => repo.updateMemberRole(
-                    organizationId: widget.organizationId,
-                    targetUid: targetUid,
-                    newRole: 'admin'),
-                'Promoted to Admin successfully.',
-              ),
-              child: Text('Promote to Admin'),
-            ),
-          if (canManageRole && isTargetAdmin)
-            TextButton(
-              onPressed: () => _performAction(
-                () => repo.updateMemberRole(
-                    organizationId: widget.organizationId,
-                    targetUid: targetUid,
-                    newRole: 'member'),
-                'Demoted to Member successfully.',
-              ),
-              child: Text('Demote to Member'),
-            ),
-          if (canManageStatus && isTargetActive)
-            TextButton(
-              onPressed: () => _performAction(
-                () => repo.updateMemberStatus(
-                    organizationId: widget.organizationId,
-                    targetUid: targetUid,
-                    newStatus: 'inactive'),
-                'Deactivated member successfully.',
-              ),
-              child: Text('Deactivate',
-                  style: TextStyle(color: Colors.orange)),
-            ),
-          if (canManageStatus && !isTargetActive)
-            TextButton(
-              onPressed: () => _performAction(
-                () => repo.updateMemberStatus(
-                    organizationId: widget.organizationId,
-                    targetUid: targetUid,
-                    newStatus: 'active'),
-                'Reactivated member successfully.',
-              ),
-              child: Text('Reactivate',
-                  style: TextStyle(color: AppTheme.success)),
-            ),
-          if (canManageObserver && !isTargetObserver)
-            TextButton(
-              onPressed: () => _performAction(
-                () => repo.setObserverStatus(
-                    organizationId: widget.organizationId,
-                    targetUid: targetUid,
-                    isObserver: true),
-                'Granted observer access.',
-              ),
-              child: Text('Grant Observer Access'),
-            ),
-          if (canManageObserver && isTargetObserver)
-            TextButton(
-              onPressed: () => _performAction(
-                () => repo.setObserverStatus(
-                    organizationId: widget.organizationId,
-                    targetUid: targetUid,
-                    isObserver: false),
-                'Revoked observer access.',
-              ),
-              child: Text('Revoke Observer Access',
-                  style: TextStyle(color: Colors.orange)),
-            ),
-          if (canRemove)
-            TextButton(
-              onPressed: () async {
-                final confirmed = await _confirm(
-                  title: 'Remove $displayName?',
-                  message:
-                      'They will lose access to this organization immediately. This cannot be undone from here.',
-                  confirmLabel: 'Remove',
-                );
-                if (confirmed) {
-                  await _performAction(
-                    () => repo.removeMember(
-                        organizationId: widget.organizationId,
-                        targetUid: targetUid),
-                    'Member removed from the organization.',
-                  );
-                }
-              },
-              child:
-                  Text('Remove', style: TextStyle(color: AppTheme.error)),
-            ),
-        ],
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text('Close'),
         ),
-      ],
+      ),
     );
   }
 
-  Widget _infoRow(String label, String value) {
+  Widget _infoRow(BuildContext context, String label, String value) {
+    final kc = KivoraColors.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context))),
-          Expanded(
-              child: Text(value,
-                  textAlign: TextAlign.end,
-                  softWrap: true,
-                  style: TextStyle(color: KivoraColors.textSecondaryOf(context)))),
+          Text(
+            label,
+            style: TextStyle(fontSize: 13, color: kc.textSecondary),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: kc.textPrimary,
+            ),
+          ),
         ],
       ),
     );

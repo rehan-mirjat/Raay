@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kivora/core/theme/app_theme.dart';
+import 'package:kivora/core/theme/kivora_colors.dart';
+import 'package:kivora/core/theme/kivora_icons.dart';
+import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
+import 'package:kivora/core/widgets/ui_kit/kivora_text_field.dart';
 
 import '../../../core/widgets/inline_error_banner.dart';
 import '../data/organization_repository.dart';
@@ -55,67 +60,107 @@ class _AddExistingMemberDialogState
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-      title: const Text('Add an existing member'),
-      content: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 440),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Add a verified Kivora account directly to this organization.',
-                style: Theme.of(context).textTheme.bodyMedium,
+    final kc = KivoraColors.of(context);
+    final screenWidth = MediaQuery.sizeOf(context).width;
+
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: kc.surface,
+      child: SizedBox(
+        width: (screenWidth - 80).clamp(280.0, 480.0),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: AppTheme.primaryBlue.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(KivoraIcons.userPlus,
+                                color: AppTheme.primaryBlue, size: 20),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Add Existing Member',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: kc.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                        icon: const Icon(KivoraIcons.x, size: 20),
+                        onPressed: _isSubmitting ? null : () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Add a verified Kivora account directly to this organization.',
+                    style: TextStyle(fontSize: 13, color: kc.textSecondary),
+                  ),
+                  const SizedBox(height: 20),
+                  KivoraTextField(
+                    controller: _emailController,
+                    label: 'Member Email Address *',
+                    hint: 'user@example.com',
+                    prefixIcon: KivoraIcons.mail,
+                    keyboardType: TextInputType.emailAddress,
+                    onFieldSubmitted: (_) => _submit(),
+                    validator: (value) {
+                      final email = value?.trim() ?? '';
+                      if (email.isEmpty ||
+                          !RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(email)) {
+                        return 'Enter a valid email address.';
+                      }
+                      return null;
+                    },
+                  ),
+                  if (_error != null) ...[
+                    const SizedBox(height: 14),
+                    InlineErrorBanner(message: _error!),
+                  ],
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: KivoraButton(
+                          type: KivoraButtonType.secondary,
+                          label: 'Cancel',
+                          onPressed: _isSubmitting ? null : () => Navigator.pop(context),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: KivoraButton(
+                          label: 'Add Member',
+                          icon: KivoraIcons.userCheck,
+                          isLoading: _isSubmitting,
+                          onPressed: _submit,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              const SizedBox(height: 18),
-              TextFormField(
-                controller: _emailController,
-                autofocus: true,
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.done,
-                autofillHints: const [AutofillHints.email],
-                onFieldSubmitted: (_) => _submit(),
-                decoration: const InputDecoration(
-                  labelText: 'Member email address',
-                  prefixIcon: Icon(Icons.email_outlined),
-                ),
-                validator: (value) {
-                  final email = value?.trim() ?? '';
-                  if (email.isEmpty ||
-                      !RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$')
-                          .hasMatch(email)) {
-                    return 'Enter a valid email address.';
-                  }
-                  return null;
-                },
-              ),
-              if (_error != null) ...[
-                const SizedBox(height: 14),
-                InlineErrorBanner(message: _error!),
-              ],
-            ],
+            ),
           ),
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
-        FilledButton.icon(
-          onPressed: _isSubmitting ? null : _submit,
-          icon: _isSubmitting
-              ? const SizedBox.square(
-                  dimension: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.person_add_alt_1_rounded),
-          label: Text(_isSubmitting ? 'Adding…' : 'Add member'),
-        ),
-      ],
     );
   }
 }

@@ -139,16 +139,16 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Review & Publish',
+              const Text('Review & Publish',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text('ELECTION SETUP CHECKLIST',
                   style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                       color: KivoraColors.textSecondaryOf(context),
                       letterSpacing: 0.8)),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
@@ -160,7 +160,7 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                   children: checklist.map((c) => _checklistRow(context, c)).toList(),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _summaryRow('Title', draft.title),
               _summaryRow(
                   'Start At',
@@ -174,44 +174,44 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                       : ''),
               _summaryRow('Choices', '$count items configured'),
               if (!isReady) ...[
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                       color: AppTheme.warning.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8)),
-                  child: Text(
+                  child: const Text(
                       'Complete every required checklist item above before publishing.',
                       style: TextStyle(color: AppTheme.warning, fontWeight: FontWeight.w600)),
                 ),
               ],
               if (_error != null) ...[
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                       color: AppTheme.error.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8)),
                   child: Text('Publish Error: $_error',
-                      style: TextStyle(color: AppTheme.error)),
+                      style: const TextStyle(color: AppTheme.error)),
                 ),
               ],
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
                       onPressed: _isPublishing ? null : widget.onBack,
-                      child: Text('Back')),
+                      child: const Text('Back')),
                   ElevatedButton(
                     onPressed: _isPublishing || !isReady ? null : _publish,
                     child: _isPublishing
-                        ? SizedBox(
+                        ? const SizedBox(
                             height: 16,
                             width: 16,
                             child: CircularProgressIndicator(
                                 color: Colors.white, strokeWidth: 2))
-                        : Text('Publish Event'),
+                        : const Text('Publish Event'),
                   ),
                 ],
               ),
@@ -235,7 +235,7 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
             size: 18,
             color: color,
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Expanded(
             child: Text(
               item.label + (item.optional && !item.done ? ' (optional)' : ''),

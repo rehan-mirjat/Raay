@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../l10n/app_localizations.dart';
 
 import '../notifications/notification_providers.dart';
 import '../../features/organizations/presentation/organization_context_switcher.dart';
@@ -100,28 +101,7 @@ class AppNavigationShell extends ConsumerWidget {
                                             : AppTheme.borderLight,
                                         width: 1)),
                               ),
-                              child: Row(
-                                children: [
-                                  const Expanded(
-                                      child: OrganizationContextSwitcher()),
-                                  if (isManager) ...[
-                                    const SizedBox(width: 8),
-                                    _MobileQuickNavButton(
-                                      navKey: TourKeys.directoryKey,
-                                      icon: Icons.groups_outlined,
-                                      tooltip: 'Directory',
-                                      route: '/orgs/members',
-                                    ),
-                                    const SizedBox(width: 6),
-                                    _MobileQuickNavButton(
-                                      navKey: TourKeys.departmentsKey,
-                                      icon: Icons.apartment_outlined,
-                                      tooltip: 'Departments',
-                                      route: '/orgs/departments',
-                                    ),
-                                  ],
-                                ],
-                              ),
+                              child: const OrganizationContextSwitcher(),
                             ),
                             Expanded(child: navigationShell),
                           ],
@@ -137,53 +117,6 @@ class AppNavigationShell extends ConsumerWidget {
                   showCreateEventButton: canCreateEvent,
                   onCreateEvent: () => context.go('/admin/events/new'),
                 ),
-        ),
-      ),
-    );
-  }
-}
-
-class _MobileQuickNavButton extends StatelessWidget {
-  final Key navKey;
-  final IconData icon;
-  final String tooltip;
-  final String route;
-
-  const _MobileQuickNavButton({
-    required this.navKey,
-    required this.icon,
-    required this.tooltip,
-    required this.route,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Tooltip(
-      message: tooltip,
-      child: Semantics(
-        button: true,
-        label: tooltip,
-        child: Material(
-          key: navKey,
-          color: isDark ? AppTheme.darkElevated : AppTheme.backgroundLight,
-          shape: CircleBorder(
-              side: BorderSide(
-                  color: isDark ? AppTheme.darkBorder : AppTheme.borderLight,
-                  width: 1.2)),
-          child: InkWell(
-            onTap: () => context.go(route),
-            customBorder: const CircleBorder(),
-            child: SizedBox(
-              width: 38,
-              height: 38,
-              child: Icon(icon,
-                  size: 18,
-                  color: isDark
-                      ? AppTheme.darkTextSecondary
-                      : AppTheme.textSecondary),
-            ),
-          ),
         ),
       ),
     );
@@ -215,51 +148,51 @@ class _DesktopSidebar extends StatelessWidget {
     final sidebarBg = isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite;
     final borderColor = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
 
+    final l10n = AppLocalizations.of(context);
     final items = [
       _SidebarItem(
           icon: Icons.home_outlined,
           iconActive: Icons.home_rounded,
-          label: 'Home',
+          label: l10n.navHome,
           route: '/home'),
       _SidebarItem(
           icon: Icons.business_outlined,
           iconActive: Icons.business_rounded,
-          label: 'Organizations',
+          label: l10n.navOrganizations,
           route: '/orgs'),
       _SidebarItem(
           icon: Icons.how_to_vote_outlined,
           iconActive: Icons.how_to_vote_rounded,
-          label: 'Events',
+          label: l10n.navEvents,
           route: '/admin/events'),
       _SidebarItem(
           icon: Icons.calendar_month_outlined,
           iconActive: Icons.calendar_month_rounded,
-          label: 'Calendar',
+          label: l10n.navCalendar,
           route: '/calendar'),
+      _SidebarItem(
+          icon: Icons.apartment_outlined,
+          iconActive: Icons.apartment_rounded,
+          label: l10n.navDepartments,
+          route: '/orgs/departments',
+          key: TourKeys.departmentsKey),
       if (isObserver)
-        _SidebarItem(
+        const _SidebarItem(
             icon: Icons.visibility_outlined,
             iconActive: Icons.visibility_rounded,
             label: 'Observer',
             route: '/observer'),
-      if (isManager) ...[
+      if (isManager)
         _SidebarItem(
             icon: Icons.groups_outlined,
             iconActive: Icons.groups_rounded,
-            label: 'Directory',
+            label: l10n.navDirectory,
             route: '/orgs/members',
             key: TourKeys.directoryKey),
-        _SidebarItem(
-            icon: Icons.apartment_outlined,
-            iconActive: Icons.apartment_rounded,
-            label: 'Departments',
-            route: '/orgs/departments',
-            key: TourKeys.departmentsKey),
-      ],
       _SidebarItem(
           icon: Icons.person_outline_rounded,
           iconActive: Icons.person_rounded,
-          label: 'Profile',
+          label: l10n.navProfile,
           route: '/settings'),
     ];
 
@@ -279,10 +212,10 @@ class _DesktopSidebar extends StatelessWidget {
             duration: const Duration(milliseconds: 180),
             child: collapsed
                 ? const SizedBox(height: 12)
-                : Padding(
-                    key: const ValueKey('switcher'),
-                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
-                    child: const OrganizationContextSwitcher(),
+                : const Padding(
+                    key: ValueKey('switcher'),
+                    padding: EdgeInsets.fromLTRB(12, 12, 12, 8),
+                    child: OrganizationContextSwitcher(),
                   ),
           ),
 
@@ -423,7 +356,7 @@ class _SidebarTileState extends State<_SidebarTile> {
                 location.startsWith('${widget.item.route}/')));
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final activeColor = AppTheme.primaryBlue;
+    const activeColor = AppTheme.primaryBlue;
     final inactiveColor =
         isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
     final activeBg = isDark
@@ -433,7 +366,8 @@ class _SidebarTileState extends State<_SidebarTile> {
         ? AppTheme.primaryBlue.withValues(alpha: 0.07)
         : AppTheme.primaryBlue.withValues(alpha: 0.05);
 
-    final color = isActive ? activeColor : (_hovered ? activeColor : inactiveColor);
+    final color =
+        isActive ? activeColor : (_hovered ? activeColor : inactiveColor);
 
     return MouseRegion(
       key: widget.item.key,
@@ -449,9 +383,8 @@ class _SidebarTileState extends State<_SidebarTile> {
           padding: EdgeInsets.symmetric(
               horizontal: widget.collapsed ? 0 : 10, vertical: 10),
           decoration: BoxDecoration(
-            color: isActive
-                ? activeBg
-                : (_hovered ? hoverBg : Colors.transparent),
+            color:
+                isActive ? activeBg : (_hovered ? hoverBg : Colors.transparent),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
@@ -471,8 +404,7 @@ class _SidebarTileState extends State<_SidebarTile> {
                     widget.item.label,
                     style: TextStyle(
                       fontSize: 13,
-                      fontWeight:
-                          isActive ? FontWeight.w700 : FontWeight.w500,
+                      fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                       color: color,
                     ),
                     maxLines: 1,
@@ -521,6 +453,7 @@ class _FloatingMobileNavBar extends StatelessWidget {
     final shadowColor = isDark
         ? Colors.black.withValues(alpha: 0.4)
         : AppTheme.secondaryNavy.withValues(alpha: 0.08);
+    final l10n = AppLocalizations.of(context);
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -548,15 +481,20 @@ class _FloatingMobileNavBar extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _navItem(context, 0, Icons.home_outlined,
-                      Icons.home_rounded, 'Home', currentIndex),
-                  _navItem(context, 1, Icons.business_outlined,
-                      Icons.business_rounded, 'Orgs', currentIndex),
+                  _navItem(context, 0, Icons.home_outlined, Icons.home_rounded,
+                      l10n.navHome, currentIndex),
+                  _navItem(
+                      context,
+                      1,
+                      Icons.business_outlined,
+                      Icons.business_rounded,
+                      l10n.navOrganizations,
+                      currentIndex),
                   if (showCreateEventButton) const SizedBox(width: 52),
                   _navItem(context, 3, Icons.how_to_vote_outlined,
-                      Icons.how_to_vote_rounded, 'Events', currentIndex),
+                      Icons.how_to_vote_rounded, l10n.navEvents, currentIndex),
                   _navItem(context, 2, Icons.person_outline_rounded,
-                      Icons.person_rounded, 'Profile', currentIndex),
+                      Icons.person_rounded, l10n.navProfile, currentIndex),
                 ],
               ),
             ),
@@ -588,9 +526,10 @@ class _FloatingMobileNavBar extends StatelessWidget {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: AppTheme.primaryBlue.withValues(alpha: 0.5),
-                              blurRadius: 16,
-                              offset: const Offset(0, 4),
+                              color:
+                                  AppTheme.primaryBlue.withValues(alpha: 0.18),
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
                             ),
                           ],
                         ),
@@ -620,7 +559,7 @@ class _FloatingMobileNavBar extends StatelessWidget {
   ) {
     final isSelected = index == currentIndex;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final selectedColor = AppTheme.primaryBlue;
+    const selectedColor = AppTheme.primaryBlue;
     final unselectedColor =
         isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
     final selectedBg = isDark
@@ -686,7 +625,8 @@ class _TopHeader extends ConsumerWidget {
     final photoUrlToUse = appUserAsync?.valueOrNull?.photoUrl ?? user?.photoURL;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final headerBg = isDark ? AppTheme.darkBackground : AppTheme.backgroundLight;
+    final headerBg =
+        isDark ? AppTheme.darkBackground : AppTheme.backgroundLight;
     final pillBg = isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite;
     final pillBorder = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
     final pillShadow = isDark
@@ -696,52 +636,58 @@ class _TopHeader extends ConsumerWidget {
     return Container(
       color: headerBg,
       padding: EdgeInsets.symmetric(
-        horizontal: isDesktop ? 24 : 12,
-        vertical: isDesktop ? 12 : 6,
+        horizontal: isDesktop ? 24 : 16,
+        vertical: isDesktop ? 12 : 4,
       ),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1200),
           child: Container(
             height: isDesktop ? 60 : 52,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-            decoration: BoxDecoration(
-              color: pillBg,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: pillBorder, width: 1.2),
-              boxShadow: [
-                BoxShadow(
-                  color: pillShadow,
-                  blurRadius: 20,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+            padding: EdgeInsets.symmetric(
+              horizontal: isDesktop ? 16 : 4,
+              vertical: 6,
             ),
+            decoration: isDesktop
+                ? BoxDecoration(
+                    color: pillBg,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: pillBorder, width: 1.2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: pillShadow,
+                        blurRadius: 20,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  )
+                : null,
             child: Row(
               children: [
-                const _BrandLogoLink(),
+                _BrandLogoLink(compact: !isDesktop),
 
                 const Spacer(),
 
-                // Global search button
-                _SearchButton(),
-                const SizedBox(width: 8),
-
-                if (user != null) ...[
-                  Tooltip(
-                    message: 'Election Calendar',
-                    child: IconButton(
-                      icon: const Icon(Icons.calendar_month_outlined),
-                      onPressed: () => context.go('/calendar'),
+                // Desktop-only: search, calendar, theme toggle
+                if (isDesktop) ...[
+                  _SearchButton(),
+                  const SizedBox(width: 8),
+                  if (user != null) ...[
+                    Tooltip(
+                      message: 'Election Calendar',
+                      child: IconButton(
+                        icon: const Icon(Icons.calendar_month_outlined),
+                        onPressed: () => context.go('/calendar'),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 4),
+                    const SizedBox(width: 4),
+                  ],
+                  _ThemeToggleButton(),
+                  const SizedBox(width: 8),
                 ],
 
-                // Theme toggle
-                _ThemeToggleButton(),
+                // Always show notification + profile (mobile & desktop)
                 if (user != null) ...[
-                  const SizedBox(width: 8),
                   const _NotificationDropdown(),
                   const SizedBox(width: 10),
                 ],
@@ -767,7 +713,8 @@ class _ThemeToggleButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final pillBorder = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
-    final iconColor = isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
+    final iconColor =
+        isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
     final bgColor = isDark ? AppTheme.darkElevated : AppTheme.backgroundLight;
 
     return Tooltip(
@@ -808,7 +755,8 @@ class _SearchButtonState extends State<_SearchButton> {
     final isDesktop = ResponsiveLayout.isWide(context);
     final border = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
     final bg = isDark ? AppTheme.darkElevated : AppTheme.backgroundLight;
-    final textColor = isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
+    final textColor =
+        isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -822,9 +770,7 @@ class _SearchButtonState extends State<_SearchButton> {
           padding: EdgeInsets.symmetric(
               horizontal: isDesktop ? 12 : 10, vertical: 0),
           decoration: BoxDecoration(
-            color: _hovered
-                ? AppTheme.primaryBlue.withValues(alpha: 0.08)
-                : bg,
+            color: _hovered ? AppTheme.primaryBlue.withValues(alpha: 0.08) : bg,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: _hovered
@@ -868,7 +814,9 @@ class _SearchButtonState extends State<_SearchButton> {
 }
 
 class _BrandLogoLink extends StatelessWidget {
-  const _BrandLogoLink();
+  const _BrandLogoLink({this.compact = false});
+
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -878,7 +826,8 @@ class _BrandLogoLink extends StatelessWidget {
       child: GestureDetector(
         onTap: () => context.go('/home'),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+          padding:
+              EdgeInsets.symmetric(horizontal: compact ? 2 : 6, vertical: 4),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -886,16 +835,18 @@ class _BrandLogoLink extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 child: Image.asset(
                   'assets/icon/app_icon.png',
-                  width: 32,
-                  height: 32,
+                  width: compact ? 30 : 32,
+                  height: compact ? 30 : 32,
                   fit: BoxFit.cover,
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: compact ? 8 : 10),
               Text(
                 'Kivora',
                 style: TextStyle(
-                  color: isDark ? AppTheme.darkTextPrimary : AppTheme.secondaryNavy,
+                  color: isDark
+                      ? AppTheme.darkTextPrimary
+                      : AppTheme.secondaryNavy,
                   fontSize: 19,
                   fontWeight: FontWeight.w900,
                   letterSpacing: -0.5,
@@ -908,7 +859,6 @@ class _BrandLogoLink extends StatelessWidget {
     );
   }
 }
-
 
 class _NotificationDropdown extends ConsumerStatefulWidget {
   const _NotificationDropdown();
@@ -926,11 +876,15 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
     final uid = ref.watch(authServiceProvider).currentUser?.uid;
     final invitationAlertsEnabled = uid == null
         ? true
-        : (ref.watch(userProfileProvider(uid)).valueOrNull
+        : (ref
+                .watch(userProfileProvider(uid))
+                .valueOrNull
                 ?.notificationPreferences['invitationAlerts'] ??
             true);
     final invitationsAsync = ref.watch(memberInvitationsProvider);
-    final items = invitationAlertsEnabled ? (invitationsAsync.valueOrNull ?? []) : const [];
+    final items = invitationAlertsEnabled
+        ? (invitationsAsync.valueOrNull ?? [])
+        : const [];
     final reminders = ref.watch(unreadNotificationsProvider).valueOrNull ?? [];
     final unreadCount = items.length + reminders.length;
     final hasUnread = unreadCount > 0;
@@ -1038,9 +992,8 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
               isDark ? AppTheme.darkTextPrimary : AppTheme.secondaryNavy;
           final subColor =
               isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
-          final itemBg = isDark
-              ? AppTheme.darkElevated
-              : const Color(0xFFF0F5FF);
+          final itemBg =
+              isDark ? AppTheme.darkElevated : const Color(0xFFF0F5FF);
 
           return <PopupMenuEntry<String>>[
             PopupMenuItem<String>(
@@ -1246,8 +1199,10 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
     final pillBorder = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
     final menuBg = isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite;
     final menuBorder = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
-    final textColor = isDark ? AppTheme.darkTextPrimary : AppTheme.secondaryNavy;
-    final subColor = isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
+    final textColor =
+        isDark ? AppTheme.darkTextPrimary : AppTheme.secondaryNavy;
+    final subColor =
+        isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -1292,8 +1247,7 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color:
-                          _isHovered ? AppTheme.primaryBlue : textColor,
+                      color: _isHovered ? AppTheme.primaryBlue : textColor,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -1349,8 +1303,10 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
           }
         },
         itemBuilder: (BuildContext context) {
-          final labelColor = isDark ? AppTheme.darkTextPrimary : AppTheme.secondaryNavy;
-          final subLabelColor = isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
+          final labelColor =
+              isDark ? AppTheme.darkTextPrimary : AppTheme.secondaryNavy;
+          final subLabelColor =
+              isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
 
           return <PopupMenuEntry<String>>[
             PopupMenuItem<String>(
@@ -1370,8 +1326,8 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                                 color: labelColor,
                                 fontSize: 14)),
                         Text(widget.email,
-                            style: TextStyle(
-                                color: subLabelColor, fontSize: 12),
+                            style:
+                                TextStyle(color: subLabelColor, fontSize: 12),
                             overflow: TextOverflow.ellipsis),
                       ],
                     ),
@@ -1380,8 +1336,8 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
               ),
             ),
             const PopupMenuDivider(),
-            _buildMenuItem(context, isDark, 'settings',
-                Icons.settings_outlined, 'Account settings'),
+            _buildMenuItem(context, isDark, 'settings', Icons.settings_outlined,
+                'Account settings'),
             _buildMenuItem(
                 context, isDark, 'help', Icons.help_outline, 'Help & support'),
             _buildMenuItem(context, isDark, 'transparency',
@@ -1394,8 +1350,8 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                   Icons.domain_outlined, 'Organizations'),
             ],
             const PopupMenuDivider(),
-            _buildMenuItem(context, isDark, 'logout', Icons.logout_rounded,
-                'Log out',
+            _buildMenuItem(
+                context, isDark, 'logout', Icons.logout_rounded, 'Log out',
                 isDestructive: true),
           ];
         },
@@ -1407,8 +1363,7 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
     return CircleAvatar(
       radius: size,
       backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.15),
-      backgroundImage:
-          photoUrl.isNotEmpty ? NetworkImage(photoUrl) : null,
+      backgroundImage: photoUrl.isNotEmpty ? NetworkImage(photoUrl) : null,
       child: photoUrl.isEmpty
           ? Text(
               widget.displayName.isNotEmpty
@@ -1424,8 +1379,8 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
     );
   }
 
-  PopupMenuItem<String> _buildMenuItem(
-      BuildContext context, bool isDark, String value, IconData icon, String label,
+  PopupMenuItem<String> _buildMenuItem(BuildContext context, bool isDark,
+      String value, IconData icon, String label,
       {bool isDestructive = false}) {
     final color = isDestructive
         ? AppTheme.error
@@ -1439,9 +1394,7 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
           const SizedBox(width: 12),
           Text(label,
               style: TextStyle(
-                  color: color,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500)),
+                  color: color, fontSize: 13, fontWeight: FontWeight.w500)),
         ],
       ),
     );

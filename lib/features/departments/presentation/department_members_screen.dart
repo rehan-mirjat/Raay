@@ -72,7 +72,7 @@ class _DepartmentMembersScreenState
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Delete Department',
+        title: const Text('Delete Department',
             style: TextStyle(color: AppTheme.error)),
         content: Text(
           'Are you sure you want to delete "${dept.name}"?\n\nThis permanently deletes the department.',
@@ -80,7 +80,7 @@ class _DepartmentMembersScreenState
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -109,7 +109,7 @@ class _DepartmentMembersScreenState
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
-            child: Text('Delete Permanently'),
+            child: const Text('Delete Permanently'),
           ),
         ],
       ),
@@ -169,13 +169,13 @@ class _DepartmentMembersScreenState
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Remove from department',
+        title: const Text('Remove from department',
             style: TextStyle(color: AppTheme.error)),
         content: Text('Remove "$memberName" from this department?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
@@ -183,7 +183,7 @@ class _DepartmentMembersScreenState
               Navigator.pop(ctx);
               _handleRemoveMember(orgId, targetUid, memberName);
             },
-            child: Text('Remove'),
+            child: const Text('Remove'),
           ),
         ],
       ),
@@ -289,7 +289,7 @@ class _DepartmentMembersScreenState
                     InkWell(
                       onTap: () => context.go('/orgs/departments'),
                       borderRadius: BorderRadius.circular(6),
-                      child: Padding(
+                      child: const Padding(
                         padding:
                             EdgeInsets.symmetric(vertical: 4, horizontal: 2),
                         child: Row(
@@ -309,7 +309,7 @@ class _DepartmentMembersScreenState
                         ),
                       ),
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
 
                     // 2. Header Title & Actions Row
                     Row(
@@ -336,7 +336,7 @@ class _DepartmentMembersScreenState
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                  SizedBox(width: 12),
+                                  const SizedBox(width: 12),
                                   Container(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 10, vertical: 4),
@@ -356,7 +356,7 @@ class _DepartmentMembersScreenState
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 6),
+                              const SizedBox(height: 6),
                               Text(
                                 'Members in this department can be chosen as eligible voters for events.',
                                 style: TextStyle(
@@ -367,7 +367,7 @@ class _DepartmentMembersScreenState
                           ),
                         ),
                         if (isManager) ...[
-                          SizedBox(width: 16),
+                          const SizedBox(width: 16),
                           Row(
                             children: [
                               OutlinedButton.icon(
@@ -381,20 +381,20 @@ class _DepartmentMembersScreenState
                                     ),
                                   );
                                 },
-                                icon: Icon(Icons.edit_outlined, size: 16),
-                                label: Text('Rename'),
+                                icon: const Icon(Icons.edit_outlined, size: 16),
+                                label: const Text('Rename'),
                                 style: OutlinedButton.styleFrom(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 16, vertical: 12),
                                 ),
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               OutlinedButton.icon(
                                 onPressed: () => _showDeleteConfirmation(
                                     context, department, orgId),
-                                icon: Icon(Icons.delete_outline_rounded,
+                                icon: const Icon(Icons.delete_outline_rounded,
                                     size: 16, color: AppTheme.error),
-                                label: Text('Delete',
+                                label: const Text('Delete',
                                     style: TextStyle(color: AppTheme.error)),
                                 style: OutlinedButton.styleFrom(
                                   side: BorderSide(
@@ -408,7 +408,7 @@ class _DepartmentMembersScreenState
                         ],
                       ],
                     ),
-                    SizedBox(height: 28),
+                    const SizedBox(height: 28),
 
                     // 3. Two-Column Assignment Grid
                     isDesktop
@@ -426,7 +426,7 @@ class _DepartmentMembersScreenState
                                   orgId,
                                 ),
                               ),
-                              SizedBox(width: 24),
+                              const SizedBox(width: 24),
 
                               // RIGHT COLUMN: Add Members List & Selection Card
                               Expanded(
@@ -452,7 +452,7 @@ class _DepartmentMembersScreenState
                                 isManager,
                                 orgId,
                               ),
-                              SizedBox(height: 24),
+                              const SizedBox(height: 24),
                               _buildAddMembersCard(
                                 context,
                                 department,
@@ -522,7 +522,7 @@ class _DepartmentMembersScreenState
                   child: Center(
                     child: Text(
                       '${assignedMembers.length}',
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                           color: AppTheme.primaryBlue),
@@ -547,10 +547,10 @@ class _DepartmentMembersScreenState
                       color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.people_outline_rounded,
+                    child: const Icon(Icons.people_outline_rounded,
                         size: 28, color: AppTheme.primaryBlue),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text(
                     'No members assigned yet',
                     style: TextStyle(
@@ -558,7 +558,7 @@ class _DepartmentMembersScreenState
                         fontWeight: FontWeight.bold,
                         color: KivoraColors.textPrimaryOf(context)),
                   ),
-                  SizedBox(height: 6),
+                  const SizedBox(height: 6),
                   Text(
                     'Choose people from the list to add them to this department. You can change it at any time.',
                     style: TextStyle(
@@ -567,7 +567,7 @@ class _DepartmentMembersScreenState
                         height: 1.4),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text(
                     'Assigned members will appear here.',
                     style:
@@ -601,12 +601,12 @@ class _DepartmentMembersScreenState
                         radius: 18,
                         backgroundColor: color,
                         child: Text(initials,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold)),
                       ),
-                      SizedBox(width: 14),
+                      const SizedBox(width: 14),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -621,7 +621,7 @@ class _DepartmentMembersScreenState
                       ),
                       StatusBadge.role(role),
                       if (isManager) ...[
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         IconButton(
                           icon: Icon(Icons.close_rounded,
                               size: 18, color: KivoraColors.textSecondaryOf(context)),
@@ -645,7 +645,7 @@ class _DepartmentMembersScreenState
               children: [
                 Icon(Icons.info_outline_rounded,
                     size: 15, color: KivoraColors.textSecondaryOf(context)),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     'Pending selections are not members yet. Confirm with "Assign ${_pendingSelectedUids.length} members" to add them to ${dept.name}.',
@@ -681,8 +681,9 @@ class _DepartmentMembersScreenState
 
       // Search query filter
       if (_searchQuery.isNotEmpty) {
-        if (!name.contains(_searchQuery) && !email.contains(_searchQuery))
+        if (!name.contains(_searchQuery) && !email.contains(_searchQuery)) {
           return false;
+        }
       }
 
       // Filter tabs filter ('all', 'unassigned', 'assigned')
@@ -732,13 +733,13 @@ class _DepartmentMembersScreenState
                       fontWeight: FontWeight.bold,
                       color: KivoraColors.textPrimaryOf(context)),
                 ),
-                SizedBox(height: 2),
+                const SizedBox(height: 2),
                 Text(
                   'Select people to assign to ${dept.name}.',
                   style: TextStyle(
                       fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
                 // Search Bar
                 TextField(
@@ -759,14 +760,14 @@ class _DepartmentMembersScreenState
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                           color: AppTheme.primaryBlue, width: 1.5),
                     ),
                     fillColor: KivoraColors.surfaceOf(context),
                     filled: true,
                   ),
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
 
                 // Filter Tabs Row (horizontally scrollable - a long department
                 // name can otherwise overflow narrow screens)
@@ -776,11 +777,11 @@ class _DepartmentMembersScreenState
                     children: [
                       Icon(Icons.filter_list_rounded,
                           size: 18, color: KivoraColors.textSecondaryOf(context)),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       _buildFilterPill('all', 'All members'),
-                      SizedBox(width: 6),
+                      const SizedBox(width: 6),
                       _buildFilterPill('unassigned', 'No department'),
-                      SizedBox(width: 6),
+                      const SizedBox(width: 6),
                       _buildFilterPill('assigned', dept.name),
                     ],
                   ),
@@ -793,7 +794,7 @@ class _DepartmentMembersScreenState
           // Selectable Members List
           if (filteredMembers.isEmpty)
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 40),
+              padding: const EdgeInsets.symmetric(vertical: 40),
               child: Center(
                 child: Text('No members match your search.',
                     style:
@@ -880,23 +881,23 @@ class _DepartmentMembersScreenState
                               ),
                             ),
                             child: isChecked
-                                ? Icon(Icons.check_rounded,
+                                ? const Icon(Icons.check_rounded,
                                     size: 14, color: Colors.white)
                                 : null,
                           ),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
 
                           // Avatar
                           CircleAvatar(
                             radius: 16,
                             backgroundColor: color,
                             child: Text(initials,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 11,
                                     fontWeight: FontWeight.bold)),
                           ),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
 
                           // Name & Department subtitle
                           Expanded(
@@ -958,14 +959,14 @@ class _DepartmentMembersScreenState
                               color: KivoraColors.textPrimaryOf(context)),
                         ),
                         if (_pendingSelectedUids.isNotEmpty) ...[
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           InkWell(
                             onTap: () {
                               setState(() {
                                 _pendingSelectedUids.clear();
                               });
                             },
-                            child: Text('Clear',
+                            child: const Text('Clear',
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
@@ -974,7 +975,7 @@ class _DepartmentMembersScreenState
                         ],
                       ],
                     ),
-                    SizedBox(height: 2),
+                    const SizedBox(height: 2),
                     Text(
                       'Pending assignment to ${dept.name}',
                       style: TextStyle(
@@ -993,7 +994,7 @@ class _DepartmentMembersScreenState
                             child: CircularProgressIndicator(
                                 color: Colors.white, strokeWidth: 2),
                           )
-                        : Icon(Icons.person_add_alt_1_rounded, size: 16),
+                        : const Icon(Icons.person_add_alt_1_rounded, size: 16),
                     label: Text(_isAssigning
                         ? 'Assigning...'
                         : 'Assign ${_pendingSelectedUids.length} members'),

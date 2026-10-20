@@ -12,6 +12,8 @@ import '../../../core/widgets/fade_through.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../services/auth_service.dart';
+import '../../organizations/domain/organization_enums.dart';
+import '../../organizations/presentation/providers/organization_providers.dart';
 import '../../voting/data/participation_repository.dart';
 import '../../voting/data/receipt_repository.dart';
 import '../../voting/presentation/cast_vote_screen.dart';
@@ -410,7 +412,7 @@ class _ResultsReadyCard extends StatelessWidget {
   }
 }
 
-class _EventDetailsCard extends StatelessWidget {
+class _EventDetailsCard extends ConsumerWidget {
   const _EventDetailsCard({required this.event});
 
   final VotingEvent event;
@@ -419,10 +421,17 @@ class _EventDetailsCard extends StatelessWidget {
   static final _timeFormat = DateFormat('h:mm a');
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final dateFormat = _dateFormat;
     final timeFormat = _timeFormat;
     final kc = KivoraColors.of(context);
+    final memberRole = ref
+        .watch(activeOrganizationContextProvider)
+        .valueOrNull
+        ?.context
+        ?.member
+        .role;
+    final isAdmin = memberRole?.isAdmin ?? false;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -519,6 +528,34 @@ class _EventDetailsCard extends StatelessWidget {
             ),
           ] else
             const SizedBox(height: 16),
+          if (isAdmin) ...[
+            const Divider(height: 1),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (event.status == VotingEventStatus.active ||
+                      event.status == VotingEventStatus.closed)
+                    OutlinedButton.icon(
+                      onPressed: () =>
+                          context.push('/admin/events/${event.id}/monitor'),
+                      icon: const Icon(Icons.analytics_outlined, size: 18),
+                      label: const Text('Monitor Turnout'),
+                    ),
+                  if (event.status == VotingEventStatus.draft) ...[
+                    const SizedBox(height: 8),
+                    OutlinedButton.icon(
+                      onPressed: () =>
+                          context.push('/admin/events/${event.id}/edit'),
+                      icon: const Icon(Icons.edit_outlined, size: 18),
+                      label: const Text('Edit Event Builder'),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );

@@ -61,16 +61,17 @@ class KivoraMetricCard extends StatelessWidget {
                   color: iconColor ?? AppTheme.primaryBlue,
                 ),
               ),
-              const Spacer(),
-              if (subtitle != null)
+              if (subtitle != null) ...[
+                const Expanded(child: SizedBox()),
                 Text(
                   subtitle!,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.accentTeal,
                   ),
                 ),
+              ],
             ],
           ),
           const SizedBox(height: 16),

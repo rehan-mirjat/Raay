@@ -156,7 +156,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                             color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(14),
                           ),
-                          child: Icon(
+                          child: const Icon(
                             Icons.business_outlined,
                             size: 24,
                             color: AppTheme.primaryBlue,
@@ -169,7 +169,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
                     Text(
                       'Create an organization',
@@ -178,12 +178,12 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                             color: KivoraColors.textPrimaryOf(context),
                           ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       'Give your community a shared space for people, departments and activity.',
                       style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14, height: 1.4),
                     ),
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
                     Text(
                       'ORGANIZATION NAME *',
@@ -194,7 +194,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                         letterSpacing: 0.5,
                       ),
                     ),
-                    SizedBox(height: 6),
+                    const SizedBox(height: 6),
                     TextFormField(
                       controller: _nameController,
                       textInputAction: TextInputAction.next,
@@ -209,12 +209,12 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                         return null;
                       },
                     ),
-                    SizedBox(height: 6),
+                    const SizedBox(height: 6),
                     Text(
                       'Use a name your members will recognize. 2–80 characters.',
                       style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                     ),
-                    SizedBox(height: 18),
+                    const SizedBox(height: 18),
 
                     Text(
                       'ORGANIZATION TYPE *',
@@ -225,7 +225,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                         letterSpacing: 0.5,
                       ),
                     ),
-                    SizedBox(height: 6),
+                    const SizedBox(height: 6),
                     DropdownButtonFormField<String>(
                       initialValue: _selectedType,
                       decoration: const InputDecoration(
@@ -238,7 +238,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                         }
                       },
                     ),
-                    SizedBox(height: 18),
+                    const SizedBox(height: 18),
 
                     Row(
                       children: [
@@ -255,7 +255,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                                   letterSpacing: 0.5,
                                 ),
                               ),
-                              SizedBox(height: 6),
+                              const SizedBox(height: 6),
                               TextFormField(
                                 controller: _cityController,
                                 textInputAction: TextInputAction.next,
@@ -266,7 +266,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                             ],
                           ),
                         ),
-                        SizedBox(width: 14),
+                        const SizedBox(width: 14),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,7 +280,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                                   letterSpacing: 0.5,
                                 ),
                               ),
-                              SizedBox(height: 6),
+                              const SizedBox(height: 6),
                               TextFormField(
                                 controller: _countryController,
                                 textInputAction: TextInputAction.next,
@@ -293,7 +293,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
                     // Owner Callout Box
                     Container(
@@ -305,8 +305,8 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.check_circle_outline_rounded, color: AppTheme.primaryBlue, size: 18),
-                          SizedBox(width: 10),
+                          const Icon(Icons.check_circle_outline_rounded, color: AppTheme.primaryBlue, size: 18),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -315,7 +315,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                                   'Verified instantly, you\'ll be the owner',
                                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: KivoraColors.textPrimaryOf(context)),
                                 ),
-                                SizedBox(height: 2),
+                                const SizedBox(height: 2),
                                 Text(
                                   'Since your account email is verified, your organization is created already verified - no manual review needed. Set up your workspace, branding and joining codes right after.',
                                   style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.4),
@@ -326,7 +326,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                         ],
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
                     Text(
                       '* Complete the required fields to create your organization.',
@@ -334,11 +334,11 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                     ),
 
                     if (_error != null) ...[
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       InlineErrorBanner(message: _error!),
                     ],
 
-                    SizedBox(height: 28),
+                    const SizedBox(height: 28),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -348,9 +348,9 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                           ),
-                          child: Text('Cancel'),
+                          child: const Text('Cancel'),
                         ),
-                        SizedBox(width: 12),
+                        const SizedBox(width: 12),
                         FilledButton(
                           onPressed: _isLoading ? null : _submit,
                           style: FilledButton.styleFrom(
@@ -358,12 +358,12 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                           ),
                           child: _isLoading
-                              ? SizedBox(
+                              ? const SizedBox(
                                   height: 16,
                                   width: 16,
                                   child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                                 )
-                              : Text('Create organization'),
+                              : const Text('Create organization'),
                         ),
                       ],
                     ),

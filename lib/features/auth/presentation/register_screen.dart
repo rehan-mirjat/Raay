@@ -11,6 +11,7 @@ import '../../../core/widgets/inline_error_banner.dart';
 import '../../../core/widgets/ui_kit/kivora_button.dart';
 import '../../../core/widgets/ui_kit/kivora_text_field.dart';
 import 'package:kivora/core/theme/kivora_icons.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../services/auth_service.dart';
 import 'widgets/auth_split_layout.dart';
 
@@ -175,6 +176,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     final isMobile = ResponsiveLayout.isCompact(context);
     final kc = KivoraColors.of(context);
+    final l10n = AppLocalizations.of(context);
 
     return AuthSplitLayout(
       onMobileBackTap: widget.onBackToLoginTap,
@@ -220,7 +222,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                       SizedBox(height: isMobile ? 16 : 20),
                       Text(
-                        'Join Kivora',
+                        l10n.authRegisterTitle,
                         style:
                             Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
@@ -229,7 +231,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        'Create your platform identity to vote securely.',
+                        l10n.authRegisterSubtitle,
                         style: TextStyle(color: kc.textSecondary, fontSize: 14),
                         textAlign: TextAlign.center,
                       ),
@@ -346,7 +348,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         onPressed: _submit,
                         isLoading: _isLoading,
                         icon: KivoraIcons.userPlus,
-                        label: 'Create Account',
+                        label: l10n.authCreateAccount,
                       ),
                       SizedBox(height: isMobile ? 16 : 20),
                       Row(

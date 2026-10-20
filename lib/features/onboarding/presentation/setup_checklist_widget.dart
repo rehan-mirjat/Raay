@@ -91,7 +91,7 @@ class SetupChecklistWidget extends ConsumerWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Expanded(
@@ -103,14 +103,14 @@ class SetupChecklistWidget extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(3),
                     ),
                   ),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   Text(
                     '$completedCount of ${items.length} completed',
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: KivoraColors.textSecondaryOf(context)),
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ...items.map((item) => Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Row(
@@ -120,7 +120,7 @@ class SetupChecklistWidget extends ConsumerWidget {
                       color: item.isCompleted ? AppTheme.success : KivoraColors.borderOf(context),
                       size: 20,
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Text(
                       item.title,
                       style: TextStyle(

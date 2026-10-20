@@ -44,7 +44,7 @@ class EmptyView extends StatelessWidget {
                   color: AppTheme.primaryBlue,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 title,
                 style: TextStyle(
@@ -54,7 +54,7 @@ class EmptyView extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 message,
                 style: TextStyle(
@@ -65,7 +65,7 @@ class EmptyView extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               if (actionLabel != null && onAction != null) ...[
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: onAction,
                   child: Text(actionLabel!),
