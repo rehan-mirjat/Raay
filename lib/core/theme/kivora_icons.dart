@@ -36,4 +36,17 @@ class KivoraIcons {
   static const IconData link = Icons.link_rounded;
   static const IconData unlink = Icons.link_off_rounded;
   static const IconData google = Icons.g_mobiledata_rounded;
+  static const IconData fileSpreadsheet = Icons.table_chart_outlined;
+  static const IconData x = Icons.close_rounded;
+  static const IconData copy = Icons.content_copy_rounded;
+  static const IconData check = Icons.check_rounded;
+  static const IconData checkCircle2 = Icons.check_circle_rounded;
+  static const IconData alertTriangle = Icons.warning_amber_rounded;
+  static const IconData camera = Icons.photo_camera_outlined;
+  static const IconData edit3 = Icons.edit_outlined;
+  static const IconData trash2 = Icons.delete_outline_rounded;
+  static const IconData userX = Icons.person_remove_outlined;
+  static const IconData send = Icons.send_rounded;
+  static const IconData listChecks = Icons.checklist_rounded;
+  static const IconData gripVertical = Icons.drag_indicator_rounded;
 }

@@ -14,6 +14,7 @@ class KivoraTextField extends StatelessWidget {
   final TextInputAction? textInputAction;
   final void Function(String)? onFieldSubmitted;
   final Iterable<String>? autofillHints;
+  final int maxLines;
 
   const KivoraTextField({
     super.key,
@@ -29,6 +30,7 @@ class KivoraTextField extends StatelessWidget {
     this.textInputAction,
     this.onFieldSubmitted,
     this.autofillHints,
+    this.maxLines = 1,
   });
 
   @override
@@ -48,6 +50,7 @@ class KivoraTextField extends StatelessWidget {
         TextFormField(
           controller: controller,
           obscureText: obscureText,
+          maxLines: obscureText ? 1 : maxLines,
           keyboardType: keyboardType,
           textInputAction: textInputAction,
           onFieldSubmitted: onFieldSubmitted,

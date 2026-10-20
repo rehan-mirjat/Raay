@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kivora/core/theme/app_theme.dart';
+import 'package:kivora/core/theme/kivora_icons.dart';
+import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
+import 'package:kivora/core/widgets/ui_kit/kivora_text_field.dart';
 
+import '../../../../core/theme/kivora_colors.dart';
 import '../../../../core/widgets/inline_error_banner.dart';
 import '../../data/poll_option_repository.dart';
 import '../../domain/poll_option.dart';
@@ -54,8 +59,6 @@ class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
     try {
       final repo = ref.read(pollOptionRepositoryProvider);
       if (widget.existingOption == null) {
-        // sortOrder is left unset: the server appends it after the current
-        // highest sortOrder so new options reliably land at the end.
         await repo.createPollOption(
           organizationId: widget.orgId,
           votingEventId: widget.eventId,
@@ -83,44 +86,97 @@ class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.sizeOf(context).width;
-    return AlertDialog(
-      title: Text(widget.existingOption == null ? 'Add Option' : 'Edit Option'),
-      content: SizedBox(
-        width: (screenWidth - 80).clamp(240.0, 400.0),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  controller: _labelCtrl,
-                  decoration: const InputDecoration(labelText: 'Label *'),
-                  validator: (v) => v == null || v.trim().isEmpty ? 'Label is required' : null,
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _descCtrl,
-                  decoration: const InputDecoration(labelText: 'Description (Optional)'),
-                  maxLines: 3,
-                ),
-                if (_error != null) ...[
+    final kc = KivoraColors.of(context);
+
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: kc.surface,
+      child: SizedBox(
+        width: (screenWidth - 80).clamp(280.0, 480.0),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: AppTheme.primaryBlue.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(KivoraIcons.listChecks,
+                                color: AppTheme.primaryBlue, size: 20),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            widget.existingOption == null ? 'Add Poll Option' : 'Edit Poll Option',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: kc.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                        icon: const Icon(KivoraIcons.x, size: 20),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  KivoraTextField(
+                    controller: _labelCtrl,
+                    label: 'Option Label *',
+                    hint: 'e.g. Approve Proposal A',
+                    validator: (v) => v == null || v.trim().isEmpty ? 'Label is required' : null,
+                  ),
                   const SizedBox(height: 16),
-                  InlineErrorBanner(message: _error!),
+                  KivoraTextField(
+                    controller: _descCtrl,
+                    label: 'Option Description (Optional)',
+                    hint: 'Provide additional details for voters...',
+                    maxLines: 3,
+                  ),
+                  if (_error != null) ...[
+                    const SizedBox(height: 16),
+                    InlineErrorBanner(message: _error!),
+                  ],
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: KivoraButton(
+                          type: KivoraButtonType.secondary,
+                          label: 'Cancel',
+                          onPressed: _isLoading ? null : () => Navigator.pop(context),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: KivoraButton(
+                          label: widget.existingOption == null ? 'Add Option' : 'Save Changes',
+                          isLoading: _isLoading,
+                          onPressed: _submit,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
-              ],
+              ),
             ),
           ),
         ),
       ),
-      actions: [
-        if (!_isLoading)
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-        ElevatedButton(
-          onPressed: _isLoading ? null : _submit,
-          child: _isLoading ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : const Text('Save'),
-        ),
-      ],
     );
   }
 }

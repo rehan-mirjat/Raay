@@ -212,8 +212,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        _buildMobileTabs(context),
-                        const SizedBox(height: 24),
+                        _buildMobileSectionCards(context),
+                        const SizedBox(height: 20),
                         _buildSelectedView(context, user),
                       ],
                     );
@@ -298,56 +298,87 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  Widget _buildMobileTabs(BuildContext context) {
+  Widget _buildMobileSectionCards(BuildContext context) {
     final kc = KivoraColors.of(context);
-    return Container(
-      decoration: BoxDecoration(
-        color: kc.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: kc.border),
-      ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Row(
-          children: [
-            for (var i = 0; i < _tabs.length; i++)
-              _buildMobileTabItem(
-                title: _tabs[i].shortTitle,
-                isSelected: _selectedIndex == i,
-                onTap: () => setState(() => _selectedIndex = i),
-              ),
-          ],
-        ),
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < _tabs.length; i++) ...[
+          if (i > 0) const SizedBox(height: 8),
+          _buildSectionCard(
+            context: context,
+            icon: _tabs[i].icon,
+            title: _tabs[i].title,
+            isSelected: _selectedIndex == i,
+            onTap: () => setState(() => _selectedIndex = i),
+            kc: kc,
+          ),
+        ],
+      ],
     );
   }
 
-  Widget _buildMobileTabItem({
+  Widget _buildSectionCard({
+    required BuildContext context,
+    required IconData icon,
     required String title,
     required bool isSelected,
     required VoidCallback onTap,
+    required KivoraColors kc,
   }) {
-    final color = isSelected ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context);
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: isSelected ? AppTheme.primaryBlue : Colors.transparent,
-              width: 2,
+    final accentColor = AppTheme.primaryBlue;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? accentColor.withValues(alpha: 0.08)
+                : kc.surface,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: isSelected ? accentColor.withValues(alpha: 0.35) : kc.border,
+              width: isSelected ? 1.5 : 1,
             ),
           ),
-        ),
-        child: Text(
-          title,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: color,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-            fontSize: 14,
+          child: Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? accentColor.withValues(alpha: 0.12)
+                      : kc.border.withValues(alpha: 0.35),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  icon,
+                  size: 18,
+                  color: isSelected ? accentColor : kc.textSecondary,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                    color: isSelected ? accentColor : kc.textPrimary,
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 20,
+                color: isSelected ? accentColor : kc.textSecondary,
+              ),
+            ],
           ),
         ),
       ),
@@ -423,28 +454,33 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ),
                 ],
               ),
-              const SizedBox(width: 18),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       user.displayName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: kc.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 3),
                     Text(
                       user.email,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 13,
                         color: kc.textSecondary,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     Row(
                       children: [
                         Container(
@@ -1043,8 +1079,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 child: const Text('Cancel')),
             TextButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: Text('Disconnect',
-                  style: const TextStyle(color: AppTheme.error)),
+              child: const Text('Disconnect',
+                  style: TextStyle(color: AppTheme.error)),
             ),
           ],
         ),

@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kivora/core/theme/kivora_icons.dart';
+import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
@@ -58,6 +61,109 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
     }
   }
 
+  void _exportCsvModal(
+    BuildContext context,
+    String title,
+    List<Map<String, dynamic>> rows,
+    int total,
+    int eligible,
+    double turnout,
+  ) {
+    final csvBuffer = StringBuffer();
+    csvBuffer.writeln('Election Title,"${title.replaceAll('"', '""')}"');
+    csvBuffer.writeln('Ballots Counted,$total');
+    csvBuffer.writeln('Eligible Voters,$eligible');
+    csvBuffer.writeln('Turnout,${turnout.toStringAsFixed(1)}%');
+    csvBuffer.writeln();
+    csvBuffer.writeln('Choice / Option,Votes,Percentage');
+
+    for (var r in rows) {
+      final name = (r['name'] as String? ?? 'Choice').replaceAll('"', '""');
+      final votes = (r['votes'] as num?)?.toInt() ?? 0;
+      final percent = ((r['percent'] as num?)?.toDouble() ?? 0).toStringAsFixed(2);
+      csvBuffer.writeln('"$name",$votes,$percent%');
+    }
+
+    final csvText = csvBuffer.toString();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 520),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppTheme.primaryBlue.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(KivoraIcons.fileSpreadsheet,
+                              color: AppTheme.primaryBlue, size: 20),
+                        ),
+                        const SizedBox(width: 12),
+                        const Text(
+                          'Export Results (CSV)',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: const Icon(KivoraIcons.x, size: 20),
+                      onPressed: () => Navigator.pop(ctx),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: KivoraColors.surfaceOf(context),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: KivoraColors.borderOf(context)),
+                  ),
+                  child: SelectableText(
+                    csvText,
+                    style: const TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                KivoraButton(
+                  icon: KivoraIcons.copy,
+                  label: 'Copy CSV to Clipboard',
+                  onPressed: () {
+                    Clipboard.setData(ClipboardData(text: csvText));
+                    Navigator.pop(ctx);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('CSV report copied to clipboard!')),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final membership = ref
@@ -94,7 +200,7 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                               label: eventTitle ?? 'Event',
                               eventId: widget.eventId,
                             ),
-                            SizedBox(height: 16),
+                            const SizedBox(height: 16),
                             body,
                           ],
                         ),
@@ -159,7 +265,7 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                         label: eventTitle ?? 'Event',
                         eventId: widget.eventId,
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       Row(
                         children: [
                           Text(
@@ -171,7 +277,7 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                                     fontWeight: FontWeight.bold,
                                     color: KivoraColors.textPrimaryOf(context)),
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 3),
@@ -195,7 +301,7 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Text(
                         [
                           if (eventTitle != null) eventTitle,
@@ -205,14 +311,14 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                         style: TextStyle(
                             fontSize: 13, color: KivoraColors.textSecondaryOf(context)),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       if (rows.isNotEmpty) ...[
                         _OutcomeBanner(rows: rows, total: total),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                       ],
                       _StatsCard(
                           total: total, eligible: eligible, turnout: turnout),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       if (!isPublished)
                         Container(
                           margin: const EdgeInsets.only(bottom: 16),
@@ -232,14 +338,14 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                         ),
                       if (rows.length > 1) ...[
                         _VoteSplitBar(rows: rows),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                       ],
                       for (var i = 0; i < rows.length; i++) ...[
                         _ResultRow(
                           row: rows[i],
                           color: _kResultColors[i % _kResultColors.length],
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                       ],
                       if (rows.isEmpty)
                         Container(
@@ -250,10 +356,10 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                                 BorderRadius.circular(AppTheme.radiusCard),
                             border: Border.all(color: KivoraColors.borderOf(context)),
                           ),
-                          child: Text(
+                          child: const Text(
                               'No ballots were recorded for this event.'),
                         ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       Text(
                         'Results are shown to eligible members after an administrator publishes them. '
                         'Percentages are of ballots counted.',
@@ -261,9 +367,9 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                             fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                       ),
                       if (canManage) ...[
-                        SizedBox(height: 20),
-                        Divider(),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 20),
+                        const Divider(),
+                        const SizedBox(height: 12),
                         Wrap(
                           spacing: 12,
                           runSpacing: 12,
@@ -271,7 +377,7 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                             OutlinedButton.icon(
                               onPressed:
                                   _busy ? null : () => _run('calculateResults'),
-                              icon: Icon(Icons.refresh_rounded, size: 18),
+                              icon: const Icon(Icons.refresh_rounded, size: 18),
                               label:
                                   Text(_busy ? 'Working…' : 'Recalculate results'),
                             ),
@@ -279,9 +385,21 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                               FilledButton.icon(
                                 onPressed:
                                     _busy ? null : () => _run('publishResults'),
-                                icon: Icon(Icons.publish_rounded, size: 18),
-                                label: Text('Publish results to members'),
+                                icon: const Icon(Icons.publish_rounded, size: 18),
+                                label: const Text('Publish results to members'),
                               ),
+                            OutlinedButton.icon(
+                              onPressed: () => _exportCsvModal(
+                                context,
+                                eventTitle ?? 'Election Results',
+                                rows,
+                                total,
+                                eligible,
+                                turnout,
+                              ),
+                              icon: const Icon(KivoraIcons.fileSpreadsheet, size: 18),
+                              label: const Text('Export CSV Report'),
+                            ),
                           ],
                         ),
                       ],
@@ -322,12 +440,12 @@ class _BackLink extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.arrow_back_rounded,
+            const Icon(Icons.arrow_back_rounded,
                 size: 16, color: AppTheme.primaryBlue),
-            SizedBox(width: 4),
+            const SizedBox(width: 4),
             Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 color: AppTheme.primaryBlue,
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
@@ -394,7 +512,7 @@ class _OutcomeBanner extends StatelessWidget {
               color: const Color(0xFFB45309),
             ),
           ),
-          SizedBox(width: 14),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -404,7 +522,7 @@ class _OutcomeBanner extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
                         color: KivoraColors.textPrimaryOf(context))),
-                SizedBox(height: 2),
+                const SizedBox(height: 2),
                 Text(subtitle,
                     style: TextStyle(
                         fontSize: 13, color: KivoraColors.textSecondaryOf(context))),
@@ -459,7 +577,7 @@ class _StatsCard extends StatelessWidget {
               color: KivoraColors.textSecondaryOf(context),
               letterSpacing: 0.8),
         ),
-        SizedBox(height: 6),
+        const SizedBox(height: 6),
         Text(
           value,
           style: TextStyle(
@@ -468,7 +586,7 @@ class _StatsCard extends StatelessWidget {
               color: KivoraColors.textPrimaryOf(context)),
         ),
         if (progress != null) ...[
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
@@ -502,7 +620,7 @@ class _VoteSplitBar extends StatelessWidget {
               color: KivoraColors.textSecondaryOf(context),
               letterSpacing: 0.8),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         ClipRRect(
           borderRadius: BorderRadius.circular(999),
           child: SizedBox(
@@ -523,7 +641,7 @@ class _VoteSplitBar extends StatelessWidget {
                       child: (rows[i]['percent'] as num) >= 12
                           ? Text(
                               '${rows[i]['name']} ${(rows[i]['percent'] as num).toStringAsFixed(0)}%',
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12),
@@ -568,10 +686,10 @@ class _ResultRow extends StatelessWidget {
                 height: 10,
                 decoration: BoxDecoration(color: color, shape: BoxShape.circle),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Expanded(
                 child: Text(name,
-                    style: TextStyle(fontWeight: FontWeight.w600)),
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
               ),
               Text.rich(
                 TextSpan(
@@ -590,7 +708,7 @@ class _ResultRow extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: LinearProgressIndicator(
