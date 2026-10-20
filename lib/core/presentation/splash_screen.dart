@@ -59,7 +59,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final isWide = ResponsiveLayout.isWide(context);
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {

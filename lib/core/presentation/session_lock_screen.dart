@@ -90,7 +90,7 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
     final busy = _isVerifying || _isSigningOut;
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

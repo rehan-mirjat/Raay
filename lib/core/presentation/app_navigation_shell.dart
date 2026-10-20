@@ -16,6 +16,7 @@ import '../theme/app_theme.dart';
 import '../theme/theme_provider.dart';
 import '../../features/onboarding/presentation/tour_keys.dart';
 import '../widgets/global_search_overlay.dart';
+import '../widgets/glass/glass.dart';
 
 // Persists sidebar collapsed state across navigations
 final _sidebarCollapsedProvider = StateProvider<bool>((ref) => false);
@@ -40,8 +41,6 @@ class AppNavigationShell extends ConsumerWidget {
         memberRole == OrganizationRole.admin;
     final isObserver = activeOrgContext?.member.isObserver ?? false;
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = isDark ? AppTheme.darkBackground : AppTheme.backgroundLight;
     final collapsed = ref.watch(_sidebarCollapsedProvider);
 
     return CallbackShortcuts(
@@ -54,7 +53,7 @@ class AppNavigationShell extends ConsumerWidget {
       child: Focus(
         autofocus: true,
         child: Scaffold(
-          backgroundColor: bgColor,
+          backgroundColor: Colors.transparent,
           body: SafeArea(
             bottom: false,
             child: Column(
@@ -86,22 +85,12 @@ class AppNavigationShell extends ConsumerWidget {
                       : Column(
                           children: [
                             const _TopHeader(),
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: isDark
-                                    ? AppTheme.darkSurface
-                                    : AppTheme.surfaceWhite,
-                                border: Border(
-                                    bottom: BorderSide(
-                                        color: isDark
-                                            ? AppTheme.darkBorder
-                                            : AppTheme.borderLight,
-                                        width: 1)),
+                            const Padding(
+                              padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: OrganizationContextSwitcher(),
                               ),
-                              child: const OrganizationContextSwitcher(),
                             ),
                             Expanded(child: navigationShell),
                           ],
@@ -202,8 +191,8 @@ class _DesktopSidebar extends StatelessWidget {
       width: collapsed ? _collapsedWidth : _expandedWidth,
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
-        color: sidebarBg,
-        border: Border(right: BorderSide(color: borderColor, width: 1)),
+        color: sidebarBg.withValues(alpha: isDark ? 0.45 : 0.55),
+        border: Border(right: BorderSide(color: borderColor.withValues(alpha: 0.6), width: 1)),
       ),
       child: Column(
         children: [
@@ -446,13 +435,7 @@ class _FloatingMobileNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.paddingOf(context).bottom;
     final currentIndex = navigationShell.currentIndex;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final navBg = isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite;
-    final navBorder = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
-    final shadowColor = isDark
-        ? Colors.black.withValues(alpha: 0.4)
-        : AppTheme.secondaryNavy.withValues(alpha: 0.08);
     final l10n = AppLocalizations.of(context);
 
     return Padding(
@@ -462,20 +445,11 @@ class _FloatingMobileNavBar extends StatelessWidget {
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          Container(
+          GlassSurface(
+            borderRadius: 28,
+            blur: 22,
+            child: SizedBox(
             height: 64,
-            decoration: BoxDecoration(
-              color: navBg,
-              borderRadius: BorderRadius.circular(28),
-              border: Border.all(color: navBorder, width: 1.2),
-              boxShadow: [
-                BoxShadow(
-                  color: shadowColor,
-                  blurRadius: 24,
-                  offset: const Offset(0, 6),
-                ),
-              ],
-            ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
@@ -497,6 +471,7 @@ class _FloatingMobileNavBar extends StatelessWidget {
                       Icons.person_rounded, l10n.navProfile, currentIndex),
                 ],
               ),
+            ),
             ),
           ),
 
@@ -623,18 +598,10 @@ class _TopHeader extends ConsumerWidget {
     final appUserAsync =
         user != null ? ref.watch(userProfileProvider(user.uid)) : null;
     final photoUrlToUse = appUserAsync?.valueOrNull?.photoUrl ?? user?.photoURL;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final headerBg =
-        isDark ? AppTheme.darkBackground : AppTheme.backgroundLight;
-    final pillBg = isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite;
-    final pillBorder = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
-    final pillShadow = isDark
-        ? Colors.black.withValues(alpha: 0.3)
-        : AppTheme.secondaryNavy.withValues(alpha: 0.06);
 
     return Container(
-      color: headerBg,
+      color: Colors.transparent,
       padding: EdgeInsets.symmetric(
         horizontal: isDesktop ? 24 : 16,
         vertical: isDesktop ? 12 : 4,
@@ -642,26 +609,15 @@ class _TopHeader extends ConsumerWidget {
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1200),
-          child: Container(
-            height: isDesktop ? 60 : 52,
+          child: GlassSurface(
+            borderRadius: 20,
+            blur: 20,
             padding: EdgeInsets.symmetric(
-              horizontal: isDesktop ? 16 : 4,
+              horizontal: isDesktop ? 16 : 10,
               vertical: 6,
             ),
-            decoration: isDesktop
-                ? BoxDecoration(
-                    color: pillBg,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: pillBorder, width: 1.2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: pillShadow,
-                        blurRadius: 20,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  )
-                : null,
+            child: SizedBox(
+            height: isDesktop ? 48 : 40,
             child: Row(
               children: [
                 _BrandLogoLink(compact: !isDesktop),
@@ -700,6 +656,7 @@ class _TopHeader extends ConsumerWidget {
                     photoUrl: photoUrlToUse,
                   ),
               ],
+            ),
             ),
           ),
         ),

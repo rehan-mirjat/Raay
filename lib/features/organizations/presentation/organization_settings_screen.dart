@@ -64,7 +64,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     final isDesktop = ResponsiveLayout.isWide(context);
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       body: state.when(
         skipLoadingOnReload: true,
         loading: () => const LoadingView(message: 'Loading organization…'),

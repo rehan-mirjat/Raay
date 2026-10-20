@@ -83,9 +83,9 @@ class _AdminEventDashboardScreenState
       // Members land on the same "Events" nav destination as admins, but see
       // their own cross-organization voting portal instead of the admin
       // management console - not a silent bounce back to /home.
-      return Scaffold(
-        backgroundColor: KivoraColors.backgroundOf(context),
-        body: const SafeArea(child: VoterPortalScreen(embedded: true)),
+      return const Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SafeArea(child: VoterPortalScreen(embedded: true)),
       );
     }
 
@@ -99,7 +99,7 @@ class _AdminEventDashboardScreenState
     });
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           StreamBuilder<List<VotingEvent>>(

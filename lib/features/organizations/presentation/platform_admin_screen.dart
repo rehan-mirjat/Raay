@@ -231,7 +231,7 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
   Widget build(BuildContext context) {
     final admin = ref.watch(platformAdminProvider);
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text('Platform administration'),
         actions: [

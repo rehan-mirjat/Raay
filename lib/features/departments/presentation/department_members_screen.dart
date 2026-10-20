@@ -254,7 +254,7 @@ class _DepartmentMembersScreenState
     final allDepartments = departmentsAsync.valueOrNull ?? [];
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       body: membersAsync.when(
         loading: () =>
             const LoadingView(message: 'Loading department roster...'),

@@ -135,7 +135,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: KivoraColors.backgroundOf(context),
+        backgroundColor: Colors.transparent,
         body: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1140),

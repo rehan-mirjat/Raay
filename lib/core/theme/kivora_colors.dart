@@ -17,8 +17,9 @@ class KivoraColors {
   Color get background =>
       _isDark ? AppTheme.darkBackground : AppTheme.backgroundLight;
 
-  Color get surface =>
-      _isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite;
+  Color get surface => _isDark
+      ? AppTheme.darkSurface.withValues(alpha: 0.58)
+      : AppTheme.surfaceWhite.withValues(alpha: 0.72);
 
   Color get elevated =>
       _isDark ? AppTheme.darkElevated : AppTheme.surfaceWhite;

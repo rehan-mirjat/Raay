@@ -60,7 +60,7 @@ class _ElectionCommandCenterScreenState
     final orgState = ref.watch(activeOrganizationContextProvider);
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       body: orgState.when(
         loading: () => const LoadingView(message: 'Loading command center...'),
         error: (e, _) => ErrorView(

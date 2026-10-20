@@ -54,7 +54,7 @@ class _MobileOnboardingScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Column(
           children: [

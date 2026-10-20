@@ -47,9 +47,9 @@ class VoterPortalScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     const body = _VoterPortalBody();
     if (embedded) return body;
-    return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
-      body: const SafeArea(child: body),
+    return const Scaffold(
+      backgroundColor: Colors.transparent,
+      body: SafeArea(child: body),
     );
   }
 }

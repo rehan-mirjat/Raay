@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'core/widgets/glass/glass.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -211,7 +212,7 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
             child: content,
           );
         }
-        return content;
+        return GlassBackground(child: content);
       },
     );
   }

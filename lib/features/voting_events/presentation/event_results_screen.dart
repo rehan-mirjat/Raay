@@ -179,7 +179,7 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
         .doc(widget.eventId);
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(

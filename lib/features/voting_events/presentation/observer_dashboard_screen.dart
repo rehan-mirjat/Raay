@@ -31,7 +31,7 @@ class ObserverDashboardScreen extends ConsumerWidget {
     final orgState = ref.watch(activeOrganizationContextProvider);
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: KivoraColors.backgroundOf(context),
         elevation: 0,

@@ -168,7 +168,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
       builder: (context, eventSnapshot) {
         final event = eventSnapshot.data;
         return Scaffold(
-          backgroundColor: KivoraColors.backgroundOf(context),
+          backgroundColor: Colors.transparent,
           body: SafeArea(
             child: _loading && _summary == null
                 ? const LoadingView(message: 'Loading live turnout…')

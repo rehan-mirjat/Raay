@@ -59,7 +59,7 @@ class _ElectionCalendarScreenState
     final isDesktop = ResponsiveLayout.isWide(context);
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: KivoraColors.backgroundOf(context),
         elevation: 0,

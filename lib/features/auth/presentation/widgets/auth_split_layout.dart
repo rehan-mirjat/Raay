@@ -20,12 +20,10 @@ class AuthSplitLayout extends StatelessWidget {
 
     if (!isDesktop) {
       return Scaffold(
-        backgroundColor:
-            isDark ? AppTheme.darkBackground : KivoraColors.backgroundOf(context),
+        backgroundColor: Colors.transparent,
         appBar: onMobileBackTap != null
             ? AppBar(
-                backgroundColor:
-                    isDark ? AppTheme.darkBackground : KivoraColors.backgroundOf(context),
+                backgroundColor: Colors.transparent,
                 elevation: 0,
                 leading: IconButton(
                   icon: Icon(Icons.arrow_back,
@@ -61,8 +59,7 @@ class AuthSplitLayout extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor:
-          isDark ? AppTheme.darkBackground : KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       body: Row(
         children: [
           // Left Side — Dark branding panel (always dark for contrast)

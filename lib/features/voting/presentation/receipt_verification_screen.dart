@@ -56,7 +56,7 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
     final isDesktop = ResponsiveLayout.isWide(context);
 
     return Scaffold(
-      backgroundColor: kc.background,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text('Public Receipt Verification'),
         backgroundColor: kc.surface,

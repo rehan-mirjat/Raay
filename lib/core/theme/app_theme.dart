@@ -167,7 +167,7 @@ class AppTheme {
         onSecondary: Colors.white,
         onSurface: textPrimary,
       ),
-      scaffoldBackgroundColor: backgroundLight,
+      scaffoldBackgroundColor: Colors.transparent,
       textTheme: _buildTextTheme(isLight: true),
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
@@ -179,7 +179,7 @@ class AppTheme {
         },
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: backgroundLight,
+        backgroundColor: Colors.transparent,
         foregroundColor: textPrimary,
         elevation: 0,
         centerTitle: false,
@@ -226,7 +226,7 @@ class AppTheme {
         hintColor: textSecondary,
       ),
       cardTheme: CardThemeData(
-        color: surfaceWhite,
+        color: surfaceWhite.withValues(alpha: 0.72),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         shadowColor: Colors.black.withValues(alpha: 0.06),
@@ -237,7 +237,7 @@ class AppTheme {
         margin: EdgeInsets.zero,
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: surfaceWhite,
+        backgroundColor: surfaceWhite.withValues(alpha: 0.94),
         elevation: 8,
         surfaceTintColor: Colors.transparent,
         shadowColor: Colors.black.withValues(alpha: 0.12),
@@ -319,7 +319,7 @@ class AppTheme {
         onSecondary: Colors.white,
         onSurface: darkTextPrimary,
       ),
-      scaffoldBackgroundColor: darkBackground,
+      scaffoldBackgroundColor: Colors.transparent,
       textTheme: _buildTextTheme(isLight: false),
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
@@ -331,7 +331,7 @@ class AppTheme {
         },
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: darkBackground,
+        backgroundColor: Colors.transparent,
         foregroundColor: darkTextPrimary,
         elevation: 0,
         centerTitle: false,
@@ -378,7 +378,7 @@ class AppTheme {
         hintColor: darkTextSecondary,
       ),
       cardTheme: CardThemeData(
-        color: darkSurface,
+        color: darkSurface.withValues(alpha: 0.62),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         shadowColor: Colors.black.withValues(alpha: 0.3),
@@ -389,7 +389,7 @@ class AppTheme {
         margin: EdgeInsets.zero,
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: darkSurface,
+        backgroundColor: darkSurface.withValues(alpha: 0.92),
         elevation: 12,
         surfaceTintColor: Colors.transparent,
         shadowColor: Colors.black.withValues(alpha: 0.4),

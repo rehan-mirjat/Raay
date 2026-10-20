@@ -36,7 +36,7 @@ class EventDetailScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: FadeThrough(
           stateKey: stateKey,

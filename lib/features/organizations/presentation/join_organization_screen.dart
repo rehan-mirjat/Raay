@@ -175,7 +175,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
         if (!didPop) _backToCodeEntry();
       },
       child: Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),

@@ -156,7 +156,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final kc = KivoraColors.of(context);
 
     return Scaffold(
-      backgroundColor: kc.background,
+      backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Center(

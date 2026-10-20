@@ -168,7 +168,7 @@ class _OrganizationAuditScreenState
         ref.watch(organizationAuditLogsProvider(orgContext.organization.id));
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
           horizontal: isDesktop ? 32 : 16,

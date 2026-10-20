@@ -152,7 +152,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
         .watchOrganizationVotingEvents(orgId);
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       body: departmentsAsync.when(
         loading: () => const LoadingView(message: 'Loading departments...'),
         error: (err, stack) => ErrorView(

@@ -2,7 +2,6 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/kivora_colors.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
@@ -106,7 +105,7 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
   Widget build(BuildContext context) {
     final admin = ref.watch(platformAdminProvider);
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       appBar: AppBar(title: const Text('Platform organizations'), actions: [IconButton(onPressed: _loading ? null : _load, tooltip: 'Refresh', icon: const Icon(Icons.refresh_rounded))]),
       body: admin.when(
         loading: () => const LoadingView(message: 'Checking platform access…'),

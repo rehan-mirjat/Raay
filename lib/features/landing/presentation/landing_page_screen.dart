@@ -50,7 +50,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       endDrawer: !isDesktop ? _buildMobileDrawer(context) : null,
       body: SafeArea(
         child: SingleChildScrollView(

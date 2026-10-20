@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
+import '../glass/glass.dart';
 
 class KivoraCard extends StatelessWidget {
   final Widget child;
@@ -19,45 +20,17 @@ class KivoraCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
-
-    BoxDecoration decoration;
-    if (isGlass && isDark) {
-      decoration = AppTheme.glassCard;
-    } else {
-      decoration = BoxDecoration(
-        color: Theme.of(context).cardTheme.color,
-        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(
-          color: isDark ? AppTheme.darkBorder : AppTheme.borderLight.withValues(alpha: 0.7),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.06),
-            blurRadius: 20,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      );
-    }
-
-    Widget content = Container(
-      decoration: decoration,
+    return GlassSurface(
       margin: margin,
+      glow: isGlass,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-          child: Padding(
-            padding: padding,
-            child: child,
-          ),
+          child: Padding(padding: padding, child: child),
         ),
       ),
     );
-
-    return content;
   }
 }

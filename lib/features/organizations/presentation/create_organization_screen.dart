@@ -120,7 +120,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: Colors.transparent,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
