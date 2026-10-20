@@ -23,6 +23,7 @@ firestore-debug.log
 Thumbs.db
 
 # Functions
+node_modules/
 functions/node_modules/
 functions/lib/
 test/node_modules/
