@@ -326,7 +326,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     required VoidCallback onTap,
     required KivoraColors kc,
   }) {
-    final accentColor = AppTheme.primaryBlue;
+    const accentColor = AppTheme.primaryBlue;
     return Material(
       color: Colors.transparent,
       child: InkWell(
