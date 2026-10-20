@@ -2,12 +2,17 @@ import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { normalizeOrganizationName } from "../utils/organizationName";
 import { sanitizePlainText } from "../utils/sanitize";
+import { requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
 
 export const updateOrganization = onCall(async (request) => {
   // 1. Verify authentication
   if (!request.auth || !request.auth.uid) {
     throw new HttpsError("unauthenticated", "User must be authenticated to update an organization.");
   }
+
+  // FR-10: updating organization metadata (name, logo, branding) is a sensitive operation.
+  await requireNotRevoked(request);
+  requireRecentAuthentication(request.auth);
 
   const uid = request.auth.uid;
   const db = getFirestore();

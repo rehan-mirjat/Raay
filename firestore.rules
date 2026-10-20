@@ -382,6 +382,18 @@ service cloud.firestore {
     }
 
     // =========================
+    // INTERNAL RATE-LIMIT COUNTERS
+    // =========================
+
+    // _rateLimits/{keyPrefix_uid}: written exclusively by Cloud Functions via
+    // the Admin SDK (which bypasses these rules). No client should ever read
+    // or write these documents directly. The global deny below already covers
+    // this collection; this explicit rule exists for documentation clarity.
+    match /_rateLimits/{docId} {
+      allow read, write: if false;
+    }
+
+    // =========================
     // GLOBAL DENY-BY-DEFAULT (FIX: was absent from the skeleton)
     // =========================
 

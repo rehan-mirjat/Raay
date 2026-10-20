@@ -65,13 +65,22 @@ export async function requireNotRevoked(request: CallableRequest): Promise<impor
  * FR-09 / MFA-REQ-001-005: MFA state is read live from Firebase Auth (Admin
  * SDK), never from a Firestore field - a client-writable flag is never proof.
  *
- * NOT WIRED INTO ANY CALLABLE YET. The Flutter client has no MFA enrollment
- * flow at all - lib/features/auth/presentation/profile_screen.dart:231 is a
- * literal placeholder ("...will be implemented shortly."). Calling this from
- * any production function today would permanently lock out every current
- * Owner/Admin, since none of them have any way to enroll a second factor.
- * This helper is correct and ready; wire it in only after a real client-side
- * enrollment UI ships.
+ * STATUS: WIRED. The Flutter client ships TOTP enrollment
+ * (lib/core/widgets/totp_enroll_dialog.dart, Profile > Security). A caller
+ * without an enrolled factor is NOT auto-prompted: they receive the
+ * failed-precondition message below telling them where to enable it.
+ * Roll out by asking Owners/Admins to enroll BEFORE deploying.
+ *
+ * WIRED INTO:
+ *  - deleteOrganization  (org deletion)
+ *  - updateMemberRole    (role escalation/demotion)
+ *  - removeMember        (member removal)
+ *  - publishVotingEvent  (election go-live)
+ *  - closeVotingEvent    (early close)
+ *  - deleteAccount       (account deletion)
+ *
+ * Callers pass the uid AFTER requireNotRevoked and requireRecentAuthentication
+ * so we skip those extra Admin SDK round-trips when auth is already rejected.
  */
 export async function requireMfaEnrolled(uid: string): Promise<void> {
   const user = await getAuth().getUser(uid);
@@ -79,7 +88,7 @@ export async function requireMfaEnrolled(uid: string): Promise<void> {
   if (factors.length === 0) {
     throw new HttpsError(
       "failed-precondition",
-      "This action requires multi-factor authentication to be enabled on your account."
+      "Two-factor authentication is required for this action. Open Profile > Security & Settings, turn on two-factor authentication, then try again."
     );
   }
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Matches AppTheme.darkBackground (#0B1020) so native dark splash hands off
+         to Flutter's splash screen seamlessly with zero white flash. -->
+    <color name="splash_background">#0B1020</color>
+</resources>

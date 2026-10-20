@@ -1,7 +1,7 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue, Firestore, DocumentData } from "firebase-admin/firestore";
 import * as logger from "firebase-functions/logger";
-import { requireActiveMembership, requireNotRevoked } from "../utils/authorization";
+import { requireActiveMembership, requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
 import { calculateEventResults, getEligibleMembers } from "../results/tally";
 import { filterOptedIn } from "../utils/notificationPreferences";
 
@@ -56,7 +56,9 @@ export const publishResults = onCall(async (request) => {
   const uid = request.auth?.uid;
   if (!uid) throw new HttpsError("unauthenticated", "Authentication required.");
 
+  // FR-10 / MFA-REQ-001: publishing results is a sensitive, irreversible operation.
   await requireNotRevoked(request);
+  requireRecentAuthentication(request.auth);
 
   const eventId = typeof request.data?.eventId === "string" ? request.data.eventId.trim() : "";
   if (!eventId) throw new HttpsError("invalid-argument", "Valid eventId is required.");

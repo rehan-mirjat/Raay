@@ -5,18 +5,17 @@ import {
   assertDepartmentsInOrg, enforceRateLimit, failWith, loadEventAsAdmin, readEligibilityConfig,
   requireAuth, requireId, resolveEligibleUserIds, writeActivationDocs, writeAudit,
 } from "./votingCommon";
-import { requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
+import { requireNotRevoked, requireRecentAuthentication, requireMfaEnrolled } from "../utils/authorization";
 
 export const publishVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
   const uid = requireAuth(request);
   const eventId = requireId((request.data || {}).eventId, "eventId");
 
-  // FR-10: publishing a voting event is an explicitly-named sensitive operation.
-  // (MFA is NOT enforced here - see requireMfaEnrolled in utils/authorization.ts
-  // for why: the client has no MFA enrollment flow at all yet, so turning this
-  // on would lock out every current Owner/Admin with no way to comply.)
+  // FR-10 / MFA-REQ-001: publishing a voting event is a sensitive operation.
+  // TOTP enrollment UI ships in lib/core/widgets/totp_enroll_dialog.dart.
   await requireNotRevoked(request);
   requireRecentAuthentication(request.auth);
+  await requireMfaEnrolled(uid);
 
   const db = getFirestore();
   await enforceRateLimit(db, uid, "publishVotingEvent");

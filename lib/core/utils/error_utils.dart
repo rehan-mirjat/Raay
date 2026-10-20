@@ -25,6 +25,12 @@ bool isRecentAuthError(dynamic error) {
       (error.message?.contains('sign back in') ?? false);
 }
 
+bool isMfaRequiredError(dynamic error) {
+  return error is FirebaseFunctionsException &&
+      error.code == 'failed-precondition' &&
+      (error.message?.contains('Two-factor authentication is required') ?? false);
+}
+
 String mapFirebaseAuthError(FirebaseAuthException error) {
   switch (error.code) {
     case 'email-already-in-use':

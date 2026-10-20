@@ -5,9 +5,15 @@ import {
   enforceRateLimit, failWith, loadEventAsAdmin, optionalString, rejectUnknownKeys,
   requireAuth, requireId, writeAudit,
 } from "./votingCommon";
+import { requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
 
 export const cancelVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
   const uid = requireAuth(request);
+
+  // FR-10: cancelling a voting event is a destructive, sensitive operation.
+  await requireNotRevoked(request);
+  requireRecentAuthentication(request.auth);
+
   const data = request.data || {};
   rejectUnknownKeys(data, ["eventId", "reason"], "cancelVotingEvent");
 

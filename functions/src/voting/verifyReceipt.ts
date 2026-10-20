@@ -2,6 +2,24 @@ import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore } from "firebase-admin/firestore";
 import { checkRateLimit } from "../utils/rateLimiter";
 
+/**
+ * PUBLIC receipt verifier — intentionally unauthenticated.
+ *
+ * Design rationale (SRS §4.7 / V1 boundaries §8):
+ *  - A receipt hash is a SHA-256 HMAC of (orgId + eventId + uid + votedAt).
+ *    It proves participation without revealing the voter's identity or choice.
+ *  - Any third party (observer, auditor, the voter themselves) should be able
+ *    to verify a receipt without needing a Kivora account, exactly like a
+ *    paper receipt checked against a public register.
+ *  - The response is deliberately minimal: only {verified: true/false}.
+ *    No userId, no choiceId, no votedAt is returned.
+ *  - Rate-limiting falls back to the caller's IP when no uid is present,
+ *    capping at 10 lookups per minute to deter brute-force hash enumeration.
+ *
+ * NOTE: This does NOT provide cryptographic (ZKP) receipt verification —
+ * that is out of V1 scope (see §8). It confirms only that a receipt with
+ * the given hash was accepted by this system.
+ */
 export const verifyReceipt = onCall(async (request) => {
   const uid = request.auth?.uid;
   const ip = request.rawRequest?.ip || "unknown-ip";

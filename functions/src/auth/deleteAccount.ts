@@ -1,7 +1,7 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
-import { requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
+import { requireNotRevoked, requireRecentAuthentication, requireMfaEnrolled } from "../utils/authorization";
 import { checkRateLimit, RATE_LIMIT_SENSITIVE_ACTION } from "../utils/rateLimiter";
 
 /**
@@ -17,9 +17,10 @@ export const deleteAccount = onCall(async (request) => {
     throw new HttpsError("unauthenticated", "Authentication required.");
   }
 
-  // FR-10/DEL-REQ-004: account deletion is an explicitly-named sensitive operation.
+  // FR-10 / DEL-REQ-004 / MFA-REQ-001: account deletion requires MFA.
   await requireNotRevoked(request);
   requireRecentAuthentication(request.auth);
+  await requireMfaEnrolled(uid);
   // Table 3-4: "sensitive account actions 5 per hour".
   await checkRateLimit(uid, RATE_LIMIT_SENSITIVE_ACTION);
 

@@ -1,10 +1,16 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { requireNotRevoked, requireRecentAuthentication, requireMfaEnrolled } from "../utils/authorization";
 
 export const deleteOrganization = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
     throw new HttpsError("unauthenticated", "Authentication required.");
   }
+
+  // FR-10 / MFA-REQ-001: organization deletion is a destructive sensitive operation.
+  await requireNotRevoked(request);
+  requireRecentAuthentication(request.auth);
+  await requireMfaEnrolled(request.auth.uid);
 
   const uid = request.auth.uid;
   const { organizationId } = request.data || {};

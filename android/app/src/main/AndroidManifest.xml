@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required for network calls (Firebase Auth, Cloud Firestore, Cloud Functions) on release builds -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Used by mobile_scanner for QR-based "Scan to Join" organization flow. -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
