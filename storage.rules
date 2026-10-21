@@ -42,6 +42,13 @@ service firebase.storage {
         in ["verified", "active"];
     }
 
+    // Candidate photos belong to elections, which pending organizations may run
+    // (same set as OPERATIONAL_ORG_STATUSES / the Firestore rules).
+    function orgCanRunEvents(orgId) {
+      return firestore.get(/databases/(default)/documents/organizations/$(orgId)).data.status
+        in ["pending", "verified", "active"];
+    }
+
     function eventIsDraft(orgId, eventId) {
       let ev = firestore.get(/databases/(default)/documents/votingEvents/$(eventId)).data;
       return ev.organizationId == orgId && ev.status == "DRAFT";
@@ -57,7 +64,7 @@ service firebase.storage {
     match /organizations/{orgId}/events/{eventId}/candidates/{candidateId}/photo.jpg {
       allow read: if isActiveMember(orgId);
       allow create, update: if isOwnerOrAdmin(orgId)
-        && orgOperational(orgId)
+        && orgCanRunEvents(orgId)
         && eventIsDraft(orgId, eventId)
         && validJpeg();
       allow delete: if isOwnerOrAdmin(orgId);

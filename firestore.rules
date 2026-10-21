@@ -393,6 +393,17 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Billing: Stripe ids and webhook de-duplication markers. Server-only
+    // (Admin SDK); organizations/{id} itself is readable by every member, so
+    // nothing billing-sensitive may live there. plan/planStatus on the org doc
+    // are likewise unwritable by clients (organizations update is false).
+    match /organizationBilling/{orgId} {
+      allow read, write: if false;
+    }
+    match /stripeEvents/{eventId} {
+      allow read, write: if false;
+    }
+
     // =========================
     // GLOBAL DENY-BY-DEFAULT (FIX: was absent from the skeleton)
     // =========================

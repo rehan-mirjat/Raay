@@ -14,6 +14,11 @@ const APP_ORIGIN = "https://vote-d1ae4.web.app";
 const SUCCESS_URL = `${APP_ORIGIN}/#/plans?checkout=success`;
 const CANCEL_URL = `${APP_ORIGIN}/#/plans?checkout=cancelled`;
 
+/** Stripe ids live in a server-only document: organizations/{id} is readable by every member. */
+function billingRef(db: FirebaseFirestore.Firestore, organizationId: string) {
+  return db.collection("organizationBilling").doc(organizationId);
+}
+
 /** Statuses that keep a paid plan active (past_due keeps access during Stripe's retry window). */
 const ENTITLED = new Set(["active", "trialing", "past_due"]);
 
@@ -40,6 +45,7 @@ export const createCheckoutSession = onCall({ secrets: [STRIPE_SECRET_KEY] }, as
   const orgSnap = await orgRef.get();
   if (!orgSnap.exists) throw new HttpsError("not-found", "Organization not found.");
   const org = orgSnap.data()!;
+  const billing = (await billingRef(db, organizationId).get()).data();
   if (org.plan === "pro" && ENTITLED.has(org.planStatus)) {
     throw new HttpsError("already-exists", "This organization is already on the Pro plan.");
   }
@@ -50,7 +56,7 @@ export const createCheckoutSession = onCall({ secrets: [STRIPE_SECRET_KEY] }, as
       mode: "subscription",
       line_items: [{ price: STRIPE_PRICE_PRO.value(), quantity: 1 }],
       client_reference_id: organizationId,
-      ...(org.stripeCustomerId ? { customer: org.stripeCustomerId } : {}),
+      ...(billing?.stripeCustomerId ? { customer: billing.stripeCustomerId } : {}),
       subscription_data: { metadata: { organizationId } },
       metadata: { organizationId },
       success_url: SUCCESS_URL,
@@ -75,12 +81,12 @@ export const createBillingPortalSession = onCall({ secrets: [STRIPE_SECRET_KEY] 
 
   const db = getFirestore();
   await requireActiveMembership(db, organizationId, uid, ["owner"]);
-  const org = (await db.collection("organizations").doc(organizationId).get()).data();
-  if (!org?.stripeCustomerId) throw new HttpsError("failed-precondition", "No subscription found for this organization.");
+  const billing = (await billingRef(db, organizationId).get()).data();
+  if (!billing?.stripeCustomerId) throw new HttpsError("failed-precondition", "No subscription found for this organization.");
 
   const stripe = new Stripe(STRIPE_SECRET_KEY.value());
   const portal = await stripe.billingPortal.sessions.create({
-    customer: org.stripeCustomerId,
+    customer: billing.stripeCustomerId,
     return_url: `${APP_ORIGIN}/#/plans`,
   });
   return { url: portal.url };
@@ -181,10 +187,12 @@ async function writePlan(
     plan: entitled ? "pro" : "free",
     planStatus: loose.status,
     planExpiresAt: periodEnd ? Timestamp.fromMillis(periodEnd * 1000) : null,
-    stripeCustomerId: customerId,
-    stripeSubscriptionId: loose.id,
     updatedAt: FieldValue.serverTimestamp(),
   });
+  await billingRef(db, organizationId).set(
+    { stripeCustomerId: customerId, stripeSubscriptionId: loose.id, updatedAt: FieldValue.serverTimestamp() },
+    { merge: true },
+  );
   await db.collection("auditLogs").add({
     organizationId,
     actorUid: "SYSTEM_STRIPE_WEBHOOK",
