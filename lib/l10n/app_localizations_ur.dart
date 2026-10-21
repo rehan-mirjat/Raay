@@ -1378,4 +1378,118 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get receiptClose => 'Close';
+
+  @override
+  String get evBack => 'Back to elections';
+
+  @override
+  String get evLoadError =>
+      'We could not load this election. Check your connection and try again.';
+
+  @override
+  String get evRetry => 'Try again';
+
+  @override
+  String get evNotFoundTitle => 'Election not found';
+
+  @override
+  String get evNotFoundBody => 'This election does not exist or was removed.';
+
+  @override
+  String get evSignInTitle => 'Sign in required';
+
+  @override
+  String get evSignInBody => 'Sign in to view this election.';
+
+  @override
+  String get evStatusLoadError =>
+      'We could not check whether you have voted. Try again before voting.';
+
+  @override
+  String get evVotedTitle => 'You voted in this election';
+
+  @override
+  String get evVotedBody => 'Your participation was recorded.';
+
+  @override
+  String get evVotedNote =>
+      'Each member can vote once, so voting again is not possible. Keep your receipt ID to check later that your ballot was recorded.';
+
+  @override
+  String get evViewReceipt => 'View your receipt';
+
+  @override
+  String get evReceiptMissing =>
+      'We could not find your receipt yet. Try again in a moment.';
+
+  @override
+  String get evProceed => 'Go to ballot';
+
+  @override
+  String evNotAccepting(String status) {
+    return 'This election is $status and is not accepting votes.';
+  }
+
+  @override
+  String get evResultsPublishedTitle => 'Results are published';
+
+  @override
+  String evResultsPublishedBody(String date) {
+    return 'Voting closed $date.';
+  }
+
+  @override
+  String get evResultsPendingTitle => 'Results are not published yet';
+
+  @override
+  String evResultsPendingBody(String date) {
+    return 'Voting closed $date. Results appear here once the organization publishes them.';
+  }
+
+  @override
+  String get evResultsUnknownTitle => 'Results status unavailable';
+
+  @override
+  String get evResultsUnknownBody =>
+      'We could not check whether results are published.';
+
+  @override
+  String get evViewResults => 'View results';
+
+  @override
+  String get evDetails => 'Election details';
+
+  @override
+  String get evType => 'Voting type';
+
+  @override
+  String get evWho => 'Who can vote';
+
+  @override
+  String get evOpens => 'Opens';
+
+  @override
+  String get evOpened => 'Opened';
+
+  @override
+  String get evCloses => 'Closes';
+
+  @override
+  String get evClosed => 'Closed';
+
+  @override
+  String get evIdentifiableTitle => 'Identifiable ballot.';
+
+  @override
+  String get evIdentifiableBody =>
+      'Votes in this election are recorded together with the voter\'s identity.';
+
+  @override
+  String get evMonitor => 'Monitor turnout';
+
+  @override
+  String get evEditBuilder => 'Edit in builder';
+
+  @override
+  String get evChecking => 'Checking your status';
 }

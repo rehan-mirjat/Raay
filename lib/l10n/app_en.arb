@@ -697,5 +697,60 @@
         "type": "String"
       }
     }
-  }
+  },
+  "evBack": "Back to elections",
+  "evLoadError": "We could not load this election. Check your connection and try again.",
+  "evRetry": "Try again",
+  "evNotFoundTitle": "Election not found",
+  "evNotFoundBody": "This election does not exist or was removed.",
+  "evSignInTitle": "Sign in required",
+  "evSignInBody": "Sign in to view this election.",
+  "evStatusLoadError": "We could not check whether you have voted. Try again before voting.",
+  "evVotedTitle": "You voted in this election",
+  "evVotedBody": "Your participation was recorded.",
+  "evVotedNote": "Each member can vote once, so voting again is not possible. Keep your receipt ID to check later that your ballot was recorded.",
+  "evViewReceipt": "View your receipt",
+  "evReceiptMissing": "We could not find your receipt yet. Try again in a moment.",
+  "evProceed": "Go to ballot",
+  "evNotAccepting": "This election is {status} and is not accepting votes.",
+  "@evNotAccepting": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "evResultsPublishedTitle": "Results are published",
+  "evResultsPublishedBody": "Voting closed {date}.",
+  "@evResultsPublishedBody": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "evResultsPendingTitle": "Results are not published yet",
+  "evResultsPendingBody": "Voting closed {date}. Results appear here once the organization publishes them.",
+  "@evResultsPendingBody": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "evResultsUnknownTitle": "Results status unavailable",
+  "evResultsUnknownBody": "We could not check whether results are published.",
+  "evViewResults": "View results",
+  "evDetails": "Election details",
+  "evType": "Voting type",
+  "evWho": "Who can vote",
+  "evOpens": "Opens",
+  "evOpened": "Opened",
+  "evCloses": "Closes",
+  "evClosed": "Closed",
+  "evIdentifiableTitle": "Identifiable ballot.",
+  "evIdentifiableBody": "Votes in this election are recorded together with the voter's identity.",
+  "evMonitor": "Monitor turnout",
+  "evEditBuilder": "Edit in builder",
+  "evChecking": "Checking your status"
 }

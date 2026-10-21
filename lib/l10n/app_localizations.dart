@@ -2483,6 +2483,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close'**
   String get receiptClose;
+
+  /// No description provided for @evBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to elections'**
+  String get evBack;
+
+  /// No description provided for @evLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load this election. Check your connection and try again.'**
+  String get evLoadError;
+
+  /// No description provided for @evRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get evRetry;
+
+  /// No description provided for @evNotFoundTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Election not found'**
+  String get evNotFoundTitle;
+
+  /// No description provided for @evNotFoundBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This election does not exist or was removed.'**
+  String get evNotFoundBody;
+
+  /// No description provided for @evSignInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in required'**
+  String get evSignInTitle;
+
+  /// No description provided for @evSignInBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to view this election.'**
+  String get evSignInBody;
+
+  /// No description provided for @evStatusLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not check whether you have voted. Try again before voting.'**
+  String get evStatusLoadError;
+
+  /// No description provided for @evVotedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You voted in this election'**
+  String get evVotedTitle;
+
+  /// No description provided for @evVotedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your participation was recorded.'**
+  String get evVotedBody;
+
+  /// No description provided for @evVotedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Each member can vote once, so voting again is not possible. Keep your receipt ID to check later that your ballot was recorded.'**
+  String get evVotedNote;
+
+  /// No description provided for @evViewReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'View your receipt'**
+  String get evViewReceipt;
+
+  /// No description provided for @evReceiptMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not find your receipt yet. Try again in a moment.'**
+  String get evReceiptMissing;
+
+  /// No description provided for @evProceed.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to ballot'**
+  String get evProceed;
+
+  /// No description provided for @evNotAccepting.
+  ///
+  /// In en, this message translates to:
+  /// **'This election is {status} and is not accepting votes.'**
+  String evNotAccepting(String status);
+
+  /// No description provided for @evResultsPublishedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Results are published'**
+  String get evResultsPublishedTitle;
+
+  /// No description provided for @evResultsPublishedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Voting closed {date}.'**
+  String evResultsPublishedBody(String date);
+
+  /// No description provided for @evResultsPendingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Results are not published yet'**
+  String get evResultsPendingTitle;
+
+  /// No description provided for @evResultsPendingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Voting closed {date}. Results appear here once the organization publishes them.'**
+  String evResultsPendingBody(String date);
+
+  /// No description provided for @evResultsUnknownTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Results status unavailable'**
+  String get evResultsUnknownTitle;
+
+  /// No description provided for @evResultsUnknownBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not check whether results are published.'**
+  String get evResultsUnknownBody;
+
+  /// No description provided for @evViewResults.
+  ///
+  /// In en, this message translates to:
+  /// **'View results'**
+  String get evViewResults;
+
+  /// No description provided for @evDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Election details'**
+  String get evDetails;
+
+  /// No description provided for @evType.
+  ///
+  /// In en, this message translates to:
+  /// **'Voting type'**
+  String get evType;
+
+  /// No description provided for @evWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Who can vote'**
+  String get evWho;
+
+  /// No description provided for @evOpens.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens'**
+  String get evOpens;
+
+  /// No description provided for @evOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'Opened'**
+  String get evOpened;
+
+  /// No description provided for @evCloses.
+  ///
+  /// In en, this message translates to:
+  /// **'Closes'**
+  String get evCloses;
+
+  /// No description provided for @evClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get evClosed;
+
+  /// No description provided for @evIdentifiableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Identifiable ballot.'**
+  String get evIdentifiableTitle;
+
+  /// No description provided for @evIdentifiableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Votes in this election are recorded together with the voter\'s identity.'**
+  String get evIdentifiableBody;
+
+  /// No description provided for @evMonitor.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitor turnout'**
+  String get evMonitor;
+
+  /// No description provided for @evEditBuilder.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit in builder'**
+  String get evEditBuilder;
+
+  /// No description provided for @evChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking your status'**
+  String get evChecking;
 }
 
 class _AppLocalizationsDelegate

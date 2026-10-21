@@ -129,3 +129,15 @@ final resultsStatusesProvider =
   }));
   return Map.fromEntries(results);
 });
+
+/// Publication status of a single election's results (same source as the
+/// results screen). Never inferred from lifecycle status.
+final eventResultsStatusProvider =
+    FutureProvider.autoDispose.family<ResultsStatus, String>((ref, eventId) async {
+  try {
+    final doc = await FirebaseService().firestore.collection('eventResults').doc(eventId).get();
+    return resultsStatusFrom(exists: doc.exists, data: doc.data());
+  } catch (err) {
+    return resultsStatusFrom(error: err);
+  }
+});

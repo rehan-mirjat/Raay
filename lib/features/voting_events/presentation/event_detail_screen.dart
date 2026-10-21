@@ -2,22 +2,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/widgets/error_view.dart';
-import '../../../core/widgets/fade_through.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../core/widgets/status_badge.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../services/auth_service.dart';
 import '../../organizations/domain/organization_enums.dart';
 import '../../organizations/presentation/providers/organization_providers.dart';
 import '../../voting/data/participation_repository.dart';
 import '../../voting/data/receipt_repository.dart';
 import '../../voting/presentation/cast_vote_screen.dart';
+import '../domain/election_card_state.dart';
 import '../domain/voting_event.dart';
+import 'providers/voter_portal_providers.dart';
+import 'voter_election_card.dart' show formatDeadline;
 
 class EventDetailScreen extends ConsumerWidget {
   final String eventId;
@@ -26,143 +28,97 @@ class EventDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final kc = KivoraColors.of(context);
     final eventAsync = ref.watch(singleVotingEventProvider(eventId));
     final currentUser = ref.watch(authServiceProvider).currentUser;
 
-    final stateKey = eventAsync.when(
-      loading: () => 'loading',
-      error: (_, __) => 'error',
-      data: (event) => event == null ? 'not-found' : 'event:${event.id}',
-    );
-
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: kc.background,
       body: SafeArea(
-        child: FadeThrough(
-          stateKey: stateKey,
-          child: eventAsync.when(
-          loading: () => const LoadingView(message: 'Loading event details...'),
-          error: (err, _) => ErrorView(
+        child: eventAsync.when(
+          loading: () => const LoadingView(),
+          error: (_, __) => ErrorView(
             type: ErrorViewType.generic,
-            message: 'Error loading voting event: $err',
+            message: l10n.evLoadError,
             onRetry: () => ref.invalidate(singleVotingEventProvider(eventId)),
           ),
           data: (event) {
             if (event == null) {
-              return const ErrorView(
-                type: ErrorViewType.generic,
-                title: 'Event Not Found',
-                message:
-                    'The requested voting event does not exist or has been removed.',
-              );
+              return ErrorView(
+                  type: ErrorViewType.generic, title: l10n.evNotFoundTitle, message: l10n.evNotFoundBody);
             }
-
             if (currentUser == null) {
-              return const ErrorView(
-                type: ErrorViewType.generic,
-                title: 'Authentication Required',
-                message: 'Please sign in to view voting event details.',
-              );
+              return ErrorView(
+                  type: ErrorViewType.generic, title: l10n.evSignInTitle, message: l10n.evSignInBody);
             }
 
-            final participationAsync = ref.watch(
-              participationStatusProvider((
-                organizationId: event.organizationId,
-                eventId: event.id,
-                userId: currentUser.uid,
-              )),
-            );
-
+            final participationAsync = ref.watch(participationStatusProvider((
+              organizationId: event.organizationId,
+              eventId: event.id,
+              userId: currentUser.uid,
+            )));
             final isWide = ResponsiveLayout.isWide(context);
-            final leftColumn = _LeftColumn(
-              event: event,
-              currentUser: currentUser,
-              participationAsync: participationAsync,
-            );
-            final rightColumn = _EventDetailsCard(event: event);
+            final main = _MainColumn(
+                event: event, currentUser: currentUser, participationAsync: participationAsync);
+            final details = EventDetailsCard(event: event);
 
             return SingleChildScrollView(
               padding: ResponsiveLayout.pagePadding(context),
               child: Center(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 1040),
+                  constraints: const BoxConstraints(maxWidth: ResponsiveLayout.maxContentWidth),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      InkWell(
-                        onTap: () => context.go('/home'),
-                        borderRadius: BorderRadius.circular(8),
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 4),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.arrow_back_rounded,
-                                  size: 16, color: AppTheme.primaryBlue),
-                              SizedBox(width: 4),
-                              Text(
-                                'Events',
-                                style: TextStyle(
-                                  color: AppTheme.primaryBlue,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
+                      TextButton.icon(
+                        style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                        onPressed: () => context.go('/home'),
+                        icon: const Icon(Icons.arrow_back_rounded, size: 18),
+                        label: Text(l10n.evBack),
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(spacing: 8, runSpacing: 8, children: [
+                        StatusBadge.eventStatus(event.status.name),
+                        StatusBadge.privacyMode(event.privacyMode.name),
+                        StatusBadge(
+                          label: event.votingType.label,
+                          backgroundColor: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withValues(alpha: kc.isDark ? 0.16 : 0.10),
+                          textColor: kc.accentText,
+                          icon: Icons.how_to_vote_rounded,
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          StatusBadge.eventStatus(event.status.name),
-                          StatusBadge.privacyMode(event.privacyMode.name),
-                          StatusBadge(
-                            label: event.votingType.label,
-                            backgroundColor:
-                                AppTheme.primaryBlue.withValues(alpha: 0.12),
-                            textColor: AppTheme.primaryBlue,
-                            icon: Icons.how_to_vote_rounded,
-                          ),
-                        ],
-                      ),
+                      ]),
                       const SizedBox(height: 16),
-                      Text(
-                        event.title,
-                        style:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                      Semantics(
+                        header: true,
+                        child: Text(event.title,
+                            style: TextStyle(
+                                fontSize: isWide ? 28 : 24,
+                                fontWeight: FontWeight.bold,
+                                color: kc.textPrimary)),
                       ),
                       if (event.description.isNotEmpty) ...[
                         const SizedBox(height: 6),
-                        Text(
-                          event.description,
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: KivoraColors.textSecondaryOf(context)),
-                        ),
+                        Text(event.description,
+                            style: TextStyle(fontSize: 14, color: kc.textSecondary, height: 1.4)),
                       ],
                       const SizedBox(height: 24),
                       if (isWide)
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(flex: 2, child: leftColumn),
+                            Expanded(flex: 2, child: main),
                             const SizedBox(width: 24),
-                            SizedBox(width: 320, child: rightColumn),
+                            SizedBox(width: 360, child: details),
                           ],
                         )
                       else
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            leftColumn,
-                            const SizedBox(height: 24),
-                            rightColumn,
-                          ],
+                          children: [main, const SizedBox(height: 24), details],
                         ),
                     ],
                   ),
@@ -170,51 +126,69 @@ class EventDetailScreen extends ConsumerWidget {
               ),
             );
           },
-          ),
         ),
       ),
     );
   }
 }
 
-class _LeftColumn extends StatelessWidget {
-  const _LeftColumn({
-    required this.event,
-    required this.currentUser,
-    required this.participationAsync,
-  });
+Widget _card(BuildContext context, {required Widget child, Color? tint}) {
+  final kc = KivoraColors.of(context);
+  return Container(
+    padding: const EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      color: tint == null ? kc.surface : tint.withValues(alpha: kc.isDark ? 0.14 : 0.08),
+      borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+      border: Border.all(color: tint == null ? kc.border : tint.withValues(alpha: 0.5)),
+    ),
+    child: child,
+  );
+}
+
+class _MainColumn extends ConsumerWidget {
+  const _MainColumn({required this.event, required this.currentUser, required this.participationAsync});
 
   final VotingEvent event;
   final User currentUser;
   final AsyncValue<bool> participationAsync;
 
-  bool get _isClosed =>
-      event.status == VotingEventStatus.closed ||
-      event.status == VotingEventStatus.archived;
+  bool get _finished =>
+      event.status == VotingEventStatus.closed || event.status == VotingEventStatus.archived;
 
   @override
-  Widget build(BuildContext context) {
-    return participationAsync.when(
-      loading: () =>
-          const LoadingView(message: 'Checking participation status...'),
-      error: (err, _) => ErrorView(
-          type: ErrorViewType.generic,
-          message: 'Failed to verify participation status: $err'),
-      data: (hasVoted) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (hasVoted)
-              _VotedCard(event: event, userId: currentUser.uid)
-            else
-              _NotVotedCard(event: event),
-            if (_isClosed) ...[
-              const SizedBox(height: 16),
-              _ResultsReadyCard(event: event),
-            ],
-          ],
-        );
-      },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final kc = KivoraColors.of(context);
+
+    final Widget participation = participationAsync.when(
+      loading: () => _card(context,
+          child: Row(children: [
+            const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+            const SizedBox(width: 12),
+            Expanded(child: Text(l10n.evChecking, style: TextStyle(color: kc.textSecondary))),
+          ])),
+      // A failed lookup is never shown as "not voted": no ballot button.
+      error: (_, __) => _card(context,
+          tint: kc.warningText,
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(l10n.evStatusLoadError, style: TextStyle(color: kc.textPrimary)),
+            TextButton(
+              style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+              onPressed: () => ref.invalidate(participationStatusProvider),
+              child: Text(l10n.evRetry),
+            ),
+          ])),
+      data: (hasVoted) => hasVoted
+          ? _VotedCard(event: event, userId: currentUser.uid)
+          : _NotVotedCard(event: event),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        participation,
+        if (_finished) ...[const SizedBox(height: 16), _ResultsCard(event: event)],
+      ],
     );
   }
 }
@@ -227,78 +201,43 @@ class _VotedCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: AppTheme.success.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: AppTheme.success.withValues(alpha: 0.3)),
-      ),
+    final l10n = AppLocalizations.of(context);
+    final kc = KivoraColors.of(context);
+    return _card(
+      context,
+      tint: kc.successText,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: const BoxDecoration(
-                    color: AppTheme.success, shape: BoxShape.circle),
-                child: const Icon(Icons.check_rounded,
-                    color: Colors.white, size: 20),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'You voted in this event',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Your participation was securely recorded.',
-                      style: TextStyle(
-                          fontSize: 13,
-                          color: KivoraColors.textSecondaryOf(context)),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Each member can vote once, so voting again is not possible. '
-            'Keep your receipt as proof that you took part.',
-            style: TextStyle(
-                fontSize: 13,
-                color: KivoraColors.textSecondaryOf(context),
-                height: 1.4),
-          ),
+          Row(children: [
+            Icon(Icons.check_circle_rounded, color: kc.successText, size: 32),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(l10n.evVotedTitle,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                Text(l10n.evVotedBody, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+              ]),
+            ),
+          ]),
+          const SizedBox(height: 12),
+          Text(l10n.evVotedNote, style: TextStyle(fontSize: 14, color: kc.textSecondary, height: 1.4)),
           const SizedBox(height: 16),
           OutlinedButton.icon(
+            style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
             onPressed: () async {
-              final receipt = await ref
-                  .read(receiptRepositoryProvider)
-                  .getReceiptForEvent(event.id, userId);
-              if (receipt != null && context.mounted) {
-                context.push('/receipt', extra: {
-                  'receipt': receipt,
-                  'eventTitle': event.title,
-                });
-              } else if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Receipt not found.')),
-                );
+              final messenger = ScaffoldMessenger.of(context);
+              final router = GoRouter.of(context);
+              final receipt =
+                  await ref.read(receiptRepositoryProvider).getReceiptForEvent(event.id, userId);
+              if (receipt != null) {
+                router.push('/receipt', extra: {'receipt': receipt, 'eventTitle': event.title});
+              } else {
+                messenger.showSnackBar(SnackBar(content: Text(l10n.evReceiptMissing)));
               }
             },
             icon: const Icon(Icons.description_outlined, size: 18),
-            label: const Text('View your confirmation receipt'),
-            style: OutlinedButton.styleFrom(
-              backgroundColor: KivoraColors.surfaceOf(context),
-            ),
+            label: Text(l10n.evViewReceipt),
           ),
         ],
       ),
@@ -313,34 +252,26 @@ class _NotVotedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isActive = event.status == VotingEventStatus.active;
+    final l10n = AppLocalizations.of(context);
     final kc = KivoraColors.of(context);
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: kc.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: kc.border),
-      ),
+    final isActive = event.status == VotingEventStatus.active;
+    return _card(
+      context,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ElevatedButton.icon(
-            onPressed: isActive
-                ? () => context.push('/elections/${event.id}/vote')
-                : null,
+          FilledButton.icon(
+            style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+            onPressed: isActive ? () => context.push('/elections/${event.id}/vote') : null,
             icon: const Icon(Icons.how_to_vote_rounded, size: 18),
-            label: const Text('Proceed to Ballot'),
+            label: Text(l10n.evProceed),
           ),
           if (!isActive) ...[
             const SizedBox(height: 12),
             Text(
-              'This event is currently ${event.status.name.toUpperCase()} and not accepting votes.',
+              l10n.evNotAccepting(event.status.name),
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: AppTheme.error,
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold),
+              style: TextStyle(color: kc.textSecondary, fontSize: 14, fontWeight: FontWeight.w600),
             ),
           ],
         ],
@@ -349,89 +280,91 @@ class _NotVotedCard extends StatelessWidget {
   }
 }
 
-class _ResultsReadyCard extends StatelessWidget {
-  const _ResultsReadyCard({required this.event});
+/// Closed/archived does not mean published. Admins can always open the
+/// results screen (to calculate / publish); voters only when published.
+class _ResultsCard extends ConsumerWidget {
+  const _ResultsCard({required this.event});
 
   final VotingEvent event;
 
-  static final _dateFormat = DateFormat('MMM d, yyyy, h:mm a');
-
   @override
-  Widget build(BuildContext context) {
-    final dateFormat = _dateFormat;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final kc = KivoraColors.of(context);
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: kc.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: kc.border),
-      ),
+    final isAdmin =
+        ref.watch(activeOrganizationContextProvider).valueOrNull?.context?.member.role.isAdmin ?? false;
+    final status = ref.watch(eventResultsStatusProvider(event.id)).valueOrNull ?? ResultsStatus.unknown;
+    final closedOn = formatDeadline(context, event.endAt);
+
+    final String title;
+    final String body;
+    final bool canOpen;
+    switch (status) {
+      case ResultsStatus.published:
+        title = l10n.evResultsPublishedTitle;
+        body = l10n.evResultsPublishedBody(closedOn);
+        canOpen = true;
+      case ResultsStatus.notPublished:
+        title = l10n.evResultsPendingTitle;
+        body = l10n.evResultsPendingBody(closedOn);
+        canOpen = isAdmin;
+      case ResultsStatus.unknown:
+        title = l10n.evResultsUnknownTitle;
+        body = l10n.evResultsUnknownBody;
+        canOpen = isAdmin;
+    }
+
+    return _card(
+      context,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(Icons.bar_chart_rounded,
-                    color: AppTheme.primaryBlue, size: 22),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Results are ready',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Voting closed on ${dateFormat.format(event.endAt)}.',
-                      style: TextStyle(
-                          fontSize: 13, color: kc.textSecondary),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          FilledButton(
-            onPressed: () => context.push('/elections/${event.id}/results'),
-            child: const Text('View election results'),
-          ),
+          Row(children: [
+            Icon(Icons.bar_chart_rounded, color: kc.accentText, size: 28),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(title,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                Text(body, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+              ]),
+            ),
+          ]),
+          if (canOpen) ...[
+            const SizedBox(height: 16),
+            FilledButton(
+              style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+              onPressed: () => context.push('/elections/${event.id}/results'),
+              child: Text(l10n.evViewResults),
+            ),
+          ] else if (status == ResultsStatus.unknown) ...[
+            const SizedBox(height: 8),
+            TextButton(
+              style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+              onPressed: () => ref.invalidate(eventResultsStatusProvider(event.id)),
+              child: Text(l10n.evRetry),
+            ),
+          ],
         ],
       ),
     );
   }
 }
 
-class _EventDetailsCard extends ConsumerWidget {
-  const _EventDetailsCard({required this.event});
+class EventDetailsCard extends ConsumerWidget {
+  const EventDetailsCard({super.key, required this.event});
 
   final VotingEvent event;
 
-  static final _dateFormat = DateFormat('MMM d, yyyy');
-  static final _timeFormat = DateFormat('h:mm a');
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dateFormat = _dateFormat;
-    final timeFormat = _timeFormat;
+    final l10n = AppLocalizations.of(context);
     final kc = KivoraColors.of(context);
-    final memberRole = ref
-        .watch(activeOrganizationContextProvider)
-        .valueOrNull
-        ?.context
-        ?.member
-        .role;
-    final isAdmin = memberRole?.isAdmin ?? false;
+    final isAdmin =
+        ref.watch(activeOrganizationContextProvider).valueOrNull?.context?.member.role.isAdmin ?? false;
+    final s = event.status;
+    final started = s == VotingEventStatus.active || s == VotingEventStatus.closed || s == VotingEventStatus.archived;
+    final ended = s == VotingEventStatus.closed || s == VotingEventStatus.archived;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -441,119 +374,74 @@ class _EventDetailsCard extends ConsumerWidget {
         border: Border.all(color: kc.border),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'EVENT DETAILS',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  color: kc.textSecondary,
-                  letterSpacing: 1.0,
-                ),
-              ),
+            child: Semantics(
+              header: true,
+              child: Text(l10n.evDetails,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: kc.textPrimary)),
             ),
           ),
-          const Divider(height: 1),
-          _detailRow(
-            context: context,
-            icon: Icons.how_to_vote_outlined,
-            label: 'Voting type',
-            value: event.votingType.label,
-          ),
-          const Divider(height: 1),
-          _detailRow(
-            context: context,
-            icon: Icons.groups_outlined,
-            label: 'Who could vote',
-            value: event.eligibilityType.label,
-          ),
-          const Divider(height: 1),
-          _detailRow(
-            context: context,
-            icon: Icons.schedule_rounded,
-            label: 'Voting opened',
-            subvalue: timeFormat.format(event.startAt),
-            value: dateFormat.format(event.startAt),
-          ),
-          const Divider(height: 1),
-          _detailRow(
-            context: context,
-            icon: Icons.event_busy_outlined,
-            label: 'Voting closed',
-            subvalue: timeFormat.format(event.endAt),
-            value: dateFormat.format(event.endAt),
-          ),
-          const SizedBox(height: 12),
+          Divider(height: 1, color: kc.border),
+          _row(context, Icons.how_to_vote_outlined, l10n.evType, event.votingType.label),
+          Divider(height: 1, color: kc.border),
+          _row(context, Icons.groups_outlined, l10n.evWho, event.eligibilityType.label),
+          Divider(height: 1, color: kc.border),
+          _row(context, Icons.schedule_rounded, started ? l10n.evOpened : l10n.evOpens,
+              formatDeadline(context, event.startAt)),
+          Divider(height: 1, color: kc.border),
+          _row(context, Icons.event_busy_outlined, ended ? l10n.evClosed : l10n.evCloses,
+              formatDeadline(context, event.endAt)),
           if (event.privacyMode == PrivacyMode.identifiable) ...[
+            const SizedBox(height: 12),
             Container(
-              width: double.infinity,
-              margin: const EdgeInsets.only(bottom: 16),
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppTheme.identifiable.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                    color: AppTheme.identifiable.withValues(alpha: 0.25)),
+                color: kc.warningText.withValues(alpha: kc.isDark ? 0.14 : 0.08),
+                borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+                border: Border.all(color: kc.warningText.withValues(alpha: 0.5)),
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(Icons.person_outline_rounded,
-                      size: 16, color: AppTheme.identifiable),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: RichText(
-                      text: const TextSpan(
-                        style: TextStyle(
-                            fontSize: 12.5,
-                            color: AppTheme.identifiable,
-                            height: 1.4),
-                        children: [
-                          TextSpan(
-                              text: 'Identifiable ballot. ',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(
-                              text:
-                                  'Your vote was recorded together with your identity.'),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Icon(Icons.person_outline_rounded, size: 18, color: kc.warningText),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text.rich(TextSpan(
+                    style: TextStyle(fontSize: 14, color: kc.textPrimary, height: 1.4),
+                    children: [
+                      TextSpan(
+                          text: '${l10n.evIdentifiableTitle} ',
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      TextSpan(text: l10n.evIdentifiableBody),
+                    ],
+                  )),
+                ),
+              ]),
             ),
-          ] else
-            const SizedBox(height: 16),
-          if (isAdmin) ...[
-            const Divider(height: 1),
+          ],
+          const SizedBox(height: 12),
+          if (isAdmin &&
+              (s == VotingEventStatus.active || s == VotingEventStatus.closed || s == VotingEventStatus.draft)) ...[
+            Divider(height: 1, color: kc.border),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (event.status == VotingEventStatus.active ||
-                      event.status == VotingEventStatus.closed)
-                    OutlinedButton.icon(
-                      onPressed: () =>
-                          context.push('/admin/events/${event.id}/monitor'),
-                      icon: const Icon(Icons.analytics_outlined, size: 18),
-                      label: const Text('Monitor Turnout'),
-                    ),
-                  if (event.status == VotingEventStatus.draft) ...[
-                    const SizedBox(height: 8),
-                    OutlinedButton.icon(
-                      onPressed: () =>
-                          context.push('/admin/events/${event.id}/edit'),
-                      icon: const Icon(Icons.edit_outlined, size: 18),
-                      label: const Text('Edit Event Builder'),
-                    ),
-                  ],
-                ],
-              ),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                if (s == VotingEventStatus.active || s == VotingEventStatus.closed)
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                    onPressed: () => context.push('/admin/events/${event.id}/monitor'),
+                    icon: const Icon(Icons.analytics_outlined, size: 18),
+                    label: Text(l10n.evMonitor),
+                  ),
+                if (s == VotingEventStatus.draft)
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                    onPressed: () => context.push('/admin/events/${event.id}/edit'),
+                    icon: const Icon(Icons.edit_outlined, size: 18),
+                    label: Text(l10n.evEditBuilder),
+                  ),
+              ]),
             ),
           ],
         ],
@@ -561,55 +449,22 @@ class _EventDetailsCard extends ConsumerWidget {
     );
   }
 
-  Widget _detailRow({
-    required BuildContext context,
-    required IconData icon,
-    required String label,
-    required String value,
-    String? subvalue,
-  }) {
+  Widget _row(BuildContext context, IconData icon, String label, String value) {
     final kc = KivoraColors.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(icon, size: 17, color: AppTheme.primaryBlue),
-          ),
+          Icon(icon, size: 20, color: kc.accentText),
           const SizedBox(width: 12),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(fontSize: 12.5, color: kc.textSecondary),
-                ),
-                if (subvalue != null) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    subvalue,
-                    style: TextStyle(fontSize: 12, color: kc.textSecondary),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            value,
-            textAlign: TextAlign.end,
-            style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                color: kc.textPrimary),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(label, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+              const SizedBox(height: 2),
+              Text(value,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: kc.textPrimary)),
+            ]),
           ),
         ],
       ),
