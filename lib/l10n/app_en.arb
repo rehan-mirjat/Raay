@@ -466,5 +466,67 @@
         "type": "String"
       }
     }
+  },
+  "deptTitle": "Departments",
+  "deptSubtitle": "Group members into departments to limit who can vote in an election.",
+  "deptNew": "New department",
+  "deptSearchHint": "Search departments",
+  "deptSortName": "Name A to Z",
+  "deptSortNameDesc": "Name Z to A",
+  "deptSortMembers": "Most members",
+  "deptSortLabel": "Sort",
+  "deptNoOrgTitle": "Choose an organization",
+  "deptNoOrgBody": "Departments belong to an organization. Choose one to see its departments.",
+  "deptNoOrgAction": "Go to home",
+  "deptEmptyManagerTitle": "No departments yet",
+  "deptEmptyManagerBody": "Create departments to organize members and limit who can vote.",
+  "deptEmptyMemberTitle": "No department assigned",
+  "deptEmptyMemberBody": "You are not assigned to a department in this organization.",
+  "deptNoMatch": "No departments match your search.",
+  "deptLoadError": "We could not load departments. Check your connection and try again.",
+  "deptRetry": "Try again",
+  "deptMembersUnknown": "Members: unavailable",
+  "deptEventsNone": "Not used in an election yet",
+  "deptManageMembers": "Manage members",
+  "deptActions": "Department actions",
+  "deptEdit": "Edit details",
+  "deptDelete": "Delete department",
+  "deptDeleteTitle": "Delete department?",
+  "deptDeleteBody": "\"{name}\" will be permanently deleted. Members keep their records, but the department can no longer be assigned or used for voter eligibility.",
+  "deptDeleteConfirm": "Delete department",
+  "deptKeep": "Keep it",
+  "deptDeleted": "Department deleted.",
+  "deptDeleteFailed": "Could not delete the department. Please try again.",
+  "deptCreateHint": "Create a group for your members",
+  "@deptDeleteBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deptCount": "{n, plural, =1{1 department} other{{n} departments}}",
+  "@deptCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deptMemberCount": "{n, plural, =1{1 member} other{{n} members}}",
+  "@deptMemberCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deptUsedIn": "{n, plural, =1{Used in 1 election} other{Used in {n} elections}}",
+  "@deptUsedIn": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   }
 }

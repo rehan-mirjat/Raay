@@ -1907,6 +1907,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Only an owner can revoke admin invitations'**
   String get invOwnerOnly;
+
+  /// No description provided for @deptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Departments'**
+  String get deptTitle;
+
+  /// No description provided for @deptSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Group members into departments to limit who can vote in an election.'**
+  String get deptSubtitle;
+
+  /// No description provided for @deptNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New department'**
+  String get deptNew;
+
+  /// No description provided for @deptSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search departments'**
+  String get deptSearchHint;
+
+  /// No description provided for @deptSortName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name A to Z'**
+  String get deptSortName;
+
+  /// No description provided for @deptSortNameDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Name Z to A'**
+  String get deptSortNameDesc;
+
+  /// No description provided for @deptSortMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Most members'**
+  String get deptSortMembers;
+
+  /// No description provided for @deptSortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get deptSortLabel;
+
+  /// No description provided for @deptNoOrgTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an organization'**
+  String get deptNoOrgTitle;
+
+  /// No description provided for @deptNoOrgBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Departments belong to an organization. Choose one to see its departments.'**
+  String get deptNoOrgBody;
+
+  /// No description provided for @deptNoOrgAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to home'**
+  String get deptNoOrgAction;
+
+  /// No description provided for @deptEmptyManagerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No departments yet'**
+  String get deptEmptyManagerTitle;
+
+  /// No description provided for @deptEmptyManagerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Create departments to organize members and limit who can vote.'**
+  String get deptEmptyManagerBody;
+
+  /// No description provided for @deptEmptyMemberTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No department assigned'**
+  String get deptEmptyMemberTitle;
+
+  /// No description provided for @deptEmptyMemberBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You are not assigned to a department in this organization.'**
+  String get deptEmptyMemberBody;
+
+  /// No description provided for @deptNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No departments match your search.'**
+  String get deptNoMatch;
+
+  /// No description provided for @deptLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load departments. Check your connection and try again.'**
+  String get deptLoadError;
+
+  /// No description provided for @deptRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get deptRetry;
+
+  /// No description provided for @deptMembersUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Members: unavailable'**
+  String get deptMembersUnknown;
+
+  /// No description provided for @deptEventsNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Not used in an election yet'**
+  String get deptEventsNone;
+
+  /// No description provided for @deptManageMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage members'**
+  String get deptManageMembers;
+
+  /// No description provided for @deptActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Department actions'**
+  String get deptActions;
+
+  /// No description provided for @deptEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit details'**
+  String get deptEdit;
+
+  /// No description provided for @deptDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete department'**
+  String get deptDelete;
+
+  /// No description provided for @deptDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete department?'**
+  String get deptDeleteTitle;
+
+  /// No description provided for @deptDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{name}\" will be permanently deleted. Members keep their records, but the department can no longer be assigned or used for voter eligibility.'**
+  String deptDeleteBody(String name);
+
+  /// No description provided for @deptDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete department'**
+  String get deptDeleteConfirm;
+
+  /// No description provided for @deptKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get deptKeep;
+
+  /// No description provided for @deptDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Department deleted.'**
+  String get deptDeleted;
+
+  /// No description provided for @deptDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete the department. Please try again.'**
+  String get deptDeleteFailed;
+
+  /// No description provided for @deptCreateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a group for your members'**
+  String get deptCreateHint;
+
+  /// No description provided for @deptCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 department} other{{n} departments}}'**
+  String deptCount(int n);
+
+  /// No description provided for @deptMemberCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 member} other{{n} members}}'**
+  String deptMemberCount(int n);
+
+  /// No description provided for @deptUsedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{Used in 1 election} other{Used in {n} elections}}'**
+  String deptUsedIn(int n);
 }
 
 class _AppLocalizationsDelegate

@@ -1013,4 +1013,138 @@ class AppLocalizationsSd extends AppLocalizations {
 
   @override
   String get invOwnerOnly => 'Only an owner can revoke admin invitations';
+
+  @override
+  String get deptTitle => 'Departments';
+
+  @override
+  String get deptSubtitle =>
+      'Group members into departments to limit who can vote in an election.';
+
+  @override
+  String get deptNew => 'New department';
+
+  @override
+  String get deptSearchHint => 'Search departments';
+
+  @override
+  String get deptSortName => 'Name A to Z';
+
+  @override
+  String get deptSortNameDesc => 'Name Z to A';
+
+  @override
+  String get deptSortMembers => 'Most members';
+
+  @override
+  String get deptSortLabel => 'Sort';
+
+  @override
+  String get deptNoOrgTitle => 'Choose an organization';
+
+  @override
+  String get deptNoOrgBody =>
+      'Departments belong to an organization. Choose one to see its departments.';
+
+  @override
+  String get deptNoOrgAction => 'Go to home';
+
+  @override
+  String get deptEmptyManagerTitle => 'No departments yet';
+
+  @override
+  String get deptEmptyManagerBody =>
+      'Create departments to organize members and limit who can vote.';
+
+  @override
+  String get deptEmptyMemberTitle => 'No department assigned';
+
+  @override
+  String get deptEmptyMemberBody =>
+      'You are not assigned to a department in this organization.';
+
+  @override
+  String get deptNoMatch => 'No departments match your search.';
+
+  @override
+  String get deptLoadError =>
+      'We could not load departments. Check your connection and try again.';
+
+  @override
+  String get deptRetry => 'Try again';
+
+  @override
+  String get deptMembersUnknown => 'Members: unavailable';
+
+  @override
+  String get deptEventsNone => 'Not used in an election yet';
+
+  @override
+  String get deptManageMembers => 'Manage members';
+
+  @override
+  String get deptActions => 'Department actions';
+
+  @override
+  String get deptEdit => 'Edit details';
+
+  @override
+  String get deptDelete => 'Delete department';
+
+  @override
+  String get deptDeleteTitle => 'Delete department?';
+
+  @override
+  String deptDeleteBody(String name) {
+    return '\"$name\" will be permanently deleted. Members keep their records, but the department can no longer be assigned or used for voter eligibility.';
+  }
+
+  @override
+  String get deptDeleteConfirm => 'Delete department';
+
+  @override
+  String get deptKeep => 'Keep it';
+
+  @override
+  String get deptDeleted => 'Department deleted.';
+
+  @override
+  String get deptDeleteFailed =>
+      'Could not delete the department. Please try again.';
+
+  @override
+  String get deptCreateHint => 'Create a group for your members';
+
+  @override
+  String deptCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n departments',
+      one: '1 department',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deptMemberCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n members',
+      one: '1 member',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deptUsedIn(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Used in $n elections',
+      one: 'Used in 1 election',
+    );
+    return '$_temp0';
+  }
 }
