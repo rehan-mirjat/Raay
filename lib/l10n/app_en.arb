@@ -1,9 +1,9 @@
 {
   "@@locale": "en",
-
   "appName": "Kivora",
-  "@appName": {"description": "The application name, shown on splash/auth screens"},
-
+  "@appName": {
+    "description": "The application name, shown on splash/auth screens"
+  },
   "navHome": "Home",
   "navOrganizations": "Organizations",
   "navOrgsShort": "Orgs",
@@ -13,7 +13,6 @@
   "navProfile": "Profile",
   "navCalendar": "Calendar",
   "navCommandCenter": "Command Center",
-
   "actionSave": "Save",
   "actionCancel": "Cancel",
   "actionDelete": "Delete",
@@ -23,7 +22,6 @@
   "actionClose": "Close",
   "actionRetry": "Retry",
   "actionSignOut": "Sign Out",
-
   "authSignInTitle": "Welcome Back",
   "authSignInSubtitle": "Sign in to continue",
   "authEmail": "Email address",
@@ -37,7 +35,6 @@
   "authRegisterSubtitle": "Join Kivora today",
   "authFullName": "Full name",
   "authConfirmPassword": "Confirm password",
-
   "voteStepSelect": "Select",
   "voteStepReview": "Review & Submit",
   "voteSelectionPrompt": "Make your selection",
@@ -51,25 +48,26 @@
   "voteAlreadyVotedTitle": "You Have Already Voted",
   "voteAlreadyVotedMessage": "Your ballot for \"{eventTitle}\" has already been cast and accepted into the anonymous tally.",
   "@voteAlreadyVotedMessage": {
-    "placeholders": {"eventTitle": {"type": "String"}}
+    "placeholders": {
+      "eventTitle": {
+        "type": "String"
+      }
+    }
   },
   "voteViewReceipt": "View Your Confirmation Receipt",
   "voteViewResults": "View Results",
   "voteNotOpenYet": "Voting has not opened yet for this election. You can review the ballot below, but submission is disabled until it becomes active.",
   "voteClosed": "Voting is no longer open for this election.",
-
   "receiptTitle": "Vote Receipt",
   "receiptId": "Receipt ID",
   "receiptHash": "Receipt Hash",
   "receiptCopy": "Copy",
   "receiptReturnHome": "Return to Home Feed",
-
   "resultsTitle": "Election Results",
   "resultsTotalVotes": "Total Votes",
   "resultsVoterTurnout": "Voter Turnout",
   "resultsTurnoutRate": "Turnout Rate",
   "resultsViewDetailed": "View Detailed Results",
-
   "myElectionsTitle": "My Elections",
   "myElectionsSubtitle": "Every election you can see across your organizations, in one place.",
   "filterAll": "All",
@@ -78,15 +76,12 @@
   "filterCompleted": "Completed",
   "filterParticipated": "Participated",
   "filterResultsAvailable": "Results available",
-
   "calendarTitle": "Election Calendar",
   "calendarAddToCalendar": "Add to calendar",
-
   "emptyGenericTitle": "Nothing here yet",
   "emptyGenericMessage": "There's nothing to show right now.",
   "errorGenericMessage": "Something went wrong. Please try again.",
   "loadingGeneric": "Loading...",
-
   "accessibilitySettingsTitle": "Accessibility & Language",
   "accessibilityLanguage": "Language",
   "accessibilityLanguageSystem": "System default",
@@ -94,10 +89,63 @@
   "accessibilityReducedMotionSubtitle": "Minimize animations throughout the app.",
   "accessibilityHighContrast": "High contrast",
   "accessibilityHighContrastSubtitle": "Increase text and border contrast for better visibility.",
-
   "helpSupportTitle": "Help & Support",
   "notificationsTitle": "Notifications",
-
   "transparencyTitle": "Trust & Transparency Center",
-  "observerDashboardTitle": "Observer Dashboard"
+  "observerDashboardTitle": "Observer Dashboard",
+  "voterHomeTitle": "My elections",
+  "voterHomeSubtitle": "Elections you can see across your organizations.",
+  "voterSearchHint": "Search by election or organization",
+  "voterFilterAll": "All",
+  "voterFilterReady": "Ready to vote",
+  "voterFilterUpcoming": "Upcoming",
+  "voterFilterParticipated": "Participated",
+  "voterFilterClosed": "Closed",
+  "voterFilterResults": "Results published",
+  "voterSectionReady": "Ready to vote",
+  "voterSectionUpcoming": "Upcoming",
+  "voterSectionParticipated": "Participated",
+  "voterSectionOther": "Other elections",
+  "voterNoElectionsTitle": "No elections yet",
+  "voterNoElectionsBody": "Elections you are eligible for will appear here.",
+  "voterNoMatchTitle": "No matching elections",
+  "voterNoMatchBody": "Try a different search or filter.",
+  "voterLoadError": "We could not load your elections.",
+  "voterRetry": "Try again",
+  "voterStatusWarning": "Some details could not be loaded. Actions that depend on them are hidden until they load.",
+  "voterActionVoteNow": "Vote now",
+  "voterActionViewReceipt": "View receipt",
+  "voterActionViewDetails": "View details",
+  "voterActionChecking": "Checking your status...",
+  "voterActionResultsPending": "Results pending",
+  "voterActionViewResults": "View published results",
+  "voterChipParticipated": "Participated",
+  "voterChipNotEligible": "Not eligible",
+  "voterChipChecking": "Checking status",
+  "voterOpens": "Opens {date}",
+  "@voterOpens": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "voterCloses": "Closes {date}",
+  "@voterCloses": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "voterClosedOn": "Closed {date}",
+  "@voterClosedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "voterCalendar": "Calendar",
+  "voterLoadMore": "Show more"
 }

@@ -265,4 +265,115 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get observerDashboardTitle => 'مبصر ڈیش بورڈ';
+
+  @override
+  String get voterHomeTitle => 'My elections';
+
+  @override
+  String get voterHomeSubtitle =>
+      'Elections you can see across your organizations.';
+
+  @override
+  String get voterSearchHint => 'Search by election or organization';
+
+  @override
+  String get voterFilterAll => 'All';
+
+  @override
+  String get voterFilterReady => 'Ready to vote';
+
+  @override
+  String get voterFilterUpcoming => 'Upcoming';
+
+  @override
+  String get voterFilterParticipated => 'Participated';
+
+  @override
+  String get voterFilterClosed => 'Closed';
+
+  @override
+  String get voterFilterResults => 'Results published';
+
+  @override
+  String get voterSectionReady => 'Ready to vote';
+
+  @override
+  String get voterSectionUpcoming => 'Upcoming';
+
+  @override
+  String get voterSectionParticipated => 'Participated';
+
+  @override
+  String get voterSectionOther => 'Other elections';
+
+  @override
+  String get voterNoElectionsTitle => 'No elections yet';
+
+  @override
+  String get voterNoElectionsBody =>
+      'Elections you are eligible for will appear here.';
+
+  @override
+  String get voterNoMatchTitle => 'No matching elections';
+
+  @override
+  String get voterNoMatchBody => 'Try a different search or filter.';
+
+  @override
+  String get voterLoadError => 'We could not load your elections.';
+
+  @override
+  String get voterRetry => 'Try again';
+
+  @override
+  String get voterStatusWarning =>
+      'Some details could not be loaded. Actions that depend on them are hidden until they load.';
+
+  @override
+  String get voterActionVoteNow => 'Vote now';
+
+  @override
+  String get voterActionViewReceipt => 'View receipt';
+
+  @override
+  String get voterActionViewDetails => 'View details';
+
+  @override
+  String get voterActionChecking => 'Checking your status...';
+
+  @override
+  String get voterActionResultsPending => 'Results pending';
+
+  @override
+  String get voterActionViewResults => 'View published results';
+
+  @override
+  String get voterChipParticipated => 'Participated';
+
+  @override
+  String get voterChipNotEligible => 'Not eligible';
+
+  @override
+  String get voterChipChecking => 'Checking status';
+
+  @override
+  String voterOpens(String date) {
+    return 'Opens $date';
+  }
+
+  @override
+  String voterCloses(String date) {
+    return 'Closes $date';
+  }
+
+  @override
+  String voterClosedOn(String date) {
+    return 'Closed $date';
+  }
+
+  @override
+  String get voterCalendar => 'Calendar';
+
+  @override
+  String get voterLoadMore => 'Show more';
 }

@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:kivora/core/theme/kivora_icons.dart';
 
-import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
 import '../../../core/layout/responsive.dart';
+import '../../../core/theme/kivora_colors.dart';
 import '../../../core/widgets/ui_kit/kivora_button.dart';
 import '../../../core/widgets/ui_kit/kivora_card.dart';
 import '../../../core/widgets/ui_kit/kivora_text_field.dart';
 import '../../../services/firebase_service.dart';
+import '../domain/receipt_verification_outcome.dart';
+
+typedef ReceiptVerifier = Future<void> Function(String hash);
 
 class ReceiptVerificationScreen extends StatefulWidget {
-  const ReceiptVerificationScreen({super.key});
+  const ReceiptVerificationScreen({super.key, this.verifier});
+
+  /// Replaces the network call. Throws exactly like the `verifyReceipt`
+  /// callable does. Production leaves this null; tests inject it.
+  final ReceiptVerifier? verifier;
 
   @override
   State<ReceiptVerificationScreen> createState() => _ReceiptVerificationScreenState();
@@ -19,35 +25,53 @@ class ReceiptVerificationScreen extends StatefulWidget {
 class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
   final _hashController = TextEditingController();
   bool _isSearching = false;
-  Map<String, dynamic>? _foundReceipt;
-  bool _searched = false;
+  ReceiptVerificationOutcome? _outcome;
+
+  @override
+  void dispose() {
+    _hashController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _callVerifier(String hash) async {
+    final custom = widget.verifier;
+    if (custom != null) return custom(hash);
+    final response = await FirebaseService()
+        .functions
+        .httpsCallable('verifyReceipt')
+        .call({'hash': hash});
+    final data = response.data;
+    if (data is! Map || data['status'] != 'success') {
+      throw StateError('Unexpected verification response.');
+    }
+  }
 
   Future<void> _verifyReceipt() async {
+    if (_isSearching) return;
     final hash = _hashController.text.trim();
-    if (hash.isEmpty) return;
+
+    if (!isValidReceiptHash(hash)) {
+      setState(() => _outcome = ReceiptVerificationOutcome.invalidInput);
+      return;
+    }
 
     setState(() {
       _isSearching = true;
-      _searched = true;
-      _foundReceipt = null;
+      _outcome = null;
     });
 
+    ReceiptVerificationOutcome outcome;
     try {
-      final response = await FirebaseService()
-          .functions
-          .httpsCallable('verifyReceipt')
-          .call({'hash': hash});
-
-      if (response.data['status'] == 'success') {
-        setState(() {
-          _foundReceipt = response.data as Map<String, dynamic>;
-        });
-      }
-    } catch (_) {
-      // Ignored - will show "Not Found" state
-    } finally {
-      if (mounted) setState(() => _isSearching = false);
+      await _callVerifier(hash);
+      outcome = ReceiptVerificationOutcome.verified;
+    } catch (e) {
+      outcome = outcomeForVerifyError(e);
     }
+    if (!mounted) return;
+    setState(() {
+      _isSearching = false;
+      _outcome = outcome;
+    });
   }
 
   @override
@@ -56,17 +80,15 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
     final isDesktop = ResponsiveLayout.isWide(context);
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text('Public Receipt Verification'),
-        backgroundColor: kc.surface,
         elevation: 0,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(isDesktop ? 40 : 20),
+        padding: EdgeInsets.all(isDesktop ? 32 : 16),
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 600),
+            constraints: const BoxConstraints(maxWidth: ResponsiveLayout.maxFormWidth),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -74,91 +96,132 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppTheme.primaryBlue.withValues(alpha: 0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(KivoraIcons.shieldCheck, size: 32, color: AppTheme.primaryBlue),
-                      ),
-                      const SizedBox(height: 24),
+                      Icon(KivoraIcons.shieldCheck, size: 32, color: kc.accentText),
+                      const SizedBox(height: 16),
                       Text(
-                        'Verify Ballot Receipt',
+                        'Verify ballot receipt',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                           color: kc.textPrimary,
-                          letterSpacing: -0.5,
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 8),
                       Text(
-                        'Enter your SHA-256 receipt hash below to confirm it was received by the server. This tool verifies existence only, maintaining absolute ballot secrecy.',
+                        'Enter the receipt hash from your receipt to confirm the server recorded it. '
+                        'This checks that a matching receipt exists. It does not show how anyone voted, '
+                        'and it does not independently prove inclusion in the final tally.',
                         style: TextStyle(fontSize: 14, color: kc.textSecondary, height: 1.5),
                       ),
-                      const SizedBox(height: 32),
-                      KivoraTextField(
-                        label: 'RECEIPT HASH',
-                        controller: _hashController,
-                        hint: 'Enter your 64-character SHA-256 hash',
-                        prefixIcon: KivoraIcons.lock,
-                      ),
                       const SizedBox(height: 24),
+                      KivoraTextField(
+                        label: 'Receipt hash',
+                        controller: _hashController,
+                        hint: '64-character hash (letters a-f and digits)',
+                        prefixIcon: KivoraIcons.lock,
+                        textInputAction: TextInputAction.search,
+                        onFieldSubmitted: (_) => _verifyReceipt(),
+                      ),
+                      const SizedBox(height: 16),
                       KivoraButton(
-                        label: 'Verify Receipt',
+                        label: 'Verify receipt',
                         icon: KivoraIcons.search,
                         isLoading: _isSearching,
-                        onPressed: _verifyReceipt,
+                        onPressed: _isSearching ? null : _verifyReceipt,
                       ),
                     ],
                   ),
                 ),
-                
-                if (_searched && !_isSearching) ...[
-                  const SizedBox(height: 24),
-                  if (_foundReceipt != null)
-                    KivoraCard(
-                      child: Column(
-                        children: [
-                          const Icon(KivoraIcons.checkCircle, size: 48, color: AppTheme.success),
-                          const SizedBox(height: 16),
-                          const Text(
-                            'Receipt Verified',
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.success),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'A matching receipt was found. This confirms your ballot was recorded, but does not independently prove inclusion in the final tally.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: kc.textSecondary),
-                          ),
-                        ],
-                      ),
-                    )
-                  else
-                    KivoraCard(
-                      child: Column(
-                        children: [
-                          const Icon(KivoraIcons.alertCircle, size: 48, color: AppTheme.error),
-                          const SizedBox(height: 16),
-                          const Text(
-                            'Receipt Not Found',
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.error),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'We could not find a matching ballot receipt. Please ensure the hash was copied correctly.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: kc.textSecondary),
-                          ),
-                        ],
-                      ),
-                    ),
-                ]
+                if (_outcome != null && !_isSearching) ...[
+                  const SizedBox(height: 16),
+                  _OutcomeCard(outcome: _outcome!, onRetry: _verifyReceipt),
+                ],
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _OutcomeCard extends StatelessWidget {
+  const _OutcomeCard({required this.outcome, required this.onRetry});
+
+  final ReceiptVerificationOutcome outcome;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    late final IconData icon;
+    late final Color color;
+    late final String title;
+    late final String body;
+    var retry = false;
+
+    switch (outcome) {
+      case ReceiptVerificationOutcome.verified:
+        icon = KivoraIcons.checkCircle;
+        color = kc.successText;
+        title = 'Receipt verified';
+        body = 'A matching receipt was found, so the server recorded this ballot. '
+            'This does not independently prove inclusion in the final tally.';
+      case ReceiptVerificationOutcome.notFound:
+        icon = KivoraIcons.alertCircle;
+        color = kc.errorText;
+        title = 'No matching receipt';
+        body = 'The service is working and has no receipt with this hash. '
+            'Check that you copied the whole hash from your receipt.';
+      case ReceiptVerificationOutcome.invalidInput:
+        icon = Icons.edit_off_outlined;
+        color = kc.warningText;
+        title = 'That is not a valid receipt hash';
+        body = 'A receipt hash is exactly 64 characters: digits 0-9 and letters a-f. '
+            'Nothing was sent to the server.';
+      case ReceiptVerificationOutcome.rateLimited:
+        icon = Icons.hourglass_top_rounded;
+        color = kc.warningText;
+        title = 'Too many lookups';
+        body = 'Please wait a minute before trying again.';
+        retry = true;
+      case ReceiptVerificationOutcome.unavailable:
+        icon = Icons.cloud_off_outlined;
+        color = kc.warningText;
+        title = 'Verification is unavailable right now';
+        body = 'We could not reach the verification service, so we cannot say whether '
+            'your receipt exists. This is not a "not found" result. Check your connection and try again.';
+        retry = true;
+    }
+
+    return Semantics(
+      liveRegion: true,
+      child: KivoraCard(
+        child: Column(
+          children: [
+            Icon(icon, size: 40, color: color),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              body,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: kc.textSecondary, height: 1.5),
+            ),
+            if (retry) ...[
+              const SizedBox(height: 16),
+              KivoraButton(
+                type: KivoraButtonType.secondary,
+                label: 'Try again',
+                icon: Icons.refresh_rounded,
+                onPressed: onRetry,
+              ),
+            ],
+          ],
         ),
       ),
     );

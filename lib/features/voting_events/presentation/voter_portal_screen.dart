@@ -1,53 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../../core/layout/responsive.dart';
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/theme/kivora_icons.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
-import '../../../core/widgets/status_badge.dart';
-import '../../../services/auth_service.dart';
-import '../../voting/data/participation_repository.dart';
+import '../../../l10n/app_localizations.dart';
+import '../domain/election_card_state.dart';
 import '../domain/voting_event.dart';
+import 'portal_grouping.dart';
 import 'providers/voter_portal_providers.dart';
+import 'voter_election_card.dart';
 
-enum _PortalFilter {
-  all,
-  active,
-  upcoming,
-  completed,
-  participated,
-  resultsAvailable
-}
-
-extension on _PortalFilter {
-  String get label => switch (this) {
-        _PortalFilter.all => 'All',
-        _PortalFilter.active => 'Active',
-        _PortalFilter.upcoming => 'Upcoming',
-        _PortalFilter.completed => 'Completed',
-        _PortalFilter.participated => 'Participated',
-        _PortalFilter.resultsAvailable => 'Results available',
-      };
-}
+enum _PortalFilter { all, ready, upcoming, participated, closed, resultsPublished }
 
 const _pageSize = 12;
 
-/// Package A1: "My Voting Portal" - a cross-organization, filterable, search-
-/// able view of every election the signed-in user can see, with the correct
-/// action per election (Vote Now / View Details / View Receipt / View
-/// Results / Upcoming). Used both as its own route and embedded for non-admin
-/// members on the shared Events destination (see admin_event_dashboard_screen.dart).
+/// The voter home ("My elections"): every election the signed-in user can see
+/// across their organizations, grouped by what they can do next. Used as its
+/// own route and embedded for non-admin members on the shared Events
+/// destination (see admin_event_dashboard_screen.dart).
 class VoterPortalScreen extends StatelessWidget {
   const VoterPortalScreen({super.key, this.embedded = false});
 
-  /// true when rendered inside another Scaffold (the shared /admin/events
-  /// route for non-admins) - skips its own Scaffold/AppBar in that case.
+  /// true when rendered inside another Scaffold: skips its own Scaffold.
   final bool embedded;
 
   @override
@@ -81,360 +60,316 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
     super.dispose();
   }
 
+  String _label(AppLocalizations l10n, _PortalFilter f) => switch (f) {
+        _PortalFilter.all => l10n.voterFilterAll,
+        _PortalFilter.ready => l10n.voterFilterReady,
+        _PortalFilter.upcoming => l10n.voterFilterUpcoming,
+        _PortalFilter.participated => l10n.voterFilterParticipated,
+        _PortalFilter.closed => l10n.voterFilterClosed,
+        _PortalFilter.resultsPublished => l10n.voterFilterResults,
+      };
+
   List<VoterPortalEntry> _applyFilters(
     List<VoterPortalEntry> entries,
-    Map<String, bool> participationByEventId,
+    Map<String, ParticipationStatus> participation,
+    Map<String, ResultsStatus> results,
   ) {
     final query = _searchController.text.trim().toLowerCase();
     return entries.where((entry) {
-      if (query.isNotEmpty) {
-        final matches = entry.event.title.toLowerCase().contains(query) ||
-            entry.organization.name.toLowerCase().contains(query);
-        if (!matches) return false;
+      if (query.isNotEmpty &&
+          !entry.event.title.toLowerCase().contains(query) &&
+          !entry.organization.name.toLowerCase().contains(query)) {
+        return false;
       }
-
-      final hasVoted = participationByEventId[entry.event.id] ?? false;
-
+      final id = entry.event.id;
+      final p = participation[id] ?? ParticipationStatus.unknown;
+      final finished = entry.event.status == VotingEventStatus.closed ||
+          entry.event.status == VotingEventStatus.archived;
       switch (_filter) {
         case _PortalFilter.all:
           return true;
-        case _PortalFilter.active:
-          return entry.event.status == VotingEventStatus.active;
+        case _PortalFilter.ready:
+          return entry.event.status == VotingEventStatus.active &&
+              entry.isLikelyEligible &&
+              p != ParticipationStatus.voted;
         case _PortalFilter.upcoming:
           return entry.event.status == VotingEventStatus.scheduled;
-        case _PortalFilter.completed:
-          return entry.event.status == VotingEventStatus.closed ||
-              entry.event.status == VotingEventStatus.archived;
         case _PortalFilter.participated:
-          return hasVoted;
-        case _PortalFilter.resultsAvailable:
-          return (entry.event.status == VotingEventStatus.closed ||
-              entry.event.status == VotingEventStatus.archived);
+          return p == ParticipationStatus.voted;
+        case _PortalFilter.closed:
+          return finished;
+        case _PortalFilter.resultsPublished:
+          return finished && results[id] == ResultsStatus.published;
       }
     }).toList();
   }
 
+  void _refresh() {
+    ref.invalidate(voterPortalEntriesProvider);
+    ref.invalidate(participationStatusesProvider);
+    ref.invalidate(resultsStatusesProvider);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final l10n = AppLocalizations.of(context);
     final entriesAsync = ref.watch(voterPortalEntriesProvider);
 
     return RefreshIndicator(
-      onRefresh: () async => ref.invalidate(voterPortalEntriesProvider),
+      onRefresh: () async => _refresh(),
       child: entriesAsync.when(
-        loading: () => const LoadingView(message: 'Loading your elections...'),
+        loading: () => const LoadingView(),
         error: (err, _) => ErrorView(
           type: ErrorViewType.generic,
-          message: 'Could not load your elections: $err',
-          onRetry: () => ref.invalidate(voterPortalEntriesProvider),
+          message: l10n.voterLoadError,
+          onRetry: _refresh,
         ),
         data: (entries) {
           if (entries.isEmpty) {
-            return const SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
+            return SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
               child: SizedBox(
                 height: 420,
                 child: EmptyView(
                   icon: KivoraIcons.vote,
-                  title: 'No elections yet',
-                  message:
-                      'Elections you\'re eligible for across your organizations will show up here.',
+                  title: l10n.voterNoElectionsTitle,
+                  message: l10n.voterNoElectionsBody,
                 ),
               ),
             );
           }
+          return _buildList(context, l10n, entries);
+        },
+      ),
+    );
+  }
 
-          // Participation status for every visible event, fetched once up
-          // front so filtering by "Participated" works without each card
-          // running its own query.
-          final participationAsync = ref.watch(_bulkParticipationProvider);
-          final participationMap = participationAsync.valueOrNull ?? const {};
+  Widget _buildList(BuildContext context, AppLocalizations l10n, List<VoterPortalEntry> entries) {
+    final kc = KivoraColors.of(context);
+    final participationAsync = ref.watch(participationStatusesProvider);
+    final resultsAsync = ref.watch(resultsStatusesProvider);
+    // Loading or failed lookups leave the map empty -> every event reads as
+    // "unknown", never as "not voted" or "results pending".
+    final participation = participationAsync.valueOrNull ?? const <String, ParticipationStatus>{};
+    final results = resultsAsync.valueOrNull ?? const <String, ResultsStatus>{};
+    final hasUnknowns = participationAsync.hasError ||
+        resultsAsync.hasError ||
+        participation.values.contains(ParticipationStatus.unknown) ||
+        results.values.contains(ResultsStatus.unknown);
 
-          final filtered = _applyFilters(entries, participationMap);
-          final visible = filtered.take(_visibleCount).toList();
-          final isDesktop = ResponsiveLayout.isWide(context);
+    final filtered = _applyFilters(entries, participation, results);
+    final grouped = _filter == _PortalFilter.all && _searchController.text.trim().isEmpty;
+    final isDesktop = ResponsiveLayout.isWide(context);
 
-          return SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: EdgeInsets.all(isDesktop ? 32 : 16),
+    Widget cardFor(VoterPortalEntry e) => VoterElectionCard(
+          entry: e,
+          participation: participation[e.event.id] ?? ParticipationStatus.unknown,
+          results: results[e.event.id] ?? ResultsStatus.unknown,
+        );
+
+    final children = <Widget>[
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('My Elections',
-                              style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: kc.textPrimary)),
-                          const SizedBox(height: 4),
-                          Text(
-                              'Every election you can see across your organizations, in one place.',
-                              style: TextStyle(
-                                  fontSize: 14, color: kc.textSecondary)),
-                        ],
-                      ),
-                    ),
-                    OutlinedButton.icon(
-                      onPressed: () => context.go('/calendar'),
-                      icon: const Icon(KivoraIcons.calendar, size: 18),
-                      label: const Text('Calendar'),
-                    ),
-                  ],
+                Semantics(
+                  header: true,
+                  child: Text(l10n.voterHomeTitle,
+                      style: TextStyle(
+                          fontSize: isDesktop ? 28 : 24,
+                          fontWeight: FontWeight.bold,
+                          color: kc.textPrimary)),
                 ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _searchController,
-                  onChanged: (_) => setState(() {}),
-                  decoration: InputDecoration(
-                    hintText: 'Search by election title or organization...',
-                    prefixIcon: const Icon(KivoraIcons.search),
-                    filled: true,
-                    fillColor: kc.surface,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: kc.border),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 14),
-                SizedBox(
-                  height: 48,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _PortalFilter.values.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 8),
-                    itemBuilder: (context, i) {
-                      final f = _PortalFilter.values[i];
-                      final selected = f == _filter;
-                      return ChoiceChip(
-                        label: Text(f.label),
-                        selected: selected,
-                        onSelected: (_) => setState(() {
-                          _filter = f;
-                          _visibleCount = _pageSize;
-                        }),
-                        selectedColor:
-                            AppTheme.primaryBlue.withValues(alpha: 0.15),
-                        labelStyle: TextStyle(
-                          color: selected
-                              ? AppTheme.primaryBlue
-                              : kc.textSecondary,
-                          fontWeight:
-                              selected ? FontWeight.bold : FontWeight.normal,
-                        ),
-                        side: BorderSide(
-                            color: selected ? AppTheme.primaryBlue : kc.border),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(height: 20),
-                if (filtered.isEmpty)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 40),
-                    child: EmptyView(
-                      icon: KivoraIcons.search,
-                      title: 'No matching elections',
-                      message: 'Try a different search term or filter.',
-                    ),
-                  )
-                else ...[
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: isDesktop
-                          ? (ResponsiveLayout.isMedium(context) ? 2 : 3)
-                          : 1,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: isDesktop ? 1.15 : 1.9,
-                    ),
-                    itemCount: visible.length,
-                    itemBuilder: (context, i) => _ElectionCard(
-                      entry: visible[i],
-                      hasVoted: participationMap[visible[i].event.id] ?? false,
-                    ),
-                  ),
-                  if (_visibleCount < filtered.length) ...[
-                    const SizedBox(height: 20),
-                    Center(
-                      child: OutlinedButton(
-                        onPressed: () =>
-                            setState(() => _visibleCount += _pageSize),
-                        child: Text(
-                            'Load more (${filtered.length - _visibleCount} remaining)'),
-                      ),
-                    ),
-                  ],
-                ],
+                const SizedBox(height: 4),
+                Text(l10n.voterHomeSubtitle,
+                    style: TextStyle(fontSize: 14, color: kc.textSecondary)),
               ],
             ),
-          );
-        },
+          ),
+          const SizedBox(width: 12),
+          OutlinedButton.icon(
+            style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+            onPressed: () => context.go('/calendar'),
+            icon: const Icon(KivoraIcons.calendar, size: 18),
+            label: Text(l10n.voterCalendar),
+          ),
+        ],
+      ),
+      const SizedBox(height: 16),
+      TextField(
+        controller: _searchController,
+        onChanged: (_) => setState(() => _visibleCount = _pageSize),
+        decoration: InputDecoration(
+          hintText: l10n.voterSearchHint,
+          prefixIcon: const Icon(KivoraIcons.search),
+        ),
+      ),
+      const SizedBox(height: 12),
+      SizedBox(
+        height: 48,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: _PortalFilter.values.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 8),
+          itemBuilder: (context, i) {
+            final f = _PortalFilter.values[i];
+            final selected = f == _filter;
+            return Center(
+              child: ChoiceChip(
+                label: Text(_label(l10n, f)),
+                selected: selected,
+                showCheckmark: true,
+                materialTapTargetSize: MaterialTapTargetSize.padded,
+                onSelected: (_) => setState(() {
+                  _filter = f;
+                  _visibleCount = _pageSize;
+                }),
+              ),
+            );
+          },
+        ),
+      ),
+      if (hasUnknowns) ...[
+        const SizedBox(height: 12),
+        _WarningBanner(message: l10n.voterStatusWarning, retryLabel: l10n.voterRetry, onRetry: _refresh),
+      ],
+      const SizedBox(height: 16),
+    ];
+
+    if (filtered.isEmpty) {
+      children.add(Padding(
+        padding: const EdgeInsets.symmetric(vertical: 40),
+        child: EmptyView(
+          icon: KivoraIcons.search,
+          title: l10n.voterNoMatchTitle,
+          message: l10n.voterNoMatchBody,
+        ),
+      ));
+    } else if (grouped) {
+      final sections = groupPortalEntries(filtered, participation);
+      var remaining = _visibleCount;
+      for (final section in PortalSection.values) {
+        final items = sections[section]!;
+        if (items.isEmpty || remaining <= 0) continue;
+        final shown = items.take(remaining).toList();
+        remaining -= shown.length;
+        children
+          ..add(_SectionHeader(
+            title: switch (section) {
+              PortalSection.ready => l10n.voterSectionReady,
+              PortalSection.upcoming => l10n.voterSectionUpcoming,
+              PortalSection.participated => l10n.voterSectionParticipated,
+              PortalSection.other => l10n.voterSectionOther,
+            },
+            count: items.length,
+          ))
+          ..add(AdaptiveCardGrid(children: shown.map(cardFor).toList()))
+          ..add(const SizedBox(height: 24));
+      }
+    } else {
+      children
+        ..add(AdaptiveCardGrid(children: filtered.take(_visibleCount).map(cardFor).toList()))
+        ..add(const SizedBox(height: 24));
+    }
+
+    if (_visibleCount < filtered.length) {
+      children.add(Center(
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+          onPressed: () => setState(() => _visibleCount += _pageSize),
+          child: Text('${l10n.voterLoadMore} (${filtered.length - _visibleCount})'),
+        ),
+      ));
+    }
+
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: EdgeInsets.all(isDesktop ? 32 : 16),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: ResponsiveLayout.maxContentWidth),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
+        ),
       ),
     );
   }
 }
 
-/// Batches participation lookups for every visible card into one provider so
-/// filtering by "Participated" doesn't require N independent round trips
-/// before the list can even be filtered.
-final _bulkParticipationProvider =
-    FutureProvider.autoDispose<Map<String, bool>>((ref) async {
-  final uid = ref.watch(authServiceProvider).currentUser?.uid;
-  if (uid == null) return {};
-  final entries = await ref.watch(voterPortalEntriesProvider.future);
-  if (entries.isEmpty) return {};
-
-  final repo = ref.watch(participationRepositoryProvider);
-  final results = await Future.wait(entries.map((e) async {
-    final voted = await repo.hasUserVoted(e.organization.id, e.event.id, uid);
-    return MapEntry(e.event.id, voted);
-  }));
-  return Map.fromEntries(results);
-});
-
-class _ElectionCard extends StatelessWidget {
-  const _ElectionCard({required this.entry, required this.hasVoted});
-
-  final VoterPortalEntry entry;
-  final bool hasVoted;
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.title, required this.count});
+  final String title;
+  final int count;
 
   @override
   Widget build(BuildContext context) {
     final kc = KivoraColors.of(context);
-    final event = entry.event;
-    final format = DateFormat('MMM d, yyyy - h:mm a');
-
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: kc.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: kc.border),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Semantics(
+        header: true,
+        child: Text('$title ($count)',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kc.textPrimary)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    );
+  }
+}
+
+class _WarningBanner extends StatelessWidget {
+  const _WarningBanner({required this.message, required this.retryLabel, required this.onRetry});
+  final String message;
+  final String retryLabel;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: kc.warningText.withValues(alpha: kc.isDark ? 0.16 : 0.10),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: kc.warningText.withValues(alpha: 0.35)),
+      ),
+      child: Row(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(event.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: kc.textPrimary)),
-              ),
-              StatusBadge.eventStatus(event.status.name),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(entry.organization.name,
-              style: TextStyle(fontSize: 12, color: kc.textSecondary)),
-          const SizedBox(height: 2),
-          Text(event.votingType.label,
-              style: TextStyle(fontSize: 11, color: kc.textSecondary)),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Icon(Icons.schedule, size: 13, color: kc.textSecondary),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  '${format.format(event.startAt)} → ${format.format(event.endAt)}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 11, color: kc.textSecondary),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              if (!entry.isLikelyEligible)
-                _miniBadge(context, 'Not eligible', AppTheme.textSecondary),
-              if (hasVoted)
-                _miniBadge(context, 'Participated', AppTheme.success),
-            ],
-          ),
-          const Spacer(),
-          const SizedBox(height: 8),
-          SizedBox(
-            width: double.infinity,
-            child: _buildAction(context),
+          Icon(Icons.info_outline_rounded, color: kc.warningText),
+          const SizedBox(width: 12),
+          Expanded(child: Text(message, style: TextStyle(fontSize: 14, color: kc.textPrimary))),
+          TextButton(
+            style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+            onPressed: onRetry,
+            child: Text(retryLabel),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _miniBadge(BuildContext context, String label, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(label,
-          style: TextStyle(
-              fontSize: 10, fontWeight: FontWeight.bold, color: color)),
-    );
-  }
+/// Lays cards out in 1..3 equal-width columns chosen from the width this
+/// widget actually receives (so the shell's sidebar/rail is accounted for).
+/// Card heights follow their content; there is no fixed aspect ratio.
+class AdaptiveCardGrid extends StatelessWidget {
+  const AdaptiveCardGrid({super.key, required this.children, this.minColumnWidth = 340, this.gap = 16});
 
-  Widget _buildAction(BuildContext context) {
-    final event = entry.event;
+  final List<Widget> children;
+  final double minColumnWidth;
+  final double gap;
 
-    switch (event.status) {
-      case VotingEventStatus.scheduled:
-        return OutlinedButton.icon(
-          onPressed: () => context.go('/elections/${event.id}'),
-          icon: const Icon(Icons.hourglass_top_rounded, size: 16),
-          label: const Text('Upcoming'),
-        );
-      case VotingEventStatus.active:
-        if (!entry.isLikelyEligible) {
-          return OutlinedButton(
-            onPressed: () => context.go('/elections/${event.id}'),
-            child: const Text('View Details'),
-          );
-        }
-        if (hasVoted) {
-          return ElevatedButton.icon(
-            onPressed: () => context.go('/elections/${event.id}'),
-            icon: const Icon(Icons.receipt_long_rounded, size: 16),
-            label: const Text('View Receipt'),
-          );
-        }
-        return ElevatedButton(
-          onPressed: () => context.go('/elections/${event.id}/vote'),
-          child: const Text('Vote Now'),
-        );
-      case VotingEventStatus.closed:
-      case VotingEventStatus.archived:
-        return ElevatedButton.icon(
-          onPressed: () => context.go('/elections/${event.id}/results'),
-          icon: const Icon(Icons.bar_chart_rounded, size: 16),
-          label: const Text('View Results'),
-        );
-      case VotingEventStatus.cancelled:
-      case VotingEventStatus.draft:
-        return OutlinedButton(
-          onPressed: () => context.go('/elections/${event.id}'),
-          child: const Text('View Details'),
-        );
-    }
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, constraints) {
+      final cols = ResponsiveLayout.columnsFor(constraints.maxWidth,
+          minColumnWidth: minColumnWidth, gap: gap);
+      final itemWidth = (constraints.maxWidth - gap * (cols - 1)) / cols;
+      return Wrap(
+        spacing: gap,
+        runSpacing: gap,
+        children: [for (final c in children) SizedBox(width: itemWidth, child: c)],
+      );
+    });
   }
 }

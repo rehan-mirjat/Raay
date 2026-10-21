@@ -1,11 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../services/auth_service.dart';
+import '../../../../services/firebase_service.dart';
+import '../../../voting/data/participation_repository.dart';
 import '../../../organizations/data/organization_repository.dart';
 import '../../../organizations/domain/organization.dart';
 import '../../../organizations/domain/organization_enums.dart';
 import '../../../organizations/domain/organization_member.dart';
 import '../../../organizations/presentation/providers/organization_providers.dart';
 import '../../data/voting_event_repository.dart';
+import '../../domain/election_card_state.dart';
 import '../../domain/voting_event.dart';
 
 /// One voting event bundled with the organization it belongs to and the
@@ -77,4 +81,51 @@ final voterPortalEntriesProvider =
       })
       .whereType<VoterPortalEntry>()
       .toList();
+});
+
+
+/// Participation per election id. A failed or impossible lookup is
+/// [ParticipationStatus.unknown] for that election; this provider itself never
+/// throws, so one bad lookup cannot turn the whole list into "not voted".
+final participationStatusesProvider =
+    FutureProvider.autoDispose<Map<String, ParticipationStatus>>((ref) async {
+  final uid = ref.watch(authServiceProvider).currentUser?.uid;
+  final entries = await ref.watch(voterPortalEntriesProvider.future);
+  final repo = ref.watch(participationRepositoryProvider);
+
+  final results = await Future.wait(entries.map((e) async {
+    if (uid == null) return MapEntry(e.event.id, ParticipationStatus.unknown);
+    try {
+      final voted = await repo.hasUserVoted(e.organization.id, e.event.id, uid);
+      return MapEntry(
+          e.event.id, voted ? ParticipationStatus.voted : ParticipationStatus.notVoted);
+    } catch (_) {
+      return MapEntry(e.event.id, ParticipationStatus.unknown);
+    }
+  }));
+  return Map.fromEntries(results);
+});
+
+/// Publication state of results for closed/archived elections, read from
+/// `eventResults/{id}` (the same source the results screen uses). Lifecycle
+/// status alone never implies published results.
+final resultsStatusesProvider =
+    FutureProvider.autoDispose<Map<String, ResultsStatus>>((ref) async {
+  final entries = await ref.watch(voterPortalEntriesProvider.future);
+  final firestore = FirebaseService().firestore;
+
+  final finished = entries.where((e) =>
+      e.event.status == VotingEventStatus.closed ||
+      e.event.status == VotingEventStatus.archived);
+
+  final results = await Future.wait(finished.map((e) async {
+    try {
+      final doc = await firestore.collection('eventResults').doc(e.event.id).get();
+      return MapEntry(
+          e.event.id, resultsStatusFrom(exists: doc.exists, data: doc.data()));
+    } catch (err) {
+      return MapEntry(e.event.id, resultsStatusFrom(error: err));
+    }
+  }));
+  return Map.fromEntries(results);
 });

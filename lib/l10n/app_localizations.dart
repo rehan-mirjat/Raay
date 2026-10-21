@@ -599,6 +599,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Observer Dashboard'**
   String get observerDashboardTitle;
+
+  /// No description provided for @voterHomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My elections'**
+  String get voterHomeTitle;
+
+  /// No description provided for @voterHomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Elections you can see across your organizations.'**
+  String get voterHomeSubtitle;
+
+  /// No description provided for @voterSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by election or organization'**
+  String get voterSearchHint;
+
+  /// No description provided for @voterFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get voterFilterAll;
+
+  /// No description provided for @voterFilterReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to vote'**
+  String get voterFilterReady;
+
+  /// No description provided for @voterFilterUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get voterFilterUpcoming;
+
+  /// No description provided for @voterFilterParticipated.
+  ///
+  /// In en, this message translates to:
+  /// **'Participated'**
+  String get voterFilterParticipated;
+
+  /// No description provided for @voterFilterClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get voterFilterClosed;
+
+  /// No description provided for @voterFilterResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Results published'**
+  String get voterFilterResults;
+
+  /// No description provided for @voterSectionReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to vote'**
+  String get voterSectionReady;
+
+  /// No description provided for @voterSectionUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get voterSectionUpcoming;
+
+  /// No description provided for @voterSectionParticipated.
+  ///
+  /// In en, this message translates to:
+  /// **'Participated'**
+  String get voterSectionParticipated;
+
+  /// No description provided for @voterSectionOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other elections'**
+  String get voterSectionOther;
+
+  /// No description provided for @voterNoElectionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No elections yet'**
+  String get voterNoElectionsTitle;
+
+  /// No description provided for @voterNoElectionsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Elections you are eligible for will appear here.'**
+  String get voterNoElectionsBody;
+
+  /// No description provided for @voterNoMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching elections'**
+  String get voterNoMatchTitle;
+
+  /// No description provided for @voterNoMatchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different search or filter.'**
+  String get voterNoMatchBody;
+
+  /// No description provided for @voterLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load your elections.'**
+  String get voterLoadError;
+
+  /// No description provided for @voterRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get voterRetry;
+
+  /// No description provided for @voterStatusWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Some details could not be loaded. Actions that depend on them are hidden until they load.'**
+  String get voterStatusWarning;
+
+  /// No description provided for @voterActionVoteNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Vote now'**
+  String get voterActionVoteNow;
+
+  /// No description provided for @voterActionViewReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'View receipt'**
+  String get voterActionViewReceipt;
+
+  /// No description provided for @voterActionViewDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View details'**
+  String get voterActionViewDetails;
+
+  /// No description provided for @voterActionChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking your status...'**
+  String get voterActionChecking;
+
+  /// No description provided for @voterActionResultsPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Results pending'**
+  String get voterActionResultsPending;
+
+  /// No description provided for @voterActionViewResults.
+  ///
+  /// In en, this message translates to:
+  /// **'View published results'**
+  String get voterActionViewResults;
+
+  /// No description provided for @voterChipParticipated.
+  ///
+  /// In en, this message translates to:
+  /// **'Participated'**
+  String get voterChipParticipated;
+
+  /// No description provided for @voterChipNotEligible.
+  ///
+  /// In en, this message translates to:
+  /// **'Not eligible'**
+  String get voterChipNotEligible;
+
+  /// No description provided for @voterChipChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking status'**
+  String get voterChipChecking;
+
+  /// No description provided for @voterOpens.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens {date}'**
+  String voterOpens(String date);
+
+  /// No description provided for @voterCloses.
+  ///
+  /// In en, this message translates to:
+  /// **'Closes {date}'**
+  String voterCloses(String date);
+
+  /// No description provided for @voterClosedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed {date}'**
+  String voterClosedOn(String date);
+
+  /// No description provided for @voterCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get voterCalendar;
+
+  /// No description provided for @voterLoadMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Show more'**
+  String get voterLoadMore;
 }
 
 class _AppLocalizationsDelegate
