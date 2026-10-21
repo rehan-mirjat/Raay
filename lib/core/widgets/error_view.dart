@@ -114,20 +114,13 @@ class ErrorView extends StatelessWidget {
               border: Border.all(
                 color: KivoraColors.borderOf(context),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
-                  blurRadius: 16,
-                  offset: const Offset(0, 4),
-                ),
-              ],
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(32, 32, 32, 24),
+                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -146,12 +139,14 @@ class ErrorView extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 12),
-                          Text(
-                            statusLabel,
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: statusColor,
+                          Expanded(
+                            child: Text(
+                              statusLabel,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: statusColor,
+                              ),
                             ),
                           ),
                         ],
@@ -185,30 +180,27 @@ class ErrorView extends StatelessWidget {
                       color: KivoraColors.surfaceOf(context),
                       borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    child: Wrap(
+                      alignment: WrapAlignment.end,
+                      spacing: 12,
+                      runSpacing: 12,
                       children: [
-                        if (onSecondaryAction != null && secondaryActionLabel != null) ...[
+                        if (onSecondaryAction != null && secondaryActionLabel != null)
                           OutlinedButton(
                             onPressed: onSecondaryAction,
                             style: OutlinedButton.styleFrom(
+                              minimumSize: const Size(48, 48),
                               foregroundColor: KivoraColors.textSecondaryOf(context),
                               side: BorderSide(color: KivoraColors.borderOf(context)),
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                             ),
                             child: Text(secondaryActionLabel!),
                           ),
-                          const SizedBox(width: 12),
-                        ],
                         if (onRetry != null)
                           FilledButton.icon(
                             onPressed: onRetry,
                             icon: Icon(primaryActionIcon ?? defaultPrimaryIcon, size: 18),
                             label: Text(primaryActionLabel ?? defaultPrimaryLabel),
-                            style: FilledButton.styleFrom(
-                              backgroundColor: AppTheme.primaryBlue,
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                            ),
+                            style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
                           ),
                       ],
                     ),

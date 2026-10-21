@@ -181,7 +181,8 @@ class _OrganizationAuditScreenState
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // 1. Breadcrumb
-                Row(
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     InkWell(
                       onTap: () => context.go('/orgs'),
