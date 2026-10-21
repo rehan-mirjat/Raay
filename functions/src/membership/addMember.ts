@@ -1,3 +1,4 @@
+import { requireMemberCapacity } from "../billing/plans";
 import { getAuth, UserRecord } from "firebase-admin/auth";
 import { FieldValue, getFirestore } from "firebase-admin/firestore";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
@@ -65,6 +66,9 @@ export const addMember = onCall(async (request) => {
       // their own elections, but may not accept new members until verified.
       if (!organizationSnap.exists || !["verified", "active"].includes(organizationSnap.data()?.status)) {
         throw new HttpsError("failed-precondition", "This organization cannot accept new members right now.");
+      }
+      if (!(targetMemberSnap.exists && targetMemberSnap.data()?.status === "active")) {
+        await requireMemberCapacity(db, transaction, organizationId, organizationSnap.data());
       }
       if (!targetUserSnap.exists || targetUserSnap.data()?.status !== "active" ||
           (targetUserSnap.data()?.email ?? "").trim().toLowerCase() !== email) {

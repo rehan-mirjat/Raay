@@ -1,3 +1,4 @@
+import { requireLiveEventCapacity } from "../billing/plans";
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
 import {
@@ -47,6 +48,9 @@ export const publishVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
       if (eligibleNow.length === 0) {
         throw new HttpsError("failed-precondition", "The event has no eligible voters.");
       }
+
+      const orgPlanSnap = await tx.get(db.collection("organizations").doc(organizationId));
+      await requireLiveEventCapacity(db, tx, organizationId, orgPlanSnap.data());
 
       // ---- Candidate / option completeness ----
       if (ev.votingType === "CANDIDATE_ELECTION") {

@@ -1,3 +1,4 @@
+import { requireMemberCapacity } from "../billing/plans";
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
@@ -176,6 +177,7 @@ export const acceptInvitation = onCall(
       if (orgStatus !== "active" && orgStatus !== "verified") {
         throw new HttpsError("failed-precondition", `Organization is currently ${orgStatus} and cannot accept new members.`);
       }
+      await requireMemberCapacity(db, transaction, orgId, orgSnap.data());
 
       // Transactional Writes
       // Write 1: Create Organization Member Document (status == "active")
