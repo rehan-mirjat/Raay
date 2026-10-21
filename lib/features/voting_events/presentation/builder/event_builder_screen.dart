@@ -135,7 +135,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
         WidgetsBinding.instance
             .addPostFrameCallback((_) => _loadExistingEvent(orgId));
       }
-      return const Scaffold(body: LoadingView(message: 'Loading event draft…'));
+      return Scaffold(body: LoadingView(message: AppLocalizations.of(context).builderLoadingDraft));
     }
 
     if (!role.isAdmin) {
@@ -144,11 +144,11 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Unauthorized: Admins only.'),
+              Text(AppLocalizations.of(context).builderAdminsOnly),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => context.go('/home'),
-                child: const Text('Return Home'),
+                child: Text(AppLocalizations.of(context).builderReturnHome),
               ),
             ],
           ),
@@ -157,6 +157,97 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
     }
 
     final draftState = ref.watch(draftEventProvider(orgId));
+    final l10n = AppLocalizations.of(context);
+    final kc = KivoraColors.of(context);
+    final isWide = !ResponsiveLayout.isCompact(context);
+    final labels = [
+      l10n.builderStepBasic,
+      l10n.builderStepSchedule,
+      l10n.builderStepEligibility,
+      l10n.builderStepChoices,
+      l10n.builderStepReview,
+    ];
+
+    final title = Row(
+      children: [
+        IconButton(
+          tooltip: l10n.builderBack,
+          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+          icon: Icon(Icons.arrow_back_rounded, color: kc.textPrimary),
+          onPressed: _leave,
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Semantics(
+            header: true,
+            child: Text(
+              draftState.serverEventId != null ? l10n.builderEditTitle : l10n.builderCreateTitle,
+              style: TextStyle(fontSize: isWide ? 28 : 22, fontWeight: FontWeight.bold, color: kc.textPrimary),
+            ),
+          ),
+        ),
+      ],
+    );
+
+    final stepBody = KeyedSubtree(
+      key: ValueKey(_currentStep),
+      child: _stepContent(context, l10n, orgId, draftState),
+    );
+
+    final Widget body = isWide
+        ? Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 220,
+                child: Semantics(
+                  container: true,
+                  label: l10n.builderStepsLabel,
+                  child: Column(
+                    children: [
+                      for (var i = 0; i < labels.length; i++)
+                        _StepTile(
+                          index: i,
+                          label: labels[i],
+                          current: i == _currentStep,
+                          done: i < _currentStep,
+                          onTap: () => _handleStepTap(i, orgId, draftState.serverEventId),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 24),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: ResponsiveLayout.maxFormWidth),
+                    child: stepBody,
+                  ),
+                ),
+              ),
+            ],
+          )
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Semantics(
+                liveRegion: true,
+                child: Text(
+                  '${l10n.builderStepOf(_currentStep + 1, labels.length)} · ${labels[_currentStep]}',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: kc.accentText),
+                ),
+              ),
+              const SizedBox(height: 8),
+              LinearProgressIndicator(
+                value: (_currentStep + 1) / labels.length,
+                minHeight: 6,
+                borderRadius: BorderRadius.circular(3),
+              ),
+              const SizedBox(height: 16),
+              Expanded(child: SingleChildScrollView(child: stepBody)),
+            ],
+          );
 
     return PopScope(
       canPop: false,
@@ -165,143 +256,65 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
         _leave();
       },
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: KivoraColors.backgroundOf(context),
         body: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1140),
+            constraints: const BoxConstraints(maxWidth: ResponsiveLayout.maxContentWidth),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+              padding: EdgeInsets.symmetric(horizontal: isWide ? 32 : 16, vertical: isWide ? 24 : 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.arrow_back_rounded, color: KivoraColors.textPrimaryOf(context)),
-                        onPressed: _leave,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        draftState.serverEventId != null
-                            ? 'Edit Event Draft'
-                            : 'Create Voting Event',
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: KivoraColors.textPrimaryOf(context),
-                            ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Expanded(
-                    child: Theme(
-                      data: Theme.of(context).copyWith(
-                        colorScheme: Theme.of(context).colorScheme.copyWith(
-                              primary: AppTheme.primaryBlue,
-                            ),
-                      ),
-                      child: Stepper(
-                        physics: const ClampingScrollPhysics(),
-                        elevation: 0,
-                        type: ResponsiveLayout.isWide(context)
-                            ? StepperType.horizontal
-                            : StepperType.vertical,
-                        currentStep: _currentStep,
-                        onStepTapped: (step) {
-                          _handleStepTap(step, orgId, draftState.serverEventId);
-                        },
-                        controlsBuilder: (context, details) =>
-                            const SizedBox.shrink(), // Custom controls in each step
-                        steps: [
-                          Step(
-                            title: const Text('Basic Info'),
-                            content: BasicInfoStep(
-                                orgId: orgId, onNext: () => setState(() => _currentStep = 1)),
-                            isActive: _currentStep >= 0,
-                            state: _currentStep > 0 ? StepState.complete : StepState.indexed,
-                          ),
-                          Step(
-                            title: const Text('Schedule'),
-                            content: ScheduleStep(
-                                orgId: orgId,
-                                onNext: () => setState(() => _currentStep = 2),
-                                onBack: () => setState(() => _currentStep = 0)),
-                            isActive: _currentStep >= 1,
-                            state: _currentStep > 1 ? StepState.complete : StepState.indexed,
-                          ),
-                          Step(
-                            title: const Text('Eligibility'),
-                            content: EligibilityStep(
-                                orgId: orgId,
-                                onNext: () => setState(() => _currentStep = 3),
-                                onBack: () => setState(() => _currentStep = 1)),
-                            isActive: _currentStep >= 2,
-                            state: _currentStep > 2 ? StepState.complete : StepState.indexed,
-                          ),
-                          Step(
-                            title: const Text('Choices'),
-                            content: draftState.serverEventId == null
-                                ? Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 24),
-                                    child: Column(
-                                      children: [
-                                        const Text(
-                                            'Please complete the Eligibility step and tap "Create Draft & Continue" first.'),
-                                        const SizedBox(height: 16),
-                                        ElevatedButton(
-                                          onPressed: () async {
-                                            final success = await ref
-                                                .read(draftEventProvider(orgId).notifier)
-                                                .createServerDraft();
-                                            if (!mounted) return;
-                                            if (success) {
-                                              setState(() {});
-                                            } else {
-                                              if (!context.mounted) return;
-                                              final error = ref
-                                                  .read(draftEventProvider(orgId))
-                                                  .error;
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                  content: Text(error ??
-                                                      'Could not create draft. Please try again.'),
-                                                  backgroundColor: AppTheme.error,
-                                                ),
-                                              );
-                                            }
-                                          },
-                                          child: const Text('Create Draft Now'),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                : ChoicesStep(
-                                    orgId: orgId,
-                                    onNext: () => setState(() => _currentStep = 4),
-                                    onBack: () => setState(() => _currentStep = 2)),
-                            isActive: _currentStep >= 3,
-                            state: _currentStep > 3 ? StepState.complete : StepState.indexed,
-                          ),
-                          Step(
-                            title: const Text('Review'),
-                            content: draftState.serverEventId == null
-                                ? const Center(child: Text('Create Draft first.'))
-                                : ReviewStep(
-                                    orgId: orgId,
-                                    onBack: () => setState(() => _currentStep = 3)),
-                            isActive: _currentStep >= 4,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+                children: [title, const SizedBox(height: 16), Expanded(child: body)],
               ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Widget _stepContent(BuildContext context, AppLocalizations l10n, String orgId, DraftEventState draftState) {
+    switch (_currentStep) {
+      case 0:
+        return BasicInfoStep(orgId: orgId, onNext: () => setState(() => _currentStep = 1));
+      case 1:
+        return ScheduleStep(
+            orgId: orgId,
+            onNext: () => setState(() => _currentStep = 2),
+            onBack: () => setState(() => _currentStep = 0));
+      case 2:
+        return EligibilityStep(
+            orgId: orgId,
+            onNext: () => setState(() => _currentStep = 3),
+            onBack: () => setState(() => _currentStep = 1));
+      case 3:
+        if (draftState.serverEventId == null) {
+          return _DraftRequired(
+            message: l10n.builderDraftNeeded,
+            buttonLabel: l10n.builderCreateDraftNow,
+            onPressed: () async {
+              final success = await ref.read(draftEventProvider(orgId).notifier).createServerDraft();
+              if (!mounted || !context.mounted) return;
+              if (success) {
+                setState(() {});
+              } else {
+                final error = ref.read(draftEventProvider(orgId)).error;
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(error ?? l10n.builderCreateDraftFailed)));
+              }
+            },
+          );
+        }
+        return ChoicesStep(
+            orgId: orgId,
+            onNext: () => setState(() => _currentStep = 4),
+            onBack: () => setState(() => _currentStep = 2));
+      default:
+        if (draftState.serverEventId == null) {
+          return _DraftRequired(message: l10n.builderDraftNeeded);
+        }
+        return ReviewStep(orgId: orgId, onBack: () => setState(() => _currentStep = 3));
+    }
   }
 
   Future<void> _handleStepTap(
@@ -320,11 +333,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
       // provider, then the server draft is created before opening Choices.
       if (_currentStep != 2 || step != 3) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                'Complete each step with its Continue button before moving ahead.'),
-            backgroundColor: AppTheme.warning,
-          ),
+          SnackBar(content: Text(AppLocalizations.of(context).builderStepBlocked)),
         );
         return;
       }
@@ -362,5 +371,97 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
         Navigator.of(context).maybePop();
       }
     }
+  }
+}
+
+class _StepTile extends StatelessWidget {
+  const _StepTile({
+    required this.index,
+    required this.label,
+    required this.current,
+    required this.done,
+    required this.onTap,
+  });
+  final int index;
+  final String label;
+  final bool current;
+  final bool done;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    final primary = Theme.of(context).colorScheme.primary;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Semantics(
+        button: true,
+        selected: current,
+        label: label,
+        child: ExcludeSemantics(
+          child: Material(
+            color: current ? primary.withValues(alpha: kc.isDark ? 0.16 : 0.10) : Colors.transparent,
+            borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+              onTap: onTap,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 48),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Row(
+                    children: [
+                      Icon(
+                        done ? Icons.check_circle_rounded : Icons.circle_outlined,
+                        size: 20,
+                        color: done ? kc.successText : (current ? kc.accentText : kc.textSecondary),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          '${index + 1}. $label',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: current ? FontWeight.w700 : FontWeight.w500,
+                            color: current ? kc.accentText : kc.textPrimary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DraftRequired extends StatelessWidget {
+  const _DraftRequired({required this.message, this.buttonLabel, this.onPressed});
+  final String message;
+  final String? buttonLabel;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 24),
+      child: Column(
+        children: [
+          Text(message, textAlign: TextAlign.center),
+          if (buttonLabel != null) ...[
+            const SizedBox(height: 16),
+            FilledButton(
+              style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+              onPressed: onPressed,
+              child: Text(buttonLabel!),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 }

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kivora/core/theme/kivora_icons.dart';
 import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
 
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/kivora_colors.dart';
 import '../../../../core/widgets/loading_view.dart';
 import '../../../departments/presentation/providers/department_providers.dart';
 import '../../../organizations/presentation/membership_directory_screen.dart';
@@ -69,11 +71,12 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(8)),
-            child: const Text(
+                color: KivoraColors.surfaceOf(context),
+                borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+                border: Border.all(color: KivoraColors.borderOf(context))),
+            child: Text(
                 'Event is no longer a DRAFT. Eligibility configuration is strictly immutable.',
-                style: TextStyle(color: Colors.grey)),
+                style: TextStyle(color: KivoraColors.textSecondaryOf(context))),
           ),
         const SizedBox(height: 16),
         const Text('Voter Eligibility',

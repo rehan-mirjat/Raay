@@ -101,6 +101,10 @@ class _ScheduleStepState extends ConsumerState<ScheduleStep> {
   Widget build(BuildContext context) {
     final format = DateFormat('MMM d, yyyy - h:mm a');
     final isDraft = ref.watch(draftEventProvider(widget.orgId)).status == VotingEventStatus.draft;
+    final kc = KivoraColors.of(context);
+    final offset = DateTime.now().timeZoneOffset;
+    final sign = offset.isNegative ? '-' : '+';
+    final zone = '${DateTime.now().timeZoneName} (UTC$sign${offset.inHours.abs().toString().padLeft(2, '0')}:${(offset.inMinutes.abs() % 60).toString().padLeft(2, '0')})';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -108,42 +112,47 @@ class _ScheduleStepState extends ConsumerState<ScheduleStep> {
         if (!isDraft)
            Container(
              padding: const EdgeInsets.all(12),
-             decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(8)),
-             child: const Text('Event is no longer a DRAFT. Schedule is strictly immutable.', style: TextStyle(color: Colors.grey)),
+             decoration: BoxDecoration(
+                 color: kc.surface,
+                 borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+                 border: Border.all(color: kc.border)),
+             child: Text('Event is no longer a DRAFT. Schedule is strictly immutable.', style: TextStyle(color: kc.textSecondary)),
            ),
         const SizedBox(height: 16),
         const Text('Voting Schedule', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
-        Text('All times are evaluated securely against the server clock. Local selections are for convenience.', style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
+        Text('Times are entered in your time zone: $zone. All times are evaluated securely against the server clock.', style: TextStyle(fontSize: 14, color: kc.textSecondary)),
         const SizedBox(height: 24),
         
         ListTile(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide(color: Colors.grey.shade300)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide(color: kc.border)),
+          minVerticalPadding: 12,
           title: const Text('Start Time'),
-          subtitle: Text(_startAt != null ? format.format(_startAt!) : 'Not set', style: TextStyle(color: _startAt != null ? KivoraColors.textPrimaryOf(context) : AppTheme.error)),
+          subtitle: Text(_startAt != null ? format.format(_startAt!) : 'Not set', style: TextStyle(color: _startAt != null ? KivoraColors.textPrimaryOf(context) : kc.errorText)),
           trailing: const Icon(Icons.calendar_today),
           onTap: isDraft ? () => _pickDateTime(true) : null,
         ),
         const SizedBox(height: 16),
         ListTile(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide(color: Colors.grey.shade300)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide(color: kc.border)),
+          minVerticalPadding: 12,
           title: const Text('End Time'),
-          subtitle: Text(_endAt != null ? format.format(_endAt!) : 'Not set', style: TextStyle(color: _endAt != null ? KivoraColors.textPrimaryOf(context) : AppTheme.error)),
+          subtitle: Text(_endAt != null ? format.format(_endAt!) : 'Not set', style: TextStyle(color: _endAt != null ? KivoraColors.textPrimaryOf(context) : kc.errorText)),
           trailing: const Icon(Icons.calendar_today),
           onTap: isDraft ? () => _pickDateTime(false) : null,
         ),
         
         if (_localError != null) ...[
           const SizedBox(height: 16),
-          Text(_localError!, style: const TextStyle(color: AppTheme.error, fontWeight: FontWeight.bold)),
+          Text(_localError!, style: TextStyle(color: kc.errorText, fontWeight: FontWeight.bold)),
         ],
 
         const SizedBox(height: 32),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            TextButton(onPressed: widget.onBack, child: const Text('Back')),
-            ElevatedButton(onPressed: isDraft ? _validateAndProceed : widget.onNext, child: const Text('Next: Eligibility')),
+            TextButton(style: TextButton.styleFrom(minimumSize: const Size(48, 48)), onPressed: widget.onBack, child: const Text('Back')),
+            FilledButton(style: FilledButton.styleFrom(minimumSize: const Size(48, 48)), onPressed: isDraft ? _validateAndProceed : widget.onNext, child: const Text('Next: Eligibility')),
           ],
         ),
       ],

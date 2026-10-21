@@ -248,5 +248,32 @@
   "adminGuideTitle3": "Publish",
   "adminGuideBody3": "Review, then open it to voters.",
   "adminGuideTitle4": "Monitor",
-  "adminGuideBody4": "Turnout while open, results after."
+  "adminGuideBody4": "Turnout while open, results after.",
+  "builderCreateTitle": "Create election",
+  "builderEditTitle": "Edit election draft",
+  "builderBack": "Back",
+  "builderStepOf": "Step {current} of {total}",
+  "@builderStepOf": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "builderStepBasic": "Details",
+  "builderStepSchedule": "Schedule",
+  "builderStepEligibility": "Eligibility",
+  "builderStepChoices": "Choices",
+  "builderStepReview": "Review",
+  "builderStepsLabel": "Election setup steps",
+  "builderDraftNeeded": "Save the draft first. Finish the earlier steps, then continue.",
+  "builderCreateDraftNow": "Save draft now",
+  "builderCreateDraftFailed": "Could not save the draft. Please try again.",
+  "builderStepBlocked": "Finish each step with its Continue button before moving ahead.",
+  "builderLoadingDraft": "Loading election draft...",
+  "builderAdminsOnly": "Only organization admins can create or edit elections.",
+  "builderReturnHome": "Back to home"
 }

@@ -600,4 +600,61 @@ class AppLocalizationsSd extends AppLocalizations {
 
   @override
   String get adminGuideBody4 => 'Turnout while open, results after.';
+
+  @override
+  String get builderCreateTitle => 'Create election';
+
+  @override
+  String get builderEditTitle => 'Edit election draft';
+
+  @override
+  String get builderBack => 'Back';
+
+  @override
+  String builderStepOf(int current, int total) {
+    return 'Step $current of $total';
+  }
+
+  @override
+  String get builderStepBasic => 'Details';
+
+  @override
+  String get builderStepSchedule => 'Schedule';
+
+  @override
+  String get builderStepEligibility => 'Eligibility';
+
+  @override
+  String get builderStepChoices => 'Choices';
+
+  @override
+  String get builderStepReview => 'Review';
+
+  @override
+  String get builderStepsLabel => 'Election setup steps';
+
+  @override
+  String get builderDraftNeeded =>
+      'Save the draft first. Finish the earlier steps, then continue.';
+
+  @override
+  String get builderCreateDraftNow => 'Save draft now';
+
+  @override
+  String get builderCreateDraftFailed =>
+      'Could not save the draft. Please try again.';
+
+  @override
+  String get builderStepBlocked =>
+      'Finish each step with its Continue button before moving ahead.';
+
+  @override
+  String get builderLoadingDraft => 'Loading election draft...';
+
+  @override
+  String get builderAdminsOnly =>
+      'Only organization admins can create or edit elections.';
+
+  @override
+  String get builderReturnHome => 'Back to home';
 }

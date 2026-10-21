@@ -1223,6 +1223,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Turnout while open, results after.'**
   String get adminGuideBody4;
+
+  /// No description provided for @builderCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create election'**
+  String get builderCreateTitle;
+
+  /// No description provided for @builderEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit election draft'**
+  String get builderEditTitle;
+
+  /// No description provided for @builderBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get builderBack;
+
+  /// No description provided for @builderStepOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {current} of {total}'**
+  String builderStepOf(int current, int total);
+
+  /// No description provided for @builderStepBasic.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get builderStepBasic;
+
+  /// No description provided for @builderStepSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get builderStepSchedule;
+
+  /// No description provided for @builderStepEligibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Eligibility'**
+  String get builderStepEligibility;
+
+  /// No description provided for @builderStepChoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Choices'**
+  String get builderStepChoices;
+
+  /// No description provided for @builderStepReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get builderStepReview;
+
+  /// No description provided for @builderStepsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Election setup steps'**
+  String get builderStepsLabel;
+
+  /// No description provided for @builderDraftNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the draft first. Finish the earlier steps, then continue.'**
+  String get builderDraftNeeded;
+
+  /// No description provided for @builderCreateDraftNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Save draft now'**
+  String get builderCreateDraftNow;
+
+  /// No description provided for @builderCreateDraftFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the draft. Please try again.'**
+  String get builderCreateDraftFailed;
+
+  /// No description provided for @builderStepBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish each step with its Continue button before moving ahead.'**
+  String get builderStepBlocked;
+
+  /// No description provided for @builderLoadingDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading election draft...'**
+  String get builderLoadingDraft;
+
+  /// No description provided for @builderAdminsOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only organization admins can create or edit elections.'**
+  String get builderAdminsOnly;
+
+  /// No description provided for @builderReturnHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to home'**
+  String get builderReturnHome;
 }
 
 class _AppLocalizationsDelegate
