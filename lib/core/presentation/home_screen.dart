@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../../features/billing/ads/ad_banner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kivora/core/theme/kivora_icons.dart';
@@ -113,6 +114,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ],
                             ],
                           ),
+                    const AdBanner(),
                   ],
                 ),
               ),

@@ -33,7 +33,7 @@ class ObserverDashboardScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        backgroundColor: KivoraColors.backgroundOf(context),
+        backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text('Observer Dashboard', style: TextStyle(color: kc.textPrimary)),
         iconTheme: IconThemeData(color: kc.textPrimary),

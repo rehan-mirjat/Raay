@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../features/billing/ads/ad_banner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -60,8 +61,9 @@ class _ElectionCalendarScreenState
 
     return Scaffold(
       backgroundColor: Colors.transparent,
+      bottomNavigationBar: const AdBanner(),
       appBar: AppBar(
-        backgroundColor: KivoraColors.backgroundOf(context),
+        backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text('Election Calendar',
             style: TextStyle(color: kc.textPrimary, fontWeight: FontWeight.bold)),

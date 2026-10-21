@@ -19,6 +19,9 @@ class Organization {
     required this.createdAt,
     this.verifiedAt,
     this.suspendedAt,
+    this.plan = 'free',
+    this.planStatus,
+    this.planExpiresAt,
   });
 
   final String id;
@@ -36,6 +39,11 @@ class Organization {
   final DateTime createdAt;
   final DateTime? verifiedAt;
   final DateTime? suspendedAt;
+
+  /// Written only by the Stripe webhook; clients cannot modify it.
+  final String plan;
+  final String? planStatus;
+  final DateTime? planExpiresAt;
 
   bool get isVerified => status == OrganizationStatus.verified || status == OrganizationStatus.active;
   bool get isActive => status == OrganizationStatus.active;
@@ -62,6 +70,9 @@ class Organization {
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       verifiedAt: (data['verifiedAt'] as Timestamp?)?.toDate(),
       suspendedAt: (data['suspendedAt'] as Timestamp?)?.toDate(),
+      plan: data['plan'] as String? ?? 'free',
+      planStatus: data['planStatus'] as String?,
+      planExpiresAt: (data['planExpiresAt'] as Timestamp?)?.toDate(),
     );
   }
 

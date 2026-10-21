@@ -59,6 +59,7 @@ class TransparencyCenterScreen extends StatelessWidget {
     const _TopicSection(Icons.privacy_tip_outlined, 'Privacy & Data Handling', [
       'Each organization\'s data is isolated from every other organization at the server level; membership in one organization never grants visibility into another\'s elections, members, or results.',
       'Observers (a limited, admin-granted capability) see only organization-wide aggregate turnout numbers for active elections and published results - never individual ballots, voter identities, or small-group breakdowns that could reveal how a specific person or small group voted.',
+      'On the Free plan, mobile app users may see banner ads on browsing screens (home, organizations, calendar, published results). Ads are served by a third-party ad network that may collect device identifiers according to your consent choices. Ads never appear on the ballot, receipt, receipt-verification, transparency or admin screens, and ad networks never receive your vote, your choice, or your receipt.',
     ]),
     const _TopicSection(Icons.flag_outlined, 'Known Limitations', [
       'Audit logs are ordinary database records, not a cryptographically tamper-evident ledger - they describe operational history, not mathematical proof against retroactive modification.',
@@ -75,7 +76,7 @@ class TransparencyCenterScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        backgroundColor: KivoraColors.backgroundOf(context),
+        backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text('Trust & Transparency Center', style: TextStyle(color: kc.textPrimary)),
         iconTheme: IconThemeData(color: kc.textPrimary),

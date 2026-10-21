@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../features/billing/ads/ad_banner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kivora/core/theme/kivora_icons.dart';
@@ -25,6 +26,7 @@ class OrganizationListScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
+      bottomNavigationBar: const AdBanner(),
       body: membershipsAsync.when(
         loading: () => const LoadingView(message: 'Loading workspaces...'),
         error: (e, _) => ErrorView(

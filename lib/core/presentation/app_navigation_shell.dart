@@ -1253,6 +1253,8 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
             context.go('/help');
           } else if (value == 'transparency') {
             context.go('/transparency');
+          } else if (value == 'plans') {
+            context.go('/plans');
           } else if (value == 'platform_admin') {
             context.go('/platform/admin');
           } else if (value == 'platform_organizations') {
@@ -1297,6 +1299,8 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                 'Account settings'),
             _buildMenuItem(
                 context, isDark, 'help', Icons.help_outline, 'Help & support'),
+            _buildMenuItem(context, isDark, 'plans',
+                Icons.workspace_premium_outlined, 'Plans & Billing'),
             _buildMenuItem(context, isDark, 'transparency',
                 Icons.verified_outlined, 'Trust & Transparency'),
             if (ref.watch(platformAdminProvider).valueOrNull == true) ...[

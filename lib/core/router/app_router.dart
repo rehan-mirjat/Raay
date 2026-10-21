@@ -32,6 +32,7 @@ import '../../features/voting_events/presentation/dashboard/admin_event_dashboar
 import '../../features/voting_events/presentation/builder/event_builder_screen.dart';
 import '../../features/transparency/presentation/transparency_center_screen.dart';
 import '../../features/voting_events/presentation/election_calendar_screen.dart';
+import '../../features/billing/presentation/plans_screen.dart';
 import '../../features/voting_events/presentation/election_command_center_screen.dart';
 import '../../features/voting_events/presentation/observer_dashboard_screen.dart';
 import '../../features/voting_events/presentation/event_detail_screen.dart';
@@ -290,6 +291,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 path: '/home',
                 builder: (context, state) =>
                     const HomeScreen(key: ValueKey('home_screen')),
+              ),
+              GoRoute(
+                path: '/plans',
+                builder: (context, state) => const PlansScreen(),
               ),
               GoRoute(
                 path: '/calendar',
