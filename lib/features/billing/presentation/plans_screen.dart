@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/utils/error_utils.dart';
+import '../../../core/utils/friendly_error.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../core/widgets/ui_kit/kivora_button.dart';
 import '../../../core/widgets/ui_kit/kivora_card.dart';
@@ -49,9 +50,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
           ? (isRecentAuthError(e)
               ? 'For security, please sign out and sign back in, then try again.'
               : (e.message ?? 'Something went wrong. Please try again.'))
-          : (e is Exception && e.toString().startsWith('Exception: Could not open')
-              ? 'Could not open the payment page.'
-              : 'Something went wrong. Please try again.');
+          : friendlyError(e);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
     } finally {
       if (mounted) setState(() => _busy = false);

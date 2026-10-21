@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/utils/friendly_error.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -100,7 +101,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = e.toString().replaceFirst('Exception: ', '');
+          _error = friendlyError(e);
           _isLoading = false;
         });
       }
@@ -227,6 +228,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                     ),
                     const SizedBox(height: 6),
                     DropdownButtonFormField<String>(
+                      isExpanded: true,
                       initialValue: _selectedType,
                       decoration: const InputDecoration(
                         hintText: 'Select a type',
@@ -340,28 +342,24 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
 
                     const SizedBox(height: 28),
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    Wrap(
+                      alignment: WrapAlignment.end,
+                      spacing: 12,
+                      runSpacing: 12,
                       children: [
                         OutlinedButton(
                           onPressed: _handleCancel,
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                          ),
+                          style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
                           child: const Text('Cancel'),
                         ),
-                        const SizedBox(width: 12),
                         FilledButton(
                           onPressed: _isLoading ? null : _submit,
-                          style: FilledButton.styleFrom(
-                            backgroundColor: AppTheme.primaryBlue,
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                          ),
+                          style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
                           child: _isLoading
                               ? const SizedBox(
                                   height: 16,
                                   width: 16,
-                                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                  child: CircularProgressIndicator(strokeWidth: 2),
                                 )
                               : const Text('Create organization'),
                         ),
