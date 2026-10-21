@@ -528,5 +528,75 @@
         "type": "int"
       }
     }
-  }
+  },
+  "inbTitle": "Invitations",
+  "inbSubtitle": "Review invitations to join an organization and choose how to respond.",
+  "inbPending": "{n, plural, =1{1 pending invitation} other{{n} pending invitations}}",
+  "@inbPending": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "inbEmptyTitle": "You are all caught up",
+  "inbEmptyBody": "Organization invitations appear here. You can accept or decline each one.",
+  "inbLoadError": "We could not load your invitations. Check your connection and try again.",
+  "inbRetry": "Try again",
+  "inbAccept": "Accept invitation",
+  "inbDecline": "Decline",
+  "inbAcceptExpired": "Invitation expired",
+  "inbRole": "Role",
+  "inbExpires": "Expires {date}",
+  "@inbExpires": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "inbExpired": "Expired",
+  "inbNoExpiry": "No expiry",
+  "inbDefaultOrg": "Organization",
+  "inbJoinLine": "Join {org} as {role}",
+  "@inbJoinLine": {
+    "placeholders": {
+      "org": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "inbAcceptNote": "Accepting adds {org} to your organizations. You can switch workspaces at any time.",
+  "@inbAcceptNote": {
+    "placeholders": {
+      "org": {
+        "type": "String"
+      }
+    }
+  },
+  "inbDeclineTitle": "Decline this invitation?",
+  "inbDeclineBody": "You will not join {org}. An admin can invite you again later.",
+  "@inbDeclineBody": {
+    "placeholders": {
+      "org": {
+        "type": "String"
+      }
+    }
+  },
+  "inbKeep": "Keep invitation",
+  "inbDeclineConfirm": "Decline",
+  "inbJoined": "You joined {org}.",
+  "@inbJoined": {
+    "placeholders": {
+      "org": {
+        "type": "String"
+      }
+    }
+  },
+  "inbDeclined": "Invitation declined.",
+  "inbRespondFailed": "We could not complete that. Please try again.",
+  "inbHelp": "Need help with an invitation? Contact Kivora support."
 }

@@ -2111,6 +2111,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{n, plural, =1{Used in 1 election} other{Used in {n} elections}}'**
   String deptUsedIn(int n);
+
+  /// No description provided for @inbTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitations'**
+  String get inbTitle;
+
+  /// No description provided for @inbSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review invitations to join an organization and choose how to respond.'**
+  String get inbSubtitle;
+
+  /// No description provided for @inbPending.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 pending invitation} other{{n} pending invitations}}'**
+  String inbPending(int n);
+
+  /// No description provided for @inbEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You are all caught up'**
+  String get inbEmptyTitle;
+
+  /// No description provided for @inbEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization invitations appear here. You can accept or decline each one.'**
+  String get inbEmptyBody;
+
+  /// No description provided for @inbLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load your invitations. Check your connection and try again.'**
+  String get inbLoadError;
+
+  /// No description provided for @inbRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get inbRetry;
+
+  /// No description provided for @inbAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept invitation'**
+  String get inbAccept;
+
+  /// No description provided for @inbDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get inbDecline;
+
+  /// No description provided for @inbAcceptExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation expired'**
+  String get inbAcceptExpired;
+
+  /// No description provided for @inbRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get inbRole;
+
+  /// No description provided for @inbExpires.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires {date}'**
+  String inbExpires(String date);
+
+  /// No description provided for @inbExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get inbExpired;
+
+  /// No description provided for @inbNoExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'No expiry'**
+  String get inbNoExpiry;
+
+  /// No description provided for @inbDefaultOrg.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization'**
+  String get inbDefaultOrg;
+
+  /// No description provided for @inbJoinLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Join {org} as {role}'**
+  String inbJoinLine(String org, String role);
+
+  /// No description provided for @inbAcceptNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepting adds {org} to your organizations. You can switch workspaces at any time.'**
+  String inbAcceptNote(String org);
+
+  /// No description provided for @inbDeclineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline this invitation?'**
+  String get inbDeclineTitle;
+
+  /// No description provided for @inbDeclineBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You will not join {org}. An admin can invite you again later.'**
+  String inbDeclineBody(String org);
+
+  /// No description provided for @inbKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep invitation'**
+  String get inbKeep;
+
+  /// No description provided for @inbDeclineConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get inbDeclineConfirm;
+
+  /// No description provided for @inbJoined.
+  ///
+  /// In en, this message translates to:
+  /// **'You joined {org}.'**
+  String inbJoined(String org);
+
+  /// No description provided for @inbDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation declined.'**
+  String get inbDeclined;
+
+  /// No description provided for @inbRespondFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not complete that. Please try again.'**
+  String get inbRespondFailed;
+
+  /// No description provided for @inbHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Need help with an invitation? Contact Kivora support.'**
+  String get inbHelp;
 }
 
 class _AppLocalizationsDelegate

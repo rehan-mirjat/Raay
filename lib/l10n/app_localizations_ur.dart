@@ -1147,4 +1147,101 @@ class AppLocalizationsUr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get inbTitle => 'Invitations';
+
+  @override
+  String get inbSubtitle =>
+      'Review invitations to join an organization and choose how to respond.';
+
+  @override
+  String inbPending(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n pending invitations',
+      one: '1 pending invitation',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get inbEmptyTitle => 'You are all caught up';
+
+  @override
+  String get inbEmptyBody =>
+      'Organization invitations appear here. You can accept or decline each one.';
+
+  @override
+  String get inbLoadError =>
+      'We could not load your invitations. Check your connection and try again.';
+
+  @override
+  String get inbRetry => 'Try again';
+
+  @override
+  String get inbAccept => 'Accept invitation';
+
+  @override
+  String get inbDecline => 'Decline';
+
+  @override
+  String get inbAcceptExpired => 'Invitation expired';
+
+  @override
+  String get inbRole => 'Role';
+
+  @override
+  String inbExpires(String date) {
+    return 'Expires $date';
+  }
+
+  @override
+  String get inbExpired => 'Expired';
+
+  @override
+  String get inbNoExpiry => 'No expiry';
+
+  @override
+  String get inbDefaultOrg => 'Organization';
+
+  @override
+  String inbJoinLine(String org, String role) {
+    return 'Join $org as $role';
+  }
+
+  @override
+  String inbAcceptNote(String org) {
+    return 'Accepting adds $org to your organizations. You can switch workspaces at any time.';
+  }
+
+  @override
+  String get inbDeclineTitle => 'Decline this invitation?';
+
+  @override
+  String inbDeclineBody(String org) {
+    return 'You will not join $org. An admin can invite you again later.';
+  }
+
+  @override
+  String get inbKeep => 'Keep invitation';
+
+  @override
+  String get inbDeclineConfirm => 'Decline';
+
+  @override
+  String inbJoined(String org) {
+    return 'You joined $org.';
+  }
+
+  @override
+  String get inbDeclined => 'Invitation declined.';
+
+  @override
+  String get inbRespondFailed =>
+      'We could not complete that. Please try again.';
+
+  @override
+  String get inbHelp => 'Need help with an invitation? Contact Kivora support.';
 }
