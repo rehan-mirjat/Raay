@@ -656,4 +656,146 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get builderReturnHome => 'Back to home';
+
+  @override
+  String get overviewSubtitle =>
+      'What needs attention and what is happening in your organization.';
+
+  @override
+  String get overviewRequiredTitle => 'Needs your attention';
+
+  @override
+  String overviewFinishDrafts(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count draft elections are not published',
+      one: '1 draft election is not published',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String overviewReviewInvites(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count invitations are waiting for a response',
+      one: '1 invitation is waiting for a response',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get overviewOpenElections => 'Open elections';
+
+  @override
+  String get overviewOpenPeople => 'Open people';
+
+  @override
+  String get overviewMetricMembers => 'Members';
+
+  @override
+  String get overviewMetricDepartments => 'Departments';
+
+  @override
+  String get overviewMetricLive => 'Live elections';
+
+  @override
+  String get overviewMetricUpcoming => 'Upcoming elections';
+
+  @override
+  String get overviewMetricInvites => 'Pending invitations';
+
+  @override
+  String get overviewUnavailable => 'Unavailable';
+
+  @override
+  String get overviewLoading => 'Loading';
+
+  @override
+  String get overviewElectionsTitle => 'Live and upcoming elections';
+
+  @override
+  String get overviewViewAll => 'View all';
+
+  @override
+  String get overviewNoLive => 'No live or upcoming elections.';
+
+  @override
+  String get overviewNoLiveBody => 'Create an election to get started.';
+
+  @override
+  String get overviewElectionsError => 'We could not load elections.';
+
+  @override
+  String get overviewRetry => 'Try again';
+
+  @override
+  String get overviewActivityTitle => 'Recent activity';
+
+  @override
+  String get overviewNoActivity => 'No recent activity yet.';
+
+  @override
+  String get overviewActivityError => 'Recent activity is unavailable.';
+
+  @override
+  String get overviewActivityUnknown => 'Admin action';
+
+  @override
+  String get overviewShortcuts => 'Shortcuts';
+
+  @override
+  String get overviewShortcutPeople => 'People';
+
+  @override
+  String get overviewShortcutDepartments => 'Departments';
+
+  @override
+  String get overviewShortcutCodes => 'Joining codes';
+
+  @override
+  String get overviewShortcutInvites => 'Invitations';
+
+  @override
+  String get overviewShortcutCommand => 'Command center';
+
+  @override
+  String get overviewShortcutSettings => 'Organization settings';
+
+  @override
+  String get overviewShortcutBilling => 'Plans and billing';
+
+  @override
+  String get overviewAgoNow => 'Just now';
+
+  @override
+  String overviewAgoMinutes(int n) {
+    return '${n}m ago';
+  }
+
+  @override
+  String overviewAgoHours(int n) {
+    return '${n}h ago';
+  }
+
+  @override
+  String overviewAgoDays(int n) {
+    return '${n}d ago';
+  }
+
+  @override
+  String overviewAgoWeeks(int n) {
+    return '${n}w ago';
+  }
+
+  @override
+  String overviewRole(String role) {
+    return 'Your role: $role';
+  }
+
+  @override
+  String get overviewLoadError =>
+      'We could not load your organization. Please try again.';
 }

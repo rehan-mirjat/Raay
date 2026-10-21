@@ -32,17 +32,19 @@ class MembersGrowthChart extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            spacing: 8,
+            runSpacing: 4,
             children: [
               Text('Members Growth',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                      fontSize: 16,
                       color: KivoraColors.textPrimaryOf(context))),
               Text('Last 30 days',
                   style: TextStyle(
-                      fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
+                      fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
             ],
           ),
           const SizedBox(height: 16),
@@ -57,7 +59,7 @@ class MembersGrowthChart extends ConsumerWidget {
               error: (e, _) => Center(
                   child: Text('Could not load growth data',
                       style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 14,
                           color: KivoraColors.textSecondaryOf(context)))),
               data: (points) => _buildChart(context, points),
             ),
@@ -74,7 +76,7 @@ class MembersGrowthChart extends ConsumerWidget {
           'Not enough data yet - check back after a few days.',
           textAlign: TextAlign.center,
           style: TextStyle(
-              fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
+              fontSize: 14, color: KivoraColors.textSecondaryOf(context)),
         ),
       );
     }

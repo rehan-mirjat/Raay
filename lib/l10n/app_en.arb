@@ -275,5 +275,92 @@
   "builderStepBlocked": "Finish each step with its Continue button before moving ahead.",
   "builderLoadingDraft": "Loading election draft...",
   "builderAdminsOnly": "Only organization admins can create or edit elections.",
-  "builderReturnHome": "Back to home"
+  "builderReturnHome": "Back to home",
+  "overviewSubtitle": "What needs attention and what is happening in your organization.",
+  "overviewRequiredTitle": "Needs your attention",
+  "overviewFinishDrafts": "{count, plural, =1{1 draft election is not published} other{{count} draft elections are not published}}",
+  "@overviewFinishDrafts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewReviewInvites": "{count, plural, =1{1 invitation is waiting for a response} other{{count} invitations are waiting for a response}}",
+  "@overviewReviewInvites": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewOpenElections": "Open elections",
+  "overviewOpenPeople": "Open people",
+  "overviewMetricMembers": "Members",
+  "overviewMetricDepartments": "Departments",
+  "overviewMetricLive": "Live elections",
+  "overviewMetricUpcoming": "Upcoming elections",
+  "overviewMetricInvites": "Pending invitations",
+  "overviewUnavailable": "Unavailable",
+  "overviewLoading": "Loading",
+  "overviewElectionsTitle": "Live and upcoming elections",
+  "overviewViewAll": "View all",
+  "overviewNoLive": "No live or upcoming elections.",
+  "overviewNoLiveBody": "Create an election to get started.",
+  "overviewElectionsError": "We could not load elections.",
+  "overviewRetry": "Try again",
+  "overviewActivityTitle": "Recent activity",
+  "overviewNoActivity": "No recent activity yet.",
+  "overviewActivityError": "Recent activity is unavailable.",
+  "overviewActivityUnknown": "Admin action",
+  "overviewShortcuts": "Shortcuts",
+  "overviewShortcutPeople": "People",
+  "overviewShortcutDepartments": "Departments",
+  "overviewShortcutCodes": "Joining codes",
+  "overviewShortcutInvites": "Invitations",
+  "overviewShortcutCommand": "Command center",
+  "overviewShortcutSettings": "Organization settings",
+  "overviewShortcutBilling": "Plans and billing",
+  "overviewAgoNow": "Just now",
+  "overviewAgoMinutes": "{n}m ago",
+  "@overviewAgoMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewAgoHours": "{n}h ago",
+  "@overviewAgoHours": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewAgoDays": "{n}d ago",
+  "@overviewAgoDays": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewAgoWeeks": "{n}w ago",
+  "@overviewAgoWeeks": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewRole": "Your role: {role}",
+  "@overviewRole": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "overviewLoadError": "We could not load your organization. Please try again."
 }

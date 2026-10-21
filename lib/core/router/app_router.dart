@@ -26,7 +26,6 @@ import '../../features/organizations/presentation/scan_join_code_screen.dart';
 import '../../features/organizations/presentation/invitation_inbox_screen.dart';
 import '../../features/organizations/presentation/accept_invitation_link_screen.dart';
 import '../../features/organizations/presentation/joining_codes_screen.dart';
-import '../../features/organizations/presentation/organization_dashboard_screen.dart';
 import '../../features/organizations/presentation/create_organization_screen.dart';
 import '../../features/voting_events/presentation/dashboard/admin_event_dashboard_screen.dart';
 import '../../features/voting_events/presentation/builder/event_builder_screen.dart';
@@ -364,8 +363,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'dashboard',
-                    builder: (context, state) =>
-                        const OrganizationDashboardScreen(),
+                    // Merged into the Overview at /home; old links keep working.
+                    redirect: (context, state) => '/home',
                   ),
                   GoRoute(
                     path: 'joining-codes',

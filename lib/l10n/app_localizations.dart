@@ -1325,6 +1325,234 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back to home'**
   String get builderReturnHome;
+
+  /// No description provided for @overviewSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What needs attention and what is happening in your organization.'**
+  String get overviewSubtitle;
+
+  /// No description provided for @overviewRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs your attention'**
+  String get overviewRequiredTitle;
+
+  /// No description provided for @overviewFinishDrafts.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 draft election is not published} other{{count} draft elections are not published}}'**
+  String overviewFinishDrafts(int count);
+
+  /// No description provided for @overviewReviewInvites.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 invitation is waiting for a response} other{{count} invitations are waiting for a response}}'**
+  String overviewReviewInvites(int count);
+
+  /// No description provided for @overviewOpenElections.
+  ///
+  /// In en, this message translates to:
+  /// **'Open elections'**
+  String get overviewOpenElections;
+
+  /// No description provided for @overviewOpenPeople.
+  ///
+  /// In en, this message translates to:
+  /// **'Open people'**
+  String get overviewOpenPeople;
+
+  /// No description provided for @overviewMetricMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Members'**
+  String get overviewMetricMembers;
+
+  /// No description provided for @overviewMetricDepartments.
+  ///
+  /// In en, this message translates to:
+  /// **'Departments'**
+  String get overviewMetricDepartments;
+
+  /// No description provided for @overviewMetricLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live elections'**
+  String get overviewMetricLive;
+
+  /// No description provided for @overviewMetricUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming elections'**
+  String get overviewMetricUpcoming;
+
+  /// No description provided for @overviewMetricInvites.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending invitations'**
+  String get overviewMetricInvites;
+
+  /// No description provided for @overviewUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get overviewUnavailable;
+
+  /// No description provided for @overviewLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading'**
+  String get overviewLoading;
+
+  /// No description provided for @overviewElectionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live and upcoming elections'**
+  String get overviewElectionsTitle;
+
+  /// No description provided for @overviewViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get overviewViewAll;
+
+  /// No description provided for @overviewNoLive.
+  ///
+  /// In en, this message translates to:
+  /// **'No live or upcoming elections.'**
+  String get overviewNoLive;
+
+  /// No description provided for @overviewNoLiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an election to get started.'**
+  String get overviewNoLiveBody;
+
+  /// No description provided for @overviewElectionsError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load elections.'**
+  String get overviewElectionsError;
+
+  /// No description provided for @overviewRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get overviewRetry;
+
+  /// No description provided for @overviewActivityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent activity'**
+  String get overviewActivityTitle;
+
+  /// No description provided for @overviewNoActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent activity yet.'**
+  String get overviewNoActivity;
+
+  /// No description provided for @overviewActivityError.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent activity is unavailable.'**
+  String get overviewActivityError;
+
+  /// No description provided for @overviewActivityUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin action'**
+  String get overviewActivityUnknown;
+
+  /// No description provided for @overviewShortcuts.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortcuts'**
+  String get overviewShortcuts;
+
+  /// No description provided for @overviewShortcutPeople.
+  ///
+  /// In en, this message translates to:
+  /// **'People'**
+  String get overviewShortcutPeople;
+
+  /// No description provided for @overviewShortcutDepartments.
+  ///
+  /// In en, this message translates to:
+  /// **'Departments'**
+  String get overviewShortcutDepartments;
+
+  /// No description provided for @overviewShortcutCodes.
+  ///
+  /// In en, this message translates to:
+  /// **'Joining codes'**
+  String get overviewShortcutCodes;
+
+  /// No description provided for @overviewShortcutInvites.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitations'**
+  String get overviewShortcutInvites;
+
+  /// No description provided for @overviewShortcutCommand.
+  ///
+  /// In en, this message translates to:
+  /// **'Command center'**
+  String get overviewShortcutCommand;
+
+  /// No description provided for @overviewShortcutSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization settings'**
+  String get overviewShortcutSettings;
+
+  /// No description provided for @overviewShortcutBilling.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans and billing'**
+  String get overviewShortcutBilling;
+
+  /// No description provided for @overviewAgoNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get overviewAgoNow;
+
+  /// No description provided for @overviewAgoMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}m ago'**
+  String overviewAgoMinutes(int n);
+
+  /// No description provided for @overviewAgoHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}h ago'**
+  String overviewAgoHours(int n);
+
+  /// No description provided for @overviewAgoDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}d ago'**
+  String overviewAgoDays(int n);
+
+  /// No description provided for @overviewAgoWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}w ago'**
+  String overviewAgoWeeks(int n);
+
+  /// No description provided for @overviewRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Your role: {role}'**
+  String overviewRole(String role);
+
+  /// No description provided for @overviewLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load your organization. Please try again.'**
+  String get overviewLoadError;
 }
 
 class _AppLocalizationsDelegate
