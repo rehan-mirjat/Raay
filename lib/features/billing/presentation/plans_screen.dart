@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/utils/error_utils.dart';
+import '../../../core/widgets/status_badge.dart';
 import '../../../core/widgets/ui_kit/kivora_button.dart';
 import '../../../core/widgets/ui_kit/kivora_card.dart';
 import '../../../services/firebase_service.dart';
@@ -48,7 +49,9 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
           ? (isRecentAuthError(e)
               ? 'For security, please sign out and sign back in, then try again.'
               : (e.message ?? 'Something went wrong. Please try again.'))
-          : e.toString().replaceAll('Exception: ', '');
+          : (e is Exception && e.toString().startsWith('Exception: Could not open')
+              ? 'Could not open the payment page.'
+              : 'Something went wrong. Please try again.');
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -63,7 +66,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
     final isOwner = ctx?.member.role == OrganizationRole.owner;
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: kc.background,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Center(
@@ -73,13 +76,17 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextButton.icon(
+                  style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
                   onPressed: () => context.go('/home'),
-                  icon: const Icon(Icons.arrow_back_rounded, size: 16),
+                  icon: const Icon(Icons.arrow_back_rounded, size: 18),
                   label: const Text('Back'),
                 ),
-                Text('Plans & Billing',
-                    style: TextStyle(
-                        fontSize: 26, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                Semantics(
+                  header: true,
+                  child: Text('Plans & Billing',
+                      style: TextStyle(
+                          fontSize: 26, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                ),
                 const SizedBox(height: 6),
                 Text(
                   ctx == null
@@ -100,7 +107,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
                 ],
                 if (!isOwner && ctx != null)
                   Text('Only the organization owner can change the plan.',
-                      style: TextStyle(color: kc.textSecondary, fontSize: 12)),
+                      style: TextStyle(color: kc.textSecondary, fontSize: 14)),
               ],
             ),
           ),
@@ -159,26 +166,29 @@ class _PlanCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 10,
+            runSpacing: 6,
             children: [
-              Text(plan.name,
-                  style: TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold, color: kc.textPrimary)),
-              const SizedBox(width: 10),
-              if (isCurrent)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryBlue.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Text('CURRENT',
+              Wrap(
+                spacing: 10,
+                runSpacing: 6,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Text(plan.name,
                       style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.primaryBlue)),
-                ),
-              const Spacer(),
+                          fontSize: 20, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                  if (isCurrent)
+                    StatusBadge(
+                      label: 'CURRENT',
+                      backgroundColor: AppTheme.primaryBlue.withValues(alpha: kc.isDark ? 0.16 : 0.10),
+                      textColor: kc.accentText,
+                      icon: Icons.check_circle_rounded,
+                    ),
+                ],
+              ),
               Text(plan.priceLabel,
                   style: TextStyle(fontWeight: FontWeight.w600, color: kc.textSecondary)),
             ],
@@ -190,10 +200,10 @@ class _PlanCard extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.check_rounded, size: 16, color: AppTheme.success),
+                  Icon(Icons.check_rounded, size: 18, color: kc.successText),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(f, style: TextStyle(color: kc.textPrimary, fontSize: 13)),
+                    child: Text(f, style: TextStyle(color: kc.textPrimary, fontSize: 14)),
                   ),
                 ],
               ),
