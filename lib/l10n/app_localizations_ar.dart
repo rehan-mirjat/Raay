@@ -798,4 +798,63 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get overviewLoadError =>
       'We could not load your organization. Please try again.';
+
+  @override
+  String get orgsTitle => 'Organizations';
+
+  @override
+  String get orgsSubtitle =>
+      'Switch workspace, join another organization or create your own.';
+
+  @override
+  String get orgsCreate => 'Create';
+
+  @override
+  String get orgsJoin => 'Join with code';
+
+  @override
+  String get orgsScan => 'Scan QR to join';
+
+  @override
+  String get orgsInvitations => 'Invitations';
+
+  @override
+  String get orgsEmptyTitle => 'No organizations yet';
+
+  @override
+  String get orgsEmptyBody =>
+      'Join an existing organization with a code or invitation, or create a new one to run elections.';
+
+  @override
+  String get orgsCreateFull => 'Create organization';
+
+  @override
+  String get orgsJoinFull => 'Join with code';
+
+  @override
+  String get orgsOpen => 'Open workspace';
+
+  @override
+  String get orgsCurrent => 'Current workspace';
+
+  @override
+  String get orgsLoadError =>
+      'We could not load your organizations. Check your connection and try again.';
+
+  @override
+  String get orgsRetry => 'Try again';
+
+  @override
+  String get orgsStatusPending => 'Pending review';
+
+  @override
+  String get orgsStatusSuspended => 'Suspended';
+
+  @override
+  String get orgsStatusRejected => 'Rejected';
+
+  @override
+  String orgsRoleLine(String role) {
+    return 'Your role: $role';
+  }
 }

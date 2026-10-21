@@ -1553,6 +1553,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We could not load your organization. Please try again.'**
   String get overviewLoadError;
+
+  /// No description provided for @orgsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Organizations'**
+  String get orgsTitle;
+
+  /// No description provided for @orgsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch workspace, join another organization or create your own.'**
+  String get orgsSubtitle;
+
+  /// No description provided for @orgsCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get orgsCreate;
+
+  /// No description provided for @orgsJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Join with code'**
+  String get orgsJoin;
+
+  /// No description provided for @orgsScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR to join'**
+  String get orgsScan;
+
+  /// No description provided for @orgsInvitations.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitations'**
+  String get orgsInvitations;
+
+  /// No description provided for @orgsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No organizations yet'**
+  String get orgsEmptyTitle;
+
+  /// No description provided for @orgsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Join an existing organization with a code or invitation, or create a new one to run elections.'**
+  String get orgsEmptyBody;
+
+  /// No description provided for @orgsCreateFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Create organization'**
+  String get orgsCreateFull;
+
+  /// No description provided for @orgsJoinFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Join with code'**
+  String get orgsJoinFull;
+
+  /// No description provided for @orgsOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open workspace'**
+  String get orgsOpen;
+
+  /// No description provided for @orgsCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current workspace'**
+  String get orgsCurrent;
+
+  /// No description provided for @orgsLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load your organizations. Check your connection and try again.'**
+  String get orgsLoadError;
+
+  /// No description provided for @orgsRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get orgsRetry;
+
+  /// No description provided for @orgsStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending review'**
+  String get orgsStatusPending;
+
+  /// No description provided for @orgsStatusSuspended.
+  ///
+  /// In en, this message translates to:
+  /// **'Suspended'**
+  String get orgsStatusSuspended;
+
+  /// No description provided for @orgsStatusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get orgsStatusRejected;
+
+  /// No description provided for @orgsRoleLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Your role: {role}'**
+  String orgsRoleLine(String role);
 }
 
 class _AppLocalizationsDelegate

@@ -1,257 +1,327 @@
 import 'package:flutter/material.dart';
-import '../../../features/billing/ads/ad_banner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kivora/core/theme/kivora_icons.dart';
 
+import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
-import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
-import '../../../core/widgets/ui_kit/kivora_button.dart';
-import '../../../core/widgets/ui_kit/kivora_card.dart';
+import '../../../core/widgets/status_badge.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../billing/ads/ad_banner.dart';
+import '../../voting_events/presentation/voter_portal_screen.dart' show AdaptiveCardGrid;
+import '../domain/organization.dart';
 import '../domain/organization_enums.dart';
+import '../domain/organization_member.dart';
 import 'providers/organization_providers.dart';
+
+/// Pairs each organization with the user's membership. An organization whose
+/// membership is momentarily missing (stale stream) is skipped instead of
+/// crashing the screen.
+List<({Organization org, OrganizationMember member})> pairOrganizations(
+    List<Organization> orgs, List<OrganizationMember> memberships) {
+  final out = <({Organization org, OrganizationMember member})>[];
+  for (final org in orgs) {
+    for (final m in memberships) {
+      if (m.organizationId == org.id) {
+        out.add((org: org, member: m));
+        break;
+      }
+    }
+  }
+  return out;
+}
 
 class OrganizationListScreen extends ConsumerWidget {
   const OrganizationListScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final membershipsAsync = ref.watch(userMembershipsProvider);
     final organizationsAsync = ref.watch(userOrganizationsProvider);
+    final activeId = ref.watch(activeOrganizationContextProvider).valueOrNull?.context?.organization.id;
+
+    void retry() {
+      ref.invalidate(userMembershipsProvider);
+      ref.invalidate(userOrganizationsProvider);
+    }
+
+    Widget body;
+    if (membershipsAsync.hasError || organizationsAsync.hasError) {
+      body = ErrorView(type: ErrorViewType.generic, message: l10n.orgsLoadError, onRetry: retry);
+    } else if (!membershipsAsync.hasValue || !organizationsAsync.hasValue) {
+      body = const LoadingView();
+    } else {
+      final pairs = pairOrganizations(organizationsAsync.requireValue, membershipsAsync.requireValue);
+      body = pairs.isEmpty
+          ? const _EmptyState()
+          : _OrgGrid(pairs: pairs, activeId: activeId);
+    }
+
+    return Scaffold(
+      backgroundColor: KivoraColors.backgroundOf(context),
+      bottomNavigationBar: const AdBanner(),
+      body: body,
+    );
+  }
+}
+
+class _OrgGrid extends ConsumerWidget {
+  const _OrgGrid({required this.pairs, required this.activeId});
+  final List<({Organization org, OrganizationMember member})> pairs;
+  final String? activeId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final kc = KivoraColors.of(context);
     final isDesktop = ResponsiveLayout.isWide(context);
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      bottomNavigationBar: const AdBanner(),
-      body: membershipsAsync.when(
-        loading: () => const LoadingView(message: 'Loading workspaces...'),
-        error: (e, _) => ErrorView(
-          type: ErrorViewType.generic,
-          message: 'Error loading organizations: $e',
-        ),
-        data: (memberships) {
-          return organizationsAsync.when(
-            loading: () => const LoadingView(message: 'Loading details...'),
-            error: (e, _) => ErrorView(
-              type: ErrorViewType.generic,
-              message: 'Error loading details: $e',
-            ),
-            data: (organizations) {
-              if (organizations.isEmpty) {
-                return Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 500),
-                    child: KivoraCard(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(24),
-                            decoration: BoxDecoration(
-                              color: AppTheme.primaryBlue.withValues(alpha: 0.1),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(KivoraIcons.building2,
-                                size: 48, color: AppTheme.primaryBlue),
-                          ),
-                          const SizedBox(height: 24),
-                          Text(
-                            'No organizations yet',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
-                              color: kc.textPrimary,
-                              letterSpacing: -0.5,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            'Join an existing workspace or create a new one to begin participating in secure elections.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: kc.textSecondary,
-                              height: 1.5,
-                            ),
-                          ),
-                          const SizedBox(height: 32),
-                          KivoraButton(
-                            icon: KivoraIcons.plus,
-                            label: 'Create Organization',
-                            onPressed: () => context.go('/orgs/create'),
-                          ),
-                          const SizedBox(height: 12),
-                          KivoraButton(
-                            type: KivoraButtonType.secondary,
-                            icon: KivoraIcons.logIn,
-                            label: 'Join via Code',
-                            onPressed: () => context.go('/orgs/join'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              }
-
-              return SingleChildScrollView(
-                padding: EdgeInsets.all(isDesktop ? 40 : 20),
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 1200),
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(isDesktop ? 32 : 16),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: ResponsiveLayout.maxContentWidth),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 16,
+                runSpacing: 12,
+                children: [
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 560),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Your Organizations',
+                        Semantics(
+                          header: true,
+                          child: Text(l10n.orgsTitle,
                               style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: kc.textPrimary,
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                KivoraButton(
-                                  type: KivoraButtonType.secondary,
-                                  icon: KivoraIcons.plus,
-                                  label: 'Create',
-                                  isExpanded: false,
-                                  onPressed: () => context.go('/orgs/create'),
-                                ),
-                                const SizedBox(width: 8),
-                                Tooltip(
-                                  message: 'Scan to Join',
-                                  child: IconButton.outlined(
-                                    icon: const Icon(KivoraIcons.qrCode),
-                                    onPressed: () => context.go('/orgs/join/scan'),
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                KivoraButton(
-                                  icon: KivoraIcons.logIn,
-                                  label: 'Join',
-                                  isExpanded: false,
-                                  onPressed: () => context.go('/orgs/join'),
-                                ),
-                              ],
-                            ),
-                          ],
+                                  fontSize: isDesktop ? 28 : 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: kc.textPrimary)),
                         ),
-                        const SizedBox(height: 24),
-                        GridView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: isDesktop ? 3 : (ResponsiveLayout.isMedium(context) ? 2 : 1),
-                            crossAxisSpacing: 20,
-                            mainAxisSpacing: 20,
-                            childAspectRatio: isDesktop ? 1.6 : 2.0,
-                          ),
-                          itemCount: organizations.length,
-                          itemBuilder: (context, index) {
-                            final org = organizations[index];
-                            final member = memberships.firstWhere(
-                                (m) => m.organizationId == org.id);
-                            
-                            return KivoraCard(
-                              padding: const EdgeInsets.all(20),
-                              onTap: () {
-                                ref.read(activeOrgIdProvider.notifier).selectOrganization(org.id);
-                                context.go('/orgs/dashboard');
-                              },
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        width: 48,
-                                        height: 48,
-                                        decoration: BoxDecoration(
-                                          color: AppTheme.primaryBlue.withValues(alpha: 0.1),
-                                          borderRadius: BorderRadius.circular(12),
-                                          image: org.logoUrl != null
-                                              ? DecorationImage(
-                                                  image: NetworkImage(org.logoUrl!),
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : null,
-                                        ),
-                                        child: org.logoUrl == null
-                                            ? const Icon(KivoraIcons.building2, color: AppTheme.primaryBlue)
-                                            : null,
-                                      ),
-                                      const Expanded(child: SizedBox()),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                        decoration: BoxDecoration(
-                                          color: member.role == OrganizationRole.owner
-                                              ? AppTheme.accentGold.withValues(alpha: 0.1)
-                                              : member.role == OrganizationRole.admin
-                                                  ? AppTheme.primaryBlue.withValues(alpha: 0.1)
-                                                  : kc.border,
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
-                                        child: Text(
-                                          member.role == OrganizationRole.owner
-                                              ? 'Owner'
-                                              : member.role == OrganizationRole.admin
-                                                  ? 'Admin'
-                                                  : 'Member',
-                                          style: TextStyle(
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.bold,
-                                            color: member.role == OrganizationRole.owner
-                                                ? AppTheme.accentGold
-                                                : member.role == OrganizationRole.admin
-                                                    ? AppTheme.primaryBlue
-                                                    : kc.textSecondary,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const Expanded(child: SizedBox()),
-                                  Text(
-                                    org.name,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: kc.textPrimary,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    'Joined workspace',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: kc.textSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
+                        const SizedBox(height: 4),
+                        Text(l10n.orgsSubtitle, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
                       ],
                     ),
                   ),
+                  Wrap(spacing: 8, runSpacing: 8, children: [
+                    OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+                      onPressed: () => context.go('/orgs/invitations'),
+                      icon: const Icon(Icons.mail_outline_rounded, size: 18),
+                      label: Text(l10n.orgsInvitations),
+                    ),
+                    IconButton.outlined(
+                      tooltip: l10n.orgsScan,
+                      constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                      onPressed: () => context.go('/orgs/join/scan'),
+                      icon: const Icon(Icons.qr_code_scanner_rounded),
+                    ),
+                    OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+                      onPressed: () => context.go('/orgs/join'),
+                      icon: const Icon(Icons.login_rounded, size: 18),
+                      label: Text(l10n.orgsJoin),
+                    ),
+                    FilledButton.icon(
+                      style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+                      onPressed: () => context.go('/orgs/create'),
+                      icon: const Icon(Icons.add_rounded, size: 20),
+                      label: Text(l10n.orgsCreate),
+                    ),
+                  ]),
+                ],
+              ),
+              const SizedBox(height: 24),
+              AdaptiveCardGrid(
+                minColumnWidth: 340,
+                children: [
+                  for (final p in pairs)
+                    OrgCard(
+                      key: ValueKey(p.org.id),
+                      org: p.org,
+                      role: p.member.role,
+                      isCurrent: p.org.id == activeId,
+                      onOpen: () async {
+                        await ref.read(activeOrgIdProvider.notifier).selectOrganization(p.org.id);
+                        if (context.mounted) context.go('/home');
+                      },
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class OrgCard extends StatelessWidget {
+  const OrgCard({
+    super.key,
+    required this.org,
+    required this.role,
+    required this.isCurrent,
+    required this.onOpen,
+  });
+
+  final Organization org;
+  final OrganizationRole role;
+  final bool isCurrent;
+  final VoidCallback onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    final l10n = AppLocalizations.of(context);
+    final primary = Theme.of(context).colorScheme.primary;
+
+    final statusLabel = switch (org.status) {
+      OrganizationStatus.pending => l10n.orgsStatusPending,
+      OrganizationStatus.suspended => l10n.orgsStatusSuspended,
+      OrganizationStatus.rejected => l10n.orgsStatusRejected,
+      _ => null,
+    };
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: kc.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+        border: Border.all(color: isCurrent ? primary : kc.border, width: isCurrent ? 2 : 1),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: primary.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+                  image: org.logoUrl != null
+                      ? DecorationImage(image: NetworkImage(org.logoUrl!), fit: BoxFit.cover)
+                      : null,
                 ),
-              );
-            },
-          );
-        },
+                child: org.logoUrl == null
+                    ? Icon(Icons.business_rounded, color: kc.accentText)
+                    : null,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  org.name,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kc.textPrimary),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Wrap(spacing: 8, runSpacing: 8, children: [
+            StatusBadge.role(role.name),
+            if (statusLabel != null)
+              StatusBadge(
+                  label: statusLabel.toUpperCase(),
+                  backgroundColor: kc.warningText.withValues(alpha: kc.isDark ? 0.16 : 0.10),
+                  textColor: kc.warningText,
+                  icon: Icons.info_outline_rounded),
+            if (isCurrent)
+              StatusBadge(
+                  label: l10n.orgsCurrent.toUpperCase(),
+                  backgroundColor: primary.withValues(alpha: kc.isDark ? 0.16 : 0.10),
+                  textColor: kc.accentText,
+                  icon: Icons.check_circle_rounded),
+          ]),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: isCurrent
+                ? FilledButton(
+                    style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                    onPressed: onOpen,
+                    child: Text(l10n.orgsOpen, textAlign: TextAlign.center),
+                  )
+                : OutlinedButton(
+                    style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                    onPressed: onOpen,
+                    child: Text(l10n.orgsOpen, textAlign: TextAlign.center),
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    final l10n = AppLocalizations.of(context);
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 480),
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: kc.surface,
+              borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+              border: Border.all(color: kc.border),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ExcludeSemantics(child: Icon(Icons.business_rounded, size: 48, color: kc.accentText)),
+                const SizedBox(height: 16),
+                Text(l10n.orgsEmptyTitle,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                const SizedBox(height: 8),
+                Text(l10n.orgsEmptyBody,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14, height: 1.5, color: kc.textSecondary)),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                    onPressed: () => context.go('/orgs/create'),
+                    icon: const Icon(Icons.add_rounded),
+                    label: Text(l10n.orgsCreateFull),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                    onPressed: () => context.go('/orgs/join'),
+                    icon: const Icon(Icons.login_rounded),
+                    label: Text(l10n.orgsJoinFull),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

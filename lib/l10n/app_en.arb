@@ -362,5 +362,30 @@
       }
     }
   },
-  "overviewLoadError": "We could not load your organization. Please try again."
+  "overviewLoadError": "We could not load your organization. Please try again.",
+  "orgsTitle": "Organizations",
+  "orgsSubtitle": "Switch workspace, join another organization or create your own.",
+  "orgsCreate": "Create",
+  "orgsJoin": "Join with code",
+  "orgsScan": "Scan QR to join",
+  "orgsInvitations": "Invitations",
+  "orgsEmptyTitle": "No organizations yet",
+  "orgsEmptyBody": "Join an existing organization with a code or invitation, or create a new one to run elections.",
+  "orgsCreateFull": "Create organization",
+  "orgsJoinFull": "Join with code",
+  "orgsOpen": "Open workspace",
+  "orgsCurrent": "Current workspace",
+  "orgsLoadError": "We could not load your organizations. Check your connection and try again.",
+  "orgsRetry": "Try again",
+  "orgsStatusPending": "Pending review",
+  "orgsStatusSuspended": "Suspended",
+  "orgsStatusRejected": "Rejected",
+  "orgsRoleLine": "Your role: {role}",
+  "@orgsRoleLine": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  }
 }
