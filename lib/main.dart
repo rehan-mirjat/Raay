@@ -18,7 +18,7 @@ import 'core/router/app_router.dart';
 import 'core/deep_link/deep_link_handler.dart';
 import 'core/presentation/session_lock_screen.dart';
 import 'core/presentation/splash_screen.dart';
-import 'core/session/session_lock_provider.dart';
+import 'core/session/ session_lock_provider.dart';
 import 'features/organizations/presentation/providers/organization_providers.dart';
 import 'features/onboarding/providers/onboarding_providers.dart';
 import 'firebase_options.dart';

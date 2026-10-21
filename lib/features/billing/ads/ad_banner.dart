@@ -16,9 +16,9 @@ class AdBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (!ref.watch(adsEnabledProvider)) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Center(child: buildPlatformAdBanner()),
-    );
+    // Must size itself to its content: this is used as a Scaffold
+    // bottomNavigationBar, and anything that expands (Center, Align without a
+    // heightFactor) would take the whole screen height and hide the body.
+    return buildPlatformAdBanner();
   }
 }
