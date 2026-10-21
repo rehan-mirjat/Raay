@@ -598,5 +598,79 @@
   },
   "inbDeclined": "Invitation declined.",
   "inbRespondFailed": "We could not complete that. Please try again.",
-  "inbHelp": "Need help with an invitation? Contact Kivora support."
+  "inbHelp": "Need help with an invitation? Contact Kivora support.",
+  "ballotTitle": "Your ballot",
+  "ballotSelectFirst": "Choose an option before continuing.",
+  "ballotLoadError": "We could not load this ballot. Check your connection and try again.",
+  "ballotRetry": "Try again",
+  "ballotNotFound": "This election could not be found.",
+  "ballotSignIn": "Sign in to vote.",
+  "ballotNoCandidates": "No candidates have been added to this election.",
+  "ballotNoOptions": "No options have been added to this election.",
+  "ballotOptionsLoadError": "We could not load the choices. Try again.",
+  "ballotYes": "Yes",
+  "ballotYesDesc": "In favor of this proposal",
+  "ballotNo": "No",
+  "ballotNoDesc": "Opposed to this proposal",
+  "ballotOfficial": "Official ballot",
+  "ballotFinality": "Your vote is final. After you confirm, you cannot change it or vote again.",
+  "ballotTimeDays": "{n}d left",
+  "ballotTimeHours": "{n}h left",
+  "ballotTimeMinutes": "{n}m left",
+  "ballotTimeSoon": "Closing soon",
+  "ballotTimeClosed": "Voting closed",
+  "ballotCandidate": "{name}, candidate",
+  "ballotOption": "{name}, option",
+  "ballotSelectedSuffix": "selected",
+  "ballotReceiptMissing": "We could not find your receipt yet. Try again in a moment.",
+  "ballotYourChoice": "Your choice",
+  "ballotStepsLabel": "{current} of {total}: {label}",
+  "@ballotTimeDays": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@ballotTimeHours": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@ballotTimeMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@ballotCandidate": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@ballotOption": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@ballotStepsLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -1244,4 +1244,99 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get inbHelp => 'Need help with an invitation? Contact Kivora support.';
+
+  @override
+  String get ballotTitle => 'Your ballot';
+
+  @override
+  String get ballotSelectFirst => 'Choose an option before continuing.';
+
+  @override
+  String get ballotLoadError =>
+      'We could not load this ballot. Check your connection and try again.';
+
+  @override
+  String get ballotRetry => 'Try again';
+
+  @override
+  String get ballotNotFound => 'This election could not be found.';
+
+  @override
+  String get ballotSignIn => 'Sign in to vote.';
+
+  @override
+  String get ballotNoCandidates =>
+      'No candidates have been added to this election.';
+
+  @override
+  String get ballotNoOptions => 'No options have been added to this election.';
+
+  @override
+  String get ballotOptionsLoadError =>
+      'We could not load the choices. Try again.';
+
+  @override
+  String get ballotYes => 'Yes';
+
+  @override
+  String get ballotYesDesc => 'In favor of this proposal';
+
+  @override
+  String get ballotNo => 'No';
+
+  @override
+  String get ballotNoDesc => 'Opposed to this proposal';
+
+  @override
+  String get ballotOfficial => 'Official ballot';
+
+  @override
+  String get ballotFinality =>
+      'Your vote is final. After you confirm, you cannot change it or vote again.';
+
+  @override
+  String ballotTimeDays(int n) {
+    return '${n}d left';
+  }
+
+  @override
+  String ballotTimeHours(int n) {
+    return '${n}h left';
+  }
+
+  @override
+  String ballotTimeMinutes(int n) {
+    return '${n}m left';
+  }
+
+  @override
+  String get ballotTimeSoon => 'Closing soon';
+
+  @override
+  String get ballotTimeClosed => 'Voting closed';
+
+  @override
+  String ballotCandidate(String name) {
+    return '$name, candidate';
+  }
+
+  @override
+  String ballotOption(String name) {
+    return '$name, option';
+  }
+
+  @override
+  String get ballotSelectedSuffix => 'selected';
+
+  @override
+  String get ballotReceiptMissing =>
+      'We could not find your receipt yet. Try again in a moment.';
+
+  @override
+  String get ballotYourChoice => 'Your choice';
+
+  @override
+  String ballotStepsLabel(int current, int total, String label) {
+    return '$current of $total: $label';
+  }
 }

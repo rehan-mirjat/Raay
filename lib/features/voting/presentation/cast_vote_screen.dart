@@ -3,11 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/error_view.dart';
+import '../../../core/widgets/status_badge.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/loading_view.dart';
-import '../../../core/widgets/ui_kit/kivora_card.dart';
 import '../../../services/auth_service.dart';
 import '../../voting_events/data/candidate_repository.dart';
 import '../../voting_events/data/poll_option_repository.dart';
@@ -58,8 +59,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
   void _goToReview() {
     if (_selectedCandidateId == null && _selectedPollOptionId == null) {
-      setState(
-          () => _errorMessage = 'Please select an option before continuing.');
+      setState(() => _errorMessage = AppLocalizations.of(context).ballotSelectFirst);
       return;
     }
     setState(() {
@@ -147,6 +147,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final eventAsync = ref.watch(singleVotingEventProvider(widget.eventId));
     final user = ref.watch(authServiceProvider).currentUser;
 
@@ -154,27 +155,19 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
       backgroundColor: KivoraColors.backgroundOf(context),
       appBar: AppBar(
         backgroundColor: KivoraColors.backgroundOf(context),
-        title: const Text('Cast Your Ballot'),
+        title: Text(l10n.ballotTitle),
       ),
       body: eventAsync.when(
         loading: () => const LoadingView(),
-        error: (err, stack) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Text('Error loading voting event: $err',
-                style: const TextStyle(color: AppTheme.error)),
-          ),
+        error: (_, __) => ErrorView(
+          type: ErrorViewType.generic,
+          message: l10n.ballotLoadError,
+          onRetry: () => ref.invalidate(singleVotingEventProvider(widget.eventId)),
         ),
         data: (event) {
-          if (event == null) {
-            return const Center(child: Text('Voting event not found.'));
-          }
+          if (event == null) return Center(child: Text(l10n.ballotNotFound));
+          if (user == null) return Center(child: Text(l10n.ballotSignIn));
 
-          if (user == null) {
-            return const Center(child: Text('You must be signed in to vote.'));
-          }
-
-          // Check if user has already voted
           final participationAsync = ref.watch(userParticipationProvider(
             UserParticipationParams(
               organizationId: event.organizationId,
@@ -185,70 +178,58 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
           return participationAsync.when(
             loading: () => const LoadingView(),
-            error: (err, stack) => _buildBallotView(context, event),
-            data: (hasVoted) {
-              if (hasVoted) {
-                return _buildAlreadyVotedView(context, event, user.uid);
-              }
-              return _buildBallotView(context, event);
-            },
+            // A failed lookup must not block voting: the server rejects a
+            // second ballot, and a failed submit re-checks for a receipt.
+            error: (_, __) => _buildBallotView(context, event),
+            data: (hasVoted) => hasVoted
+                ? _buildAlreadyVotedView(context, event, user.uid)
+                : _buildBallotView(context, event),
           );
         },
       ),
     );
   }
 
-  Widget _buildAlreadyVotedView(
-      BuildContext context, VotingEvent event, String userId) {
+  Widget _buildAlreadyVotedView(BuildContext context, VotingEvent event, String userId) {
     final l10n = AppLocalizations.of(context);
+    final kc = KivoraColors.of(context);
     return SingleChildScrollView(
       padding: ResponsiveLayout.pagePadding(context),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 500),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Icon(Icons.check_circle_outline,
-                  size: 72, color: AppTheme.success),
+              Icon(Icons.check_circle_outline, size: 72, color: kc.successText),
               const SizedBox(height: 20),
-              Text(
-                l10n.voteAlreadyVotedTitle,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: KivoraColors.textPrimaryOf(context),
-                    ),
-                textAlign: TextAlign.center,
+              Semantics(
+                header: true,
+                child: Text(l10n.voteAlreadyVotedTitle,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: kc.textPrimary)),
               ),
               const SizedBox(height: 12),
-              Text(
-                l10n.voteAlreadyVotedMessage(event.title),
-                style: TextStyle(
-                    color: KivoraColors.textSecondaryOf(context), height: 1.4),
-                textAlign: TextAlign.center,
-              ),
+              Text(l10n.voteAlreadyVotedMessage(event.title),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: kc.textSecondary, height: 1.4)),
               const SizedBox(height: 32),
-              ElevatedButton.icon(
+              FilledButton.icon(
+                style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
                 onPressed: () async {
-                  final receipt =
-                      await ref.read(votingRepositoryProvider).getUserReceipt(
-                            organizationId: event.organizationId,
-                            eventId: event.id,
-                            userId: userId,
-                          );
-                  if (context.mounted && receipt != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (ctx) => VoteReceiptScreen(
-                          receipt: receipt,
-                          eventTitle: event.title,
-                        ),
-                      ),
-                    );
-                  } else if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Receipt not found.')),
-                    );
+                  final messenger = ScaffoldMessenger.of(context);
+                  final nav = Navigator.of(context);
+                  final receipt = await ref.read(votingRepositoryProvider).getUserReceipt(
+                        organizationId: event.organizationId,
+                        eventId: event.id,
+                        userId: userId,
+                      );
+                  if (!mounted) return;
+                  if (receipt != null) {
+                    nav.push(MaterialPageRoute(
+                        builder: (_) => VoteReceiptScreen(receipt: receipt, eventTitle: event.title)));
+                  } else {
+                    messenger.showSnackBar(SnackBar(content: Text(l10n.ballotReceiptMissing)));
                   }
                 },
                 icon: const Icon(Icons.receipt_long),
@@ -258,6 +239,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                   event.status == VotingEventStatus.archived) ...[
                 const SizedBox(height: 12),
                 OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
                   onPressed: () => context.go('/elections/${event.id}/results'),
                   icon: const Icon(Icons.bar_chart_rounded),
                   label: Text(l10n.voteViewResults),
@@ -265,6 +247,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
               ],
               const SizedBox(height: 12),
               OutlinedButton(
+                style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
                 onPressed: () => context.go('/home'),
                 child: Text(l10n.receiptReturnHome),
               ),
@@ -275,206 +258,191 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
     );
   }
 
+  Widget _banner(BuildContext context, {required IconData icon, required Color color, required String text}) {
+    final kc = KivoraColors.of(context);
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: kc.isDark ? 0.16 : 0.10),
+        borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(text,
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: kc.textPrimary)),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildBallotView(BuildContext context, VotingEvent event) {
-    // We remove the strict local clock `now.isBefore(event.endAt)` check here.
-    // If the local clock is fast, we shouldn't block the user. The backend
-    // `FieldValue.serverTimestamp()` transaction will definitively accept or reject it.
+    // No strict local-clock check: if the device clock is fast we should not
+    // block the voter. The server transaction definitively accepts or rejects.
     final isWindowOpen = event.status == VotingEventStatus.active;
     final l10n = AppLocalizations.of(context);
+    final kc = KivoraColors.of(context);
+    final inReview = _step == _BallotStep.review;
+    final pad = ResponsiveLayout.pagePadding(context);
 
-    return SingleChildScrollView(
-      padding: ResponsiveLayout.pagePadding(context),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildStepIndicator(context),
-              const SizedBox(height: 20),
-
-              if (!isWindowOpen) ...[
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: AppTheme.warning.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                        color: AppTheme.warning.withValues(alpha: 0.3)),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.info_outline_rounded,
-                          color: AppTheme.warning),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          event.status == VotingEventStatus.scheduled
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            padding: pad,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: ResponsiveLayout.maxBallotWidth),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildStepIndicator(context),
+                    const SizedBox(height: 20),
+                    if (!isWindowOpen) ...[
+                      _banner(context,
+                          icon: Icons.info_outline_rounded,
+                          color: kc.warningText,
+                          text: event.status == VotingEventStatus.scheduled
                               ? l10n.voteNotOpenYet
-                              : l10n.voteClosed,
-                          style: TextStyle(
-                              color: KivoraColors.textPrimaryOf(context),
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13),
-                        ),
-                      ),
+                              : l10n.voteClosed),
+                      const SizedBox(height: 16),
                     ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-              ],
-
-              // Event Header Card
-              KivoraCard(
-                padding: EdgeInsets.zero,
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Wrap(
-                        alignment: WrapAlignment.spaceBetween,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 8,
-                        runSpacing: 8,
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: kc.surface,
+                        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+                        border: Border.all(color: kc.border),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: AppTheme.success.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Text(
-                              'OFFICIAL BALLOT',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                color: AppTheme.success,
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
+                          Wrap(
+                            alignment: WrapAlignment.spaceBetween,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: 8,
+                            runSpacing: 8,
                             children: [
-                              Icon(Icons.timer_outlined,
-                                  size: 16,
-                                  color: KivoraColors.textSecondaryOf(context)),
-                              const SizedBox(width: 4),
-                              Text(
-                                _getTimeRemaining(event.endAt),
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color:
-                                        KivoraColors.textSecondaryOf(context),
-                                    fontWeight: FontWeight.w600),
+                              StatusBadge(
+                                label: l10n.ballotOfficial.toUpperCase(),
+                                backgroundColor: kc.successText.withValues(alpha: kc.isDark ? 0.16 : 0.10),
+                                textColor: kc.successText,
+                                icon: Icons.verified_outlined,
                               ),
+                              Row(mainAxisSize: MainAxisSize.min, children: [
+                                Icon(Icons.timer_outlined, size: 16, color: kc.textSecondary),
+                                const SizedBox(width: 4),
+                                Text(_timeRemaining(l10n, event.endAt),
+                                    style: TextStyle(
+                                        fontSize: 14, color: kc.textSecondary, fontWeight: FontWeight.w600)),
+                              ]),
                             ],
                           ),
+                          const SizedBox(height: 12),
+                          Semantics(
+                            header: true,
+                            child: Text(event.title,
+                                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                          ),
+                          if (event.description.isNotEmpty) ...[
+                            const SizedBox(height: 8),
+                            Text(event.description,
+                                style: TextStyle(color: kc.textSecondary, height: 1.4)),
+                          ],
                         ],
                       ),
-                      const SizedBox(height: 12),
-                      Text(
-                        event.title,
-                        style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: KivoraColors.textPrimaryOf(context)),
-                      ),
-                      if (event.description.isNotEmpty) ...[
-                        const SizedBox(height: 8),
-                        Text(
-                          event.description,
-                          style: TextStyle(
-                              color: KivoraColors.textSecondaryOf(context),
-                              height: 1.4),
-                        ),
-                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    if (!inReview && event.privacyMode == PrivacyMode.identifiable) ...[
+                      _banner(context,
+                          icon: Icons.visibility_outlined,
+                          color: kc.warningText,
+                          text: l10n.voteIdentifiableExplanation),
+                      const SizedBox(height: 16),
                     ],
-                  ),
+                    if (_errorMessage != null) ...[
+                      Semantics(
+                        liveRegion: true,
+                        child: _banner(context,
+                            icon: Icons.error_outline, color: kc.errorText, text: _errorMessage!),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                    if (!inReview) ...[
+                      Text(l10n.voteSelectionPrompt,
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: kc.textSecondary)),
+                      const SizedBox(height: 12),
+                      if (event.votingType == VotingType.candidateElection)
+                        _buildCandidateOptions(event)
+                      else if (event.votingType == VotingType.yesNoPoll)
+                        _buildYesNoOptions(event)
+                      else
+                        _buildPollOptions(event),
+                    ] else
+                      _buildReviewContent(context, event),
+                  ],
                 ),
               ),
-              const SizedBox(height: 24),
+            ),
+          ),
+        ),
+        _buildActionBar(context, event, isWindowOpen),
+      ],
+    );
+  }
 
-              if (event.privacyMode == PrivacyMode.identifiable)
-                Card(
-                  color: Theme.of(context).colorScheme.tertiaryContainer,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(children: [
-                      const Icon(Icons.visibility_outlined),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          l10n.voteIdentifiableExplanation,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ]),
-                  ),
-                ),
-              if (event.privacyMode == PrivacyMode.identifiable)
-                const SizedBox(height: 16),
+  /// Sticky bottom bar. The scroll view above sits in an Expanded, so the
+  /// bar never covers content and moves above the keyboard / safe area.
+  Widget _buildActionBar(BuildContext context, VotingEvent event, bool isWindowOpen) {
+    final kc = KivoraColors.of(context);
+    final l10n = AppLocalizations.of(context);
+    final inReview = _step == _BallotStep.review;
 
-              if (_errorMessage != null) ...[
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppTheme.error.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                        color: AppTheme.error.withValues(alpha: 0.3)),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.error_outline, color: AppTheme.error),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(_errorMessage!,
-                            style: const TextStyle(color: AppTheme.error)),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-              ],
-
-              if (_step == _BallotStep.select) ...[
-                Text(
-                  l10n.voteSelectionPrompt,
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: KivoraColors.textSecondaryOf(context),
-                      letterSpacing: 1.1),
-                ),
-                const SizedBox(height: 12),
-
-                // Dynamic Options rendering based on event type
-                if (event.votingType == VotingType.candidateElection)
-                  _buildCandidateOptions(event)
-                else if (event.votingType == VotingType.yesNoPoll)
-                  _buildYesNoOptions(event)
-                else
-                  _buildPollOptions(event),
-
-                const SizedBox(height: 32),
-
-                ElevatedButton.icon(
-                  onPressed: !isWindowOpen ? null : _goToReview,
-                  icon: const Icon(Icons.arrow_forward_rounded),
-                  label: Text(l10n.voteReviewBallot),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: AppTheme.primaryBlue,
-                  ),
-                ),
-              ] else
-                _buildReviewStep(context, event, isWindowOpen),
+    final Widget actions = inReview
+        ? Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            alignment: WrapAlignment.end,
+            children: [
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+                onPressed: _isSubmitting ? null : () => setState(() => _step = _BallotStep.select),
+                icon: const Icon(Icons.arrow_back_rounded, size: 18),
+                label: Text(l10n.actionBack),
+              ),
+              FilledButton.icon(
+                style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+                onPressed: (!isWindowOpen || _isSubmitting) ? null : () => _submitBallot(event),
+                icon: _isSubmitting
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                    : const Icon(Icons.send_rounded, size: 18),
+                label: Text(_isSubmitting ? l10n.voteSubmitting : l10n.voteConfirmAndCast),
+              ),
             ],
+          )
+        : Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: FilledButton.icon(
+              style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+              onPressed: !isWindowOpen ? null : _goToReview,
+              icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+              label: Text(l10n.voteReviewBallot),
+            ),
+          );
+
+    return Container(
+      decoration: BoxDecoration(color: kc.surface, border: Border(top: BorderSide(color: kc.border))),
+      child: SafeArea(
+        top: false,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: ResponsiveLayout.maxBallotWidth),
+            child: Padding(padding: const EdgeInsets.all(16), child: actions),
           ),
         ),
       ),
@@ -483,372 +451,241 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
   Widget _buildStepIndicator(BuildContext context) {
     final kc = KivoraColors.of(context);
+    final l10n = AppLocalizations.of(context);
+    final isReview = _step == _BallotStep.review;
+    final onPrimary = Theme.of(context).colorScheme.onPrimary;
+    final primary = Theme.of(context).colorScheme.primary;
+
     Widget step(int number, String label, bool active, bool complete) {
-      final color =
-          active || complete ? AppTheme.primaryBlue : kc.textSecondary;
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
+      final color = active || complete ? kc.accentText : kc.textSecondary;
+      return Flexible(
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
           CircleAvatar(
-            radius: 12,
-            backgroundColor:
-                active || complete ? AppTheme.primaryBlue : kc.border,
+            radius: 14,
+            backgroundColor: active || complete ? primary : kc.border,
             child: complete
-                ? const Icon(Icons.check, size: 14, color: Colors.white)
+                ? Icon(Icons.check, size: 16, color: onPrimary)
                 : Text('$number',
                     style: TextStyle(
-                        fontSize: 11,
+                        fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: active ? Colors.white : kc.textSecondary)),
+                        color: active ? onPrimary : kc.textSecondary)),
           ),
-          const SizedBox(width: 6),
-          Text(label,
-              style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: active ? FontWeight.bold : FontWeight.normal,
-                  color: color)),
-        ],
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(label,
+                style: TextStyle(
+                    fontSize: 14, fontWeight: active ? FontWeight.bold : FontWeight.normal, color: color)),
+          ),
+        ]),
       );
     }
 
-    final l10n = AppLocalizations.of(context);
-    final isReview = _step == _BallotStep.review;
     return Semantics(
-      label: isReview
-          ? 'Step 2 of 2: Review your ballot'
-          : 'Step 1 of 2: Select your choice',
-      child: Row(
-        children: [
+      label: l10n.ballotStepsLabel(isReview ? 2 : 1, 2, isReview ? l10n.voteStepReview : l10n.voteStepSelect),
+      child: ExcludeSemantics(
+        child: Row(children: [
           step(1, l10n.voteStepSelect, !isReview, isReview),
           const SizedBox(width: 12),
           Container(width: 24, height: 1, color: kc.border),
           const SizedBox(width: 12),
           step(2, l10n.voteStepReview, isReview, false),
-        ],
+        ]),
       ),
     );
   }
 
-  Widget _buildReviewStep(
-      BuildContext context, VotingEvent event, bool isWindowOpen) {
+  Widget _buildReviewContent(BuildContext context, VotingEvent event) {
     final kc = KivoraColors.of(context);
     final l10n = AppLocalizations.of(context);
     final isIdentifiable = event.privacyMode == PrivacyMode.identifiable;
+    final primary = Theme.of(context).colorScheme.primary;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          l10n.voteReviewYourBallot.toUpperCase(),
-          style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: kc.textSecondary,
-              letterSpacing: 1.1),
+        Semantics(
+          header: true,
+          child: Text(l10n.voteReviewYourBallot,
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: kc.textSecondary)),
         ),
         const SizedBox(height: 12),
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppTheme.primaryBlue.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(12),
-            border:
-                Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.2)),
+            color: primary.withValues(alpha: kc.isDark ? 0.16 : 0.08),
+            borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+            border: Border.all(color: primary.withValues(alpha: 0.5)),
           ),
-          child: Row(
-            children: [
-              const Icon(Icons.how_to_vote, color: AppTheme.primaryBlue),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(l10n.voteYourSelection,
-                        style:
-                            TextStyle(fontSize: 12, color: kc.textSecondary)),
-                    Text(
-                      _selectedChoiceName ?? l10n.voteYourSelection,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.primaryBlue,
-                          fontSize: 16),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: isIdentifiable
-                ? Colors.deepOrange.withValues(alpha: 0.08)
-                : AppTheme.success.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(
-                isIdentifiable
-                    ? Icons.visibility_outlined
-                    : Icons.visibility_off_outlined,
-                color: isIdentifiable ? Colors.deepOrange : AppTheme.success,
-                size: 20,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  isIdentifiable
-                      ? l10n.voteIdentifiableExplanation
-                      : l10n.voteAnonymousExplanation,
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: isIdentifiable
-                          ? Colors.deepOrange
-                          : AppTheme.success),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 28),
-        Row(
-          children: [
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: _isSubmitting
-                    ? null
-                    : () => setState(() => _step = _BallotStep.select),
-                icon: const Icon(Icons.arrow_back_rounded, size: 18),
-                label: Text(l10n.actionBack),
-              ),
-            ),
+          child: Row(children: [
+            Icon(Icons.how_to_vote, color: kc.accentText),
             const SizedBox(width: 12),
             Expanded(
-              flex: 2,
-              child: ElevatedButton.icon(
-                onPressed: (!isWindowOpen || _isSubmitting)
-                    ? null
-                    : () => _submitBallot(event),
-                icon: _isSubmitting
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                            color: Colors.white, strokeWidth: 2),
-                      )
-                    : const Icon(Icons.send_rounded),
-                label: Text(_isSubmitting
-                    ? l10n.voteSubmitting
-                    : l10n.voteConfirmAndCast),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: AppTheme.primaryBlue,
-                ),
-              ),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(l10n.ballotYourChoice, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+                Text(_selectedChoiceName ?? l10n.voteYourSelection,
+                    style: TextStyle(fontWeight: FontWeight.bold, color: kc.textPrimary, fontSize: 18)),
+              ]),
             ),
-          ],
+          ]),
         ),
+        const SizedBox(height: 16),
+        _banner(context,
+            icon: isIdentifiable ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+            color: isIdentifiable ? kc.warningText : kc.successText,
+            text: isIdentifiable ? l10n.voteIdentifiableExplanation : l10n.voteAnonymousExplanation),
+        const SizedBox(height: 12),
+        _banner(context, icon: Icons.lock_outline_rounded, color: kc.accentText, text: l10n.ballotFinality),
       ],
     );
   }
 
+  Widget _optionError(BuildContext context, String message, VoidCallback onRetry) {
+    final kc = KivoraColors.of(context);
+    final l10n = AppLocalizations.of(context);
+    return Column(children: [
+      Text(message, style: TextStyle(color: kc.errorText)),
+      TextButton(
+        style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+        onPressed: onRetry,
+        child: Text(l10n.ballotRetry),
+      ),
+    ]);
+  }
+
   Widget _buildCandidateOptions(VotingEvent event) {
+    final l10n = AppLocalizations.of(context);
+    final kc = KivoraColors.of(context);
     final candidatesAsync = ref.watch(eventCandidatesProvider(event.id));
 
     return candidatesAsync.when(
       loading: () => const LoadingView(),
-      error: (err, stack) => Text('Error loading candidates: $err',
-          style: const TextStyle(color: AppTheme.error)),
+      error: (_, __) => _optionError(context, l10n.ballotOptionsLoadError,
+          () => ref.invalidate(eventCandidatesProvider(event.id))),
       data: (candidates) {
-        if (candidates.isEmpty) {
-          return const Center(child: Text('No candidates available.'));
-        }
-
+        if (candidates.isEmpty) return Center(child: Text(l10n.ballotNoCandidates));
         return Column(
-          children: candidates.map((cand) {
-            final isSelected = _selectedCandidateId == cand.id;
-
-            return _SelectableCard(
-              isSelected: isSelected,
-              semanticLabel: isSelected
-                  ? '${cand.name}, candidate, selected'
-                  : '${cand.name}, candidate',
-              onTap: () {
-                setState(() {
+          children: [
+            for (final cand in candidates)
+              _SelectableCard(
+                isSelected: _selectedCandidateId == cand.id,
+                semanticLabel: _selectedCandidateId == cand.id
+                    ? '${l10n.ballotCandidate(cand.name)}, ${l10n.ballotSelectedSuffix}'
+                    : l10n.ballotCandidate(cand.name),
+                onTap: () => setState(() {
                   _selectedCandidateId = cand.id;
                   _selectedPollOptionId = null;
                   _selectedChoiceName = cand.name;
-                });
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Icon(
-                      isSelected
-                          ? Icons.radio_button_checked
-                          : Icons.radio_button_unchecked,
-                      color: isSelected
-                          ? AppTheme.primaryBlue
-                          : KivoraColors.textSecondaryOf(context),
-                    ),
+                }),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(children: [
+                    _RadioMark(selected: _selectedCandidateId == cand.id),
                     const SizedBox(width: 12),
                     CircleAvatar(
                       radius: 24,
-                      backgroundColor:
-                          AppTheme.primaryBlue.withValues(alpha: 0.1),
-                      backgroundImage:
-                          cand.photoUrl != null && cand.photoUrl!.isNotEmpty
-                              ? NetworkImage(cand.photoUrl!)
-                              : null,
+                      backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
+                      backgroundImage: cand.photoUrl != null && cand.photoUrl!.isNotEmpty
+                          ? NetworkImage(cand.photoUrl!)
+                          : null,
                       child: cand.photoUrl == null || cand.photoUrl!.isEmpty
-                          ? Text(
-                              cand.name.isNotEmpty
-                                  ? cand.name[0].toUpperCase()
-                                  : 'C',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppTheme.primaryBlue))
+                          ? Text(cand.name.isNotEmpty ? cand.name[0].toUpperCase() : 'C',
+                              style: TextStyle(fontWeight: FontWeight.bold, color: kc.accentText))
                           : null,
                     ),
                     const SizedBox(width: 16),
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(cand.name,
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: KivoraColors.textPrimaryOf(context))),
-                          if (cand.party.isNotEmpty)
-                            Text(cand.party,
-                                style: const TextStyle(
-                                    fontSize: 13,
-                                    color: AppTheme.primaryBlue,
-                                    fontWeight: FontWeight.w500)),
-                          if (cand.bio.isNotEmpty) ...[
-                            const SizedBox(height: 4),
-                            Text(cand.bio,
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color:
-                                        KivoraColors.textSecondaryOf(context)),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis),
-                          ],
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text(cand.name,
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                        if (cand.party.isNotEmpty)
+                          Text(cand.party,
+                              style: TextStyle(fontSize: 14, color: kc.accentText, fontWeight: FontWeight.w500)),
+                        if (cand.bio.isNotEmpty) ...[
+                          const SizedBox(height: 4),
+                          Text(cand.bio,
+                              style: TextStyle(fontSize: 14, color: kc.textSecondary),
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis),
                         ],
-                      ),
+                      ]),
                     ),
-                  ],
+                  ]),
                 ),
               ),
-            );
-          }).toList(),
+          ],
         );
       },
     );
   }
 
   Widget _buildPollOptions(VotingEvent event) {
+    final l10n = AppLocalizations.of(context);
+    final kc = KivoraColors.of(context);
     final optionsAsync = ref.watch(eventPollOptionsProvider(event.id));
 
     return optionsAsync.when(
       loading: () => const LoadingView(),
-      error: (err, stack) => Text('Error loading options: $err',
-          style: const TextStyle(color: AppTheme.error)),
+      error: (_, __) => _optionError(context, l10n.ballotOptionsLoadError,
+          () => ref.invalidate(eventPollOptionsProvider(event.id))),
       data: (options) {
-        if (options.isEmpty) {
-          return const Center(child: Text('No poll options available.'));
-        }
-
+        if (options.isEmpty) return Center(child: Text(l10n.ballotNoOptions));
         return Column(
-          children: options.map((opt) {
-            final isSelected = _selectedPollOptionId == opt.id;
-
-            return _SelectableCard(
-              isSelected: isSelected,
-              semanticLabel: isSelected
-                  ? '${opt.label}, option, selected'
-                  : '${opt.label}, option',
-              onTap: () {
-                setState(() {
+          children: [
+            for (final opt in options)
+              _SelectableCard(
+                isSelected: _selectedPollOptionId == opt.id,
+                semanticLabel: _selectedPollOptionId == opt.id
+                    ? '${l10n.ballotOption(opt.label)}, ${l10n.ballotSelectedSuffix}'
+                    : l10n.ballotOption(opt.label),
+                onTap: () => setState(() {
                   _selectedPollOptionId = opt.id;
                   _selectedCandidateId = null;
                   _selectedChoiceName = opt.label;
-                });
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Icon(
-                      isSelected
-                          ? Icons.radio_button_checked
-                          : Icons.radio_button_unchecked,
-                      color: isSelected
-                          ? AppTheme.primaryBlue
-                          : KivoraColors.textSecondaryOf(context),
-                    ),
+                }),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(children: [
+                    _RadioMark(selected: _selectedPollOptionId == opt.id),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(opt.label,
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: KivoraColors.textPrimaryOf(context))),
-                          if (opt.description.isNotEmpty) ...[
-                            const SizedBox(height: 4),
-                            Text(opt.description,
-                                style: TextStyle(
-                                    fontSize: 13,
-                                    color:
-                                        KivoraColors.textSecondaryOf(context))),
-                          ],
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text(opt.label,
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                        if (opt.description.isNotEmpty) ...[
+                          const SizedBox(height: 4),
+                          Text(opt.description, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
                         ],
-                      ),
+                      ]),
                     ),
-                  ],
+                  ]),
                 ),
               ),
-            );
-          }).toList(),
+          ],
         );
       },
     );
   }
 
   Widget _buildYesNoOptions(VotingEvent event) {
-    final yesOptionId = '${event.id}_YES';
-    final noOptionId = '${event.id}_NO';
-
-    return Column(
-      children: [
-        _buildChoiceCard(
-          id: yesOptionId,
-          title: 'YES',
-          subtitle: 'In favor of this proposal',
-          icon: Icons.check_circle_outline,
-          color: AppTheme.success,
-        ),
-        const SizedBox(height: 12),
-        _buildChoiceCard(
-          id: noOptionId,
-          title: 'NO',
-          subtitle: 'Opposed to this proposal',
-          icon: Icons.cancel_outlined,
-          color: AppTheme.error,
-        ),
-      ],
-    );
+    final l10n = AppLocalizations.of(context);
+    final kc = KivoraColors.of(context);
+    return Column(children: [
+      _buildChoiceCard(
+        id: '${event.id}_YES',
+        title: l10n.ballotYes,
+        subtitle: l10n.ballotYesDesc,
+        icon: Icons.check_circle_outline,
+        color: kc.successText,
+      ),
+      _buildChoiceCard(
+        id: '${event.id}_NO',
+        title: l10n.ballotNo,
+        subtitle: l10n.ballotNoDesc,
+        icon: Icons.cancel_outlined,
+        color: kc.errorText,
+      ),
+    ]);
   }
 
   Widget _buildChoiceCard({
@@ -858,147 +695,94 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
     required IconData icon,
     required Color color,
   }) {
+    final kc = KivoraColors.of(context);
     final isSelected = _selectedPollOptionId == id;
-
     return _SelectableCard(
       isSelected: isSelected,
-      accentColor: color,
-      semanticLabel:
-          isSelected ? '$title, $subtitle, selected' : '$title, $subtitle',
-      onTap: () {
-        setState(() {
-          _selectedPollOptionId = id;
-          _selectedCandidateId = null;
-          _selectedChoiceName = title;
-        });
-      },
+      semanticLabel: isSelected ? '$title, $subtitle, ${AppLocalizations.of(context).ballotSelectedSuffix}' : '$title, $subtitle',
+      onTap: () => setState(() {
+        _selectedPollOptionId = id;
+        _selectedCandidateId = null;
+        _selectedChoiceName = title;
+      }),
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Icon(
-              isSelected
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_unchecked,
-              color: isSelected ? color : KivoraColors.textSecondaryOf(context),
-            ),
-            const SizedBox(width: 12),
-            Icon(icon, color: color, size: 28),
-            const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: color)),
-                Text(subtitle,
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: KivoraColors.textSecondaryOf(context))),
-              ],
-            ),
-          ],
-        ),
+        child: Row(children: [
+          _RadioMark(selected: isSelected),
+          const SizedBox(width: 12),
+          Icon(icon, color: color, size: 28),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color)),
+              Text(subtitle, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+            ]),
+          ),
+        ]),
       ),
     );
   }
 
-  String _getTimeRemaining(DateTime endAt) {
+  String _timeRemaining(AppLocalizations l10n, DateTime endAt) {
     final diff = endAt.difference(DateTime.now());
-    if (diff.isNegative) return 'Voting closed';
-    if (diff.inDays > 0) return '${diff.inDays}d left';
-    if (diff.inHours > 0) return '${diff.inHours}h left';
-    if (diff.inMinutes > 0) return '${diff.inMinutes}m left';
-    return 'Closing soon';
+    if (diff.isNegative) return l10n.ballotTimeClosed;
+    if (diff.inDays > 0) return l10n.ballotTimeDays(diff.inDays);
+    if (diff.inHours > 0) return l10n.ballotTimeHours(diff.inHours);
+    if (diff.inMinutes > 0) return l10n.ballotTimeMinutes(diff.inMinutes);
+    return l10n.ballotTimeSoon;
   }
 }
 
-/// A ballot option card with hover-lift and press-scale feedback on desktop
-/// (and no-op elsewhere), matching the established pattern in
-/// organization_list_screen.dart's _ActionCard - this is the single most-used
-/// interactive surface in the app and was previously a plain, static InkWell.
-class _SelectableCard extends StatefulWidget {
+/// Selection mark: icon + label/border carry the state (never color alone).
+class _RadioMark extends StatelessWidget {
+  const _RadioMark({required this.selected});
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    return Icon(
+      selected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+      color: selected ? kc.accentText : kc.textSecondary,
+    );
+  }
+}
+
+/// Solid ballot option card: a thicker accent border plus a filled radio mark
+/// show the selection. No hover-lift, scale or shadow animation.
+class _SelectableCard extends StatelessWidget {
   const _SelectableCard({
     required this.isSelected,
     required this.onTap,
     required this.child,
-    this.accentColor = AppTheme.primaryBlue,
     this.semanticLabel,
   });
 
   final bool isSelected;
   final VoidCallback onTap;
   final Widget child;
-  final Color accentColor;
-
-  /// Announced by screen readers along with the selected state, e.g.
-  /// "Jane Doe, candidate" - WCAG 2.2's "selection is announced correctly"
-  /// requirement for ballot options (Package A3 / C3).
   final String? semanticLabel;
 
   @override
-  State<_SelectableCard> createState() => _SelectableCardState();
-}
-
-class _SelectableCardState extends State<_SelectableCard> {
-  bool _isHovered = false;
-  bool _isPressed = false;
-
-  @override
   Widget build(BuildContext context) {
-    final isReducedMotion = MediaQuery.of(context).disableAnimations;
-    final highlighted = widget.isSelected || _isHovered;
-
-    return Semantics(
-      button: true,
-      selected: widget.isSelected,
-      label: widget.semanticLabel,
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
-        cursor: SystemMouseCursors.click,
-        child: InkWell(
-          onTapDown: (_) => setState(() => _isPressed = true),
-          onTapUp: (_) => setState(() => _isPressed = false),
-          onTapCancel: () => setState(() => _isPressed = false),
-          onTap: widget.onTap,
-          borderRadius: BorderRadius.circular(12),
-          splashColor: Colors.transparent,
-          highlightColor: widget.accentColor.withValues(alpha: 0.05),
-          focusColor: widget.accentColor.withValues(alpha: 0.12),
-          child: AnimatedScale(
-            scale: (_isPressed && !isReducedMotion) ? 0.985 : 1.0,
-            duration: const Duration(milliseconds: 120),
-            curve: Curves.easeOutCubic,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
-              curve: Curves.easeOutCubic,
-              margin: const EdgeInsets.only(bottom: 12),
-              decoration: BoxDecoration(
-                color: KivoraColors.surfaceOf(context),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: widget.isSelected
-                      ? widget.accentColor
-                      : (_isHovered
-                          ? widget.accentColor.withValues(alpha: 0.4)
-                          : KivoraColors.borderOf(context)),
-                  width: widget.isSelected ? 2.0 : (_isHovered ? 1.4 : 1.0),
-                ),
-                boxShadow: highlighted
-                    ? [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.06),
-                          blurRadius: 10,
-                          offset: const Offset(0, 3),
-                        ),
-                      ]
-                    : null,
-              ),
-              child: widget.child,
+    final kc = KivoraColors.of(context);
+    final primary = Theme.of(context).colorScheme.primary;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Semantics(
+        button: true,
+        selected: isSelected,
+        inMutuallyExclusiveGroup: true,
+        label: semanticLabel,
+        child: ExcludeSemantics(
+          child: Material(
+            color: isSelected ? primary.withValues(alpha: kc.isDark ? 0.16 : 0.08) : kc.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+              side: BorderSide(color: isSelected ? primary : kc.border, width: isSelected ? 2 : 1),
             ),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(onTap: onTap, child: ConstrainedBox(constraints: const BoxConstraints(minHeight: 56), child: child)),
           ),
         ),
       ),

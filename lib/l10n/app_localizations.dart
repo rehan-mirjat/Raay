@@ -2261,6 +2261,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Need help with an invitation? Contact Kivora support.'**
   String get inbHelp;
+
+  /// No description provided for @ballotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your ballot'**
+  String get ballotTitle;
+
+  /// No description provided for @ballotSelectFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an option before continuing.'**
+  String get ballotSelectFirst;
+
+  /// No description provided for @ballotLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load this ballot. Check your connection and try again.'**
+  String get ballotLoadError;
+
+  /// No description provided for @ballotRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get ballotRetry;
+
+  /// No description provided for @ballotNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This election could not be found.'**
+  String get ballotNotFound;
+
+  /// No description provided for @ballotSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to vote.'**
+  String get ballotSignIn;
+
+  /// No description provided for @ballotNoCandidates.
+  ///
+  /// In en, this message translates to:
+  /// **'No candidates have been added to this election.'**
+  String get ballotNoCandidates;
+
+  /// No description provided for @ballotNoOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'No options have been added to this election.'**
+  String get ballotNoOptions;
+
+  /// No description provided for @ballotOptionsLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the choices. Try again.'**
+  String get ballotOptionsLoadError;
+
+  /// No description provided for @ballotYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get ballotYes;
+
+  /// No description provided for @ballotYesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'In favor of this proposal'**
+  String get ballotYesDesc;
+
+  /// No description provided for @ballotNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get ballotNo;
+
+  /// No description provided for @ballotNoDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Opposed to this proposal'**
+  String get ballotNoDesc;
+
+  /// No description provided for @ballotOfficial.
+  ///
+  /// In en, this message translates to:
+  /// **'Official ballot'**
+  String get ballotOfficial;
+
+  /// No description provided for @ballotFinality.
+  ///
+  /// In en, this message translates to:
+  /// **'Your vote is final. After you confirm, you cannot change it or vote again.'**
+  String get ballotFinality;
+
+  /// No description provided for @ballotTimeDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}d left'**
+  String ballotTimeDays(int n);
+
+  /// No description provided for @ballotTimeHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}h left'**
+  String ballotTimeHours(int n);
+
+  /// No description provided for @ballotTimeMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}m left'**
+  String ballotTimeMinutes(int n);
+
+  /// No description provided for @ballotTimeSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing soon'**
+  String get ballotTimeSoon;
+
+  /// No description provided for @ballotTimeClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Voting closed'**
+  String get ballotTimeClosed;
+
+  /// No description provided for @ballotCandidate.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, candidate'**
+  String ballotCandidate(String name);
+
+  /// No description provided for @ballotOption.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, option'**
+  String ballotOption(String name);
+
+  /// No description provided for @ballotSelectedSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'selected'**
+  String get ballotSelectedSuffix;
+
+  /// No description provided for @ballotReceiptMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not find your receipt yet. Try again in a moment.'**
+  String get ballotReceiptMissing;
+
+  /// No description provided for @ballotYourChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Your choice'**
+  String get ballotYourChoice;
+
+  /// No description provided for @ballotStepsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} of {total}: {label}'**
+  String ballotStepsLabel(int current, int total, String label);
 }
 
 class _AppLocalizationsDelegate

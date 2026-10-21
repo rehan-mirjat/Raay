@@ -69,7 +69,9 @@ class VotingRepository {
     } on FirebaseFunctionsException catch (e) {
       throw Exception(e.message ?? 'Failed to submit ballot.');
     } catch (e) {
-      throw Exception('Failed to cast ballot: ${e.toString().replaceAll("Exception: ", "")}');
+      // Never surface raw exception text; the caller re-checks for a receipt.
+      throw Exception(
+          'We could not confirm that your ballot was submitted. Check your connection and try again.');
     }
   }
 
