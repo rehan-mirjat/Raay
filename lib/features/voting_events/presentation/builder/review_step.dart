@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/kivora_colors.dart';
-import '../../../../core/layout/responsive.dart';
 import '../../../../core/widgets/loading_view.dart';
 import '../../../../core/widgets/reauth_dialog.dart';
 import '../../data/voting_event_repository.dart';
 import '../providers/draft_event_provider.dart';
-import '../../data/candidate_repository.dart';
-import '../../data/poll_option_repository.dart';
+import '../../../voting/presentation/cast_vote_screen.dart' show eventCandidatesProvider, eventPollOptionsProvider;
+import '../voter_election_card.dart' show formatDeadline;
 import '../../domain/voting_event.dart';
 import '../../../../core/utils/error_utils.dart';
+import '../../../../core/utils/friendly_error.dart';
 
 class ReviewStep extends ConsumerStatefulWidget {
   final String orgId;
@@ -26,9 +24,32 @@ class ReviewStep extends ConsumerStatefulWidget {
 }
 
 class _ReviewStepState extends ConsumerState<ReviewStep> {
-  static final _dateFormat = DateFormat('MMM d, yyyy h:mm a');
   bool _isPublishing = false;
   String? _error;
+
+  Future<void> _confirmAndPublish() async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Publish this election?'),
+        content: const Text(
+            'Eligible members will see it according to the schedule. After publishing you can no longer change its details, schedule or eligibility.'),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Keep editing'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Publish'),
+          ),
+        ],
+      ),
+    );
+    if (ok == true && mounted) await _publish();
+  }
 
   Future<void> _publish() async {
     final draft = ref.read(draftEventProvider(widget.orgId));
@@ -45,8 +66,7 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
       if (mounted) {
         ref.read(draftEventProvider(widget.orgId).notifier).reset();
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Voting Event Published Successfully!',
-                style: TextStyle(color: AppTheme.success))));
+            content: Text('Election published.')));
         // Navigate back to admin events dashboard
         context.go('/admin/events');
       }
@@ -67,7 +87,7 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
       if (mounted) {
         setState(() {
           _isPublishing = false;
-          _error = e.toString().replaceAll('Exception: ', '');
+          _error = friendlyError(e, fallback: 'We could not publish the election. Please try again.');
         });
       }
     }
@@ -83,32 +103,17 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
     final bool isCand = draft.votingType == VotingType.candidateElection;
     final bool isPoll = draft.votingType == VotingType.singleChoicePoll;
 
-    Stream<int> countStream;
-    if (isCand) {
-      countStream = ref
-          .watch(candidateRepositoryProvider)
-          .watchEventCandidates(eventId)
-          .map((v) => v.length);
-    } else if (isPoll) {
-      countStream = ref
-          .watch(pollOptionRepositoryProvider)
-          .watchEventPollOptions(eventId)
-          .map((v) => v.length);
-    } else {
-      countStream = Stream.value(2); // Safe for YesNo
-    }
+    final AsyncValue<int> countAsync = isCand
+        ? ref.watch(eventCandidatesProvider(eventId)).whenData((v) => v.length)
+        : isPoll
+            ? ref.watch(eventPollOptionsProvider(eventId)).whenData((v) => v.length)
+            : const AsyncValue.data(2); // Yes/No always has its two options
 
-    return StreamBuilder<int>(
-        stream: countStream,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const LoadingView();
-          }
-          if (snapshot.hasError) {
-            return Text('Error loading choices: ${snapshot.error}');
-          }
-
-          final count = snapshot.data ?? 0;
+    return countAsync.when(
+        loading: () => const LoadingView(),
+        error: (_, __) => Text('We could not load the choices. Go back and try again.',
+            style: TextStyle(color: KivoraColors.of(context).errorText)),
+        data: (count) {
           final hasChoices =
               count >= 2 || draft.votingType == VotingType.yesNoPoll;
           final hasSchedule = draft.startAt != null &&
@@ -165,12 +170,12 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
               _summaryRow(
                   'Start At',
                   draft.startAt != null
-                      ? _dateFormat.format(draft.startAt!)
+                      ? formatDeadline(context, draft.startAt!)
                       : ''),
               _summaryRow(
                   'End At',
                   draft.endAt != null
-                      ? _dateFormat.format(draft.endAt!)
+                      ? formatDeadline(context, draft.endAt!)
                       : ''),
               _summaryRow('Choices', '$count items configured'),
               if (!isReady) ...[
@@ -178,11 +183,11 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                      color: AppTheme.warning.withValues(alpha: 0.12),
+                      color: KivoraColors.of(context).warningText.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8)),
-                  child: const Text(
+                  child: Text(
                       'Complete every required checklist item above before publishing.',
-                      style: TextStyle(color: AppTheme.warning, fontWeight: FontWeight.w600)),
+                      style: TextStyle(color: KivoraColors.of(context).warningText, fontWeight: FontWeight.w600)),
                 ),
               ],
               if (_error != null) ...[
@@ -190,28 +195,33 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                      color: AppTheme.error.withValues(alpha: 0.1),
+                      color: KivoraColors.of(context).errorText.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8)),
-                  child: Text('Publish Error: $_error',
-                      style: const TextStyle(color: AppTheme.error)),
+                  child: Semantics(
+                    liveRegion: true,
+                    child: Text(_error!, style: TextStyle(color: KivoraColors.of(context).errorText)),
+                  ),
                 ),
               ],
               const SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                spacing: 12,
+                runSpacing: 12,
                 children: [
                   TextButton(
+                      style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
                       onPressed: _isPublishing ? null : widget.onBack,
                       child: const Text('Back')),
-                  ElevatedButton(
-                    onPressed: _isPublishing || !isReady ? null : _publish,
+                  FilledButton(
+                    style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+                    onPressed: _isPublishing || !isReady ? null : _confirmAndPublish,
                     child: _isPublishing
                         ? const SizedBox(
                             height: 16,
                             width: 16,
-                            child: CircularProgressIndicator(
-                                color: Colors.white, strokeWidth: 2))
-                        : const Text('Publish Event'),
+                            child: CircularProgressIndicator(strokeWidth: 2))
+                        : const Text('Publish election'),
                   ),
                 ],
               ),
@@ -221,9 +231,8 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
   }
 
   Widget _checklistRow(BuildContext context, _ChecklistItem item) {
-    final color = item.done
-        ? AppTheme.success
-        : (item.optional ? KivoraColors.textSecondaryOf(context) : AppTheme.error);
+    final kc = KivoraColors.of(context);
+    final color = item.done ? kc.successText : (item.optional ? kc.textSecondary : kc.errorText);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
@@ -240,9 +249,8 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
             child: Text(
               item.label + (item.optional && !item.done ? ' (optional)' : ''),
               style: TextStyle(
-                  fontSize: 13,
-                  color: KivoraColors.textPrimaryOf(context),
-                  decoration: item.done ? null : null),
+                  fontSize: 14,
+                  color: KivoraColors.textPrimaryOf(context)),
             ),
           ),
         ],
@@ -253,17 +261,18 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
   Widget _summaryRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Wrap(
+        spacing: 12,
+        runSpacing: 2,
         children: [
-          SizedBox(
-            width: ResponsiveLayout.isCompact(context) ? 76 : 100,
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 100),
             child: Text(label,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: KivoraColors.textPrimaryOf(context))),
           ),
-          Expanded(child: Text(value, softWrap: true)),
+          Text(value, softWrap: true),
         ],
       ),
     );

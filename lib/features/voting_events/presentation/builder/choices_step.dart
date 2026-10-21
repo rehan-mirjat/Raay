@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/theme/kivora_colors.dart';
 import '../../domain/voting_event.dart';
 import '../providers/draft_event_provider.dart';
 import '../components/candidate_list.dart';
@@ -38,32 +39,41 @@ class ChoicesStep extends ConsumerWidget {
         else if (draftState.votingType == VotingType.singleChoicePoll)
           PollOptionList(orgId: orgId, eventId: eventId, isDraft: draftState.status == VotingEventStatus.draft)
         else
-          _buildYesNoList(),
+          _buildYesNoList(context),
 
         const SizedBox(height: 32),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          spacing: 12,
+          runSpacing: 12,
           children: [
-            TextButton(onPressed: onBack, child: const Text('Back')),
-            ElevatedButton(onPressed: onNext, child: const Text('Next: Review')),
+            TextButton(
+                style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                onPressed: onBack,
+                child: const Text('Back')),
+            FilledButton(
+                style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+                onPressed: onNext,
+                child: const Text('Next: Review')),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildYesNoList() {
-    return const Column(
+  Widget _buildYesNoList(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    return Column(
       children: [
         ListTile(
-          leading: Icon(Icons.check_circle, color: Colors.green),
-          title: Text('Yes'),
-          subtitle: Text('System-generated option'),
+          leading: Icon(Icons.check_circle, color: kc.successText),
+          title: const Text('Yes'),
+          subtitle: const Text('System-generated option'),
         ),
         ListTile(
-          leading: Icon(Icons.cancel, color: Colors.red),
-          title: Text('No'),
-          subtitle: Text('System-generated option'),
+          leading: Icon(Icons.cancel, color: kc.errorText),
+          title: const Text('No'),
+          subtitle: const Text('System-generated option'),
         ),
       ],
     );

@@ -83,6 +83,7 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 16),
         DropdownButtonFormField<EligibilityType>(
+          isExpanded: true,
           // ignore: deprecated_member_use
           value: _type,
           decoration: const InputDecoration(labelText: 'Who can vote?'),
@@ -133,13 +134,17 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
           ),
         ],
         const SizedBox(height: 32),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          spacing: 12,
+          runSpacing: 12,
           children: [
             TextButton(
+                style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
                 onPressed: draftState.isLoading ? null : widget.onBack,
                 child: const Text('Back')),
-            ElevatedButton(
+            FilledButton(
+              style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
               onPressed: draftState.isLoading
                   ? null
                   : (isDraft ? _submit : widget.onNext),
@@ -157,7 +162,7 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
     final deptsAsync = ref.watch(activeOrganizationDepartmentsProvider);
     return deptsAsync.when(
       loading: () => const LoadingView(),
-      error: (e, _) => Text('Error: $e'),
+      error: (e, _) => const Text('We could not load this list. Go back and try again.'),
       data: (depts) {
         if (depts.isEmpty) {
           return const Text('No departments found in this organization.');
@@ -193,7 +198,7 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
         ref.watch(organizationMembersDirectoryProvider(widget.orgId));
     return membersAsync.when(
       loading: () => const LoadingView(),
-      error: (e, _) => Text('Error: $e'),
+      error: (e, _) => const Text('We could not load this list. Go back and try again.'),
       data: (members) {
         final activeMembers =
             members.where((m) => m['status'] == 'active').toList();
@@ -204,12 +209,15 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 12,
+              runSpacing: 8,
               children: [
                 Text(
                   '${_selectedUsers.length} selected of ${activeMembers.length} active members',
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
                 ),
                 if (isDraft)
                   KivoraButton(

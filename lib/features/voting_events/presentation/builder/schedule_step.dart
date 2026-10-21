@@ -148,8 +148,10 @@ class _ScheduleStepState extends ConsumerState<ScheduleStep> {
         ],
 
         const SizedBox(height: 32),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          spacing: 12,
+          runSpacing: 12,
           children: [
             TextButton(style: TextButton.styleFrom(minimumSize: const Size(48, 48)), onPressed: widget.onBack, child: const Text('Back')),
             FilledButton(style: FilledButton.styleFrom(minimumSize: const Size(48, 48)), onPressed: isDraft ? _validateAndProceed : widget.onNext, child: const Text('Next: Eligibility')),
