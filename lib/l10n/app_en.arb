@@ -29,7 +29,7 @@
   "authForgotPassword": "Forgot Password?",
   "authSignInButton": "Sign In Securely",
   "authContinueWithGoogle": "Continue with Google",
-  "authCreateAccount": "Create Account",
+  "authCreateAccount": "Create account",
   "authNoAccount": "Don't have an account?",
   "authRegisterTitle": "Create Account",
   "authRegisterSubtitle": "Join Kivora today",
@@ -996,5 +996,14 @@
         "type": "String"
       }
     }
-  }
+  },
+  "authOr": "OR",
+  "authNewUser": "New here?",
+  "authHaveAccount": "Already have an account?",
+  "authSignIn": "Sign in",
+  "authRemembered": "Remember your password?",
+  "authShowPassword": "Show password",
+  "authHidePassword": "Hide password",
+  "authUnexpectedError": "Something went wrong. Please try again.",
+  "authMfaUnsupported": "This account's second sign-in step is not supported by this app yet. Please contact support."
 }

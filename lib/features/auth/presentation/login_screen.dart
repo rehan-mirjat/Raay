@@ -86,8 +86,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
       final hasTotpHint = e.resolver.hints.any((h) => h.factorId == 'totp');
       if (!hasTotpHint) {
-        setState(() => _error =
-            'This account\'s second factor isn\'t supported by this app yet. Please contact support.');
+        setState(() => _error = AppLocalizations.of(context).authMfaUnsupported);
         return;
       }
 
@@ -112,7 +111,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = e.toString().replaceAll('Exception: ', '');
+          _error = AppLocalizations.of(context).authUnexpectedError;
           _isLoading = false;
         });
       }
@@ -144,7 +143,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = e.toString().replaceAll('Exception: ', '');
+          _error = AppLocalizations.of(context).authUnexpectedError;
           _isLoading = false;
         });
       }
@@ -265,8 +264,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                         : KivoraIcons.eye,
                                     size: 20),
                                 tooltip: _obscurePassword
-                                    ? 'Show password'
-                                    : 'Hide password',
+                                    ? l10n.authShowPassword
+                                    : l10n.authHidePassword,
                                 onPressed: () => setState(() =>
                                     _obscurePassword = !_obscurePassword),
                               ),
@@ -280,12 +279,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: widget.onForgotPasswordTap,
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            minimumSize: const Size(0, 0),
-                          ),
+                          style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
                           child: Text(l10n.authForgotPassword,
-                              style: const TextStyle(fontSize: 13)),
+                              style: const TextStyle(fontSize: 14)),
                         ),
                       ),
                       if (_error != null) ...[
@@ -305,7 +301,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           const Expanded(child: Divider()),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Text('OR',
+                            child: Text(l10n.authOr,
                                 style: TextStyle(
                                     color: kc.textSecondary,
                                     fontSize: 12,
@@ -327,21 +323,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           alignment: WrapAlignment.center,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            Text(
-                              "New User? ",
-                              style: TextStyle(
-                                  color: kc.textSecondary, fontSize: 13),
-                            ),
-                            GestureDetector(
-                              onTap: widget.onRegisterTap,
-                              child: const Text(
-                                'Create Account',
-                                style: TextStyle(
-                                  color: AppTheme.primaryBlue,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                ),
-                              ),
+                            Text(l10n.authNewUser,
+                                style: TextStyle(color: kc.textSecondary, fontSize: 14)),
+                            TextButton(
+                              style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                              onPressed: widget.onRegisterTap,
+                              child: Text(l10n.authCreateAccount,
+                                  style: const TextStyle(fontWeight: FontWeight.bold)),
                             ),
                           ],
                         ),

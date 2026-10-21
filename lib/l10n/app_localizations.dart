@@ -261,7 +261,7 @@ abstract class AppLocalizations {
   /// No description provided for @authCreateAccount.
   ///
   /// In en, this message translates to:
-  /// **'Create Account'**
+  /// **'Create account'**
   String get authCreateAccount;
 
   /// No description provided for @authNoAccount.
@@ -3359,6 +3359,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{start} to {end}'**
   String calRange(String start, String end);
+
+  /// No description provided for @authOr.
+  ///
+  /// In en, this message translates to:
+  /// **'OR'**
+  String get authOr;
+
+  /// No description provided for @authNewUser.
+  ///
+  /// In en, this message translates to:
+  /// **'New here?'**
+  String get authNewUser;
+
+  /// No description provided for @authHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account?'**
+  String get authHaveAccount;
+
+  /// No description provided for @authSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get authSignIn;
+
+  /// No description provided for @authRemembered.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember your password?'**
+  String get authRemembered;
+
+  /// No description provided for @authShowPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get authShowPassword;
+
+  /// No description provided for @authHidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get authHidePassword;
+
+  /// No description provided for @authUnexpectedError.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get authUnexpectedError;
+
+  /// No description provided for @authMfaUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This account\'s second sign-in step is not supported by this app yet. Please contact support.'**
+  String get authMfaUnsupported;
 }
 
 class _AppLocalizationsDelegate

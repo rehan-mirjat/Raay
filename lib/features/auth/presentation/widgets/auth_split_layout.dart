@@ -105,9 +105,14 @@ class AuthSplitLayout extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 48, vertical: 48),
+                  // Scrolls (never clips) when large text makes the content taller
+                  // than the window; Spacers still space it out when it fits.
+                  LayoutBuilder(
+                    builder: (context, constraints) => SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 48),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(minHeight: constraints.maxHeight - 96),
+                        child: IntrinsicHeight(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -158,15 +163,16 @@ class AuthSplitLayout extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 8),
-                              const Text(
+                              const Flexible(
+                                child: Text(
                                 'PRIVACY-AWARE VOTING',
                                 style: TextStyle(
                                   color: AppTheme.accentCyan,
-                                  fontSize: 10,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                   letterSpacing: 1.1,
                                 ),
-                              ),
+                              )),
                             ],
                           ),
                         ),
@@ -217,22 +223,29 @@ class AuthSplitLayout extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              'Kivora © 2026',
-                              style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.4),
-                                  fontSize: 12),
+                            Flexible(
+                              child: Text(
+                                'Kivora © 2026',
+                                style: TextStyle(
+                                    color: Colors.white.withValues(alpha: 0.6),
+                                    fontSize: 12),
+                              ),
                             ),
-                            Text(
-                              'Android • Web',
-                              style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.4),
-                                  fontSize: 12),
+                            const SizedBox(width: 12),
+                            Flexible(
+                              child: Text(
+                                'Android • Web',
+                                textAlign: TextAlign.end,
+                                style: TextStyle(
+                                    color: Colors.white.withValues(alpha: 0.6),
+                                    fontSize: 12),
+                              ),
                             ),
                           ],
                         ),
                       ],
                     ),
+                  ))),
                   ),
                 ],
               ),

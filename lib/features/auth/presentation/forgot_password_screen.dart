@@ -9,6 +9,7 @@ import '../../../core/theme/kivora_colors.dart';
 import '../../../core/utils/error_utils.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/inline_error_banner.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../services/auth_service.dart';
 import 'widgets/auth_split_layout.dart';
 
@@ -85,7 +86,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = e.toString();
+          _error = AppLocalizations.of(context).authUnexpectedError;
           _isLoading = false;
         });
       }
@@ -233,7 +234,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                                   height: 16,
                                   width: 16,
                                   child: CircularProgressIndicator(
-                                      color: Colors.white, strokeWidth: 2),
+                                      strokeWidth: 2),
                                 )
                               : const Icon(Icons.shield_outlined, size: 18),
                           label: Text(_cooldownSeconds > 0
@@ -247,21 +248,13 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                           alignment: WrapAlignment.center,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            Text(
-                              "Remember your password? ",
-                              style: TextStyle(
-                                  color: kc.textSecondary, fontSize: 13),
-                            ),
-                            GestureDetector(
-                              onTap: widget.onBackToLoginTap,
-                              child: const Text(
-                                'Sign In',
-                                style: TextStyle(
-                                  color: AppTheme.primaryBlue,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                ),
-                              ),
+                            Text(AppLocalizations.of(context).authRemembered,
+                                style: TextStyle(color: kc.textSecondary, fontSize: 14)),
+                            TextButton(
+                              style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                              onPressed: widget.onBackToLoginTap,
+                              child: Text(AppLocalizations.of(context).authSignIn,
+                                  style: const TextStyle(fontWeight: FontWeight.bold)),
                             ),
                           ],
                         ),

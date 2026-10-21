@@ -87,7 +87,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = e.toString().replaceAll('Exception: ', '');
+          _error = AppLocalizations.of(context).authUnexpectedError;
           _isLoading = false;
         });
       }
@@ -120,7 +120,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = e.toString().replaceAll('Exception: ', '');
+          _error = AppLocalizations.of(context).authUnexpectedError;
           _isLoading = false;
         });
       }
@@ -137,8 +137,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.check_circle,
-                    color: AppTheme.success, size: 64),
+                Icon(Icons.check_circle,
+                    color: KivoraColors.of(context).successText, size: 64),
                 const SizedBox(height: 24),
                 Text(
                   'Registration Successful',
@@ -303,8 +303,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                         : KivoraIcons.eye,
                                     size: 20),
                                 tooltip: _obscurePassword
-                                    ? 'Show password'
-                                    : 'Hide password',
+                                    ? AppLocalizations.of(context).authShowPassword
+                                    : AppLocalizations.of(context).authHidePassword,
                                 onPressed: () => setState(() =>
                                     _obscurePassword = !_obscurePassword),
                               ),
@@ -327,8 +327,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                         : KivoraIcons.eye,
                                     size: 20),
                                 tooltip: _obscureConfirmPassword
-                                    ? 'Show password'
-                                    : 'Hide password',
+                                    ? AppLocalizations.of(context).authShowPassword
+                                    : AppLocalizations.of(context).authHidePassword,
                                 onPressed: () => setState(() =>
                                     _obscureConfirmPassword =
                                         !_obscureConfirmPassword),
@@ -378,21 +378,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           alignment: WrapAlignment.center,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            Text(
-                              "Already have an account? ",
-                              style: TextStyle(
-                                  color: kc.textSecondary, fontSize: 13),
-                            ),
-                            GestureDetector(
-                              onTap: widget.onBackToLoginTap,
-                              child: const Text(
-                                'Sign In',
-                                style: TextStyle(
-                                  color: AppTheme.primaryBlue,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                ),
-                              ),
+                            Text(l10n.authHaveAccount,
+                                style: TextStyle(color: kc.textSecondary, fontSize: 14)),
+                            TextButton(
+                              style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                              onPressed: widget.onBackToLoginTap,
+                              child: Text(l10n.authSignIn,
+                                  style: const TextStyle(fontWeight: FontWeight.bold)),
                             ),
                           ],
                         ),

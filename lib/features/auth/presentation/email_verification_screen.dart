@@ -146,10 +146,10 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Icon(
+                Icon(
                   Icons.mark_email_unread_outlined,
                   size: 72,
-                  color: AppTheme.primaryBlue,
+                  color: kc.accentText,
                 ),
                 const SizedBox(height: 24),
                 Text(
@@ -192,10 +192,10 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.check_circle_outline, color: AppTheme.success),
+                        Icon(Icons.check_circle_outline, color: kc.successText),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: Text(_message!, style: const TextStyle(color: AppTheme.success)),
+                          child: Text(_message!, style: TextStyle(color: kc.successText)),
                         ),
                       ],
                     ),
@@ -214,7 +214,7 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
                       ? const SizedBox(
                           height: 18,
                           width: 18,
-                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Icon(Icons.refresh),
                   label: const Text("I've Verified My Email"),
@@ -226,7 +226,7 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
                       ? const SizedBox(
                           height: 18,
                           width: 18,
-                          child: CircularProgressIndicator(color: AppTheme.primaryBlue, strokeWidth: 2),
+                          child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Icon(Icons.send_outlined),
                   label: Text(_cooldownSeconds > 0

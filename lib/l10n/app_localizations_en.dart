@@ -87,7 +87,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authContinueWithGoogle => 'Continue with Google';
 
   @override
-  String get authCreateAccount => 'Create Account';
+  String get authCreateAccount => 'Create account';
 
   @override
   String get authNoAccount => 'Don\'t have an account?';
@@ -1922,4 +1922,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String calRange(String start, String end) {
     return '$start to $end';
   }
+
+  @override
+  String get authOr => 'OR';
+
+  @override
+  String get authNewUser => 'New here?';
+
+  @override
+  String get authHaveAccount => 'Already have an account?';
+
+  @override
+  String get authSignIn => 'Sign in';
+
+  @override
+  String get authRemembered => 'Remember your password?';
+
+  @override
+  String get authShowPassword => 'Show password';
+
+  @override
+  String get authHidePassword => 'Hide password';
+
+  @override
+  String get authUnexpectedError => 'Something went wrong. Please try again.';
+
+  @override
+  String get authMfaUnsupported =>
+      'This account\'s second sign-in step is not supported by this app yet. Please contact support.';
 }
