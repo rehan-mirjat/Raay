@@ -1863,4 +1863,64 @@ class AppLocalizationsSd extends AppLocalizations {
   @override
   String get monReauth =>
       'For security, closing an election requires you to have signed in within the last 15 minutes. Please verify your identity to continue.';
+
+  @override
+  String get calTitle => 'Election calendar';
+
+  @override
+  String get calAgendaView => 'Agenda view';
+
+  @override
+  String get calCalendarView => 'Calendar view';
+
+  @override
+  String get calLoadError =>
+      'We could not load the calendar. Check your connection and try again.';
+
+  @override
+  String get calRetry => 'Try again';
+
+  @override
+  String get calAllOrgs => 'All organizations';
+
+  @override
+  String get calMonth => 'Month';
+
+  @override
+  String get calWeek => 'Week';
+
+  @override
+  String get calNoneTitle => 'No elections to show';
+
+  @override
+  String get calNoneBody => 'There are no elections in your organizations yet.';
+
+  @override
+  String get calNoDayTitle => 'No elections on this day';
+
+  @override
+  String get calNoDayBody => 'Pick another date to see what is scheduled.';
+
+  @override
+  String calCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n elections',
+      one: '1 election',
+      zero: 'No elections',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get calDetails => 'Details';
+
+  @override
+  String get calAdd => 'Add to calendar';
+
+  @override
+  String calRange(String start, String end) {
+    return '$start to $end';
+  }
 }

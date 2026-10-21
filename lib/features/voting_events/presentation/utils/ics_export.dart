@@ -17,7 +17,10 @@ String _escapeIcsText(String text) {
       .replaceAll('\\', '\\\\')
       .replaceAll(';', '\\;')
       .replaceAll(',', '\\,')
-      .replaceAll('\n', '\\n');
+      .replaceAll('\r\n', '\\n')
+      .replaceAll('\n', '\\n')
+      // A bare CR would end the line and let a title inject extra properties.
+      .replaceAll('\r', '');
 }
 
 /// Builds a minimal, standards-compliant VEVENT for an election's voting

@@ -3263,6 +3263,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'For security, closing an election requires you to have signed in within the last 15 minutes. Please verify your identity to continue.'**
   String get monReauth;
+
+  /// No description provided for @calTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Election calendar'**
+  String get calTitle;
+
+  /// No description provided for @calAgendaView.
+  ///
+  /// In en, this message translates to:
+  /// **'Agenda view'**
+  String get calAgendaView;
+
+  /// No description provided for @calCalendarView.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar view'**
+  String get calCalendarView;
+
+  /// No description provided for @calLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the calendar. Check your connection and try again.'**
+  String get calLoadError;
+
+  /// No description provided for @calRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get calRetry;
+
+  /// No description provided for @calAllOrgs.
+  ///
+  /// In en, this message translates to:
+  /// **'All organizations'**
+  String get calAllOrgs;
+
+  /// No description provided for @calMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get calMonth;
+
+  /// No description provided for @calWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Week'**
+  String get calWeek;
+
+  /// No description provided for @calNoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No elections to show'**
+  String get calNoneTitle;
+
+  /// No description provided for @calNoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no elections in your organizations yet.'**
+  String get calNoneBody;
+
+  /// No description provided for @calNoDayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No elections on this day'**
+  String get calNoDayTitle;
+
+  /// No description provided for @calNoDayBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick another date to see what is scheduled.'**
+  String get calNoDayBody;
+
+  /// No description provided for @calCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =0{No elections} =1{1 election} other{{n} elections}}'**
+  String calCount(int n);
+
+  /// No description provided for @calDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get calDetails;
+
+  /// No description provided for @calAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to calendar'**
+  String get calAdd;
+
+  /// No description provided for @calRange.
+  ///
+  /// In en, this message translates to:
+  /// **'{start} to {end}'**
+  String calRange(String start, String end);
 }
 
 class _AppLocalizationsDelegate

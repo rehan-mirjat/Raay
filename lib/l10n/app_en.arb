@@ -963,5 +963,38 @@
   "monCancel": "Cancel",
   "monClosed": "Voting closed.",
   "monCloseFailed": "We could not close voting. Please try again.",
-  "monReauth": "For security, closing an election requires you to have signed in within the last 15 minutes. Please verify your identity to continue."
+  "monReauth": "For security, closing an election requires you to have signed in within the last 15 minutes. Please verify your identity to continue.",
+  "calTitle": "Election calendar",
+  "calAgendaView": "Agenda view",
+  "calCalendarView": "Calendar view",
+  "calLoadError": "We could not load the calendar. Check your connection and try again.",
+  "calRetry": "Try again",
+  "calAllOrgs": "All organizations",
+  "calMonth": "Month",
+  "calWeek": "Week",
+  "calNoneTitle": "No elections to show",
+  "calNoneBody": "There are no elections in your organizations yet.",
+  "calNoDayTitle": "No elections on this day",
+  "calNoDayBody": "Pick another date to see what is scheduled.",
+  "calCount": "{n, plural, =0{No elections} =1{1 election} other{{n} elections}}",
+  "calDetails": "Details",
+  "calAdd": "Add to calendar",
+  "calRange": "{start} to {end}",
+  "@calCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@calRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  }
 }
