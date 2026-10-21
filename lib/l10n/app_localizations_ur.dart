@@ -858,4 +858,159 @@ class AppLocalizationsUr extends AppLocalizations {
   String orgsRoleLine(String role) {
     return 'Your role: $role';
   }
+
+  @override
+  String get peopleTitle => 'People';
+
+  @override
+  String get peopleSubtitle => 'Manage members, roles and invitations.';
+
+  @override
+  String get peopleAddExisting => 'Add existing user';
+
+  @override
+  String get peopleInvite => 'Invite member';
+
+  @override
+  String get peopleSearchHint => 'Search by name or email';
+
+  @override
+  String get peopleSearchClear => 'Clear search';
+
+  @override
+  String get peopleFilterAll => 'All';
+
+  @override
+  String get peopleFilterManagers => 'Owners and admins';
+
+  @override
+  String get peopleFilterMembers => 'Members';
+
+  @override
+  String get peopleFilterNotActive => 'Not active';
+
+  @override
+  String get peopleNoMembersTitle => 'No members yet';
+
+  @override
+  String get peopleNoMembersBody =>
+      'Add existing users or invite people to your organization.';
+
+  @override
+  String get peopleNoMatchTitle => 'No matches';
+
+  @override
+  String get peopleNoMatchBody => 'No one matches your search or filter.';
+
+  @override
+  String get peopleLoadError =>
+      'We could not load the member list. Check your connection and try again.';
+
+  @override
+  String get peopleRetry => 'Try again';
+
+  @override
+  String get peopleRestricted => 'Access restricted';
+
+  @override
+  String get peopleRestrictedBody =>
+      'Only organization admins can see the member list.';
+
+  @override
+  String get peopleNoOrgTitle => 'No active organization';
+
+  @override
+  String get peopleNoOrgBody => 'Choose an organization to see its people.';
+
+  @override
+  String get peopleUnknownUser => 'Unknown user';
+
+  @override
+  String peopleCount(int shown, int total) {
+    return '$shown of $total people';
+  }
+
+  @override
+  String get invTitle => 'Pending invitations';
+
+  @override
+  String get invRefresh => 'Refresh invitations';
+
+  @override
+  String get invLoadError => 'We could not load pending invitations.';
+
+  @override
+  String get invTryAgain => 'Try again';
+
+  @override
+  String get invNone => 'No pending invitations.';
+
+  @override
+  String get invExpired => 'Expired';
+
+  @override
+  String get invExpiringSoon => 'Expiring soon';
+
+  @override
+  String invExpiresDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Expires in $n days',
+      one: 'Expires in 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String invExpiresHours(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Expires in $n hours',
+      one: 'Expires in 1 hour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String invExpiresMinutes(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Expires in $n minutes',
+      one: 'Expires in 1 minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get invRevoke => 'Revoke';
+
+  @override
+  String get invRemove => 'Remove';
+
+  @override
+  String get invKeep => 'Keep it';
+
+  @override
+  String get invRevokeTitle => 'Revoke this invitation?';
+
+  @override
+  String invRevokeBody(String who) {
+    return '$who will no longer be able to accept it. You can invite them again later.';
+  }
+
+  @override
+  String get invRecipient => 'The recipient';
+
+  @override
+  String get invRevoked => 'Invitation revoked.';
+
+  @override
+  String get invRevokeFailed =>
+      'Could not revoke the invitation. Please try again.';
+
+  @override
+  String get invOwnerOnly => 'Only an owner can revoke admin invitations';
 }

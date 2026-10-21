@@ -387,5 +387,84 @@
         "type": "String"
       }
     }
+  },
+  "peopleTitle": "People",
+  "peopleSubtitle": "Manage members, roles and invitations.",
+  "peopleAddExisting": "Add existing user",
+  "peopleInvite": "Invite member",
+  "peopleSearchHint": "Search by name or email",
+  "peopleSearchClear": "Clear search",
+  "peopleFilterAll": "All",
+  "peopleFilterManagers": "Owners and admins",
+  "peopleFilterMembers": "Members",
+  "peopleFilterNotActive": "Not active",
+  "peopleNoMembersTitle": "No members yet",
+  "peopleNoMembersBody": "Add existing users or invite people to your organization.",
+  "peopleNoMatchTitle": "No matches",
+  "peopleNoMatchBody": "No one matches your search or filter.",
+  "peopleLoadError": "We could not load the member list. Check your connection and try again.",
+  "peopleRetry": "Try again",
+  "peopleRestricted": "Access restricted",
+  "peopleRestrictedBody": "Only organization admins can see the member list.",
+  "peopleNoOrgTitle": "No active organization",
+  "peopleNoOrgBody": "Choose an organization to see its people.",
+  "peopleUnknownUser": "Unknown user",
+  "peopleCount": "{shown} of {total} people",
+  "@peopleCount": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "invTitle": "Pending invitations",
+  "invRefresh": "Refresh invitations",
+  "invLoadError": "We could not load pending invitations.",
+  "invTryAgain": "Try again",
+  "invNone": "No pending invitations.",
+  "invExpired": "Expired",
+  "invExpiringSoon": "Expiring soon",
+  "invExpiresDays": "{n, plural, =1{Expires in 1 day} other{Expires in {n} days}}",
+  "invExpiresHours": "{n, plural, =1{Expires in 1 hour} other{Expires in {n} hours}}",
+  "invExpiresMinutes": "{n, plural, =1{Expires in 1 minute} other{Expires in {n} minutes}}",
+  "invRevoke": "Revoke",
+  "invRemove": "Remove",
+  "invKeep": "Keep it",
+  "invRevokeTitle": "Revoke this invitation?",
+  "invRevokeBody": "{who} will no longer be able to accept it. You can invite them again later.",
+  "invRecipient": "The recipient",
+  "invRevoked": "Invitation revoked.",
+  "invRevokeFailed": "Could not revoke the invitation. Please try again.",
+  "invOwnerOnly": "Only an owner can revoke admin invitations",
+  "@invExpiresDays": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@invExpiresHours": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@invExpiresMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@invRevokeBody": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
   }
 }

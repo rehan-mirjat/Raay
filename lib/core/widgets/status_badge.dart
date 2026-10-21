@@ -120,18 +120,20 @@ class StatusBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppTheme.radiusInput),
         border: Border.all(color: fg.withValues(alpha: 0.35), width: 1.0),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (icon != null) ...[
-            ExcludeSemantics(child: Icon(icon, size: 14, color: fg)),
-            const SizedBox(width: 4),
-          ],
-          Flexible(
-            child: Text(
+      // Scales down (never overflows) when a very narrow slot meets large text.
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: AlignmentDirectional.centerStart,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              ExcludeSemantics(child: Icon(icon, size: 14, color: fg)),
+              const SizedBox(width: 4),
+            ],
+            Text(
               label,
               maxLines: 1,
-              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
@@ -139,8 +141,8 @@ class StatusBadge extends StatelessWidget {
                 letterSpacing: 0.4,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

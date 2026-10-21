@@ -1661,6 +1661,252 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your role: {role}'**
   String orgsRoleLine(String role);
+
+  /// No description provided for @peopleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'People'**
+  String get peopleTitle;
+
+  /// No description provided for @peopleSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage members, roles and invitations.'**
+  String get peopleSubtitle;
+
+  /// No description provided for @peopleAddExisting.
+  ///
+  /// In en, this message translates to:
+  /// **'Add existing user'**
+  String get peopleAddExisting;
+
+  /// No description provided for @peopleInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite member'**
+  String get peopleInvite;
+
+  /// No description provided for @peopleSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name or email'**
+  String get peopleSearchHint;
+
+  /// No description provided for @peopleSearchClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get peopleSearchClear;
+
+  /// No description provided for @peopleFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get peopleFilterAll;
+
+  /// No description provided for @peopleFilterManagers.
+  ///
+  /// In en, this message translates to:
+  /// **'Owners and admins'**
+  String get peopleFilterManagers;
+
+  /// No description provided for @peopleFilterMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Members'**
+  String get peopleFilterMembers;
+
+  /// No description provided for @peopleFilterNotActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Not active'**
+  String get peopleFilterNotActive;
+
+  /// No description provided for @peopleNoMembersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No members yet'**
+  String get peopleNoMembersTitle;
+
+  /// No description provided for @peopleNoMembersBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add existing users or invite people to your organization.'**
+  String get peopleNoMembersBody;
+
+  /// No description provided for @peopleNoMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches'**
+  String get peopleNoMatchTitle;
+
+  /// No description provided for @peopleNoMatchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'No one matches your search or filter.'**
+  String get peopleNoMatchBody;
+
+  /// No description provided for @peopleLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the member list. Check your connection and try again.'**
+  String get peopleLoadError;
+
+  /// No description provided for @peopleRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get peopleRetry;
+
+  /// No description provided for @peopleRestricted.
+  ///
+  /// In en, this message translates to:
+  /// **'Access restricted'**
+  String get peopleRestricted;
+
+  /// No description provided for @peopleRestrictedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Only organization admins can see the member list.'**
+  String get peopleRestrictedBody;
+
+  /// No description provided for @peopleNoOrgTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No active organization'**
+  String get peopleNoOrgTitle;
+
+  /// No description provided for @peopleNoOrgBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an organization to see its people.'**
+  String get peopleNoOrgBody;
+
+  /// No description provided for @peopleUnknownUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown user'**
+  String get peopleUnknownUser;
+
+  /// No description provided for @peopleCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{shown} of {total} people'**
+  String peopleCount(int shown, int total);
+
+  /// No description provided for @invTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending invitations'**
+  String get invTitle;
+
+  /// No description provided for @invRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh invitations'**
+  String get invRefresh;
+
+  /// No description provided for @invLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load pending invitations.'**
+  String get invLoadError;
+
+  /// No description provided for @invTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get invTryAgain;
+
+  /// No description provided for @invNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No pending invitations.'**
+  String get invNone;
+
+  /// No description provided for @invExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get invExpired;
+
+  /// No description provided for @invExpiringSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiring soon'**
+  String get invExpiringSoon;
+
+  /// No description provided for @invExpiresDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{Expires in 1 day} other{Expires in {n} days}}'**
+  String invExpiresDays(int n);
+
+  /// No description provided for @invExpiresHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{Expires in 1 hour} other{Expires in {n} hours}}'**
+  String invExpiresHours(int n);
+
+  /// No description provided for @invExpiresMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{Expires in 1 minute} other{Expires in {n} minutes}}'**
+  String invExpiresMinutes(int n);
+
+  /// No description provided for @invRevoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke'**
+  String get invRevoke;
+
+  /// No description provided for @invRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get invRemove;
+
+  /// No description provided for @invKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get invKeep;
+
+  /// No description provided for @invRevokeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke this invitation?'**
+  String get invRevokeTitle;
+
+  /// No description provided for @invRevokeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{who} will no longer be able to accept it. You can invite them again later.'**
+  String invRevokeBody(String who);
+
+  /// No description provided for @invRecipient.
+  ///
+  /// In en, this message translates to:
+  /// **'The recipient'**
+  String get invRecipient;
+
+  /// No description provided for @invRevoked.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation revoked.'**
+  String get invRevoked;
+
+  /// No description provided for @invRevokeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not revoke the invitation. Please try again.'**
+  String get invRevokeFailed;
+
+  /// No description provided for @invOwnerOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only an owner can revoke admin invitations'**
+  String get invOwnerOnly;
 }
 
 class _AppLocalizationsDelegate
