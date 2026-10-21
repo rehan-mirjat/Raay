@@ -28,17 +28,11 @@ class KivoraMetricCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: kc.surface,
+        color: kc.elevated,
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
         border: Border.all(
-            color: isDark ? AppTheme.darkBorder : AppTheme.borderLight, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.04),
-            blurRadius: 15,
-            offset: const Offset(0, 4),
-          ),
-        ],
+            color: isDark ? AppTheme.darkBorder : AppTheme.borderLight,
+            width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,20 +57,24 @@ class KivoraMetricCard extends StatelessWidget {
               ),
               if (subtitle != null) ...[
                 const Expanded(child: SizedBox()),
-                Text(
+                Flexible(
+                    child: Text(
                   subtitle!,
-                  style: const TextStyle(
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: AppTheme.accentTeal,
+                    color: kc.textSecondary,
                   ),
-                ),
+                )),
               ],
             ],
           ),
           const SizedBox(height: 16),
           Text(
             value,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,

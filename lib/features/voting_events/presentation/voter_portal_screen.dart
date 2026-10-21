@@ -16,7 +16,14 @@ import '../../voting/data/participation_repository.dart';
 import '../domain/voting_event.dart';
 import 'providers/voter_portal_providers.dart';
 
-enum _PortalFilter { all, active, upcoming, completed, participated, resultsAvailable }
+enum _PortalFilter {
+  all,
+  active,
+  upcoming,
+  completed,
+  participated,
+  resultsAvailable
+}
 
 extension on _PortalFilter {
   String get label => switch (this) {
@@ -46,10 +53,12 @@ class VoterPortalScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const body = _VoterPortalBody();
-    if (embedded) return body;
-    return const Scaffold(
-      backgroundColor: Colors.transparent,
-      body: SafeArea(child: body),
+    if (embedded) {
+      return ColoredBox(color: KivoraColors.backgroundOf(context), child: body);
+    }
+    return Scaffold(
+      backgroundColor: KivoraColors.backgroundOf(context),
+      body: const SafeArea(child: body),
     );
   }
 }
@@ -195,7 +204,7 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
                 ),
                 const SizedBox(height: 14),
                 SizedBox(
-                  height: 36,
+                  height: 48,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: _PortalFilter.values.length,
@@ -210,10 +219,14 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
                           _filter = f;
                           _visibleCount = _pageSize;
                         }),
-                        selectedColor: AppTheme.primaryBlue.withValues(alpha: 0.15),
+                        selectedColor:
+                            AppTheme.primaryBlue.withValues(alpha: 0.15),
                         labelStyle: TextStyle(
-                          color: selected ? AppTheme.primaryBlue : kc.textSecondary,
-                          fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                          color: selected
+                              ? AppTheme.primaryBlue
+                              : kc.textSecondary,
+                          fontWeight:
+                              selected ? FontWeight.bold : FontWeight.normal,
                         ),
                         side: BorderSide(
                             color: selected ? AppTheme.primaryBlue : kc.border),
@@ -282,8 +295,7 @@ final _bulkParticipationProvider =
 
   final repo = ref.watch(participationRepositoryProvider);
   final results = await Future.wait(entries.map((e) async {
-    final voted =
-        await repo.hasUserVoted(e.organization.id, e.event.id, uid);
+    final voted = await repo.hasUserVoted(e.organization.id, e.event.id, uid);
     return MapEntry(e.event.id, voted);
   }));
   return Map.fromEntries(results);
@@ -354,7 +366,8 @@ class _ElectionCard extends StatelessWidget {
             children: [
               if (!entry.isLikelyEligible)
                 _miniBadge(context, 'Not eligible', AppTheme.textSecondary),
-              if (hasVoted) _miniBadge(context, 'Participated', AppTheme.success),
+              if (hasVoted)
+                _miniBadge(context, 'Participated', AppTheme.success),
             ],
           ),
           const Spacer(),

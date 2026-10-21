@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../../features/billing/ads/ad_banner.dart';
+import '../../features/voting_events/presentation/voter_portal_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kivora/core/theme/kivora_icons.dart';
@@ -14,8 +14,6 @@ import '../widgets/ui_kit/kivora_metric_card.dart';
 import '../widgets/ui_kit/kivora_election_card.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
-import '../../l10n/app_localizations.dart';
-import '../../services/auth_service.dart';
 import '../../features/organizations/domain/organization_enums.dart';
 import '../../features/organizations/presentation/organization_audit_screen.dart';
 import '../../features/organizations/presentation/providers/organization_providers.dart';
@@ -34,13 +32,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final activeContextState = ref.watch(activeOrganizationContextProvider);
-    final user = ref.watch(authServiceProvider).currentUser;
 
     return activeContextState.when(
       loading: () => const LoadingView(message: 'Loading dashboard...'),
       error: (e, _) => ErrorView(
         type: ErrorViewType.generic,
-        message: 'Failed to load dashboard: $e',
+        message: 'Could not load your dashboard. Please try again.',
         onRetry: () => ref.invalidate(activeOrganizationContextProvider),
       ),
       data: (orgState) {
@@ -53,69 +50,81 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final orgContext = orgState.context!;
         final isAdmin = orgContext.member.role == OrganizationRole.owner ||
             orgContext.member.role == OrganizationRole.admin;
-        final eventsArgs = (orgId: orgContext.organization.id, includeDrafts: isAdmin);
-        final eventsAsync = ref.watch(organizationVotingEventsProvider(eventsArgs));
+        if (!isAdmin) return const VoterPortalScreen(embedded: true);
 
-        return RefreshIndicator(
-          onRefresh: () async {
-            ref.invalidate(activeOrganizationContextProvider);
-            ref.invalidate(organizationVotingEventsProvider(eventsArgs));
-          },
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: EdgeInsets.all(ResponsiveLayout.isWide(context) ? 40 : 20),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 1200),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildWelcomeHeader(context, user?.displayName ?? 'User'),
-                    const SizedBox(height: 32),
-                    _buildMetricsRow(context, orgContext.organization.name, eventsAsync),
-                    const SizedBox(height: 32),
-                    ResponsiveLayout.isWide(context)
-                        ? Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: _buildEventsFeed(context, eventsAsync, isAdmin),
-                              ),
-                              const SizedBox(width: 24),
-                              Expanded(
-                                flex: 1,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                    if (isAdmin) ...[
-                                      MembersGrowthChart(
-                                          organizationId: orgContext.organization.id),
-                                      const SizedBox(height: 24),
-                                      _buildRecentActivityFeed(
-                                          context, orgContext.organization.id),
-                                    ],
-                                  ],
+        final eventsArgs =
+            (orgId: orgContext.organization.id, includeDrafts: isAdmin);
+        final eventsAsync =
+            ref.watch(organizationVotingEventsProvider(eventsArgs));
+
+        return ColoredBox(
+          color: KivoraColors.backgroundOf(context),
+          child: RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(activeOrganizationContextProvider);
+              ref.invalidate(organizationVotingEventsProvider(eventsArgs));
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding:
+                  EdgeInsets.all(ResponsiveLayout.isWide(context) ? 40 : 20),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 1200),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _buildWelcomeHeader(
+                          context, orgContext.organization.name),
+                      const SizedBox(height: 32),
+                      _buildMetricsRow(context, eventsAsync),
+                      const SizedBox(height: 32),
+                      ResponsiveLayout.isWide(context)
+                          ? Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: _buildEventsFeed(
+                                      context, eventsAsync, isAdmin),
                                 ),
-                              ),
-                            ],
-                          )
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              _buildEventsFeed(context, eventsAsync, isAdmin),
-                              if (isAdmin) ...[
-                                const SizedBox(height: 24),
-                                MembersGrowthChart(
-                                    organizationId: orgContext.organization.id),
-                                const SizedBox(height: 24),
-                                _buildRecentActivityFeed(
-                                    context, orgContext.organization.id),
+                                const SizedBox(width: 24),
+                                Expanded(
+                                  flex: 1,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      if (isAdmin) ...[
+                                        MembersGrowthChart(
+                                            organizationId:
+                                                orgContext.organization.id),
+                                        const SizedBox(height: 24),
+                                        _buildRecentActivityFeed(context,
+                                            orgContext.organization.id),
+                                      ],
+                                    ],
+                                  ),
+                                ),
                               ],
-                            ],
-                          ),
-                    const AdBanner(),
-                  ],
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                _buildEventsFeed(context, eventsAsync, isAdmin),
+                                if (isAdmin) ...[
+                                  const SizedBox(height: 24),
+                                  MembersGrowthChart(
+                                      organizationId:
+                                          orgContext.organization.id),
+                                  const SizedBox(height: 24),
+                                  _buildRecentActivityFeed(
+                                      context, orgContext.organization.id),
+                                ],
+                              ],
+                            ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -127,8 +136,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildWelcomeHeader(BuildContext context, String name) {
     final kc = KivoraColors.of(context);
-    final l10n = AppLocalizations.of(context);
-    final welcomeTitle = '${l10n.authSignInTitle}, ${name.split(' ').first}! 👋';
+    final welcomeTitle = name;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -143,7 +151,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         const SizedBox(height: 6),
         Text(
-          'Here is what\'s happening across your organization today.',
+          'Election overview · Manage voting and follow your organization’s activity.',
           style: TextStyle(
             fontSize: 15,
             color: kc.textSecondary,
@@ -155,59 +163,66 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildMetricsRow(
     BuildContext context,
-    String orgName,
     AsyncValue<List<VotingEvent>> eventsAsync,
   ) {
-    final isDesktop = ResponsiveLayout.isWide(context);
     final liveElections = eventsAsync.valueOrNull
             ?.where((e) => e.status == VotingEventStatus.active)
             .length ??
         0;
-    final pendingInvites = ref.watch(memberInvitationsProvider).valueOrNull?.length ?? 0;
+    final invitations = ref.watch(memberInvitationsProvider);
+    final pendingInvites = invitations.valueOrNull?.length;
 
     final metrics = [
       KivoraMetricCard(
-        title: 'Active Context',
-        value: orgName.length > 15 ? '${orgName.substring(0, 15)}...' : orgName,
+        title: 'Upcoming elections',
+        value: eventsAsync.hasValue
+            ? '${eventsAsync.requireValue.where((e) => e.status == VotingEventStatus.scheduled).length}'
+            : '—',
         icon: KivoraIcons.building,
-        subtitle: 'Workspace',
+        subtitle: 'Scheduled',
       ),
       KivoraMetricCard(
         title: 'Live Elections',
-        value: '$liveElections',
+        value: eventsAsync.hasValue ? '$liveElections' : '—',
         icon: KivoraIcons.vote,
-        subtitle: 'Requires action',
+        subtitle: 'Open for voting',
         iconColor: AppTheme.accentTeal,
       ),
       KivoraMetricCard(
         title: 'Pending Invites',
-        value: '$pendingInvites',
+        value: pendingInvites?.toString() ?? '—',
         icon: KivoraIcons.mail,
         subtitle: 'Review',
         iconColor: AppTheme.warning,
       ),
     ];
 
-    if (isDesktop) {
+    if (!ResponsiveLayout.isCompact(context)) {
       return Row(
-        children: metrics.map<Widget>((m) => Expanded(child: Padding(
-          padding: const EdgeInsets.only(right: 16.0),
-          child: m,
-        ))).toList(),
+        children: metrics
+            .map<Widget>((m) => Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: m,
+                )))
+            .toList(),
       );
     } else {
       return Column(
-        children: metrics.map<Widget>((m) => Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
-          child: m,
-        )).toList(),
+        children: metrics
+            .map<Widget>((m) => Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: m,
+                ))
+            .toList(),
       );
     }
   }
 
-  Widget _buildEventsFeed(BuildContext context, AsyncValue<List<VotingEvent>> eventsAsync, bool isAdmin) {
+  Widget _buildEventsFeed(BuildContext context,
+      AsyncValue<List<VotingEvent>> eventsAsync, bool isAdmin) {
     final kc = KivoraColors.of(context);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -232,9 +247,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         const SizedBox(height: 16),
         eventsAsync.when(
           loading: () => const LoadingView(message: 'Loading events...'),
-          error: (e, _) => Center(child: Text('Error: $e')),
+          error: (e, _) => ErrorView(
+            message: 'Could not load elections. Please try again.',
+            onRetry: () => ref.invalidate(activeOrganizationContextProvider),
+          ),
           data: (events) {
-            final activeEvents = events.where((e) => e.status == VotingEventStatus.active || e.status == VotingEventStatus.scheduled).toList();
+            final activeEvents = events
+                .where((e) =>
+                    e.status == VotingEventStatus.active ||
+                    e.status == VotingEventStatus.scheduled)
+                .toList()
+              ..sort((a, b) {
+                if (a.status != b.status) {
+                  return a.status == VotingEventStatus.active ? -1 : 1;
+                }
+                return a.endAt.compareTo(b.endAt);
+              });
             if (activeEvents.isEmpty) {
               return KivoraCard(
                 child: Center(
@@ -242,7 +270,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     padding: const EdgeInsets.all(32.0),
                     child: Column(
                       children: [
-                        Icon(KivoraIcons.calendarX, size: 48, color: kc.textSecondary),
+                        Icon(KivoraIcons.calendarX,
+                            size: 48, color: kc.textSecondary),
                         const SizedBox(height: 16),
                         Text(
                           'No active events',
@@ -265,13 +294,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             }
 
             return Column(
-              children: activeEvents.map<Widget>((event) => Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: KivoraElectionCard(
-                  event: event,
-                  isAdmin: isAdmin,
-                ),
-              )).toList(),
+              children: activeEvents
+                  .map<Widget>((event) => Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: KivoraElectionCard(
+                          event: event,
+                          isAdmin: isAdmin,
+                        ),
+                      ))
+                  .toList(),
             );
           },
         ),
@@ -346,9 +377,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   String _formatActivityAction(String raw) {
     if (raw.isEmpty) return 'Admin action';
-    final words = raw.split('_').map((w) => w.isEmpty
-        ? w
-        : '${w[0].toUpperCase()}${w.substring(1).toLowerCase()}');
+    final words = raw.split('_').map((w) =>
+        w.isEmpty ? w : '${w[0].toUpperCase()}${w.substring(1).toLowerCase()}');
     return words.join(' ');
   }
 
@@ -376,7 +406,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               color: AppTheme.primaryBlue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Icon(KivoraIcons.barChart2, size: 16, color: AppTheme.primaryBlue),
+            child: const Icon(KivoraIcons.barChart2,
+                size: 16, color: AppTheme.primaryBlue),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -427,7 +458,8 @@ class _EmptyPlatformWelcome extends ConsumerWidget {
                   color: AppTheme.primaryBlue.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(KivoraIcons.building2, size: 48, color: AppTheme.primaryBlue),
+                child: const Icon(KivoraIcons.building2,
+                    size: 48, color: AppTheme.primaryBlue),
               ),
               const SizedBox(height: 24),
               Text(

@@ -7,6 +7,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/loading_view.dart';
+import '../../../core/widgets/ui_kit/kivora_card.dart';
 import '../../../services/auth_service.dart';
 import '../../voting_events/data/candidate_repository.dart';
 import '../../voting_events/data/poll_option_repository.dart';
@@ -57,8 +58,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
   void _goToReview() {
     if (_selectedCandidateId == null && _selectedPollOptionId == null) {
-      setState(() => _errorMessage =
-          'Please select an option before continuing.');
+      setState(
+          () => _errorMessage = 'Please select an option before continuing.');
       return;
     }
     setState(() {
@@ -150,7 +151,9 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
     final user = ref.watch(authServiceProvider).currentUser;
 
     return Scaffold(
+      backgroundColor: KivoraColors.backgroundOf(context),
       appBar: AppBar(
+        backgroundColor: KivoraColors.backgroundOf(context),
         title: const Text('Cast Your Ballot'),
       ),
       body: eventAsync.when(
@@ -219,8 +222,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
               const SizedBox(height: 12),
               Text(
                 l10n.voteAlreadyVotedMessage(event.title),
-                style:
-                    TextStyle(color: KivoraColors.textSecondaryOf(context), height: 1.4),
+                style: TextStyle(
+                    color: KivoraColors.textSecondaryOf(context), height: 1.4),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
@@ -301,7 +304,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.info_outline_rounded, color: AppTheme.warning),
+                      const Icon(Icons.info_outline_rounded,
+                          color: AppTheme.warning),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
@@ -321,7 +325,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
               ],
 
               // Event Header Card
-              Card(
+              KivoraCard(
+                padding: EdgeInsets.zero,
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -353,13 +358,15 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(Icons.timer_outlined,
-                                  size: 16, color: KivoraColors.textSecondaryOf(context)),
+                                  size: 16,
+                                  color: KivoraColors.textSecondaryOf(context)),
                               const SizedBox(width: 4),
                               Text(
                                 _getTimeRemaining(event.endAt),
                                 style: TextStyle(
                                     fontSize: 12,
-                                    color: KivoraColors.textSecondaryOf(context),
+                                    color:
+                                        KivoraColors.textSecondaryOf(context),
                                     fontWeight: FontWeight.w600),
                               ),
                             ],
@@ -379,7 +386,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                         Text(
                           event.description,
                           style: TextStyle(
-                              color: KivoraColors.textSecondaryOf(context), height: 1.4),
+                              color: KivoraColors.textSecondaryOf(context),
+                              height: 1.4),
                         ),
                       ],
                     ],
@@ -398,7 +406,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'Identifiable ballot: your selected choice will be associated with your account.',
+                          l10n.voteIdentifiableExplanation,
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -436,7 +444,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
               if (_step == _BallotStep.select) ...[
                 Text(
-                  l10n.voteSelectionPrompt.toUpperCase(),
+                  l10n.voteSelectionPrompt,
                   style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
@@ -476,15 +484,15 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
   Widget _buildStepIndicator(BuildContext context) {
     final kc = KivoraColors.of(context);
     Widget step(int number, String label, bool active, bool complete) {
-      final color = active || complete ? AppTheme.primaryBlue : kc.textSecondary;
+      final color =
+          active || complete ? AppTheme.primaryBlue : kc.textSecondary;
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           CircleAvatar(
             radius: 12,
-            backgroundColor: active || complete
-                ? AppTheme.primaryBlue
-                : kc.border,
+            backgroundColor:
+                active || complete ? AppTheme.primaryBlue : kc.border,
             child: complete
                 ? const Icon(Icons.check, size: 14, color: Colors.white)
                 : Text('$number',
@@ -544,7 +552,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
           decoration: BoxDecoration(
             color: AppTheme.primaryBlue.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.2)),
+            border:
+                Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.2)),
           ),
           child: Row(
             children: [
@@ -555,7 +564,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(l10n.voteYourSelection,
-                        style: TextStyle(fontSize: 12, color: kc.textSecondary)),
+                        style:
+                            TextStyle(fontSize: 12, color: kc.textSecondary)),
                     Text(
                       _selectedChoiceName ?? l10n.voteYourSelection,
                       style: const TextStyle(
@@ -582,7 +592,9 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(
-                isIdentifiable ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                isIdentifiable
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
                 color: isIdentifiable ? Colors.deepOrange : AppTheme.success,
                 size: 20,
               ),
@@ -595,7 +607,9 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                   style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: isIdentifiable ? Colors.deepOrange : AppTheme.success),
+                      color: isIdentifiable
+                          ? Colors.deepOrange
+                          : AppTheme.success),
                 ),
               ),
             ],
@@ -674,64 +688,65 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
-                    children: [
-                      Icon(
-                        isSelected
-                            ? Icons.radio_button_checked
-                            : Icons.radio_button_unchecked,
-                        color: isSelected
-                            ? AppTheme.primaryBlue
-                            : KivoraColors.textSecondaryOf(context),
-                      ),
-                      const SizedBox(width: 12),
-                      CircleAvatar(
-                        radius: 24,
-                        backgroundColor:
-                            AppTheme.primaryBlue.withValues(alpha: 0.1),
-                        backgroundImage:
-                            cand.photoUrl != null && cand.photoUrl!.isNotEmpty
-                                ? NetworkImage(cand.photoUrl!)
-                                : null,
-                        child: cand.photoUrl == null || cand.photoUrl!.isEmpty
-                            ? Text(
-                                cand.name.isNotEmpty
-                                    ? cand.name[0].toUpperCase()
-                                    : 'C',
+                  children: [
+                    Icon(
+                      isSelected
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_unchecked,
+                      color: isSelected
+                          ? AppTheme.primaryBlue
+                          : KivoraColors.textSecondaryOf(context),
+                    ),
+                    const SizedBox(width: 12),
+                    CircleAvatar(
+                      radius: 24,
+                      backgroundColor:
+                          AppTheme.primaryBlue.withValues(alpha: 0.1),
+                      backgroundImage:
+                          cand.photoUrl != null && cand.photoUrl!.isNotEmpty
+                              ? NetworkImage(cand.photoUrl!)
+                              : null,
+                      child: cand.photoUrl == null || cand.photoUrl!.isEmpty
+                          ? Text(
+                              cand.name.isNotEmpty
+                                  ? cand.name[0].toUpperCase()
+                                  : 'C',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.primaryBlue))
+                          : null,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(cand.name,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: KivoraColors.textPrimaryOf(context))),
+                          if (cand.party.isNotEmpty)
+                            Text(cand.party,
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppTheme.primaryBlue))
-                            : null,
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(cand.name,
+                                    fontSize: 13,
+                                    color: AppTheme.primaryBlue,
+                                    fontWeight: FontWeight.w500)),
+                          if (cand.bio.isNotEmpty) ...[
+                            const SizedBox(height: 4),
+                            Text(cand.bio,
                                 style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: KivoraColors.textPrimaryOf(context))),
-                            if (cand.party.isNotEmpty)
-                              Text(cand.party,
-                                  style: const TextStyle(
-                                      fontSize: 13,
-                                      color: AppTheme.primaryBlue,
-                                      fontWeight: FontWeight.w500)),
-                            if (cand.bio.isNotEmpty) ...[
-                              const SizedBox(height: 4),
-                              Text(cand.bio,
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: KivoraColors.textSecondaryOf(context)),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis),
-                            ],
+                                    fontSize: 12,
+                                    color:
+                                        KivoraColors.textSecondaryOf(context)),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis),
                           ],
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
+                ),
               ),
             );
           }).toList(),
@@ -795,7 +810,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                             Text(opt.description,
                                 style: TextStyle(
                                     fontSize: 13,
-                                    color: KivoraColors.textSecondaryOf(context))),
+                                    color:
+                                        KivoraColors.textSecondaryOf(context))),
                           ],
                         ],
                       ),
@@ -847,9 +863,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
     return _SelectableCard(
       isSelected: isSelected,
       accentColor: color,
-      semanticLabel: isSelected
-          ? '$title, $subtitle, selected'
-          : '$title, $subtitle',
+      semanticLabel:
+          isSelected ? '$title, $subtitle, selected' : '$title, $subtitle',
       onTap: () {
         setState(() {
           _selectedPollOptionId = id;
@@ -880,7 +895,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                         color: color)),
                 Text(subtitle,
                     style: TextStyle(
-                        fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
+                        fontSize: 12,
+                        color: KivoraColors.textSecondaryOf(context))),
               ],
             ),
           ],

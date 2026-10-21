@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
+import '../../theme/kivora_colors.dart';
 import '../glass/glass.dart';
 
 class KivoraCard extends StatelessWidget {
@@ -20,17 +21,27 @@ class KivoraCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassSurface(
-      margin: margin,
-      glow: isGlass,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-          child: Padding(padding: padding, child: child),
-        ),
+    final content = Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+        child: Padding(padding: padding, child: child),
       ),
+    );
+    if (isGlass) {
+      return GlassSurface(margin: margin, child: content);
+    }
+    final colors = KivoraColors.of(context);
+    return Container(
+      margin: margin,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: colors.elevated,
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+        border: Border.all(color: colors.border),
+      ),
+      child: content,
     );
   }
 }

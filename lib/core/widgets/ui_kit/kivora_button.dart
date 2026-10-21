@@ -31,8 +31,8 @@ class KivoraButton extends StatelessWidget {
 
     switch (type) {
       case KivoraButtonType.primary:
-        bg = AppTheme.primaryBlue;
-        fg = Colors.white;
+        bg = Theme.of(context).colorScheme.primary;
+        fg = Theme.of(context).colorScheme.onPrimary;
         break;
       case KivoraButtonType.secondary:
         bg = isDark ? AppTheme.darkElevated : AppTheme.surfaceWhite;
@@ -86,10 +86,12 @@ class KivoraButton extends StatelessWidget {
             padding: const EdgeInsets.only(right: 8),
             child: Icon(icon, size: 20),
           ),
-        Text(
+        Flexible(
+            child: Text(
           label,
+          textAlign: TextAlign.center,
           style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-        ),
+        )),
       ],
     );
 
