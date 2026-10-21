@@ -197,6 +197,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                           ),
                           const SizedBox(height: 6),
                           DropdownButtonFormField<String>(
+                            isExpanded: true,
                             initialValue: _category,
                             items: _kReportCategories
                                 .map((c) => DropdownMenuItem(value: c, child: Text(c)))

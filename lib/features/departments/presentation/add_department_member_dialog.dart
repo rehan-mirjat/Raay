@@ -72,7 +72,9 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
       final name = (m['displayName'] as String? ?? '').toLowerCase();
       final email = (m['email'] as String? ?? '').toLowerCase();
       final matchesSearch = _searchQuery.isEmpty || name.contains(_searchQuery) || email.contains(_searchQuery);
-      return isNotInDept && isActive && matchesSearch;
+      // A row without a user id cannot be assigned, so it is not offered.
+      final hasUserId = (m['userId'] as String?)?.isNotEmpty ?? false;
+      return isNotInDept && isActive && hasUserId && matchesSearch;
     }).toList();
 
     return Dialog(
@@ -80,17 +82,14 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
       backgroundColor: kc.surface,
       child: SizedBox(
         width: (screenSize.width - 80).clamp(280.0, 520.0),
-        height: (screenSize.height * 0.65).clamp(320.0, 540.0),
+        height: (screenSize.height * 0.92).clamp(320.0, 800.0),
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -101,7 +100,10 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
                             color: KivoraColors.of(context).accentText, size: 20),
                       ),
                       const SizedBox(width: 12),
-                      Text(
+                  Expanded(
+                    child: Semantics(
+                      header: true,
+                      child: Text(
                         'Add Member to Department',
                         style: TextStyle(
                           fontSize: 18,
@@ -109,11 +111,13 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
                           color: kc.textPrimary,
                         ),
                       ),
-                    ],
+                    ),
                   ),
                   IconButton(
+                    tooltip: 'Close',
+                    constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                     icon: const Icon(KivoraIcons.x, size: 20),
-                    onPressed: () => Navigator.pop(context),
+                  onPressed: () => Navigator.pop(context),
                   ),
                 ],
               ),
@@ -158,11 +162,11 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
                               children: [
                                 CircleAvatar(
                                   radius: 20,
-                                  backgroundColor: AppTheme.primaryBlue,
+                                  backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.14),
                                   child: Text(
                                     name.isNotEmpty ? name[0].toUpperCase() : 'U',
-                                    style: const TextStyle(
-                                        color: Colors.white, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        color: kc.accentText, fontWeight: FontWeight.bold),
                                   ),
                                 ),
                                 const SizedBox(width: 12),
@@ -172,6 +176,8 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
                                     children: [
                                       Text(
                                         name,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14,
@@ -180,20 +186,24 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
                                       ),
                                       Text(
                                         '$email${currentDept != null ? ' • currently in $currentDept' : ''}',
-                                        style: TextStyle(fontSize: 12, color: kc.textSecondary),
-                                        maxLines: 1,
+                                        style: TextStyle(fontSize: 14, color: kc.textSecondary),
+                                        maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ],
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-                                KivoraButton(
-                                  icon: KivoraIcons.userPlus,
-                                  label: 'Add',
-                                  isLoading: isAssigningThis,
-                                  isExpanded: false,
+                                IconButton.filledTonal(
+                                  tooltip: 'Add $name to this department',
+                                  constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                                   onPressed: isDisabled ? null : () => _assignMember(targetUid),
+                                  icon: isAssigningThis
+                                      ? const SizedBox(
+                                          width: 18,
+                                          height: 18,
+                                          child: CircularProgressIndicator(strokeWidth: 2))
+                                      : const Icon(KivoraIcons.userPlus, size: 20),
                                 ),
                               ],
                             ),

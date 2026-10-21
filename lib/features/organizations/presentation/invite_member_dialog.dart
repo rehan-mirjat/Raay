@@ -200,10 +200,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
@@ -214,7 +211,10 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                                 color: KivoraColors.of(context).accentText, size: 20),
                           ),
                           const SizedBox(width: 12),
-                          Text(
+                      Expanded(
+                        child: Semantics(
+                          header: true,
+                          child: Text(
                             'Invite Member',
                             style: TextStyle(
                               fontSize: 18,
@@ -222,11 +222,13 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                               color: kc.textPrimary,
                             ),
                           ),
-                        ],
+                        ),
                       ),
                       IconButton(
+                        tooltip: 'Close',
+                        constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                         icon: const Icon(KivoraIcons.x, size: 20),
-                        onPressed: _isLoading ? null : () => Navigator.pop(context),
+                      onPressed: _isLoading ? null : () => Navigator.pop(context),
                       ),
                     ],
                   ),
@@ -245,10 +247,31 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                     validator: Validators.email,
                   ),
                   const SizedBox(height: 16),
-                  KivoraTextField(
-                    label: 'Organization',
-                    controller: TextEditingController(text: widget.organizationName),
-                    prefixIcon: KivoraIcons.building,
+                  // Read-only: the invitation always goes to the active organization.
+                  Semantics(
+                    container: true,
+                    label: 'Organization: ${widget.organizationName}',
+                    child: ExcludeSemantics(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(KivoraIcons.building, size: 18, color: kc.textSecondary),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Organization',
+                                    style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+                                Text(widget.organizationName,
+                                    style: TextStyle(
+                                        fontSize: 15, fontWeight: FontWeight.w600, color: kc.textPrimary)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 16),
                   if (widget.isOwner) ...[
@@ -258,6 +281,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                     ),
                     const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
+                      isExpanded: true,
                       initialValue: _selectedRole,
                       decoration: const InputDecoration(
                         prefixIcon: Icon(KivoraIcons.shieldCheck, size: 20),
@@ -276,23 +300,23 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                     Text(_error!, style: TextStyle(color: KivoraColors.of(context).errorText, fontSize: 13)),
                   ],
                   const SizedBox(height: 24),
-                  Row(
+                  Wrap(
+                    alignment: WrapAlignment.end,
+                    spacing: 12,
+                    runSpacing: 12,
                     children: [
-                      Expanded(
-                        child: KivoraButton(
-                          type: KivoraButtonType.secondary,
-                          label: 'Cancel',
-                          onPressed: _isLoading ? null : () => Navigator.pop(context),
-                        ),
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+                        onPressed: _isLoading ? null : () => Navigator.pop(context),
+                        child: const Text('Cancel'),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: KivoraButton(
-                          label: 'Send Invitation',
-                          icon: KivoraIcons.send,
-                          isLoading: _isLoading,
-                          onPressed: _submit,
-                        ),
+                      FilledButton.icon(
+                        style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+                        onPressed: _isLoading ? null : _submit,
+                        icon: _isLoading
+                            ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                            : const Icon(KivoraIcons.send, size: 18),
+                        label: const Text('Send invitation'),
                       ),
                     ],
                   ),

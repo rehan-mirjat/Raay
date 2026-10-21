@@ -309,17 +309,18 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
     final kc = KivoraColors.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Wrap(
+        spacing: 12,
+        runSpacing: 2,
         children: [
           Text(
             label,
-            style: TextStyle(fontSize: 13, color: kc.textSecondary),
+            style: TextStyle(fontSize: 14, color: kc.textSecondary),
           ),
           Text(
             value,
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 14,
               fontWeight: FontWeight.bold,
               color: kc.textPrimary,
             ),

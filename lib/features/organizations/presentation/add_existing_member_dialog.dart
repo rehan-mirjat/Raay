@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kivora/core/theme/app_theme.dart';
 import 'package:kivora/core/theme/kivora_colors.dart';
 import 'package:kivora/core/theme/kivora_icons.dart';
-import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
 import 'package:kivora/core/widgets/ui_kit/kivora_text_field.dart';
 
 import '../../../core/widgets/inline_error_banner.dart';
@@ -79,31 +78,33 @@ class _AddExistingMemberDialogState
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: AppTheme.primaryBlue.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Icon(KivoraIcons.userPlus,
-                                color: KivoraColors.of(context).accentText, size: 20),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Add Existing Member',
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryBlue.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Icon(KivoraIcons.userPlus,
+                            color: KivoraColors.of(context).accentText, size: 20),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Semantics(
+                          header: true,
+                          child: Text(
+                            'Add existing member',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: kc.textPrimary,
                             ),
                           ),
-                        ],
+                        ),
                       ),
                       IconButton(
+                        tooltip: 'Close',
+                        constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                         icon: const Icon(KivoraIcons.x, size: 20),
                         onPressed: _isSubmitting ? null : () => Navigator.pop(context),
                       ),
@@ -136,23 +137,23 @@ class _AddExistingMemberDialogState
                     InlineErrorBanner(message: _error!),
                   ],
                   const SizedBox(height: 24),
-                  Row(
+                  Wrap(
+                    alignment: WrapAlignment.end,
+                    spacing: 12,
+                    runSpacing: 12,
                     children: [
-                      Expanded(
-                        child: KivoraButton(
-                          type: KivoraButtonType.secondary,
-                          label: 'Cancel',
-                          onPressed: _isSubmitting ? null : () => Navigator.pop(context),
-                        ),
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+                        onPressed: _isSubmitting ? null : () => Navigator.pop(context),
+                        child: const Text('Cancel'),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: KivoraButton(
-                          label: 'Add Member',
-                          icon: KivoraIcons.userCheck,
-                          isLoading: _isSubmitting,
-                          onPressed: _submit,
-                        ),
+                      FilledButton.icon(
+                        style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+                        onPressed: _isSubmitting ? null : _submit,
+                        icon: _isSubmitting
+                            ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                            : const Icon(KivoraIcons.userCheck, size: 18),
+                        label: const Text('Add member'),
                       ),
                     ],
                   ),
