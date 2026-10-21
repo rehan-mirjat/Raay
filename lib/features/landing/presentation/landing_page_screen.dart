@@ -48,16 +48,19 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   Widget build(BuildContext context) {
     final isDesktop = ResponsiveLayout.isWide(context);
     final screenWidth = MediaQuery.of(context).size.width;
+    // The six links plus two buttons need ~1100px; below that (or with large
+    // text) the menu moves into the drawer instead of overflowing.
+    final inlineNav = screenWidth >= 1100 && MediaQuery.textScalerOf(context).scale(14) / 14 <= 1.3;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      endDrawer: !isDesktop ? _buildMobileDrawer(context) : null,
+      endDrawer: !inlineNav ? _buildMobileDrawer(context) : null,
       body: SafeArea(
         child: SingleChildScrollView(
           controller: _scrollController,
           child: Column(
             children: [
-              _buildNavBar(context, isDesktop),
+              _buildNavBar(context, inlineNav),
               _buildHeroSection(context, isDesktop, screenWidth),
               _buildTrustStrip(context, screenWidth),
               _buildFeaturesSection(context, key: _featuresKey),
@@ -79,7 +82,8 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   // ===========================================================================
   // 1. NAVIGATION BAR
   // ===========================================================================
-  Widget _buildNavBar(BuildContext context, bool isDesktop) {
+  Widget _buildNavBar(BuildContext context, bool inlineNav) {
+    final isDesktop = inlineNav;
     return Container(
       height: 72,
       padding: const EdgeInsets.symmetric(horizontal: 28),
@@ -95,7 +99,8 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // Left: Logo & Brand (Kivora)
-              InkWell(
+              Flexible(
+                child: InkWell(
                 onTap: () {
                   _scrollController.animateTo(
                     0,
@@ -117,22 +122,29 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Text(
-                      'Kivora',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
-                        color: KivoraColors.textPrimaryOf(context),
-                        letterSpacing: -0.6,
+                    Flexible(
+                      child: Text(
+                        'Kivora',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          color: KivoraColors.textPrimaryOf(context),
+                          letterSpacing: -0.6,
+                        ),
                       ),
                     ),
                   ],
                 ),
-              ),
+              )),
 
               // Center Navigation (Desktop)
               if (isDesktop)
-                Row(
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     _AnimatedNavLink(
@@ -152,7 +164,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     _AnimatedNavLink(
                         label: 'Transparency', onTap: () => context.go('/transparency')),
                   ],
-                ),
+                ))),
 
               // Right CTAs
               if (isDesktop)
@@ -175,6 +187,8 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
               else
                 Builder(
                   builder: (ctx) => IconButton(
+                    tooltip: 'Menu',
+                    constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                     icon: Icon(Icons.menu_rounded,
                         color: KivoraColors.textPrimaryOf(context)),
                     onPressed: () => Scaffold.of(ctx).openEndDrawer(),
@@ -550,9 +564,11 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     Icon(Icons.lock_outline_rounded,
                         size: 14, color: KivoraColors.textSecondaryOf(context)),
                     const SizedBox(width: 6),
-                    Text('Anonymous ballot',
-                        style: TextStyle(
-                            fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
+                    Flexible(
+                      child: Text('Anonymous ballot',
+                          style: TextStyle(
+                              fontSize: 13, color: KivoraColors.textSecondaryOf(context))),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -1672,14 +1688,16 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('SECURITY PIPELINE',
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF8AB4FF),
-                      letterSpacing: 0.8)),
+              Expanded(
+                child: Text('SECURITY PIPELINE',
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF8AB4FF),
+                        letterSpacing: 0.8)),
+              ),
+              SizedBox(width: 8),
               Icon(Icons.security_rounded, color: Color(0xFF8AB4FF), size: 18),
             ],
           ),
@@ -1709,23 +1727,20 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: const Color(0xFF334155)),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                  color: Colors.white),
-              overflow: TextOverflow.ellipsis,
-            ),
+          Text(
+            title,
+            style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                color: Colors.white),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(height: 2),
           Text(
             desc,
-            style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+            style: const TextStyle(fontSize: 13, color: Color(0xFFB4C0D0)),
           ),
         ],
       ),
@@ -1898,11 +1913,13 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     const Icon(Icons.check_rounded,
                         size: 14, color: AppTheme.primaryBlue),
                     const SizedBox(width: 8),
-                    Text(f,
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'monospace',
-                            color: KivoraColors.textPrimaryOf(context))),
+                    Flexible(
+                      child: Text(f,
+                          style: TextStyle(
+                              fontSize: 13,
+                              fontFamily: 'monospace',
+                              color: KivoraColors.textPrimaryOf(context))),
+                    ),
                   ],
                 ),
               )),

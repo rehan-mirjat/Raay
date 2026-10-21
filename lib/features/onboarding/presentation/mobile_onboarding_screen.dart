@@ -71,14 +71,27 @@ class _MobileOnboardingScreenState
                   });
                 },
                 children: [
-                  _buildStep1(),
-                  _buildStep2(),
-                  _buildStep3(),
-                  _buildWelcomePage(),
+                  _page(_buildStep1()),
+                  _page(_buildStep2()),
+                  _page(_buildStep3()),
+                  _page(_buildWelcomePage()),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  /// Pages scroll instead of clipping when large text or a short window makes
+  /// them taller than the screen; Spacers still space them out when they fit.
+  Widget _page(Widget content) {
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: IntrinsicHeight(child: content),
         ),
       ),
     );
@@ -93,36 +106,42 @@ class _MobileOnboardingScreenState
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  'assets/icon/app_icon.png',
-                  width: 32,
-                  height: 32,
-                  fit: BoxFit.cover,
+          Flexible(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    'assets/icon/app_icon.png',
+                    width: 32,
+                    height: 32,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                'Kivora',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: KivoraColors.textPrimaryOf(context),
-                  letterSpacing: -0.5,
+                const SizedBox(width: 10),
+                Flexible(
+                  child: Text(
+                    'Kivora',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: KivoraColors.textPrimaryOf(context),
+                      letterSpacing: -0.5,
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           if (_currentPage < 3)
             TextButton(
               onPressed: _skipToWelcome,
               style: TextButton.styleFrom(
-                foregroundColor: AppTheme.primaryBlue,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                foregroundColor: KivoraColors.of(context).accentText,
+                minimumSize: const Size(48, 48),
               ),
               child: const Text('Skip',
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
@@ -150,11 +169,13 @@ class _MobileOnboardingScreenState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Your organization',
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: KivoraColors.textPrimaryOf(context))),
+                    Expanded(
+                      child: Text('Your organization',
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: KivoraColors.textPrimaryOf(context))),
+                    ),
                     Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
@@ -177,13 +198,15 @@ class _MobileOnboardingScreenState
                 const Row(
                   children: [
                     Icon(Icons.key_outlined,
-                        size: 12, color: AppTheme.primaryBlue),
+                        size: 14, color: AppTheme.primaryBlue),
                     SizedBox(width: 6),
-                    Text('An invitation brings you right in.',
-                        style: TextStyle(
-                            fontSize: 10,
-                            color: AppTheme.primaryBlue,
-                            fontWeight: FontWeight.bold)),
+                    Flexible(
+                      child: Text('An invitation brings you right in.',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: AppTheme.primaryBlue,
+                              fontWeight: FontWeight.bold)),
+                    ),
                   ],
                 ),
               ],
@@ -242,11 +265,13 @@ class _MobileOnboardingScreenState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('EXAMPLE BALLOT',
-                        style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: KivoraColors.textSecondaryOf(context))),
+                    Expanded(
+                      child: Text('EXAMPLE BALLOT',
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: KivoraColors.textSecondaryOf(context))),
+                    ),
                     Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
@@ -265,7 +290,7 @@ class _MobileOnboardingScreenState
                         color: KivoraColors.textPrimaryOf(context))),
                 Text('President · Choose one candidate',
                     style:
-                        TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
+                        TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
                 const SizedBox(height: 12),
                 Container(
                   padding:
@@ -279,11 +304,13 @@ class _MobileOnboardingScreenState
                       Icon(Icons.radio_button_checked_rounded,
                           size: 14, color: AppTheme.primaryBlue),
                       SizedBox(width: 8),
-                      Text('Alex Morgan',
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.primaryBlue)),
+                      Flexible(
+                        child: Text('Alex Morgan',
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.primaryBlue)),
+                      ),
                     ],
                   ),
                 ),
@@ -299,9 +326,11 @@ class _MobileOnboardingScreenState
                       Icon(Icons.radio_button_unchecked_rounded,
                           size: 14, color: KivoraColors.textSecondaryOf(context)),
                       const SizedBox(width: 8),
-                      Text('Jordan Lee',
-                          style: TextStyle(
-                              fontSize: 12, color: KivoraColors.textPrimaryOf(context))),
+                      Flexible(
+                        child: Text('Jordan Lee',
+                            style: TextStyle(
+                                fontSize: 12, color: KivoraColors.textPrimaryOf(context))),
+                      ),
                     ],
                   ),
                 ),
@@ -377,11 +406,13 @@ class _MobileOnboardingScreenState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Organization settings',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: KivoraColors.textPrimaryOf(context))),
+                    Expanded(
+                      child: Text('Organization settings',
+                          style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: KivoraColors.textPrimaryOf(context))),
+                    ),
                     Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
@@ -401,19 +432,20 @@ class _MobileOnboardingScreenState
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
+                      Expanded(
+                        child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Member verification',
                               style: TextStyle(
-                                  fontSize: 11,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                   color: KivoraColors.textPrimaryOf(context))),
                           Text('Approval required',
                               style: TextStyle(
-                                  fontSize: 9, color: KivoraColors.textSecondaryOf(context))),
+                                  fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
                         ],
-                      ),
+                      )),
                       const Icon(Icons.toggle_on_rounded,
                           color: AppTheme.primaryBlue, size: 22),
                     ],
@@ -422,7 +454,7 @@ class _MobileOnboardingScreenState
                 const SizedBox(height: 12),
                 Text('Activity log',
                     style: TextStyle(
-                        fontSize: 11,
+                        fontSize: 12,
                         fontWeight: FontWeight.bold,
                         color: KivoraColors.textPrimaryOf(context))),
                 const SizedBox(height: 4),
@@ -493,7 +525,8 @@ class _MobileOnboardingScreenState
                           color: AppTheme.primaryBlue, size: 20),
                     ),
                     const SizedBox(width: 10),
-                    Column(
+                    Flexible(
+                      child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Your community',
@@ -503,9 +536,9 @@ class _MobileOnboardingScreenState
                                 color: KivoraColors.textPrimaryOf(context))),
                         Text('A shared place to decide',
                             style: TextStyle(
-                                fontSize: 10, color: KivoraColors.textSecondaryOf(context))),
+                                fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
                       ],
-                    ),
+                    )),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -524,7 +557,7 @@ class _MobileOnboardingScreenState
                             const SizedBox(height: 4),
                             Text('Elections',
                                 style: TextStyle(
-                                    fontSize: 11,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                     color: KivoraColors.textPrimaryOf(context))),
                           ],
@@ -545,7 +578,7 @@ class _MobileOnboardingScreenState
                             const SizedBox(height: 4),
                             Text('Polls',
                                 style: TextStyle(
-                                    fontSize: 11,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                     color: KivoraColors.textPrimaryOf(context))),
                           ],
@@ -557,7 +590,7 @@ class _MobileOnboardingScreenState
                 const SizedBox(height: 12),
                 const Text('Better decisions, together.',
                     style: TextStyle(
-                        fontSize: 11,
+                        fontSize: 12,
                         fontWeight: FontWeight.bold,
                         color: AppTheme.primaryBlue)),
               ],
@@ -630,33 +663,25 @@ class _MobileOnboardingScreenState
           ),
           const SizedBox(height: 12),
 
-          InkWell(
-            onTap: () {
+          TextButton.icon(
+            style: TextButton.styleFrom(
+              minimumSize: const Size(48, 48),
+              foregroundColor: KivoraColors.of(context).accentText,
+            ),
+            onPressed: () {
               ref.read(hasSeenIntroProvider.notifier).markSeen();
               context.go('/login');
             },
-            borderRadius: BorderRadius.circular(6),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('Join an organization ',
-                      style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.primaryBlue)),
-                  Icon(Icons.arrow_forward_rounded,
-                      size: 14, color: AppTheme.primaryBlue),
-                ],
-              ),
-            ),
+            icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+            iconAlignment: IconAlignment.end,
+            label: const Text('Join an organization',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
           ),
 
           const SizedBox(height: 16),
           Text(
             'By continuing, you agree to our Terms and Privacy Policy.',
-            style: TextStyle(fontSize: 10, color: KivoraColors.textSecondaryOf(context)),
+            style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 12),
@@ -722,7 +747,7 @@ class _MobileOnboardingScreenState
                         color: KivoraColors.textPrimaryOf(context))),
                 Text(subtitle,
                     style: TextStyle(
-                        fontSize: 10, color: KivoraColors.textSecondaryOf(context))),
+                        fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
               ],
             ),
           ),
@@ -739,22 +764,27 @@ class _MobileOnboardingScreenState
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Container(
-                  width: 6,
-                  height: 6,
-                  decoration: const BoxDecoration(
-                      color: AppTheme.primaryBlue, shape: BoxShape.circle)),
-              const SizedBox(width: 8),
-              Text(title,
-                  style: TextStyle(
-                      fontSize: 10, color: KivoraColors.textPrimaryOf(context))),
-            ],
+          Expanded(
+            child: Row(
+              children: [
+                Container(
+                    width: 6,
+                    height: 6,
+                    decoration: const BoxDecoration(
+                        color: AppTheme.primaryBlue, shape: BoxShape.circle)),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(title,
+                      style: TextStyle(
+                          fontSize: 12, color: KivoraColors.textPrimaryOf(context))),
+                ),
+              ],
+            ),
           ),
+          const SizedBox(width: 8),
           Text(time,
               style:
-                  TextStyle(fontSize: 9, color: KivoraColors.textSecondaryOf(context))),
+                  TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
         ],
       ),
     );
@@ -767,7 +797,7 @@ class _MobileOnboardingScreenState
         Text(
           tag,
           style: const TextStyle(
-              fontSize: 10,
+              fontSize: 12,
               fontWeight: FontWeight.bold,
               color: AppTheme.primaryBlue,
               letterSpacing: 0.8),
@@ -824,12 +854,12 @@ class _MobileOnboardingScreenState
               children: [
                 Text(title,
                     style: TextStyle(
-                        fontSize: 11,
+                        fontSize: 12,
                         fontWeight: FontWeight.bold,
                         color: KivoraColors.textPrimaryOf(context))),
                 Text(text,
                     style: TextStyle(
-                        fontSize: 10,
+                        fontSize: 12,
                         color: KivoraColors.textSecondaryOf(context),
                         height: 1.3)),
               ],
@@ -868,7 +898,7 @@ class _MobileOnboardingScreenState
         const SizedBox(height: 4),
         Text('$pageIndex of 3',
             style:
-                TextStyle(fontSize: 10, color: KivoraColors.textSecondaryOf(context))),
+                TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
         const SizedBox(height: 16),
 
         // Action Buttons Row
