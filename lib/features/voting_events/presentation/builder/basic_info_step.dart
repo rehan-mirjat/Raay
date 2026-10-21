@@ -410,8 +410,9 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                     ],
                     onChanged: isDraft
                         ? (value) {
-                            if (value != null)
+                            if (value != null) {
                               setState(() => _privacyMode = value);
+                            }
                           }
                         : null,
                   ),
