@@ -752,5 +752,81 @@
   "evIdentifiableBody": "Votes in this election are recorded together with the voter's identity.",
   "evMonitor": "Monitor turnout",
   "evEditBuilder": "Edit in builder",
-  "evChecking": "Checking your status"
+  "evChecking": "Checking your status",
+  "resTitle": "Election results",
+  "resBack": "Back to election",
+  "resPublished": "Published",
+  "resNotPublished": "Not published",
+  "resSubtitle": "Counted by the server after voting closed.",
+  "resAdminOnly": "Only organization admins can see these results until they are published.",
+  "resFootnote": "Percentages are of ballots counted. Members can see results only after an admin publishes them.",
+  "resNotAvailableTitle": "Results are not available",
+  "resNotAvailableBody": "Results appear here after the organization publishes them.",
+  "resLoadErrorTitle": "We could not load the results",
+  "resLoadErrorBody": "Check your connection and try again.",
+  "resRetry": "Try again",
+  "resNoneTitle": "No results yet",
+  "resNoneBody": "Results have not been calculated yet.",
+  "resNoBallots": "No ballots were recorded for this election.",
+  "resBallots": "Ballots counted",
+  "resEligible": "Eligible voters",
+  "resTurnout": "Turnout",
+  "resSplit": "Vote split",
+  "resTie": "It's a tie",
+  "resTieBody": "{names} each received {votes, plural, =1{1 vote} other{{votes} votes}} ({percent}%).",
+  "@resTieBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      },
+      "votes": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "resWins": "{name} wins",
+  "@resWins": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "resWinsBody": "{votes, plural, =1{1 vote} other{{votes} votes}} ({percent}%).",
+  "@resWinsBody": {
+    "placeholders": {
+      "votes": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "resVotes": "{votes, plural, =1{1 vote} other{{votes} votes}}",
+  "@resVotes": {
+    "placeholders": {
+      "votes": {
+        "type": "int"
+      }
+    }
+  },
+  "resRecalculate": "Recalculate results",
+  "resWorking": "Working...",
+  "resPublish": "Publish results to members",
+  "resCalculate": "Calculate results",
+  "resExport": "Export CSV",
+  "resExportTitle": "Export results (CSV)",
+  "resCopyCsv": "Copy CSV",
+  "resCsvCopied": "CSV copied",
+  "resClose": "Close",
+  "resActionFailed": "That did not work. Please try again.",
+  "resPublishConfirmTitle": "Publish these results?",
+  "resPublishConfirmBody": "All eligible members will be able to see the results. You can still recalculate them afterwards.",
+  "resPublishConfirm": "Publish",
+  "resCancel": "Cancel",
+  "resEventFallback": "Election"
 }

@@ -141,3 +141,16 @@ final eventResultsStatusProvider =
     return resultsStatusFrom(error: err);
   }
 });
+
+/// Raw `eventResults/{id}` document as a map (null when it does not exist).
+/// Errors (including permission-denied for unpublished results) propagate so
+/// the screen can tell "not available to you" from "failed to load".
+final eventResultsDataProvider =
+    StreamProvider.autoDispose.family<Map<String, dynamic>?, String>((ref, eventId) {
+  return FirebaseService()
+      .firestore
+      .collection('eventResults')
+      .doc(eventId)
+      .snapshots()
+      .map((doc) => doc.data());
+});

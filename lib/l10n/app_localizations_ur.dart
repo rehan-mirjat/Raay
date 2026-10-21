@@ -1492,4 +1492,151 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get evChecking => 'Checking your status';
+
+  @override
+  String get resTitle => 'Election results';
+
+  @override
+  String get resBack => 'Back to election';
+
+  @override
+  String get resPublished => 'Published';
+
+  @override
+  String get resNotPublished => 'Not published';
+
+  @override
+  String get resSubtitle => 'Counted by the server after voting closed.';
+
+  @override
+  String get resAdminOnly =>
+      'Only organization admins can see these results until they are published.';
+
+  @override
+  String get resFootnote =>
+      'Percentages are of ballots counted. Members can see results only after an admin publishes them.';
+
+  @override
+  String get resNotAvailableTitle => 'Results are not available';
+
+  @override
+  String get resNotAvailableBody =>
+      'Results appear here after the organization publishes them.';
+
+  @override
+  String get resLoadErrorTitle => 'We could not load the results';
+
+  @override
+  String get resLoadErrorBody => 'Check your connection and try again.';
+
+  @override
+  String get resRetry => 'Try again';
+
+  @override
+  String get resNoneTitle => 'No results yet';
+
+  @override
+  String get resNoneBody => 'Results have not been calculated yet.';
+
+  @override
+  String get resNoBallots => 'No ballots were recorded for this election.';
+
+  @override
+  String get resBallots => 'Ballots counted';
+
+  @override
+  String get resEligible => 'Eligible voters';
+
+  @override
+  String get resTurnout => 'Turnout';
+
+  @override
+  String get resSplit => 'Vote split';
+
+  @override
+  String get resTie => 'It\'s a tie';
+
+  @override
+  String resTieBody(String names, int votes, String percent) {
+    String _temp0 = intl.Intl.pluralLogic(
+      votes,
+      locale: localeName,
+      other: '$votes votes',
+      one: '1 vote',
+    );
+    return '$names each received $_temp0 ($percent%).';
+  }
+
+  @override
+  String resWins(String name) {
+    return '$name wins';
+  }
+
+  @override
+  String resWinsBody(int votes, String percent) {
+    String _temp0 = intl.Intl.pluralLogic(
+      votes,
+      locale: localeName,
+      other: '$votes votes',
+      one: '1 vote',
+    );
+    return '$_temp0 ($percent%).';
+  }
+
+  @override
+  String resVotes(int votes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      votes,
+      locale: localeName,
+      other: '$votes votes',
+      one: '1 vote',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get resRecalculate => 'Recalculate results';
+
+  @override
+  String get resWorking => 'Working...';
+
+  @override
+  String get resPublish => 'Publish results to members';
+
+  @override
+  String get resCalculate => 'Calculate results';
+
+  @override
+  String get resExport => 'Export CSV';
+
+  @override
+  String get resExportTitle => 'Export results (CSV)';
+
+  @override
+  String get resCopyCsv => 'Copy CSV';
+
+  @override
+  String get resCsvCopied => 'CSV copied';
+
+  @override
+  String get resClose => 'Close';
+
+  @override
+  String get resActionFailed => 'That did not work. Please try again.';
+
+  @override
+  String get resPublishConfirmTitle => 'Publish these results?';
+
+  @override
+  String get resPublishConfirmBody =>
+      'All eligible members will be able to see the results. You can still recalculate them afterwards.';
+
+  @override
+  String get resPublishConfirm => 'Publish';
+
+  @override
+  String get resCancel => 'Cancel';
+
+  @override
+  String get resEventFallback => 'Election';
 }

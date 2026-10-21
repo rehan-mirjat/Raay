@@ -2687,6 +2687,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Checking your status'**
   String get evChecking;
+
+  /// No description provided for @resTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Election results'**
+  String get resTitle;
+
+  /// No description provided for @resBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to election'**
+  String get resBack;
+
+  /// No description provided for @resPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Published'**
+  String get resPublished;
+
+  /// No description provided for @resNotPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Not published'**
+  String get resNotPublished;
+
+  /// No description provided for @resSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Counted by the server after voting closed.'**
+  String get resSubtitle;
+
+  /// No description provided for @resAdminOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only organization admins can see these results until they are published.'**
+  String get resAdminOnly;
+
+  /// No description provided for @resFootnote.
+  ///
+  /// In en, this message translates to:
+  /// **'Percentages are of ballots counted. Members can see results only after an admin publishes them.'**
+  String get resFootnote;
+
+  /// No description provided for @resNotAvailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Results are not available'**
+  String get resNotAvailableTitle;
+
+  /// No description provided for @resNotAvailableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Results appear here after the organization publishes them.'**
+  String get resNotAvailableBody;
+
+  /// No description provided for @resLoadErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the results'**
+  String get resLoadErrorTitle;
+
+  /// No description provided for @resLoadErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your connection and try again.'**
+  String get resLoadErrorBody;
+
+  /// No description provided for @resRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get resRetry;
+
+  /// No description provided for @resNoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No results yet'**
+  String get resNoneTitle;
+
+  /// No description provided for @resNoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Results have not been calculated yet.'**
+  String get resNoneBody;
+
+  /// No description provided for @resNoBallots.
+  ///
+  /// In en, this message translates to:
+  /// **'No ballots were recorded for this election.'**
+  String get resNoBallots;
+
+  /// No description provided for @resBallots.
+  ///
+  /// In en, this message translates to:
+  /// **'Ballots counted'**
+  String get resBallots;
+
+  /// No description provided for @resEligible.
+  ///
+  /// In en, this message translates to:
+  /// **'Eligible voters'**
+  String get resEligible;
+
+  /// No description provided for @resTurnout.
+  ///
+  /// In en, this message translates to:
+  /// **'Turnout'**
+  String get resTurnout;
+
+  /// No description provided for @resSplit.
+  ///
+  /// In en, this message translates to:
+  /// **'Vote split'**
+  String get resSplit;
+
+  /// No description provided for @resTie.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s a tie'**
+  String get resTie;
+
+  /// No description provided for @resTieBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{names} each received {votes, plural, =1{1 vote} other{{votes} votes}} ({percent}%).'**
+  String resTieBody(String names, int votes, String percent);
+
+  /// No description provided for @resWins.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} wins'**
+  String resWins(String name);
+
+  /// No description provided for @resWinsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{votes, plural, =1{1 vote} other{{votes} votes}} ({percent}%).'**
+  String resWinsBody(int votes, String percent);
+
+  /// No description provided for @resVotes.
+  ///
+  /// In en, this message translates to:
+  /// **'{votes, plural, =1{1 vote} other{{votes} votes}}'**
+  String resVotes(int votes);
+
+  /// No description provided for @resRecalculate.
+  ///
+  /// In en, this message translates to:
+  /// **'Recalculate results'**
+  String get resRecalculate;
+
+  /// No description provided for @resWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Working...'**
+  String get resWorking;
+
+  /// No description provided for @resPublish.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish results to members'**
+  String get resPublish;
+
+  /// No description provided for @resCalculate.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculate results'**
+  String get resCalculate;
+
+  /// No description provided for @resExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export CSV'**
+  String get resExport;
+
+  /// No description provided for @resExportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export results (CSV)'**
+  String get resExportTitle;
+
+  /// No description provided for @resCopyCsv.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy CSV'**
+  String get resCopyCsv;
+
+  /// No description provided for @resCsvCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'CSV copied'**
+  String get resCsvCopied;
+
+  /// No description provided for @resClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get resClose;
+
+  /// No description provided for @resActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'That did not work. Please try again.'**
+  String get resActionFailed;
+
+  /// No description provided for @resPublishConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish these results?'**
+  String get resPublishConfirmTitle;
+
+  /// No description provided for @resPublishConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'All eligible members will be able to see the results. You can still recalculate them afterwards.'**
+  String get resPublishConfirmBody;
+
+  /// No description provided for @resPublishConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get resPublishConfirm;
+
+  /// No description provided for @resCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get resCancel;
+
+  /// No description provided for @resEventFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Election'**
+  String get resEventFallback;
 }
 
 class _AppLocalizationsDelegate
