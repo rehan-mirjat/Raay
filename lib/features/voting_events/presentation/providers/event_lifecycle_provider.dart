@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/voting_event_repository.dart';
+import '../../../../core/utils/friendly_error.dart';
 
 class EventLifecycleState {
   final bool isLoading;
@@ -21,7 +22,7 @@ class EventLifecycleNotifier extends StateNotifier<EventLifecycleState> {
       state = EventLifecycleState(successMessage: 'Voting event published successfully.');
       return true;
     } catch (e) {
-      state = EventLifecycleState(error: e.toString().replaceAll('Exception: ', ''));
+      state = EventLifecycleState(error: friendlyError(e));
       return false;
     }
   }
@@ -33,7 +34,7 @@ class EventLifecycleNotifier extends StateNotifier<EventLifecycleState> {
       state = EventLifecycleState(successMessage: 'Voting event deleted successfully.');
       return true;
     } catch (e) {
-      state = EventLifecycleState(error: e.toString().replaceAll('Exception: ', ''));
+      state = EventLifecycleState(error: friendlyError(e));
       return false;
     }
   }
@@ -45,7 +46,7 @@ class EventLifecycleNotifier extends StateNotifier<EventLifecycleState> {
       state = EventLifecycleState(successMessage: 'Voting event cancelled successfully.');
       return true;
     } catch (e) {
-      state = EventLifecycleState(error: e.toString().replaceAll('Exception: ', ''));
+      state = EventLifecycleState(error: friendlyError(e));
       return false;
     }
   }
@@ -57,7 +58,7 @@ class EventLifecycleNotifier extends StateNotifier<EventLifecycleState> {
       state = EventLifecycleState(successMessage: 'Voting event closed early.');
       return true;
     } catch (e) {
-      state = EventLifecycleState(error: e.toString().replaceAll('Exception: ', ''));
+      state = EventLifecycleState(error: friendlyError(e));
       return false;
     }
   }

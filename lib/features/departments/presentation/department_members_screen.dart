@@ -14,6 +14,7 @@ import '../data/department_repository.dart';
 import '../domain/department.dart';
 import 'create_edit_department_dialog.dart';
 import 'providers/department_providers.dart';
+import '../../../core/utils/friendly_error.dart';
 
 class DepartmentMembersScreen extends ConsumerStatefulWidget {
   const DepartmentMembersScreen({super.key, required this.departmentId});
@@ -94,7 +95,7 @@ class _DepartmentMembersScreenState
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                          'Failed to delete: ${e.toString().replaceAll("Exception: ", "")}'),
+                          'Failed to delete: ${friendlyError(e)}'),
                       backgroundColor: AppTheme.error,
                     ),
                   );
@@ -147,7 +148,7 @@ class _DepartmentMembersScreenState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                'Failed to assign members: ${e.toString().replaceAll("Exception: ", "")}'),
+                'Failed to assign members: ${friendlyError(e)}'),
             backgroundColor: AppTheme.error,
           ),
         );
@@ -204,7 +205,7 @@ class _DepartmentMembersScreenState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                'Failed to remove member: ${e.toString().replaceAll("Exception: ", "")}'),
+                'Failed to remove member: ${friendlyError(e)}'),
             backgroundColor: AppTheme.error,
           ),
         );
@@ -253,7 +254,7 @@ class _DepartmentMembersScreenState
             const LoadingView(message: 'Loading department roster...'),
         error: (err, stack) => ErrorView(
           type: ErrorViewType.generic,
-          message: 'Failed to load roster: $err',
+          message: 'We could not load the roster. Check your connection and try again.',
           onRetry: () =>
               ref.invalidate(organizationMembersDirectoryProvider(orgId)),
         ),

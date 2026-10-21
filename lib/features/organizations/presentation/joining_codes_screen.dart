@@ -15,6 +15,7 @@ import '../../../core/theme/kivora_colors.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../domain/organization_enums.dart';
 import 'providers/organization_providers.dart';
+import '../../../core/utils/friendly_error.dart';
 
 final organizationJoiningCodesProvider =
     FutureProvider.family<List<Map<String, dynamic>>, String>((ref, orgId) {
@@ -130,7 +131,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(error.toString().replaceFirst('Exception: ', '')),
+            content: Text(friendlyError(error)),
             backgroundColor: AppTheme.error,
           ),
         );
@@ -182,7 +183,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(error.toString().replaceFirst('Exception: ', '')),
+            content: Text(friendlyError(error)),
             backgroundColor: AppTheme.error,
           ),
         );

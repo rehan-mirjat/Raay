@@ -47,7 +47,7 @@ class ObserverDashboardScreen extends ConsumerWidget {
       ),
       body: orgState.when(
         loading: () => const LoadingView(),
-        error: (e, _) => ErrorView(type: ErrorViewType.generic, message: '$e'),
+        error: (e, _) => const ErrorView(type: ErrorViewType.generic, message: 'We could not load this view. Check your connection and try again.'),
         data: (state) {
           final orgContext = state.context;
           if (orgContext == null) {
@@ -72,7 +72,7 @@ class ObserverDashboardScreen extends ConsumerWidget {
 
           return eventsAsync.when(
             loading: () => const LoadingView(),
-            error: (e, _) => ErrorView(type: ErrorViewType.generic, message: '$e'),
+            error: (e, _) => const ErrorView(type: ErrorViewType.generic, message: 'We could not load this view. Check your connection and try again.'),
             data: (events) {
               final sorted = [...events]..sort((a, b) => b.startAt.compareTo(a.startAt));
               final active = sorted.where((e) => e.status == VotingEventStatus.active).toList();

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../services/auth_service.dart';
+import '../../../../core/utils/friendly_error.dart';
 
 class ChangePasswordSection extends ConsumerStatefulWidget {
   const ChangePasswordSection({super.key});
@@ -62,7 +63,7 @@ class _ChangePasswordSectionState extends ConsumerState<ChangePasswordSection> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = e.toString().replaceAll('Exception: ', '');
+          _error = friendlyError(e);
           _isLoading = false;
         });
       }

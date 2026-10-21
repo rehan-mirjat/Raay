@@ -7,6 +7,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../data/organization_repository.dart';
 import 'providers/organization_providers.dart';
+import '../../../core/utils/friendly_error.dart';
 
 /// Landing screen for a kivora://invite (or https://.../invite) deep link -
 /// see buildInviteLink in organization_repository.dart for how the link is
@@ -66,7 +67,7 @@ class _AcceptInvitationLinkScreenState
       if (mounted) {
         setState(() {
           _stage = _Stage.error;
-          _error = e.toString().replaceAll('Exception: ', '');
+          _error = friendlyError(e);
         });
       }
     }

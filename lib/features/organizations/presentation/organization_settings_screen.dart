@@ -14,6 +14,7 @@ import '../data/organization_repository.dart';
 import '../domain/organization.dart';
 import '../domain/organization_enums.dart';
 import 'providers/organization_providers.dart';
+import '../../../core/utils/friendly_error.dart';
 
 class OrganizationSettingsScreen extends ConsumerStatefulWidget {
   const OrganizationSettingsScreen({super.key});
@@ -68,9 +69,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
       body: state.when(
         skipLoadingOnReload: true,
         loading: () => const LoadingView(message: 'Loading organization…'),
-        error: (error, _) => ErrorView(
+        error: (_, __) => const ErrorView(
           type: ErrorViewType.generic,
-          message: 'Could not load the active organization: $error',
+          message: 'We could not load the organization. Check your connection and try again.',
         ),
         data: (active) {
           final orgContext = active.context;
@@ -741,7 +742,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error.toString().replaceFirst('Exception: ', ''))),
+          SnackBar(content: Text(friendlyError(error))),
         );
       }
     } finally {
@@ -875,7 +876,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
         if (!mounted) return;
         messenger.showSnackBar(
           SnackBar(
-            content: Text(e.toString().replaceAll('Exception: ', '')),
+            content: Text(friendlyError(e)),
             backgroundColor: AppTheme.error,
           ),
         );

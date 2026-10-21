@@ -11,6 +11,7 @@ import '../../../../core/theme/kivora_colors.dart';
 import '../../../../core/widgets/inline_error_banner.dart';
 import '../../data/candidate_repository.dart';
 import '../../domain/candidate.dart';
+import '../../../../core/utils/friendly_error.dart';
 
 class CandidateFormDialog extends ConsumerStatefulWidget {
   final String orgId;
@@ -105,7 +106,7 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = e.toString().replaceAll('Exception: ', '');
+          _error = friendlyError(e);
           _isLoading = false;
         });
       }

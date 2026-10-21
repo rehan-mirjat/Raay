@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../theme/app_theme.dart';
 import '../../services/auth_service.dart';
+import '../utils/friendly_error.dart';
 
 /// Shows a dialog to re-prove identity (password re-entry, or a fresh Google
 /// sign-in) and returns true once the server would accept a fresh
@@ -46,7 +47,7 @@ Future<bool> showReauthDialog(
             if (!dialogContext.mounted) return;
             setDialogState(() {
               isVerifying = false;
-              dialogError = e.toString().replaceAll('Exception: ', '');
+              dialogError = friendlyError(e);
             });
           }
         }

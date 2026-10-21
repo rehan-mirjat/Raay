@@ -9,6 +9,7 @@ import '../../../../core/theme/kivora_colors.dart';
 import '../../../../core/widgets/inline_error_banner.dart';
 import '../../data/poll_option_repository.dart';
 import '../../domain/poll_option.dart';
+import '../../../../core/utils/friendly_error.dart';
 
 class PollOptionFormDialog extends ConsumerStatefulWidget {
   final String orgId;
@@ -76,7 +77,7 @@ class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = e.toString().replaceAll('Exception: ', '');
+          _error = friendlyError(e);
           _isLoading = false;
         });
       }

@@ -367,7 +367,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Could not load this event: $error')));
+            const SnackBar(content: Text('We could not load this election. Please try again.')));
         Navigator.of(context).maybePop();
       }
     }

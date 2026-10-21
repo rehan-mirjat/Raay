@@ -7,6 +7,7 @@ import '../../core/theme/kivora_colors.dart';
 import '../widgets/inline_error_banner.dart';
 import '../../services/auth_service.dart';
 import '../widgets/totp_challenge_dialog.dart';
+import '../utils/friendly_error.dart';
 
 /// Full-screen gate shown when the app was backgrounded or closed for
 /// longer than [sessionIdleTimeout]. Blocks all app content until the
@@ -60,7 +61,7 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = e.toString().replaceAll('Exception: ', '');
+          _error = friendlyError(e);
           _isVerifying = false;
         });
       }

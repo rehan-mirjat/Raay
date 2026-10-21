@@ -47,7 +47,8 @@ Future<void> main() async {
     await FirebaseService.initialize();
     await _initCrashlytics();
   } catch (e) {
-    initError = e.toString();
+    debugPrint('Startup failed: $e');
+    initError = 'Kivora could not start. Check your connection and try again.';
   }
 
   final prefs = await SharedPreferences.getInstance();
@@ -139,7 +140,8 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
       });
     } catch (e) {
       setState(() {
-        _initError = e.toString().replaceAll("Exception: ", "");
+        debugPrint('Retry failed: $e');
+        _initError = 'Kivora could not start. Check your connection and try again.';
         _isRetrying = false;
       });
     }
@@ -153,7 +155,7 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.dark,
+        themeMode: ThemeMode.system,
         home: SplashScreen(
           errorMessage: _initError,
           onRetry: _retryInitialization,

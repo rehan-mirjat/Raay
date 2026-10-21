@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/voting_event_repository.dart';
 import '../../domain/voting_event.dart';
+import '../../../../core/utils/friendly_error.dart';
 
 class DraftEventState {
   final String title;
@@ -183,7 +184,7 @@ class DraftEventNotifier extends StateNotifier<DraftEventState> {
       _savedSignature = draftSignature(state);
       return true;
     } catch (e) {
-      state = state.copyWith(error: e.toString().replaceAll('Exception: ', ''), isLoading: false);
+      state = state.copyWith(error: friendlyError(e), isLoading: false);
       return false;
     }
   }

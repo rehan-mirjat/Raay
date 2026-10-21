@@ -8,6 +8,7 @@ import '../../../core/theme/kivora_colors.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../data/organization_repository.dart';
 import '../domain/organization_enums.dart';
+import '../../../core/utils/friendly_error.dart';
 
 class MemberProfileDialog extends ConsumerStatefulWidget {
   const MemberProfileDialog({
@@ -48,7 +49,7 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
       if (mounted) setState(() => _isLoading = false);
       messenger.showSnackBar(
         SnackBar(
-          content: Text(e.toString().replaceAll('Exception: ', '')),
+          content: Text(friendlyError(e)),
           backgroundColor: AppTheme.error,
         ),
       );

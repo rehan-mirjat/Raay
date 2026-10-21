@@ -8,6 +8,7 @@ import 'package:kivora/core/widgets/ui_kit/kivora_text_field.dart';
 
 import '../../../core/widgets/inline_error_banner.dart';
 import '../data/organization_repository.dart';
+import '../../../core/utils/friendly_error.dart';
 
 class AddExistingMemberDialog extends ConsumerStatefulWidget {
   const AddExistingMemberDialog({
@@ -51,7 +52,7 @@ class _AddExistingMemberDialogState
     } catch (error) {
       if (mounted) {
         setState(() {
-          _error = error.toString().replaceFirst('Exception: ', '');
+          _error = friendlyError(error);
           _isSubmitting = false;
         });
       }

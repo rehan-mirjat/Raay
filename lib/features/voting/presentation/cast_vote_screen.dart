@@ -18,6 +18,7 @@ import '../../voting_events/domain/poll_option.dart';
 import '../../voting_events/domain/voting_event.dart';
 import '../data/voting_repository.dart';
 import 'vote_receipt_screen.dart';
+import '../../../core/utils/friendly_error.dart';
 
 final eventCandidatesProvider =
     StreamProvider.autoDispose.family<List<Candidate>, String>((ref, eventId) {
@@ -102,7 +103,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
       if (!alreadyHandledByRecovery && mounted) {
         setState(() {
           _isSubmitting = false;
-          _errorMessage = e.toString().replaceAll('Exception: ', '');
+          _errorMessage = friendlyError(e);
         });
       }
     }

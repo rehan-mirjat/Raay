@@ -8,6 +8,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../organizations/presentation/membership_directory_screen.dart';
 import '../data/department_repository.dart';
+import '../../../core/utils/friendly_error.dart';
 
 class AddDepartmentMemberDialog extends ConsumerStatefulWidget {
   const AddDepartmentMemberDialog({
@@ -55,7 +56,7 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
       if (mounted) {
         setState(() => _loadingUid = null);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to assign member: ${e.toString().replaceAll('Exception: ', '')}'), backgroundColor: AppTheme.error),
+          SnackBar(content: Text('Failed to assign member: ${friendlyError(e)}'), backgroundColor: AppTheme.error),
         );
       }
     }

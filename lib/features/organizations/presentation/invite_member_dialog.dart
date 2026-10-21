@@ -9,6 +9,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/utils/validators.dart';
 import '../data/organization_repository.dart';
+import '../../../core/utils/friendly_error.dart';
 
 class InviteMemberDialog extends ConsumerStatefulWidget {
   const InviteMemberDialog({
@@ -77,7 +78,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = e.toString().replaceAll('Exception: ', '');
+          _error = friendlyError(e);
           _isLoading = false;
         });
       }

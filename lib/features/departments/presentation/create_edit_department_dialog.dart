@@ -6,6 +6,7 @@ import '../../../core/utils/validators.dart';
 import '../../../core/widgets/inline_error_banner.dart';
 import '../data/department_repository.dart';
 import '../domain/department.dart';
+import '../../../core/utils/friendly_error.dart';
 
 class CreateEditDepartmentDialog extends ConsumerStatefulWidget {
   const CreateEditDepartmentDialog({
@@ -80,7 +81,7 @@ class _CreateEditDepartmentDialogState extends ConsumerState<CreateEditDepartmen
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = e.toString().replaceAll('Exception: ', '');
+          _error = friendlyError(e);
           _isLoading = false;
         });
       }

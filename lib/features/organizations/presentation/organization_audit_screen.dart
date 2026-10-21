@@ -226,7 +226,7 @@ class _OrganizationAuditScreenState
                       const LoadingView(message: 'Loading audit history…'),
                   error: (error, _) => ErrorView(
                     type: ErrorViewType.generic,
-                    message: 'Could not load organization activity: $error',
+                    message: 'We could not load organization activity. Check your connection and try again.',
                     onRetry: () => ref.invalidate(organizationAuditLogsProvider(
                         orgContext.organization.id)),
                   ),
