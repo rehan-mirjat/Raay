@@ -2417,6 +2417,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{current} of {total}: {label}'**
   String ballotStepsLabel(int current, int total, String label);
+
+  /// No description provided for @receiptSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Your ballot was recorded'**
+  String get receiptSuccess;
+
+  /// No description provided for @receiptSecrecy.
+  ///
+  /// In en, this message translates to:
+  /// **'This receipt confirms that your ballot was accepted. It does not reveal or encode what you chose, and it cannot prove your choice to anyone.'**
+  String get receiptSecrecy;
+
+  /// No description provided for @receiptKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your receipt ID. You can use it later to check that your ballot was recorded.'**
+  String get receiptKeep;
+
+  /// No description provided for @receiptDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt details'**
+  String get receiptDetails;
+
+  /// No description provided for @receiptTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted'**
+  String get receiptTime;
+
+  /// No description provided for @receiptTechnical.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical details'**
+  String get receiptTechnical;
+
+  /// No description provided for @receiptHashLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification hash (SHA-256)'**
+  String get receiptHashLabel;
+
+  /// No description provided for @receiptCopyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy {label}'**
+  String receiptCopyLabel(String label);
+
+  /// No description provided for @receiptCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} copied'**
+  String receiptCopied(String label);
+
+  /// No description provided for @receiptVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify a receipt'**
+  String get receiptVerify;
+
+  /// No description provided for @receiptClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get receiptClose;
 }
 
 class _AppLocalizationsDelegate

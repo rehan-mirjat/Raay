@@ -672,5 +672,30 @@
         "type": "String"
       }
     }
+  },
+  "receiptSuccess": "Your ballot was recorded",
+  "receiptSecrecy": "This receipt confirms that your ballot was accepted. It does not reveal or encode what you chose, and it cannot prove your choice to anyone.",
+  "receiptKeep": "Keep your receipt ID. You can use it later to check that your ballot was recorded.",
+  "receiptDetails": "Receipt details",
+  "receiptTime": "Submitted",
+  "receiptTechnical": "Technical details",
+  "receiptHashLabel": "Verification hash (SHA-256)",
+  "receiptCopyLabel": "Copy {label}",
+  "receiptCopied": "{label} copied",
+  "receiptVerify": "Verify a receipt",
+  "receiptClose": "Close",
+  "@receiptCopyLabel": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "@receiptCopied": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
   }
 }

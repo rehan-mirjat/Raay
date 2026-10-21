@@ -1338,4 +1338,43 @@ class AppLocalizationsAr extends AppLocalizations {
   String ballotStepsLabel(int current, int total, String label) {
     return '$current of $total: $label';
   }
+
+  @override
+  String get receiptSuccess => 'Your ballot was recorded';
+
+  @override
+  String get receiptSecrecy =>
+      'This receipt confirms that your ballot was accepted. It does not reveal or encode what you chose, and it cannot prove your choice to anyone.';
+
+  @override
+  String get receiptKeep =>
+      'Keep your receipt ID. You can use it later to check that your ballot was recorded.';
+
+  @override
+  String get receiptDetails => 'Receipt details';
+
+  @override
+  String get receiptTime => 'Submitted';
+
+  @override
+  String get receiptTechnical => 'Technical details';
+
+  @override
+  String get receiptHashLabel => 'Verification hash (SHA-256)';
+
+  @override
+  String receiptCopyLabel(String label) {
+    return 'Copy $label';
+  }
+
+  @override
+  String receiptCopied(String label) {
+    return '$label copied';
+  }
+
+  @override
+  String get receiptVerify => 'Verify a receipt';
+
+  @override
+  String get receiptClose => 'Close';
 }
