@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../theme/app_theme.dart';
 import '../../services/auth_service.dart';
 import '../utils/friendly_error.dart';
+import '../theme/kivora_colors.dart';
 
 /// Shows a dialog to re-prove identity (password re-entry, or a fresh Google
 /// sign-in) and returns true once the server would accept a fresh
@@ -82,7 +82,7 @@ Future<bool> showReauthDialog(
                 if (dialogError != null) ...[
                   const SizedBox(height: 8),
                   Text(dialogError!,
-                      style: const TextStyle(color: AppTheme.error)),
+                      style: TextStyle(color: KivoraColors.of(context).errorText)),
                 ],
               ],
             ),

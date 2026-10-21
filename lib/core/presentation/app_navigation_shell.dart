@@ -808,17 +808,18 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                   child: Container(
                     padding: const EdgeInsets.all(2.5),
                     decoration: const BoxDecoration(
-                      color: AppTheme.error,
+                      // Solid fill under white text: #B42318 gives 6.5:1.
+                      color: Color(0xFFB42318),
                       shape: BoxShape.circle,
                     ),
                     constraints:
-                        const BoxConstraints(minWidth: 15, minHeight: 15),
+                        const BoxConstraints(minWidth: 18, minHeight: 18),
                     child: Center(
                       child: Text(
                         unreadCount > 9 ? '9+' : unreadCount.toString(),
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 9,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -879,11 +880,11 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                           markNotificationRead(r.id);
                         }
                       },
-                      child: const Text(
+                      child: Text(
                         'Mark all read',
                         style: TextStyle(
                           fontSize: 12,
-                          color: AppTheme.primaryBlue,
+                          color: KivoraColors.of(context).accentText,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -929,8 +930,8 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                             width: 8,
                             height: 8,
                             margin: const EdgeInsets.only(top: 5),
-                            decoration: const BoxDecoration(
-                              color: AppTheme.primaryBlue,
+                            decoration: BoxDecoration(
+                              color: KivoraColors.of(context).accentText,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -1008,13 +1009,13 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
               );
             }),
             const PopupMenuDivider(),
-            const PopupMenuItem<String>(
+            PopupMenuItem<String>(
               value: 'view_all',
               child: Center(
                 child: Text(
                   'View all notifications',
                   style: TextStyle(
-                    color: AppTheme.primaryBlue,
+                    color: KivoraColors.of(context).accentText,
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
                   ),
@@ -1236,7 +1237,7 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
               style: TextStyle(
                 fontSize: size * 0.75,
                 fontWeight: FontWeight.bold,
-                color: AppTheme.primaryBlue,
+                color: KivoraColors.of(context).accentText,
               ),
             )
           : null,

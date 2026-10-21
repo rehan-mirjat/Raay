@@ -53,7 +53,7 @@ class CandidateList extends ConsumerWidget {
             }
             if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}',
-                  style: const TextStyle(color: AppTheme.error));
+                  style: TextStyle(color: KivoraColors.of(context).errorText));
             }
             final candidates = snapshot.data ?? [];
             if (candidates.isEmpty) {
@@ -91,7 +91,7 @@ class CandidateList extends ConsumerWidget {
                               : null,
                         ),
                         child: cand.photoUrl == null
-                            ? const Icon(KivoraIcons.user, color: AppTheme.primaryBlue)
+                            ? Icon(KivoraIcons.user, color: KivoraColors.of(context).accentText)
                             : null,
                       ),
                       const SizedBox(width: 16),
@@ -149,8 +149,8 @@ class CandidateList extends ConsumerWidget {
                               },
                             ),
                             IconButton(
-                              icon: const Icon(KivoraIcons.trash2,
-                                  size: 18, color: AppTheme.error),
+                              icon: Icon(KivoraIcons.trash2,
+                                  size: 18, color: KivoraColors.of(context).errorText),
                               onPressed: () async {
                                 final confirm = await showDialog<bool>(
                                     context: context,
@@ -167,9 +167,9 @@ class CandidateList extends ConsumerWidget {
                                             TextButton(
                                               onPressed: () =>
                                                   Navigator.pop(c, true),
-                                              child: const Text('Delete',
+                                              child: Text('Delete',
                                                   style: TextStyle(
-                                                      color: AppTheme.error)),
+                                                      color: KivoraColors.of(context).errorText)),
                                             ),
                                           ],
                                         ));

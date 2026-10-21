@@ -182,7 +182,7 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                                           : null),
                                 ),
                                 child: _selectedImageBytes == null && widget.existingCandidate?.photoUrl == null
-                                    ? const Icon(KivoraIcons.camera, size: 28, color: AppTheme.primaryBlue)
+                                    ? Icon(KivoraIcons.camera, size: 28, color: KivoraColors.of(context).accentText)
                                     : null,
                               ),
                             ),

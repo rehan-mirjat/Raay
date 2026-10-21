@@ -110,8 +110,8 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                       border: Border.all(
                           color: AppTheme.primaryBlue.withValues(alpha: 0.25)),
                     ),
-                    child: const Icon(Icons.lock_outline_rounded,
-                        size: 32, color: AppTheme.primaryBlue),
+                    child: Icon(Icons.lock_outline_rounded,
+                        size: 32, color: KivoraColors.of(context).accentText),
                   ),
                   const SizedBox(height: 24),
                   Text(

@@ -97,8 +97,8 @@ class _AddDepartmentMemberDialogState extends ConsumerState<AddDepartmentMemberD
                           color: AppTheme.primaryBlue.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: const Icon(KivoraIcons.userPlus,
-                            color: AppTheme.primaryBlue, size: 20),
+                        child: Icon(KivoraIcons.userPlus,
+                            color: KivoraColors.of(context).accentText, size: 20),
                       ),
                       const SizedBox(width: 12),
                       Text(

@@ -261,9 +261,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
+          Icon(
             Icons.error_outline_rounded,
-            color: AppTheme.error,
+            color: KivoraColors.of(context).errorText,
             size: 40,
           ),
           const SizedBox(height: 12),

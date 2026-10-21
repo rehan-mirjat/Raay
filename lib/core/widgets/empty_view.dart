@@ -41,7 +41,7 @@ class EmptyView extends StatelessWidget {
                 child: Icon(
                   icon,
                   size: 32,
-                  color: AppTheme.primaryBlue,
+                  color: KivoraColors.of(context).accentText,
                 ),
               ),
               const SizedBox(height: 16),

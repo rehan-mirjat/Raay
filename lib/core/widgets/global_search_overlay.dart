@@ -458,8 +458,8 @@ class _ResultTile extends StatelessWidget {
                 ),
               ),
               if (isSelected)
-                const Icon(Icons.keyboard_return_rounded,
-                    size: 14, color: AppTheme.primaryBlue),
+                Icon(Icons.keyboard_return_rounded,
+                    size: 14, color: KivoraColors.of(context).accentText),
             ],
           ),
         ),

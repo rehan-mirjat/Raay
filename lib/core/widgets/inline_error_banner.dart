@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../theme/kivora_colors.dart';
 
 /// A compact inline error message for form-level failures (wrong password,
 /// failed submit, etc.) - distinct from [ErrorView], which is for a whole
@@ -20,11 +21,11 @@ class InlineErrorBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.error_outline, color: AppTheme.error, size: 20),
+          Icon(Icons.error_outline, color: KivoraColors.of(context).errorText, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Text(message,
-                style: const TextStyle(color: AppTheme.error, fontSize: 13)),
+                style: TextStyle(color: KivoraColors.of(context).errorText, fontSize: 13)),
           ),
         ],
       ),

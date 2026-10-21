@@ -148,8 +148,8 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                 ),
                 const SizedBox(height: 16),
                 ListTile(
-                  leading: const Icon(Icons.route_outlined,
-                      color: AppTheme.primaryBlue),
+                  leading: Icon(Icons.route_outlined,
+                      color: KivoraColors.of(context).accentText),
                   title: const Text('Restart Product Tour',
                       style: TextStyle(fontWeight: FontWeight.w600)),
                   subtitle: const Text(
@@ -321,7 +321,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
               fontSize: 15,
               color: KivoraColors.textPrimaryOf(context)),
         ),
-        iconColor: AppTheme.primaryBlue,
+        iconColor: KivoraColors.of(context).accentText,
         collapsedIconColor: KivoraColors.textSecondaryOf(context),
         children: [
           Padding(

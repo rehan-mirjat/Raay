@@ -174,16 +174,16 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                             border: Border.all(
                                 color: AppTheme.success.withValues(alpha: 0.3)),
                           ),
-                          child: const Row(
+                          child: Row(
                             children: [
                               Icon(Icons.check_circle_outline,
-                                  color: AppTheme.success),
-                              SizedBox(width: 12),
+                                  color: KivoraColors.of(context).successText),
+                              const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
                                   'If an account exists for this email address, a password reset link has been sent. Please check your inbox.',
                                   style: TextStyle(
-                                      color: AppTheme.success,
+                                      color: KivoraColors.of(context).successText,
                                       fontSize: 13,
                                       height: 1.4),
                                 ),

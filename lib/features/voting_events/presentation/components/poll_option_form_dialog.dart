@@ -114,8 +114,8 @@ class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
                               color: AppTheme.primaryBlue.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const Icon(KivoraIcons.listChecks,
-                                color: AppTheme.primaryBlue, size: 20),
+                            child: Icon(KivoraIcons.listChecks,
+                                color: KivoraColors.of(context).accentText, size: 20),
                           ),
                           const SizedBox(width: 12),
                           Text(

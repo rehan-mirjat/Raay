@@ -374,7 +374,7 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
                     .characters
                     .first
                     .toUpperCase(),
-                style: const TextStyle(color: AppTheme.primaryBlue),
+                style: TextStyle(color: KivoraColors.of(context).accentText),
               ),
             ),
             const SizedBox(width: 12),
@@ -392,11 +392,11 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
                     spacing: 6,
                     children: [
                       if (isPlatformAdmin)
-                        const _Tag(label: 'Platform admin', color: AppTheme.primaryBlue),
+                        _Tag(label: 'Platform admin', color: KivoraColors.of(context).accentText),
                       if (!emailVerified)
                         _Tag(label: 'Unverified', color: KivoraColors.textSecondaryOf(context)),
                       if (disabled)
-                        const _Tag(label: 'Disabled', color: AppTheme.error),
+                        _Tag(label: 'Disabled', color: KivoraColors.of(context).errorText),
                     ],
                   ),
                 ],
@@ -405,7 +405,7 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
             if (isPlatformAdmin)
               OutlinedButton(
                 onPressed: busy ? null : () => _revokeAdmin(user),
-                style: OutlinedButton.styleFrom(foregroundColor: AppTheme.error),
+                style: OutlinedButton.styleFrom(foregroundColor: KivoraColors.of(context).errorText),
                 child: busy
                     ? const SizedBox(
                         height: 14,

@@ -53,7 +53,7 @@ class PollOptionList extends ConsumerWidget {
             }
             if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}',
-                  style: const TextStyle(color: AppTheme.error));
+                  style: TextStyle(color: KivoraColors.of(context).errorText));
             }
             final options = snapshot.data ?? [];
             if (options.isEmpty) {
@@ -112,8 +112,8 @@ class PollOptionList extends ConsumerWidget {
                           child: Center(
                             child: Text(
                               '${i + 1}',
-                              style: const TextStyle(
-                                color: AppTheme.primaryBlue,
+                              style: TextStyle(
+                                color: KivoraColors.of(context).accentText,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13,
                               ),
@@ -164,8 +164,8 @@ class PollOptionList extends ConsumerWidget {
                                 },
                               ),
                               IconButton(
-                                icon: const Icon(KivoraIcons.trash2,
-                                    size: 18, color: AppTheme.error),
+                                icon: Icon(KivoraIcons.trash2,
+                                    size: 18, color: KivoraColors.of(context).errorText),
                                 onPressed: () async {
                                   final confirm = await showDialog<bool>(
                                       context: context,
@@ -181,9 +181,9 @@ class PollOptionList extends ConsumerWidget {
                                               TextButton(
                                                 onPressed: () =>
                                                     Navigator.pop(c, true),
-                                                child: const Text('Delete',
+                                                child: Text('Delete',
                                                     style: TextStyle(
-                                                        color: AppTheme.error)),
+                                                        color: KivoraColors.of(context).errorText)),
                                               ),
                                             ],
                                           ));

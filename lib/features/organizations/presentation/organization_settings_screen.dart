@@ -371,12 +371,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                       ? Image.network(
                           FirebaseService.sanitizeStorageUrl(_logoUrl.text),
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => const Center(
-                            child: Icon(Icons.business_rounded, size: 32, color: AppTheme.primaryBlue),
+                          errorBuilder: (context, error, stackTrace) => Center(
+                            child: Icon(Icons.business_rounded, size: 32, color: KivoraColors.of(context).accentText),
                           ),
                         )
-                      : const Center(
-                          child: Icon(Icons.business_rounded, size: 32, color: AppTheme.primaryBlue),
+                      : Center(
+                          child: Icon(Icons.business_rounded, size: 32, color: KivoraColors.of(context).accentText),
                         ),
                 ),
                 const SizedBox(width: 20),
@@ -498,12 +498,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                       ? Image.network(
                           FirebaseService.sanitizeStorageUrl(_logoUrl.text),
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => const Center(
-                            child: Icon(Icons.business_rounded, size: 24, color: AppTheme.primaryBlue),
+                          errorBuilder: (context, error, stackTrace) => Center(
+                            child: Icon(Icons.business_rounded, size: 24, color: KivoraColors.of(context).accentText),
                           ),
                         )
-                      : const Center(
-                          child: Icon(Icons.business_rounded, size: 24, color: AppTheme.primaryBlue),
+                      : Center(
+                          child: Icon(Icons.business_rounded, size: 24, color: KivoraColors.of(context).accentText),
                         ),
                 ),
                 const SizedBox(height: 16),
@@ -526,7 +526,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                         color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Text('Member', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue)),
+                      child: Text('Member', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: KivoraColors.of(context).accentText)),
                     ),
                   ],
                 ),
@@ -609,7 +609,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.verified_user_outlined, size: 20, color: AppTheme.primaryBlue),
+          Icon(Icons.verified_user_outlined, size: 20, color: KivoraColors.of(context).accentText),
           const SizedBox(width: 14),
           Expanded(
             child: Column(

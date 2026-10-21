@@ -98,7 +98,7 @@ class SetupChecklistWidget extends ConsumerWidget {
                     child: LinearProgressIndicator(
                       value: completedCount / items.length,
                       backgroundColor: KivoraColors.borderOf(context),
-                      color: AppTheme.success,
+                      color: KivoraColors.of(context).successText,
                       minHeight: 6,
                       borderRadius: BorderRadius.circular(3),
                     ),

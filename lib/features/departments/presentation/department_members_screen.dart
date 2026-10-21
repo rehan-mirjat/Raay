@@ -66,8 +66,8 @@ class _DepartmentMembersScreenState
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Department',
-            style: TextStyle(color: AppTheme.error)),
+        title: Text('Delete Department',
+            style: TextStyle(color: KivoraColors.of(context).errorText)),
         content: Text(
           'Are you sure you want to delete "${dept.name}"?\n\nThis permanently deletes the department.',
         ),
@@ -163,8 +163,8 @@ class _DepartmentMembersScreenState
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Remove from department',
-            style: TextStyle(color: AppTheme.error)),
+        title: Text('Remove from department',
+            style: TextStyle(color: KivoraColors.of(context).errorText)),
         content: Text('Remove "$memberName" from this department?'),
         actions: [
           TextButton(
@@ -283,21 +283,21 @@ class _DepartmentMembersScreenState
                     InkWell(
                       onTap: () => context.go('/orgs/departments'),
                       borderRadius: BorderRadius.circular(6),
-                      child: const Padding(
+                      child: Padding(
                         padding:
-                            EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+                            const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(Icons.arrow_back_rounded,
-                                size: 16, color: AppTheme.primaryBlue),
-                            SizedBox(width: 6),
+                                size: 16, color: KivoraColors.of(context).accentText),
+                            const SizedBox(width: 6),
                             Text(
                               'Departments',
                               style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
-                                  color: AppTheme.primaryBlue),
+                                  color: KivoraColors.of(context).accentText),
                             ),
                           ],
                         ),
@@ -501,10 +501,10 @@ class _DepartmentMembersScreenState
                   child: Center(
                     child: Text(
                       '${assignedMembers.length}',
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: AppTheme.primaryBlue),
+                          color: KivoraColors.of(context).accentText),
                     ),
                   ),
                 ),
@@ -526,8 +526,8 @@ class _DepartmentMembersScreenState
                       color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.people_outline_rounded,
-                        size: 28, color: AppTheme.primaryBlue),
+                    child: Icon(Icons.people_outline_rounded,
+                        size: 28, color: KivoraColors.of(context).accentText),
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -734,8 +734,8 @@ class _DepartmentMembersScreenState
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                          color: AppTheme.primaryBlue, width: 1.5),
+                      borderSide: BorderSide(
+                          color: KivoraColors.of(context).accentText, width: 1.5),
                     ),
                     fillColor: KivoraColors.surfaceOf(context),
                     filled: true,

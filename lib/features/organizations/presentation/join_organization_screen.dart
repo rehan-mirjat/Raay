@@ -226,10 +226,10 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                   color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.key_outlined,
                   size: 24,
-                  color: AppTheme.primaryBlue,
+                  color: KivoraColors.of(context).accentText,
                 ),
               ),
               IconButton(
@@ -301,7 +301,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.info_outline_rounded, color: AppTheme.primaryBlue, size: 18),
+                Icon(Icons.info_outline_rounded, color: KivoraColors.of(context).accentText, size: 18),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(
@@ -379,10 +379,10 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                 color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.domain_verification_outlined,
                 size: 24,
-                color: AppTheme.primaryBlue,
+                color: KivoraColors.of(context).accentText,
               ),
             ),
             IconButton(
@@ -422,8 +422,8 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                     ? NetworkImage(preview.logoUrl!)
                     : null,
                 child: preview.logoUrl == null
-                    ? const Icon(Icons.business_outlined,
-                        color: AppTheme.primaryBlue)
+                    ? Icon(Icons.business_outlined,
+                        color: KivoraColors.of(context).accentText)
                     : null,
               ),
               const SizedBox(width: 14),

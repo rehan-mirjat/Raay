@@ -102,7 +102,7 @@ class ObserverDashboardScreen extends ConsumerWidget {
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.visibility_outlined, color: AppTheme.primaryBlue),
+                              Icon(Icons.visibility_outlined, color: KivoraColors.of(context).accentText),
                               const SizedBox(width: 10),
                               Expanded(
                                 child: Text(
@@ -191,7 +191,7 @@ class _ObserverEventTile extends ConsumerWidget {
                       value: eligible == 0 ? 0 : (voted / eligible).clamp(0, 1),
                       minHeight: 6,
                       backgroundColor: kc.border,
-                      color: AppTheme.success,
+                      color: KivoraColors.of(context).successText,
                     ),
                   ),
                   const SizedBox(height: 6),

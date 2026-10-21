@@ -157,10 +157,10 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                             color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(14),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.business_outlined,
                             size: 24,
-                            color: AppTheme.primaryBlue,
+                            color: KivoraColors.of(context).accentText,
                           ),
                         ),
                         IconButton(
@@ -307,7 +307,7 @@ class _CreateOrganizationScreenState extends ConsumerState<CreateOrganizationScr
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(Icons.check_circle_outline_rounded, color: AppTheme.primaryBlue, size: 18),
+                          Icon(Icons.check_circle_outline_rounded, color: KivoraColors.of(context).accentText, size: 18),
                           const SizedBox(width: 10),
                           Expanded(
                             child: Column(

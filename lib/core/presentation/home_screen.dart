@@ -65,8 +65,8 @@ class _EmptyPlatformWelcome extends ConsumerWidget {
                   color: AppTheme.primaryBlue.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(KivoraIcons.building2,
-                    size: 48, color: AppTheme.primaryBlue),
+                child: Icon(KivoraIcons.building2,
+                    size: 48, color: KivoraColors.of(context).accentText),
               ),
               const SizedBox(height: 24),
               Text(

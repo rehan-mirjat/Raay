@@ -365,10 +365,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             user.firstName.isNotEmpty
                                 ? user.firstName[0].toUpperCase()
                                 : 'U',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 26,
                               fontWeight: FontWeight.bold,
-                              color: AppTheme.primaryBlue,
+                              color: KivoraColors.of(context).accentText,
                             ),
                           )
                         : null,
@@ -381,8 +381,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
                         padding: const EdgeInsets.all(6),
-                        decoration: const BoxDecoration(
-                          color: AppTheme.primaryBlue,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
                           shape: BoxShape.circle,
                         ),
                         child: _isUploadingPhoto
@@ -477,14 +477,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
             child: Row(
               children: [
-                const Icon(KivoraIcons.checkCircle,
-                    color: AppTheme.success, size: 20),
+                Icon(KivoraIcons.checkCircle,
+                    color: KivoraColors.of(context).successText, size: 20),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     _successMessage!,
-                    style: const TextStyle(
-                      color: AppTheme.success,
+                    style: TextStyle(
+                      color: KivoraColors.of(context).successText,
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
                     ),
@@ -506,14 +506,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
             child: Row(
               children: [
-                const Icon(KivoraIcons.alertCircle,
-                    color: AppTheme.error, size: 20),
+                Icon(KivoraIcons.alertCircle,
+                    color: KivoraColors.of(context).errorText, size: 20),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     _error!,
-                    style: const TextStyle(
-                      color: AppTheme.error,
+                    style: TextStyle(
+                      color: KivoraColors.of(context).errorText,
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
                     ),
@@ -926,8 +926,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               border: Border.all(color: AppTheme.error.withValues(alpha: 0.3)),
             ),
             child: Text(_error!,
-                style: const TextStyle(
-                    color: AppTheme.error,
+                style: TextStyle(
+                    color: KivoraColors.of(context).errorText,
                     fontWeight: FontWeight.bold,
                     fontSize: 13)),
           ),
@@ -1003,8 +1003,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 child: const Text('Cancel')),
             TextButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Disconnect',
-                  style: TextStyle(color: AppTheme.error)),
+              child: Text('Disconnect',
+                  style: TextStyle(color: KivoraColors.of(context).errorText)),
             ),
           ],
         ),
@@ -1119,8 +1119,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Border.all(color: AppTheme.success.withValues(alpha: 0.3)),
             ),
             child: Text(_successMessage!,
-                style: const TextStyle(
-                    color: AppTheme.success,
+                style: TextStyle(
+                    color: KivoraColors.of(context).successText,
                     fontWeight: FontWeight.bold,
                     fontSize: 13)),
           ),
@@ -1135,8 +1135,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               border: Border.all(color: AppTheme.error.withValues(alpha: 0.3)),
             ),
             child: Text(_error!,
-                style: const TextStyle(
-                    color: AppTheme.error,
+                style: TextStyle(
+                    color: KivoraColors.of(context).errorText,
                     fontWeight: FontWeight.bold,
                     fontSize: 13)),
           ),

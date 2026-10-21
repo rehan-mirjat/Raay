@@ -110,8 +110,8 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                         color: AppTheme.success.withValues(alpha: 0.12),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(KivoraIcons.checkCircle2,
-                          color: AppTheme.success, size: 22),
+                      child: Icon(KivoraIcons.checkCircle2,
+                          color: KivoraColors.of(context).successText, size: 22),
                     ),
                     const SizedBox(width: 12),
                     Text(
@@ -210,8 +210,8 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                               color: AppTheme.primaryBlue.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const Icon(KivoraIcons.userPlus,
-                                color: AppTheme.primaryBlue, size: 20),
+                            child: Icon(KivoraIcons.userPlus,
+                                color: KivoraColors.of(context).accentText, size: 20),
                           ),
                           const SizedBox(width: 12),
                           Text(
@@ -273,7 +273,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                   ],
                   if (_error != null) ...[
                     const SizedBox(height: 16),
-                    Text(_error!, style: const TextStyle(color: AppTheme.error, fontSize: 13)),
+                    Text(_error!, style: TextStyle(color: KivoraColors.of(context).errorText, fontSize: 13)),
                   ],
                   const SizedBox(height: 24),
                   Row(

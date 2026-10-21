@@ -310,9 +310,9 @@ class _OrganizationAuditScreenState
                       _selectedCategory = 'all';
                     });
                   },
-                  child: const Text('Reset',
+                  child: Text('Reset',
                       style: TextStyle(
-                          color: AppTheme.error,
+                          color: KivoraColors.of(context).errorText,
                           fontWeight: FontWeight.bold,
                           fontSize: 13)),
                 ),
@@ -355,9 +355,9 @@ class _OrganizationAuditScreenState
                           _selectedCategory = 'all';
                         });
                       },
-                      child: const Text('Reset',
+                      child: Text('Reset',
                           style: TextStyle(
-                              color: AppTheme.error,
+                              color: KivoraColors.of(context).errorText,
                               fontWeight: FontWeight.bold,
                               fontSize: 13)),
                     ),
@@ -401,8 +401,8 @@ class _OrganizationAuditScreenState
           child: Row(
             children: [
               if (isSelected)
-                const Icon(Icons.check_rounded,
-                    size: 16, color: AppTheme.primaryBlue)
+                Icon(Icons.check_rounded,
+                    size: 16, color: KivoraColors.of(context).accentText)
               else
                 const SizedBox(width: 16),
               const SizedBox(width: 8),
@@ -459,8 +459,8 @@ class _OrganizationAuditScreenState
           child: Row(
             children: [
               if (isSelected)
-                const Icon(Icons.check_rounded,
-                    size: 16, color: AppTheme.primaryBlue)
+                Icon(Icons.check_rounded,
+                    size: 16, color: KivoraColors.of(context).accentText)
               else
                 const SizedBox(width: 16),
               const SizedBox(width: 8),
@@ -562,8 +562,8 @@ class _OrganizationAuditScreenState
           child: Row(
             children: [
               if (_selectedDateRange == null)
-                const Icon(Icons.check_rounded,
-                    size: 16, color: AppTheme.primaryBlue)
+                Icon(Icons.check_rounded,
+                    size: 16, color: KivoraColors.of(context).accentText)
               else
                 const SizedBox(width: 16),
               const SizedBox(width: 8),
@@ -616,17 +616,17 @@ class _OrganizationAuditScreenState
           ),
         ),
         const PopupMenuDivider(),
-        const PopupMenuItem<String>(
+        PopupMenuItem<String>(
           value: 'custom',
           child: Row(
             children: [
               Icon(Icons.date_range_rounded,
-                  size: 16, color: AppTheme.primaryBlue),
-              SizedBox(width: 8),
+                  size: 16, color: KivoraColors.of(context).accentText),
+              const SizedBox(width: 8),
               Text('Custom date range...',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryBlue,
+                      color: KivoraColors.of(context).accentText,
                       fontSize: 13)),
             ],
           ),
@@ -1128,10 +1128,10 @@ class _OrganizationAuditScreenState
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             if (isHovered && !isExpanded)
-                              const Text('View details ',
+                              Text('View details ',
                                   style: TextStyle(
                                       fontSize: 11,
-                                      color: AppTheme.primaryBlue,
+                                      color: KivoraColors.of(context).accentText,
                                       fontWeight: FontWeight.bold)),
                             Icon(
                               isExpanded

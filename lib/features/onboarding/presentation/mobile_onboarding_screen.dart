@@ -181,8 +181,8 @@ class _MobileOnboardingScreenState
                       decoration: BoxDecoration(
                           color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(6)),
-                      child: const Icon(Icons.corporate_fare_outlined,
-                          size: 14, color: AppTheme.primaryBlue),
+                      child: Icon(Icons.corporate_fare_outlined,
+                          size: 14, color: KivoraColors.of(context).accentText),
                     ),
                   ],
                 ),
@@ -195,16 +195,16 @@ class _MobileOnboardingScreenState
                 _illustrationActionRow(Icons.person_add_outlined,
                     'Join an organization', 'Use your code or invitation'),
                 const SizedBox(height: 12),
-                const Row(
+                Row(
                   children: [
                     Icon(Icons.key_outlined,
-                        size: 14, color: AppTheme.primaryBlue),
-                    SizedBox(width: 6),
+                        size: 14, color: KivoraColors.of(context).accentText),
+                    const SizedBox(width: 6),
                     Flexible(
                       child: Text('An invitation brings you right in.',
                           style: TextStyle(
                               fontSize: 12,
-                              color: AppTheme.primaryBlue,
+                              color: KivoraColors.of(context).accentText,
                               fontWeight: FontWeight.bold)),
                     ),
                   ],
@@ -277,8 +277,8 @@ class _MobileOnboardingScreenState
                       decoration: BoxDecoration(
                           color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(6)),
-                      child: const Icon(Icons.how_to_vote_outlined,
-                          size: 14, color: AppTheme.primaryBlue),
+                      child: Icon(Icons.how_to_vote_outlined,
+                          size: 14, color: KivoraColors.of(context).accentText),
                     ),
                   ],
                 ),
@@ -298,18 +298,18 @@ class _MobileOnboardingScreenState
                   decoration: BoxDecoration(
                       color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppTheme.primaryBlue)),
-                  child: const Row(
+                      border: Border.all(color: KivoraColors.of(context).accentText)),
+                  child: Row(
                     children: [
                       Icon(Icons.radio_button_checked_rounded,
-                          size: 14, color: AppTheme.primaryBlue),
-                      SizedBox(width: 8),
+                          size: 14, color: KivoraColors.of(context).accentText),
+                      const SizedBox(width: 8),
                       Flexible(
                         child: Text('Alex Morgan',
                             style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                color: AppTheme.primaryBlue)),
+                                color: KivoraColors.of(context).accentText)),
                       ),
                     ],
                   ),
@@ -418,8 +418,8 @@ class _MobileOnboardingScreenState
                       decoration: BoxDecoration(
                           color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(6)),
-                      child: const Icon(Icons.tune_rounded,
-                          size: 14, color: AppTheme.primaryBlue),
+                      child: Icon(Icons.tune_rounded,
+                          size: 14, color: KivoraColors.of(context).accentText),
                     ),
                   ],
                 ),
@@ -446,8 +446,8 @@ class _MobileOnboardingScreenState
                                   fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
                         ],
                       )),
-                      const Icon(Icons.toggle_on_rounded,
-                          color: AppTheme.primaryBlue, size: 22),
+                      Icon(Icons.toggle_on_rounded,
+                          color: KivoraColors.of(context).accentText, size: 22),
                     ],
                   ),
                 ),
@@ -521,8 +521,8 @@ class _MobileOnboardingScreenState
                       decoration: BoxDecoration(
                           color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(10)),
-                      child: const Icon(Icons.people_outline_rounded,
-                          color: AppTheme.primaryBlue, size: 20),
+                      child: Icon(Icons.people_outline_rounded,
+                          color: KivoraColors.of(context).accentText, size: 20),
                     ),
                     const SizedBox(width: 10),
                     Flexible(
@@ -552,8 +552,8 @@ class _MobileOnboardingScreenState
                             borderRadius: BorderRadius.circular(10)),
                         child: Column(
                           children: [
-                            const Icon(Icons.how_to_vote_outlined,
-                                size: 18, color: AppTheme.primaryBlue),
+                            Icon(Icons.how_to_vote_outlined,
+                                size: 18, color: KivoraColors.of(context).accentText),
                             const SizedBox(height: 4),
                             Text('Elections',
                                 style: TextStyle(
@@ -573,8 +573,8 @@ class _MobileOnboardingScreenState
                             borderRadius: BorderRadius.circular(10)),
                         child: Column(
                           children: [
-                            const Icon(Icons.bar_chart_rounded,
-                                size: 18, color: AppTheme.primaryBlue),
+                            Icon(Icons.bar_chart_rounded,
+                                size: 18, color: KivoraColors.of(context).accentText),
                             const SizedBox(height: 4),
                             Text('Polls',
                                 style: TextStyle(
@@ -588,11 +588,11 @@ class _MobileOnboardingScreenState
                   ],
                 ),
                 const SizedBox(height: 12),
-                const Text('Better decisions, together.',
+                Text('Better decisions, together.',
                     style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.primaryBlue)),
+                        color: KivoraColors.of(context).accentText)),
               ],
             ),
           ),
@@ -651,7 +651,7 @@ class _MobileOnboardingScreenState
                 context.go('/login');
               },
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppTheme.primaryBlue,
+                foregroundColor: KivoraColors.of(context).accentText,
                 side: BorderSide(color: KivoraColors.borderOf(context), width: 1.5),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
@@ -733,7 +733,7 @@ class _MobileOnboardingScreenState
             decoration: BoxDecoration(
                 color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(8)),
-            child: Icon(icon, size: 16, color: AppTheme.primaryBlue),
+            child: Icon(icon, size: 16, color: KivoraColors.of(context).accentText),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -770,8 +770,8 @@ class _MobileOnboardingScreenState
                 Container(
                     width: 6,
                     height: 6,
-                    decoration: const BoxDecoration(
-                        color: AppTheme.primaryBlue, shape: BoxShape.circle)),
+                    decoration: BoxDecoration(
+                        color: KivoraColors.of(context).accentText, shape: BoxShape.circle)),
                 const SizedBox(width: 8),
                 Flexible(
                   child: Text(title,
@@ -796,10 +796,10 @@ class _MobileOnboardingScreenState
       children: [
         Text(
           tag,
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: AppTheme.primaryBlue,
+              color: KivoraColors.of(context).accentText,
               letterSpacing: 0.8),
           textAlign: TextAlign.center,
         ),
@@ -845,7 +845,7 @@ class _MobileOnboardingScreenState
             decoration: BoxDecoration(
                 color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(8)),
-            child: Icon(icon, color: AppTheme.primaryBlue, size: 16),
+            child: Icon(icon, color: KivoraColors.of(context).accentText, size: 16),
           ),
           const SizedBox(width: 10),
           Expanded(

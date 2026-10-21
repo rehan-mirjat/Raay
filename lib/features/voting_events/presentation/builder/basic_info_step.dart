@@ -94,8 +94,8 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                 ),
                 const SizedBox(height: 20),
                 ListTile(
-                  leading: const Icon(Icons.stars_rounded,
-                      color: AppTheme.primaryBlue),
+                  leading: Icon(Icons.stars_rounded,
+                      color: KivoraColors.of(context).accentText),
                   title: const Text('Executive / Board Election',
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: const Text('Candidate Election • Anonymous Ballot'),

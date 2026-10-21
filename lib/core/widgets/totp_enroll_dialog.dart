@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-import '../theme/app_theme.dart';
 import '../../core/theme/kivora_colors.dart';
 import '../../services/auth_service.dart';
 import 'reauth_dialog.dart';
@@ -169,7 +168,7 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
                   ),
                   if (dialogError != null) ...[
                     const SizedBox(height: 8),
-                    Text(dialogError!, style: const TextStyle(color: AppTheme.error)),
+                    Text(dialogError!, style: TextStyle(color: KivoraColors.of(context).errorText)),
                   ],
                 ],
               ),

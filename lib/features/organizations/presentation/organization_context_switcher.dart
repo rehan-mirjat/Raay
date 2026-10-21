@@ -75,10 +75,10 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                   ] else if (orgsError) ...[
                     Column(
                       children: [
-                        const Text(
+                        Text(
                           'Could not load your organizations.',
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: AppTheme.error),
+                          style: TextStyle(color: KivoraColors.of(context).errorText),
                         ),
                         const SizedBox(height: 8),
                         TextButton.icon(
@@ -205,7 +205,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         child: Row(
           children: [
-            Icon(icon, size: 18, color: AppTheme.primaryBlue),
+            Icon(icon, size: 18, color: KivoraColors.of(context).accentText),
             const SizedBox(width: 12),
             Text(
               label,
@@ -257,8 +257,8 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.business_rounded,
-                        color: AppTheme.primaryBlue, size: 16),
+                    Icon(Icons.business_rounded,
+                        color: KivoraColors.of(context).accentText, size: 16),
                     const SizedBox(width: 8),
                     Flexible(
                       child: Column(

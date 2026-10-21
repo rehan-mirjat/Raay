@@ -94,8 +94,8 @@ class _CsvImportModalState extends State<CsvImportModal> {
                           color: AppTheme.primaryBlue.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: const Icon(KivoraIcons.fileSpreadsheet,
-                            color: AppTheme.primaryBlue, size: 20),
+                        child: Icon(KivoraIcons.fileSpreadsheet,
+                            color: KivoraColors.of(context).accentText, size: 20),
                       ),
                       const SizedBox(width: 12),
                       Text(
@@ -157,8 +157,8 @@ class _CsvImportModalState extends State<CsvImportModal> {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          const Icon(KivoraIcons.checkCircle2,
-                              color: AppTheme.success, size: 16),
+                          Icon(KivoraIcons.checkCircle2,
+                              color: KivoraColors.of(context).successText, size: 16),
                           const SizedBox(width: 8),
                           Text(
                             '${_matchedUserIds.length} members matched and eligible',
@@ -174,8 +174,8 @@ class _CsvImportModalState extends State<CsvImportModal> {
                         const SizedBox(height: 6),
                         Row(
                           children: [
-                            const Icon(KivoraIcons.alertTriangle,
-                                color: AppTheme.warning, size: 16),
+                            Icon(KivoraIcons.alertTriangle,
+                                color: KivoraColors.of(context).warningText, size: 16),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(

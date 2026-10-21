@@ -130,7 +130,7 @@ class TransparencyCenterScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(section.icon, color: AppTheme.primaryBlue, size: 20),
+              Icon(section.icon, color: KivoraColors.of(context).accentText, size: 20),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(section.title,

@@ -124,8 +124,8 @@ class _AcceptInvitationLinkScreenState
             color: AppTheme.primaryBlue.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(14),
           ),
-          child: const Icon(Icons.mail_outline_rounded,
-              size: 24, color: AppTheme.primaryBlue),
+          child: Icon(Icons.mail_outline_rounded,
+              size: 24, color: KivoraColors.of(context).accentText),
         ),
         const SizedBox(height: 20),
         Text(
@@ -188,8 +188,8 @@ class _AcceptInvitationLinkScreenState
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(Icons.check_circle_rounded,
-            size: 40, color: AppTheme.success),
+        Icon(Icons.check_circle_rounded,
+            size: 40, color: KivoraColors.of(context).successText),
         const SizedBox(height: 16),
         Text(
           'Welcome to ${_organizationName ?? 'the organization'}!',
@@ -224,7 +224,7 @@ class _AcceptInvitationLinkScreenState
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(Icons.error_outline_rounded, size: 40, color: AppTheme.error),
+        Icon(Icons.error_outline_rounded, size: 40, color: KivoraColors.of(context).errorText),
         const SizedBox(height: 16),
         Text(
           'Couldn\'t accept this invitation',

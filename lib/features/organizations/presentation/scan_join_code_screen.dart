@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/kivora_colors.dart';
 
 const _kivoraJoinPrefix = 'KIVORA-JOIN:';
 
@@ -94,7 +94,7 @@ class _ScanJoinCodeScreenState extends State<ScanJoinCodeScreen> {
               width: 240,
               height: 240,
               decoration: BoxDecoration(
-                border: Border.all(color: AppTheme.primaryBlue, width: 3),
+                border: Border.all(color: KivoraColors.of(context).accentText, width: 3),
                 borderRadius: BorderRadius.circular(20),
               ),
             ),

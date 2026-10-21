@@ -139,8 +139,8 @@ class _QuickTourOverlayState extends ConsumerState<QuickTourOverlay> {
                         color: AppTheme.success.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.check_circle_rounded,
-                          color: AppTheme.success, size: 40),
+                      child: Icon(Icons.check_circle_rounded,
+                          color: KivoraColors.of(context).successText, size: 40),
                     ),
                     const SizedBox(height: 24),
                     Text(
@@ -197,7 +197,7 @@ class _QuickTourOverlayState extends ConsumerState<QuickTourOverlay> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.transparent,
-                    border: Border.all(color: AppTheme.primaryBlue, width: 2.5),
+                    border: Border.all(color: KivoraColors.of(context).accentText, width: 2.5),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
@@ -251,10 +251,10 @@ class _QuickTourOverlayState extends ConsumerState<QuickTourOverlay> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('Step ${_currentStep + 1} of ${_steps.length}',
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: AppTheme.primaryBlue)),
+                              color: KivoraColors.of(context).accentText)),
                       IconButton(
                         icon: Icon(Icons.close_rounded,
                             size: 18, color: KivoraColors.textSecondaryOf(context)),

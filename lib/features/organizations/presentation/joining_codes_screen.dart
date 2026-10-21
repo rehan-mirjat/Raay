@@ -67,7 +67,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
           var copied = false;
           return StatefulBuilder(
             builder: (context, setDialogState) => AlertDialog(
-              icon: const Icon(Icons.key_rounded, color: AppTheme.primaryBlue),
+              icon: Icon(Icons.key_rounded, color: KivoraColors.of(context).accentText),
               title: const Text('Save this joining code'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,

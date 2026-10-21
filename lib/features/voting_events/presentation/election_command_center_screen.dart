@@ -397,7 +397,7 @@ class _ElectionCommandCenterScreenState
       KivoraMetricCard(
           title: 'Total Elections', value: '${all.length}', icon: KivoraIcons.vote),
       KivoraMetricCard(
-          title: 'Active', value: '${active.length}', icon: Icons.sensors_rounded, iconColor: AppTheme.success),
+          title: 'Active', value: '${active.length}', icon: Icons.sensors_rounded, iconColor: KivoraColors.of(context).successText),
       KivoraMetricCard(
           title: 'Scheduled', value: '${scheduled.length}', icon: Icons.schedule_rounded, iconColor: AppTheme.accentGold),
       KivoraMetricCard(
