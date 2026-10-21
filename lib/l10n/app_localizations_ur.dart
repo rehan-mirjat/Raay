@@ -1639,4 +1639,228 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get resEventFallback => 'Election';
+
+  @override
+  String get monTitle => 'Live turnout';
+
+  @override
+  String get monBack => 'Back';
+
+  @override
+  String get monLive => 'Live';
+
+  @override
+  String monUpdated(int s) {
+    return 'Live · updated ${s}s ago';
+  }
+
+  @override
+  String get monRefresh => 'Refresh';
+
+  @override
+  String monClosesIn(String when) {
+    return 'Closes in $when';
+  }
+
+  @override
+  String monRemainDaysHours(int d, int h) {
+    String _temp0 = intl.Intl.pluralLogic(
+      d,
+      locale: localeName,
+      other: '$d days',
+      one: '1 day',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      h,
+      locale: localeName,
+      other: '$h hours',
+      one: '1 hour',
+    );
+    return '$_temp0 $_temp1';
+  }
+
+  @override
+  String monRemainHoursMin(int h, int m) {
+    String _temp0 = intl.Intl.pluralLogic(
+      h,
+      locale: localeName,
+      other: '$h hours',
+      one: '1 hour',
+    );
+    return '$_temp0 $m min';
+  }
+
+  @override
+  String monRemainMin(int m) {
+    return '$m min';
+  }
+
+  @override
+  String get monPrivacy =>
+      'Counts only. No voter identities or ballot selections are shown here. Results stay hidden until the election is closed and published.';
+
+  @override
+  String get monLoadError =>
+      'We could not load turnout. Check your connection and try again.';
+
+  @override
+  String get monRetry => 'Try again';
+
+  @override
+  String get monRefreshIssue =>
+      'The latest refresh failed. Showing the last numbers we loaded.';
+
+  @override
+  String get monTurnoutLabel => 'Eligible members who participated';
+
+  @override
+  String monOfEligible(int voted, int eligible) {
+    return '$voted of $eligible';
+  }
+
+  @override
+  String get monEligible => 'Eligible';
+
+  @override
+  String get monEligibleCap => 'All active members';
+
+  @override
+  String get monVoted => 'Voted';
+
+  @override
+  String get monVotedCap => 'Ballots submitted';
+
+  @override
+  String get monNotYet => 'Not yet';
+
+  @override
+  String get monNotYetCap => 'Members remaining';
+
+  @override
+  String get monChartTitle => 'Participation over time';
+
+  @override
+  String get monChartSub =>
+      'Cumulative participation since the election opened';
+
+  @override
+  String get monChartNone =>
+      'Not enough data yet to chart participation over time.';
+
+  @override
+  String monChartTotal(int n) {
+    return '$n voted';
+  }
+
+  @override
+  String get monChartStart => 'Opened';
+
+  @override
+  String get monChartNow => 'Now';
+
+  @override
+  String get monDeptTitle => 'Turnout by department';
+
+  @override
+  String get monDeptNone => 'No department data for this election.';
+
+  @override
+  String get monDeptNote =>
+      'Groups with fewer than 5 eligible members are combined to protect privacy.';
+
+  @override
+  String monDeptRow(int participated, int eligible, String percent) {
+    return '$participated of $eligible · $percent%';
+  }
+
+  @override
+  String get monDeptFallback => 'Department';
+
+  @override
+  String get monDetails => 'Election details';
+
+  @override
+  String get monWindow => 'Voting window';
+
+  @override
+  String get monBallotType => 'Ballot type';
+
+  @override
+  String get monAnonymous => 'Anonymous';
+
+  @override
+  String get monIdentifiable => 'Identifiable';
+
+  @override
+  String get monEligibility => 'Who can vote';
+
+  @override
+  String get monVotingType => 'Voting type';
+
+  @override
+  String get monBoostTitle => 'Boost turnout';
+
+  @override
+  String get monBoostBody =>
+      'Remind members who have not voted. Reminders go to non-voters automatically; you will not see who has or has not voted.';
+
+  @override
+  String get monRemind => 'Remind non-voters';
+
+  @override
+  String get monSending => 'Sending...';
+
+  @override
+  String get monRemindNone => 'Everyone eligible has already voted.';
+
+  @override
+  String monRemindDone(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Reminder sent to $n non-voters.',
+      one: 'Reminder sent to 1 non-voter.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get monRemindFailed =>
+      'We could not send reminders. Please try again.';
+
+  @override
+  String get monPrivateNote => 'Participation stays private';
+
+  @override
+  String get monCloseTitle => 'Close voting early';
+
+  @override
+  String get monCloseNote =>
+      'Closing is final. You may need to sign in again if your last sign-in was over 15 minutes ago. Results stay hidden until you calculate and publish them.';
+
+  @override
+  String get monCloseButton => 'Close voting now';
+
+  @override
+  String get monCloseDialogTitle => 'Close voting now?';
+
+  @override
+  String get monCloseDialogBody =>
+      'Closing is final. Members will no longer be able to vote, and this cannot be undone. Results stay hidden until you calculate and publish them.';
+
+  @override
+  String get monCloseConfirm => 'Close voting';
+
+  @override
+  String get monCancel => 'Cancel';
+
+  @override
+  String get monClosed => 'Voting closed.';
+
+  @override
+  String get monCloseFailed => 'We could not close voting. Please try again.';
+
+  @override
+  String get monReauth =>
+      'For security, closing an election requires you to have signed in within the last 15 minutes. Please verify your identity to continue.';
 }

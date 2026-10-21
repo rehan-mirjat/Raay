@@ -828,5 +828,140 @@
   "resPublishConfirmBody": "All eligible members will be able to see the results. You can still recalculate them afterwards.",
   "resPublishConfirm": "Publish",
   "resCancel": "Cancel",
-  "resEventFallback": "Election"
+  "resEventFallback": "Election",
+  "monTitle": "Live turnout",
+  "monBack": "Back",
+  "monLive": "Live",
+  "monUpdated": "Live · updated {s}s ago",
+  "@monUpdated": {
+    "placeholders": {
+      "s": {
+        "type": "int"
+      }
+    }
+  },
+  "monRefresh": "Refresh",
+  "monClosesIn": "Closes in {when}",
+  "@monClosesIn": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "monRemainDaysHours": "{d, plural, =1{1 day} other{{d} days}} {h, plural, =1{1 hour} other{{h} hours}}",
+  "@monRemainDaysHours": {
+    "placeholders": {
+      "d": {
+        "type": "int"
+      },
+      "h": {
+        "type": "int"
+      }
+    }
+  },
+  "monRemainHoursMin": "{h, plural, =1{1 hour} other{{h} hours}} {m} min",
+  "@monRemainHoursMin": {
+    "placeholders": {
+      "h": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "monRemainMin": "{m} min",
+  "@monRemainMin": {
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "monPrivacy": "Counts only. No voter identities or ballot selections are shown here. Results stay hidden until the election is closed and published.",
+  "monLoadError": "We could not load turnout. Check your connection and try again.",
+  "monRetry": "Try again",
+  "monRefreshIssue": "The latest refresh failed. Showing the last numbers we loaded.",
+  "monTurnoutLabel": "Eligible members who participated",
+  "monOfEligible": "{voted} of {eligible}",
+  "@monOfEligible": {
+    "placeholders": {
+      "voted": {
+        "type": "int"
+      },
+      "eligible": {
+        "type": "int"
+      }
+    }
+  },
+  "monEligible": "Eligible",
+  "monEligibleCap": "All active members",
+  "monVoted": "Voted",
+  "monVotedCap": "Ballots submitted",
+  "monNotYet": "Not yet",
+  "monNotYetCap": "Members remaining",
+  "monChartTitle": "Participation over time",
+  "monChartSub": "Cumulative participation since the election opened",
+  "monChartNone": "Not enough data yet to chart participation over time.",
+  "monChartTotal": "{n} voted",
+  "@monChartTotal": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "monChartStart": "Opened",
+  "monChartNow": "Now",
+  "monDeptTitle": "Turnout by department",
+  "monDeptNone": "No department data for this election.",
+  "monDeptNote": "Groups with fewer than 5 eligible members are combined to protect privacy.",
+  "monDeptRow": "{participated} of {eligible} · {percent}%",
+  "@monDeptRow": {
+    "placeholders": {
+      "participated": {
+        "type": "int"
+      },
+      "eligible": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "monDeptFallback": "Department",
+  "monDetails": "Election details",
+  "monWindow": "Voting window",
+  "monBallotType": "Ballot type",
+  "monAnonymous": "Anonymous",
+  "monIdentifiable": "Identifiable",
+  "monEligibility": "Who can vote",
+  "monVotingType": "Voting type",
+  "monBoostTitle": "Boost turnout",
+  "monBoostBody": "Remind members who have not voted. Reminders go to non-voters automatically; you will not see who has or has not voted.",
+  "monRemind": "Remind non-voters",
+  "monSending": "Sending...",
+  "monRemindNone": "Everyone eligible has already voted.",
+  "monRemindDone": "{n, plural, =1{Reminder sent to 1 non-voter.} other{Reminder sent to {n} non-voters.}}",
+  "@monRemindDone": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "monRemindFailed": "We could not send reminders. Please try again.",
+  "monPrivateNote": "Participation stays private",
+  "monCloseTitle": "Close voting early",
+  "monCloseNote": "Closing is final. You may need to sign in again if your last sign-in was over 15 minutes ago. Results stay hidden until you calculate and publish them.",
+  "monCloseButton": "Close voting now",
+  "monCloseDialogTitle": "Close voting now?",
+  "monCloseDialogBody": "Closing is final. Members will no longer be able to vote, and this cannot be undone. Results stay hidden until you calculate and publish them.",
+  "monCloseConfirm": "Close voting",
+  "monCancel": "Cancel",
+  "monClosed": "Voting closed.",
+  "monCloseFailed": "We could not close voting. Please try again.",
+  "monReauth": "For security, closing an election requires you to have signed in within the last 15 minutes. Please verify your identity to continue."
 }

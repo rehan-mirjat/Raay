@@ -2921,6 +2921,348 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Election'**
   String get resEventFallback;
+
+  /// No description provided for @monTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live turnout'**
+  String get monTitle;
+
+  /// No description provided for @monBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get monBack;
+
+  /// No description provided for @monLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get monLive;
+
+  /// No description provided for @monUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Live · updated {s}s ago'**
+  String monUpdated(int s);
+
+  /// No description provided for @monRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get monRefresh;
+
+  /// No description provided for @monClosesIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Closes in {when}'**
+  String monClosesIn(String when);
+
+  /// No description provided for @monRemainDaysHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{d, plural, =1{1 day} other{{d} days}} {h, plural, =1{1 hour} other{{h} hours}}'**
+  String monRemainDaysHours(int d, int h);
+
+  /// No description provided for @monRemainHoursMin.
+  ///
+  /// In en, this message translates to:
+  /// **'{h, plural, =1{1 hour} other{{h} hours}} {m} min'**
+  String monRemainHoursMin(int h, int m);
+
+  /// No description provided for @monRemainMin.
+  ///
+  /// In en, this message translates to:
+  /// **'{m} min'**
+  String monRemainMin(int m);
+
+  /// No description provided for @monPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Counts only. No voter identities or ballot selections are shown here. Results stay hidden until the election is closed and published.'**
+  String get monPrivacy;
+
+  /// No description provided for @monLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load turnout. Check your connection and try again.'**
+  String get monLoadError;
+
+  /// No description provided for @monRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get monRetry;
+
+  /// No description provided for @monRefreshIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'The latest refresh failed. Showing the last numbers we loaded.'**
+  String get monRefreshIssue;
+
+  /// No description provided for @monTurnoutLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Eligible members who participated'**
+  String get monTurnoutLabel;
+
+  /// No description provided for @monOfEligible.
+  ///
+  /// In en, this message translates to:
+  /// **'{voted} of {eligible}'**
+  String monOfEligible(int voted, int eligible);
+
+  /// No description provided for @monEligible.
+  ///
+  /// In en, this message translates to:
+  /// **'Eligible'**
+  String get monEligible;
+
+  /// No description provided for @monEligibleCap.
+  ///
+  /// In en, this message translates to:
+  /// **'All active members'**
+  String get monEligibleCap;
+
+  /// No description provided for @monVoted.
+  ///
+  /// In en, this message translates to:
+  /// **'Voted'**
+  String get monVoted;
+
+  /// No description provided for @monVotedCap.
+  ///
+  /// In en, this message translates to:
+  /// **'Ballots submitted'**
+  String get monVotedCap;
+
+  /// No description provided for @monNotYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet'**
+  String get monNotYet;
+
+  /// No description provided for @monNotYetCap.
+  ///
+  /// In en, this message translates to:
+  /// **'Members remaining'**
+  String get monNotYetCap;
+
+  /// No description provided for @monChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Participation over time'**
+  String get monChartTitle;
+
+  /// No description provided for @monChartSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Cumulative participation since the election opened'**
+  String get monChartSub;
+
+  /// No description provided for @monChartNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough data yet to chart participation over time.'**
+  String get monChartNone;
+
+  /// No description provided for @monChartTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} voted'**
+  String monChartTotal(int n);
+
+  /// No description provided for @monChartStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Opened'**
+  String get monChartStart;
+
+  /// No description provided for @monChartNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get monChartNow;
+
+  /// No description provided for @monDeptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turnout by department'**
+  String get monDeptTitle;
+
+  /// No description provided for @monDeptNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No department data for this election.'**
+  String get monDeptNone;
+
+  /// No description provided for @monDeptNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Groups with fewer than 5 eligible members are combined to protect privacy.'**
+  String get monDeptNote;
+
+  /// No description provided for @monDeptRow.
+  ///
+  /// In en, this message translates to:
+  /// **'{participated} of {eligible} · {percent}%'**
+  String monDeptRow(int participated, int eligible, String percent);
+
+  /// No description provided for @monDeptFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Department'**
+  String get monDeptFallback;
+
+  /// No description provided for @monDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Election details'**
+  String get monDetails;
+
+  /// No description provided for @monWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Voting window'**
+  String get monWindow;
+
+  /// No description provided for @monBallotType.
+  ///
+  /// In en, this message translates to:
+  /// **'Ballot type'**
+  String get monBallotType;
+
+  /// No description provided for @monAnonymous.
+  ///
+  /// In en, this message translates to:
+  /// **'Anonymous'**
+  String get monAnonymous;
+
+  /// No description provided for @monIdentifiable.
+  ///
+  /// In en, this message translates to:
+  /// **'Identifiable'**
+  String get monIdentifiable;
+
+  /// No description provided for @monEligibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Who can vote'**
+  String get monEligibility;
+
+  /// No description provided for @monVotingType.
+  ///
+  /// In en, this message translates to:
+  /// **'Voting type'**
+  String get monVotingType;
+
+  /// No description provided for @monBoostTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Boost turnout'**
+  String get monBoostTitle;
+
+  /// No description provided for @monBoostBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind members who have not voted. Reminders go to non-voters automatically; you will not see who has or has not voted.'**
+  String get monBoostBody;
+
+  /// No description provided for @monRemind.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind non-voters'**
+  String get monRemind;
+
+  /// No description provided for @monSending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending...'**
+  String get monSending;
+
+  /// No description provided for @monRemindNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone eligible has already voted.'**
+  String get monRemindNone;
+
+  /// No description provided for @monRemindDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{Reminder sent to 1 non-voter.} other{Reminder sent to {n} non-voters.}}'**
+  String monRemindDone(int n);
+
+  /// No description provided for @monRemindFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not send reminders. Please try again.'**
+  String get monRemindFailed;
+
+  /// No description provided for @monPrivateNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Participation stays private'**
+  String get monPrivateNote;
+
+  /// No description provided for @monCloseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Close voting early'**
+  String get monCloseTitle;
+
+  /// No description provided for @monCloseNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing is final. You may need to sign in again if your last sign-in was over 15 minutes ago. Results stay hidden until you calculate and publish them.'**
+  String get monCloseNote;
+
+  /// No description provided for @monCloseButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Close voting now'**
+  String get monCloseButton;
+
+  /// No description provided for @monCloseDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Close voting now?'**
+  String get monCloseDialogTitle;
+
+  /// No description provided for @monCloseDialogBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing is final. Members will no longer be able to vote, and this cannot be undone. Results stay hidden until you calculate and publish them.'**
+  String get monCloseDialogBody;
+
+  /// No description provided for @monCloseConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Close voting'**
+  String get monCloseConfirm;
+
+  /// No description provided for @monCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get monCancel;
+
+  /// No description provided for @monClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Voting closed.'**
+  String get monClosed;
+
+  /// No description provided for @monCloseFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not close voting. Please try again.'**
+  String get monCloseFailed;
+
+  /// No description provided for @monReauth.
+  ///
+  /// In en, this message translates to:
+  /// **'For security, closing an election requires you to have signed in within the last 15 minutes. Please verify your identity to continue.'**
+  String get monReauth;
 }
 
 class _AppLocalizationsDelegate
