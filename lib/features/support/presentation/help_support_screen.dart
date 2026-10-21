@@ -8,7 +8,6 @@ import '../../../core/theme/kivora_colors.dart';
 import '../../../core/utils/validators.dart';
 import '../../../services/auth_service.dart';
 import '../../../services/firebase_service.dart';
-import '../../onboarding/providers/onboarding_providers.dart';
 
 class HelpSupportScreen extends ConsumerStatefulWidget {
   const HelpSupportScreen({super.key});
@@ -148,18 +147,26 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                 ),
                 const SizedBox(height: 16),
                 ListTile(
-                  leading: Icon(Icons.route_outlined,
+                  minTileHeight: 56,
+                  leading: Icon(Icons.verified_outlined,
                       color: KivoraColors.of(context).accentText),
-                  title: const Text('Restart Product Tour',
+                  title: const Text('Verify a receipt',
                       style: TextStyle(fontWeight: FontWeight.w600)),
                   subtitle: const Text(
-                      'Replay the introductory walkthrough of the application features.'),
-                  trailing:
-                      const Icon(Icons.arrow_forward_ios_rounded, size: 14),
-                  onTap: () {
-                    ref.read(onboardingProvider.notifier).restartTour();
-                    context.go('/home');
-                  },
+                      'Check that a ballot receipt was recorded. This never shows how anyone voted.'),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () => context.go('/receipt-verify'),
+                ),
+                ListTile(
+                  minTileHeight: 56,
+                  leading: Icon(Icons.policy_outlined,
+                      color: KivoraColors.of(context).accentText),
+                  title: const Text('Trust & transparency',
+                      style: TextStyle(fontWeight: FontWeight.w600)),
+                  subtitle: const Text(
+                      'How Kivora protects ballot privacy and what is recorded.'),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () => context.go('/transparency'),
                 ),
                 const SizedBox(height: 32),
 

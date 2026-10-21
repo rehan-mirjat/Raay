@@ -19,6 +19,7 @@ import '../domain/overview_state.dart';
 import 'membership_directory_screen.dart' show organizationMembersDirectoryProvider;
 import 'organization_audit_screen.dart' show organizationAuditLogsProvider;
 import 'pending_invitations_widget.dart' show pendingInvitationsProvider;
+import '../../onboarding/presentation/setup_checklist_widget.dart';
 import 'widgets/members_growth_chart.dart';
 
 /// The single landing page for owners and admins. Replaces the former Home
@@ -95,6 +96,8 @@ class AdminOverviewScreen extends ConsumerWidget {
                 children: [
                   _Header(orgName: org.name, role: role, l10n: l10n),
                   const SizedBox(height: 24),
+                  // Shows itself only to owners, only until it is complete or dismissed.
+                  const SetupChecklistWidget(),
                   if (actions.isNotEmpty) ...[
                     _RequiredActions(actions: actions),
                     const SizedBox(height: 24),

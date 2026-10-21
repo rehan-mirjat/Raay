@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../organizations/presentation/providers/organization_providers.dart';
 import '../../departments/presentation/providers/department_providers.dart';
@@ -30,17 +29,16 @@ class SetupChecklistWidget extends ConsumerWidget {
 
     final membersAsync = ref.watch(organizationMembersDirectoryProvider(orgId));
     final departmentsAsync = ref.watch(activeOrganizationDepartmentsProvider);
-    final eventsAsync = ref.watch(votingEventRepositoryProvider).watchOrganizationVotingEvents(orgId);
+    // Stable provider (a stream built in build() would resubscribe each frame).
+    final eventsAsync = ref.watch(organizationVotingEventsProvider((orgId: orgId, includeDrafts: true)));
 
     // Calculate completions
     final hasLogo = orgContext.organization.logoUrl?.isNotEmpty == true;
     final hasMembers = (membersAsync.valueOrNull?.length ?? 0) > 1; // More than just the owner
     final hasDepartments = (departmentsAsync.valueOrNull?.length ?? 0) > 0;
     
-    return StreamBuilder(
-      stream: eventsAsync,
-      builder: (context, snapshot) {
-        final hasEvents = (snapshot.data?.length ?? 0) > 0;
+    {
+        final hasEvents = (eventsAsync.valueOrNull?.length ?? 0) > 0;
 
         final items = [
           _ChecklistItem(title: 'Complete organization profile', isCompleted: hasLogo),
@@ -66,25 +64,20 @@ class SetupChecklistWidget extends ConsumerWidget {
             color: KivoraColors.surfaceOf(context),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: KivoraColors.borderOf(context)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.02),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Get your organization ready',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
+                  Expanded(
+                    child: Text(
+                      'Get your organization ready',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
+                    ),
                   ),
                   IconButton(
+                    constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                     icon: Icon(Icons.close_rounded, size: 20, color: KivoraColors.textSecondaryOf(context)),
                     onPressed: () => ref.read(onboardingProvider.notifier).dismissChecklist(),
                     tooltip: 'Dismiss',
@@ -92,9 +85,13 @@ class SetupChecklistWidget extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 8),
-              Row(
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 12,
+                runSpacing: 6,
                 children: [
-                  Expanded(
+                  SizedBox(
+                    width: 160,
                     child: LinearProgressIndicator(
                       value: completedCount / items.length,
                       backgroundColor: KivoraColors.borderOf(context),
@@ -103,10 +100,9 @@ class SetupChecklistWidget extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(3),
                     ),
                   ),
-                  const SizedBox(width: 12),
                   Text(
                     '$completedCount of ${items.length} completed',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: KivoraColors.textSecondaryOf(context)),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textSecondaryOf(context)),
                   ),
                 ],
               ),
@@ -117,26 +113,26 @@ class SetupChecklistWidget extends ConsumerWidget {
                   children: [
                     Icon(
                       item.isCompleted ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
-                      color: item.isCompleted ? AppTheme.success : KivoraColors.borderOf(context),
+                      color: item.isCompleted ? KivoraColors.of(context).successText : KivoraColors.textSecondaryOf(context),
                       size: 20,
                     ),
                     const SizedBox(width: 12),
-                    Text(
+                    Expanded(
+                      child: Text(
                       item.title,
                       style: TextStyle(
                         fontSize: 14,
                         color: item.isCompleted ? KivoraColors.textSecondaryOf(context) : KivoraColors.textPrimaryOf(context),
                         decoration: item.isCompleted ? TextDecoration.lineThrough : null,
                       ),
-                    ),
+                    )),
                   ],
                 ),
               )),
             ],
           ),
         );
-      }
-    );
+    }
   }
 }
 
