@@ -11,6 +11,8 @@ import '../../features/organizations/domain/organization_enums.dart';
 import '../../services/auth_service.dart';
 import '../../services/firebase_service.dart';
 import '../layout/responsive.dart';
+import '../navigation/exit_guard.dart';
+import '../navigation/nav_destinations.dart';
 import '../../features/auth/data/user_repository.dart';
 import '../theme/app_theme.dart';
 import '../theme/kivora_colors.dart';
@@ -18,8 +20,36 @@ import '../theme/theme_provider.dart';
 import '../../features/onboarding/presentation/tour_keys.dart';
 import '../widgets/global_search_overlay.dart';
 
-// Persists sidebar collapsed state across navigations
-final _sidebarCollapsedProvider = StateProvider<bool>((ref) => false);
+
+/// Leaves the current screen only if it has no unsaved work (or the user
+/// confirmed). Every shell navigation goes through here.
+Future<void> _navigate(BuildContext context, WidgetRef ref, String route) async {
+  final ok = await canLeaveCurrentScreen(ProviderScope.containerOf(context));
+  if (ok && context.mounted) context.go(route);
+}
+
+String _navLabel(AppLocalizations l10n, NavId id) => switch (id) {
+      NavId.myElections => l10n.navMyElections,
+      NavId.overview => l10n.navOverview,
+      NavId.elections => l10n.navEvents,
+      NavId.people => l10n.navPeople,
+      NavId.departments => l10n.navDepartments,
+      NavId.activity => l10n.navActivity,
+      NavId.organizations => l10n.navOrganizations,
+      NavId.calendar => l10n.navCalendar,
+      NavId.observer => l10n.navObserver,
+      NavId.orgSettings => l10n.navOrgSettings,
+      NavId.billing => l10n.navBilling,
+      NavId.account => l10n.navAccount,
+      NavId.help => l10n.navHelp,
+      NavId.platform => l10n.navPlatform,
+    };
+
+Key? _tourKey(NavId id) => switch (id) {
+      NavId.departments => TourKeys.departmentsKey,
+      NavId.people => TourKeys.directoryKey,
+      _ => null,
+    };
 
 class AppNavigationShell extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
@@ -28,20 +58,81 @@ class AppNavigationShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDesktop = ResponsiveLayout.isWide(context);
     final keyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0;
+    final isExpanded = ResponsiveLayout.isWide(context);
+    // The rail grows with its labels; at large text sizes it would crowd out
+    // the content, so those users get the compact layout (bottom bar whose
+    // "More" sheet shows full-size labels).
+    final largeText = MediaQuery.textScalerOf(context).scale(14) / 14 > 1.3;
+    final isMedium = ResponsiveLayout.isMedium(context) && !largeText;
 
     final activeOrgContext =
         ref.watch(activeOrganizationContextProvider).valueOrNull?.context;
     final memberRole = activeOrgContext?.member.role;
-    final canCreateEvent = activeOrgContext != null &&
-        (memberRole == OrganizationRole.owner ||
-            memberRole == OrganizationRole.admin);
-    final isManager = memberRole == OrganizationRole.owner ||
-        memberRole == OrganizationRole.admin;
+    final isOwner = memberRole == OrganizationRole.owner;
+    final isManager = isOwner || memberRole == OrganizationRole.admin;
     final isObserver = activeOrgContext?.member.isObserver ?? false;
+    final isPlatformAdmin = ref.watch(platformAdminProvider).valueOrNull ?? false;
 
-    final collapsed = ref.watch(_sidebarCollapsedProvider);
+    final model = navModelFor(
+      isManager: isManager,
+      isOwner: isOwner,
+      isObserver: isObserver,
+      isPlatformAdmin: isPlatformAdmin,
+    );
+    final location = GoRouterState.of(context).matchedLocation;
+    final active = activeDestination(model, location);
+
+    Widget content;
+    if (isExpanded) {
+      content = Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _Sidebar(model: model, active: active, canCreate: isManager),
+          Expanded(
+            child: Column(
+              children: [
+                const _TopHeader(),
+                Expanded(child: navigationShell),
+              ],
+            ),
+          ),
+        ],
+      );
+    } else if (isMedium) {
+      content = Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _MediumRail(model: model, active: active, canCreate: isManager),
+          Expanded(
+            child: Column(
+              children: [
+                const _TopHeader(),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
+                  child: Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: SizedBox(width: 320, child: OrganizationContextSwitcher()),
+                  ),
+                ),
+                Expanded(child: navigationShell),
+              ],
+            ),
+          ),
+        ],
+      );
+    } else {
+      content = Column(
+        children: [
+          const _TopHeader(),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
+            child: SizedBox(width: double.infinity, child: OrganizationContextSwitcher()),
+          ),
+          Expanded(child: navigationShell),
+        ],
+      );
+    }
 
     return CallbackShortcuts(
       bindings: {
@@ -53,532 +144,345 @@ class AppNavigationShell extends ConsumerWidget {
       child: Focus(
         autofocus: true,
         child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: SafeArea(
-            bottom: false,
-            child: Column(
-              children: [
-                Expanded(
-                  child: isDesktop
-                      ? Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _DesktopSidebar(
-                              collapsed: collapsed,
-                              isManager: isManager,
-                              isObserver: isObserver,
-                              canCreateEvent: canCreateEvent,
-                              onToggleCollapse: () => ref
-                                  .read(_sidebarCollapsedProvider.notifier)
-                                  .state = !collapsed,
-                            ),
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  const _TopHeader(),
-                                  Expanded(child: navigationShell),
-                                ],
-                              ),
-                            ),
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            const _TopHeader(),
-                            const Padding(
-                              padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
-                              child: SizedBox(
-                                width: double.infinity,
-                                child: OrganizationContextSwitcher(),
-                              ),
-                            ),
-                            Expanded(child: navigationShell),
-                          ],
-                        ),
-                ),
-              ],
-            ),
-          ),
-          bottomNavigationBar: isDesktop || keyboardVisible
+          backgroundColor: KivoraColors.backgroundOf(context),
+          body: SafeArea(bottom: false, child: content),
+          bottomNavigationBar: isExpanded || isMedium || keyboardVisible
               ? null
-              : _FloatingMobileNavBar(
-                  navigationShell: navigationShell,
-                  showCreateEventButton: canCreateEvent,
-                  onCreateEvent: () => context.go('/admin/events/new'),
-                ),
+              : _CompactBottomBar(model: model, active: active, canCreate: isManager),
         ),
       ),
     );
   }
 }
 
-// ─── Desktop collapsible sidebar ─────────────────────────────────────────────
+// ─── Expanded: 248px sidebar ─────────────────────────────────────────────────
 
-class _DesktopSidebar extends StatelessWidget {
-  const _DesktopSidebar({
-    required this.collapsed,
-    required this.isManager,
-    required this.isObserver,
-    required this.canCreateEvent,
-    required this.onToggleCollapse,
-  });
-  final bool collapsed;
-  final bool isManager;
-  final bool isObserver;
-  final bool canCreateEvent;
-  final VoidCallback onToggleCollapse;
+class _Sidebar extends ConsumerWidget {
+  const _Sidebar({required this.model, required this.active, required this.canCreate});
+  final NavModel model;
+  final NavDestination? active;
+  final bool canCreate;
 
-  static const _expandedWidth = 220.0;
-  static const _collapsedWidth = 64.0;
+  static const width = 248.0;
 
   @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final sidebarBg = isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite;
-    final borderColor = isDark ? AppTheme.darkBorder : AppTheme.borderLight;
-
+  Widget build(BuildContext context, WidgetRef ref) {
+    final kc = KivoraColors.of(context);
     final l10n = AppLocalizations.of(context);
-    final items = [
-      _SidebarItem(
-          icon: Icons.home_outlined,
-          iconActive: Icons.home_rounded,
-          label: l10n.navHome,
-          route: '/home'),
-      _SidebarItem(
-          icon: Icons.business_outlined,
-          iconActive: Icons.business_rounded,
-          label: l10n.navOrganizations,
-          route: '/orgs'),
-      _SidebarItem(
-          icon: Icons.how_to_vote_outlined,
-          iconActive: Icons.how_to_vote_rounded,
-          label: l10n.navEvents,
-          route: '/admin/events'),
-      _SidebarItem(
-          icon: Icons.calendar_month_outlined,
-          iconActive: Icons.calendar_month_rounded,
-          label: l10n.navCalendar,
-          route: '/calendar'),
-      _SidebarItem(
-          icon: Icons.apartment_outlined,
-          iconActive: Icons.apartment_rounded,
-          label: l10n.navDepartments,
-          route: '/orgs/departments',
-          key: TourKeys.departmentsKey),
-      if (isObserver)
-        const _SidebarItem(
-            icon: Icons.visibility_outlined,
-            iconActive: Icons.visibility_rounded,
-            label: 'Observer',
-            route: '/observer'),
-      if (isManager)
-        _SidebarItem(
-            icon: Icons.groups_outlined,
-            iconActive: Icons.groups_rounded,
-            label: l10n.navDirectory,
-            route: '/orgs/members',
-            key: TourKeys.directoryKey),
-      _SidebarItem(
-          icon: Icons.person_outline_rounded,
-          iconActive: Icons.person_rounded,
-          label: l10n.navProfile,
-          route: '/settings'),
-    ];
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 240),
-      curve: Curves.easeOutCubic,
-      width: collapsed ? _collapsedWidth : _expandedWidth,
-      clipBehavior: Clip.hardEdge,
+    Widget sectionLabel(String text) => Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(12, 16, 12, 4),
+          child: Text(text.toUpperCase(),
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.6,
+                  color: kc.textSecondary)),
+        );
+
+    return Container(
+      width: width,
       decoration: BoxDecoration(
-        color: sidebarBg.withValues(alpha: isDark ? 0.45 : 0.55),
-        border: Border(right: BorderSide(color: borderColor.withValues(alpha: 0.6), width: 1)),
+        color: kc.surface,
+        border: BorderDirectional(end: BorderSide(color: kc.border)),
       ),
       child: Column(
         children: [
-          // Org switcher (only when expanded)
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 180),
-            child: collapsed
-                ? const SizedBox(height: 12)
-                : const Padding(
-                    key: ValueKey('switcher'),
-                    padding: EdgeInsets.fromLTRB(12, 12, 12, 8),
-                    child: OrganizationContextSwitcher(),
-                  ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(12, 12, 12, 8),
+            child: OrganizationContextSwitcher(),
           ),
-
-          // Nav items
           Expanded(
-            child: ListView(
-              padding: EdgeInsets.symmetric(
-                  horizontal: collapsed ? 8 : 10, vertical: 4),
-              children: items
-                  .map((item) => _SidebarTile(item: item, collapsed: collapsed))
-                  .toList(),
+            child: FocusTraversalGroup(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                children: [
+                  Semantics(
+                    container: true,
+                    label: l10n.navMainLabel,
+                    child: Column(children: [
+                      for (final d in model.primary)
+                        _SidebarTile(dest: d, selected: d == active, label: _navLabel(l10n, d.id)),
+                    ]),
+                  ),
+                  if (model.secondary.isNotEmpty) sectionLabel(l10n.navMoreSectionLabel),
+                  for (final d in model.secondary)
+                    _SidebarTile(dest: d, selected: d == active, label: _navLabel(l10n, d.id)),
+                  if (model.platform.isNotEmpty) sectionLabel(l10n.navPlatformSectionLabel),
+                  for (final d in model.platform)
+                    _SidebarTile(dest: d, selected: d == active, label: _navLabel(l10n, d.id)),
+                ],
+              ),
             ),
           ),
-
-          // Create event button
-          if (canCreateEvent)
+          if (canCreate)
             Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: collapsed ? 10 : 12, vertical: 8),
-              child: Tooltip(
-                message: 'Create voting event',
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 240),
-                  curve: Curves.easeOutCubic,
-                  child: InkWell(
-                    onTap: () => context.go('/admin/events/new'),
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      height: 42,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF9D7BFF), AppTheme.primaryBlue],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppTheme.primaryBlue.withValues(alpha: 0.35),
-                            blurRadius: 10,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: collapsed
-                            ? MainAxisAlignment.center
-                            : MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.add_rounded,
-                              color: Colors.white, size: 20),
-                          if (!collapsed) ...[
-                            const SizedBox(width: 6),
-                            const Text(
-                              'Create Event',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                  ),
+              padding: const EdgeInsets.all(12),
+              child: SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                  onPressed: () => _navigate(context, ref, '/admin/events/new'),
+                  icon: const Icon(Icons.add_rounded, size: 20),
+                  label: Text(l10n.navCreateElection),
                 ),
               ),
             ),
-
-          // Collapse toggle
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
-            child: Tooltip(
-              message: collapsed ? 'Expand sidebar' : 'Collapse sidebar',
-              child: InkWell(
-                onTap: onToggleCollapse,
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  height: 36,
-                  alignment: Alignment.center,
-                  child: AnimatedRotation(
-                    turns: collapsed ? 0 : 0.5,
-                    duration: const Duration(milliseconds: 240),
-                    curve: Curves.easeOutCubic,
-                    child: Icon(
-                      Icons.chevron_right_rounded,
-                      size: 20,
-                      color: isDark
-                          ? AppTheme.darkTextSecondary
-                          : AppTheme.textSecondary,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
   }
 }
 
-class _SidebarItem {
-  const _SidebarItem({
-    required this.icon,
-    required this.iconActive,
-    required this.label,
-    required this.route,
-    this.key,
-  });
-  final IconData icon;
-  final IconData iconActive;
+class _SidebarTile extends ConsumerWidget {
+  const _SidebarTile({required this.dest, required this.selected, required this.label});
+  final NavDestination dest;
+  final bool selected;
   final String label;
-  final String route;
-  final Key? key;
-}
-
-class _SidebarTile extends StatefulWidget {
-  const _SidebarTile({required this.item, required this.collapsed});
-  final _SidebarItem item;
-  final bool collapsed;
 
   @override
-  State<_SidebarTile> createState() => _SidebarTileState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final kc = KivoraColors.of(context);
+    final primary = Theme.of(context).colorScheme.primary;
+    final color = selected ? kc.accentText : kc.textSecondary;
 
-class _SidebarTileState extends State<_SidebarTile> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final location = GoRouterState.of(context).matchedLocation;
-    final isActive = widget.item.route == '/orgs'
-        ? (location == '/orgs' || location.startsWith('/orgs/'))
-        : (location == widget.item.route ||
-            (widget.item.route != '/home' &&
-                location.startsWith('${widget.item.route}/')));
-
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    const activeColor = AppTheme.primaryBlue;
-    final inactiveColor =
-        isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
-    final activeBg = isDark
-        ? AppTheme.primaryBlue.withValues(alpha: 0.15)
-        : AppTheme.primaryBlue.withValues(alpha: 0.09);
-    final hoverBg = isDark
-        ? AppTheme.primaryBlue.withValues(alpha: 0.07)
-        : AppTheme.primaryBlue.withValues(alpha: 0.05);
-
-    final color =
-        isActive ? activeColor : (_hovered ? activeColor : inactiveColor);
-
-    return MouseRegion(
-      key: widget.item.key,
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: () => context.go(widget.item.route),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 160),
-          curve: Curves.easeOutCubic,
-          margin: const EdgeInsets.symmetric(vertical: 2),
-          padding: EdgeInsets.symmetric(
-              horizontal: widget.collapsed ? 0 : 10, vertical: 10),
-          decoration: BoxDecoration(
-            color:
-                isActive ? activeBg : (_hovered ? hoverBg : Colors.transparent),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            mainAxisAlignment: widget.collapsed
-                ? MainAxisAlignment.center
-                : MainAxisAlignment.start,
-            children: [
-              Icon(
-                isActive ? widget.item.iconActive : widget.item.icon,
-                size: 20,
-                color: color,
-              ),
-              if (!widget.collapsed) ...[
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    widget.item.label,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-                      color: color,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+    return Padding(
+      key: _tourKey(dest.id),
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Semantics(
+        button: true,
+        selected: selected,
+        label: label,
+        child: ExcludeSemantics(
+          child: Material(
+            color: selected
+                ? primary.withValues(alpha: kc.isDark ? 0.16 : 0.10)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+              onTap: () => _navigate(context, ref, dest.route),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 48),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Row(
+                    children: [
+                      Icon(selected ? dest.iconActive : dest.icon, size: 22, color: color),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          label,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                            color: selected ? kc.accentText : kc.textPrimary,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                if (isActive)
-                  Container(
-                    width: 4,
-                    height: 4,
-                    decoration: const BoxDecoration(
-                      color: AppTheme.primaryBlue,
-                      shape: BoxShape.circle,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Medium: NavigationRail ──────────────────────────────────────────────────
+
+class _MediumRail extends ConsumerWidget {
+  const _MediumRail({required this.model, required this.active, required this.canCreate});
+  final NavModel model;
+  final NavDestination? active;
+  final bool canCreate;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final kc = KivoraColors.of(context);
+    final l10n = AppLocalizations.of(context);
+    final items = [...model.primary, ...model.secondary, ...model.platform];
+    final selectedIndex = active == null ? null : items.indexOf(active!);
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: kc.surface,
+        border: BorderDirectional(end: BorderSide(color: kc.border)),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) => SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: IntrinsicHeight(
+              child: NavigationRail(
+                backgroundColor: Colors.transparent,
+                extended: false,
+                labelType: NavigationRailLabelType.all,
+                minWidth: 88,
+                selectedIndex: selectedIndex == -1 ? null : selectedIndex,
+                onDestinationSelected: (i) => _navigate(context, ref, items[i].route),
+                trailing: canCreate
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: IconButton.filled(
+                          tooltip: l10n.navCreateElection,
+                          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                          onPressed: () => _navigate(context, ref, '/admin/events/new'),
+                          icon: const Icon(Icons.add_rounded),
+                        ),
+                      )
+                    : null,
+                destinations: [
+                  for (final d in items)
+                    NavigationRailDestination(
+                      icon: Icon(d.icon, key: _tourKey(d.id)),
+                      selectedIcon: Icon(d.iconActive),
+                      label: Text(_navLabel(l10n, d.id),
+                          textAlign: TextAlign.center, maxLines: 2),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Compact: 4 destinations + labeled More ──────────────────────────────────
+
+class _CompactBottomBar extends ConsumerWidget {
+  const _CompactBottomBar({required this.model, required this.active, required this.canCreate});
+  final NavModel model;
+  final NavDestination? active;
+  final bool canCreate;
+
+  void _openMore(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final kc = KivoraColors.of(context);
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (canCreate)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                      onPressed: () {
+                        Navigator.pop(sheetContext);
+                        _navigate(context, ref, '/admin/events/new');
+                      },
+                      icon: const Icon(Icons.add_rounded),
+                      label: Text(l10n.navCreateElection),
                     ),
                   ),
-              ],
+                ),
+              for (final d in [...model.secondary, ...model.platform])
+                ListTile(
+                  minTileHeight: 48,
+                  selected: d == active,
+                  selectedColor: kc.accentText,
+                  leading: Icon(d == active ? d.iconActive : d.icon),
+                  title: Text(_navLabel(l10n, d.id)),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _navigate(context, ref, d.route);
+                  },
+                ),
             ],
           ),
         ),
       ),
     );
   }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _FloatingMobileNavBar extends StatelessWidget {
-  final StatefulNavigationShell navigationShell;
-  final bool showCreateEventButton;
-  final VoidCallback onCreateEvent;
-
-  const _FloatingMobileNavBar({
-    required this.navigationShell,
-    required this.showCreateEventButton,
-    required this.onCreateEvent,
-  });
 
   @override
-  Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.paddingOf(context).bottom;
-    final currentIndex = navigationShell.currentIndex;
-
+  Widget build(BuildContext context, WidgetRef ref) {
+    final kc = KivoraColors.of(context);
     final l10n = AppLocalizations.of(context);
+    final moreActive = active != null && !model.primary.contains(active);
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-          16, 0, 16, bottomPadding > 0 ? bottomPadding + 4 : 12),
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          _BarSurface(
-            borderRadius: 28,
-            child: SizedBox(
-            height: 64,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _navItem(context, 0, Icons.home_outlined, Icons.home_rounded,
-                      l10n.navHome, currentIndex),
-                  _navItem(
-                      context,
-                      1,
-                      Icons.business_outlined,
-                      Icons.business_rounded,
-                      l10n.navOrgsShort,
-                      currentIndex),
-                  if (showCreateEventButton) const SizedBox(width: 52),
-                  _navItem(context, 3, Icons.how_to_vote_outlined,
-                      Icons.how_to_vote_rounded, l10n.navEvents, currentIndex),
-                  _navItem(context, 2, Icons.person_outline_rounded,
-                      Icons.person_rounded, l10n.navProfile, currentIndex),
-                ],
-              ),
-            ),
-            ),
-          ),
-
-          // Gold floating + Create Event button (admin/owner only)
-          if (showCreateEventButton)
-            Positioned(
-              top: -14,
-              child: Tooltip(
-                message: 'Create voting event',
-                child: Semantics(
-                  button: true,
-                  label: 'Create voting event',
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: onCreateEvent,
-                      customBorder: const CircleBorder(),
-                      child: Container(
-                        width: 52,
-                        height: 52,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF9D7BFF), AppTheme.primaryBlue],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color:
-                                  AppTheme.primaryBlue.withValues(alpha: 0.18),
-                              blurRadius: 10,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.add_rounded,
-                          color: Colors.white,
-                          size: 28,
+    Widget item({
+      required IconData icon,
+      required String label,
+      required bool selected,
+      required VoidCallback onTap,
+    }) {
+      final color = selected ? kc.accentText : kc.textSecondary;
+      return Expanded(
+        child: Semantics(
+          button: true,
+          selected: selected,
+          label: label,
+          child: ExcludeSemantics(
+            child: InkWell(
+              onTap: onTap,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 56),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(icon, size: 24, color: color),
+                      const SizedBox(height: 2),
+                      Text(
+                        label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                          color: color,
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),
             ),
-        ],
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: kc.surface,
+        border: Border(top: BorderSide(color: kc.border)),
       ),
-    );
-  }
-
-  Widget _navItem(
-    BuildContext context,
-    int index,
-    IconData iconOutlined,
-    IconData iconFilled,
-    String label,
-    int currentIndex,
-  ) {
-    final isSelected = index == currentIndex;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    const selectedColor = AppTheme.primaryBlue;
-    final unselectedColor =
-        isDark ? AppTheme.darkTextSecondary : AppTheme.textSecondary;
-    final selectedBg = isDark
-        ? AppTheme.primaryBlue.withValues(alpha: 0.18)
-        : AppTheme.primaryBlue.withValues(alpha: 0.10);
-
-    return Expanded(
-      child: InkWell(
-        onTap: () {
-          navigationShell.goBranch(
-            index,
-            initialLocation: index == currentIndex,
-          );
-        },
-        borderRadius: BorderRadius.circular(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      child: SafeArea(
+        top: false,
+        child: Row(
           children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeOutCubic,
-              padding: EdgeInsets.symmetric(
-                horizontal: isSelected ? 16 : 8,
-                vertical: 4,
+            for (final d in model.primary)
+              item(
+                icon: d == active ? d.iconActive : d.icon,
+                label: _navLabel(l10n, d.id),
+                selected: d == active,
+                onTap: () => _navigate(context, ref, d.route),
               ),
-              decoration: BoxDecoration(
-                color: isSelected ? selectedBg : Colors.transparent,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Icon(
-                isSelected ? iconFilled : iconOutlined,
-                color: isSelected ? selectedColor : unselectedColor,
-                size: 22,
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                color: isSelected ? selectedColor : unselectedColor,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            item(
+              icon: Icons.menu_rounded,
+              label: l10n.navMore,
+              selected: moreActive,
+              onTap: () => _openMore(context, ref),
             ),
           ],
         ),
@@ -586,6 +490,7 @@ class _FloatingMobileNavBar extends StatelessWidget {
     );
   }
 }
+
 
 class _TopHeader extends ConsumerWidget {
   const _TopHeader();

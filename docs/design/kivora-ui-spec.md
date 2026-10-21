@@ -168,10 +168,10 @@ provider overrides and clearly-labelled fixtures, **not** by screenshots of live
 | Phase | Scope | Status |
 |-------|-------|--------|
 | 0 | Specification, contrast validation | done |
-| 1 | Tokens, theme, breakpoints, StatusBadge, theme-preference fix, remove glass/orbs | see commit log |
-| 2 | Navigation shell + role IA | pending |
-| 3 | Voter journey (home, details, ballot, receipt, verification) | pending |
-| 4 | Admin journey (overview, election list, builder) | pending |
+| 1 | Tokens, theme, breakpoints, StatusBadge, theme-preference fix, remove glass/orbs | done (widget-tested, not visually rendered) |
+| 2 | Navigation shell + role IA (248px sidebar, rail, 4 + More, exit guard on every nav) | done (widget-tested at 360-1440px / 200% text; not visually rendered). Medium width + text scale > 1.3 uses the compact layout. Platform group needs `platformAdminProvider`. Route redirects not yet added. |
+| 3 | Voter journey: home, receipt verification | done for home + verification. Event detail, ballot, receipt screen redesign **pending** |
+| 4 | Admin journey | builder exit guard + dirty tracking done (issue 6). Overview consolidation, election list, builder UI **pending** |
 | 5 | Organizations, invitations, people, departments | pending |
-| 6 | Remaining screens, localization sweep, reduced motion | pending |
+| 6 | Remaining screens, localization sweep (issue 9), reduced motion / hardcoded colors (issue 8) | pending. New strings are English-only; ur/ar/sd fall back to English |
 | 7 | Verification pass and final report | pending |

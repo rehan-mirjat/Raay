@@ -389,4 +389,49 @@ class AppLocalizationsSd extends AppLocalizations {
 
   @override
   String get builderLeave => 'Leave and discard changes';
+
+  @override
+  String get navMyElections => 'My elections';
+
+  @override
+  String get navOverview => 'Overview';
+
+  @override
+  String get navPeople => 'People';
+
+  @override
+  String get navActivity => 'Activity';
+
+  @override
+  String get navBilling => 'Billing';
+
+  @override
+  String get navOrgSettings => 'Organization settings';
+
+  @override
+  String get navAccount => 'Account';
+
+  @override
+  String get navHelp => 'Help';
+
+  @override
+  String get navMore => 'More';
+
+  @override
+  String get navObserver => 'Observer';
+
+  @override
+  String get navPlatform => 'Platform';
+
+  @override
+  String get navCreateElection => 'Create election';
+
+  @override
+  String get navMainLabel => 'Main navigation';
+
+  @override
+  String get navMoreSectionLabel => 'More';
+
+  @override
+  String get navPlatformSectionLabel => 'Platform';
 }

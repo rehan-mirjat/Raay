@@ -151,5 +151,20 @@
   "builderLeaveTitle": "Leave without saving?",
   "builderLeaveBody": "You have changes that have not been saved to this draft. If you leave now they will be lost.",
   "builderStay": "Keep editing",
-  "builderLeave": "Leave and discard changes"
+  "builderLeave": "Leave and discard changes",
+  "navMyElections": "My elections",
+  "navOverview": "Overview",
+  "navPeople": "People",
+  "navActivity": "Activity",
+  "navBilling": "Billing",
+  "navOrgSettings": "Organization settings",
+  "navAccount": "Account",
+  "navHelp": "Help",
+  "navMore": "More",
+  "navObserver": "Observer",
+  "navPlatform": "Platform",
+  "navCreateElection": "Create election",
+  "navMainLabel": "Main navigation",
+  "navMoreSectionLabel": "More",
+  "navPlatformSectionLabel": "Platform"
 }

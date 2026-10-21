@@ -827,6 +827,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Leave and discard changes'**
   String get builderLeave;
+
+  /// No description provided for @navMyElections.
+  ///
+  /// In en, this message translates to:
+  /// **'My elections'**
+  String get navMyElections;
+
+  /// No description provided for @navOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get navOverview;
+
+  /// No description provided for @navPeople.
+  ///
+  /// In en, this message translates to:
+  /// **'People'**
+  String get navPeople;
+
+  /// No description provided for @navActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get navActivity;
+
+  /// No description provided for @navBilling.
+  ///
+  /// In en, this message translates to:
+  /// **'Billing'**
+  String get navBilling;
+
+  /// No description provided for @navOrgSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization settings'**
+  String get navOrgSettings;
+
+  /// No description provided for @navAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get navAccount;
+
+  /// No description provided for @navHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get navHelp;
+
+  /// No description provided for @navMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get navMore;
+
+  /// No description provided for @navObserver.
+  ///
+  /// In en, this message translates to:
+  /// **'Observer'**
+  String get navObserver;
+
+  /// No description provided for @navPlatform.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform'**
+  String get navPlatform;
+
+  /// No description provided for @navCreateElection.
+  ///
+  /// In en, this message translates to:
+  /// **'Create election'**
+  String get navCreateElection;
+
+  /// No description provided for @navMainLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Main navigation'**
+  String get navMainLabel;
+
+  /// No description provided for @navMoreSectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get navMoreSectionLabel;
+
+  /// No description provided for @navPlatformSectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform'**
+  String get navPlatformSectionLabel;
 }
 
 class _AppLocalizationsDelegate
