@@ -13,6 +13,7 @@ import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/global_search_overlay.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../core/widgets/ui_kit/kivora_metric_card.dart';
+import 'voter_portal_screen.dart' show AdaptiveCardGrid;
 import '../../organizations/domain/organization_enums.dart';
 import '../../organizations/presentation/membership_directory_screen.dart'
     show organizationMembersDirectoryProvider;
@@ -60,12 +61,12 @@ class _ElectionCommandCenterScreenState
     final orgState = ref.watch(activeOrganizationContextProvider);
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: KivoraColors.backgroundOf(context),
       body: orgState.when(
-        loading: () => const LoadingView(message: 'Loading command center...'),
+        loading: () => const LoadingView(),
         error: (e, _) => ErrorView(
           type: ErrorViewType.generic,
-          message: 'Failed to load: $e',
+          message: 'We could not load the command center. Check your connection and try again.',
           onRetry: () => ref.invalidate(activeOrganizationContextProvider),
         ),
         data: (state) {
@@ -112,7 +113,11 @@ class _ElectionCommandCenterScreenState
                       const SizedBox(height: 24),
                       eventsAsync.when(
                         loading: () => const LoadingView(),
-                        error: (e, _) => Text('Could not load events: $e'),
+                        error: (e, _) => ErrorView(
+                          type: ErrorViewType.generic,
+                          message: 'We could not load elections. Check your connection and try again.',
+                          onRetry: () => ref.invalidate(organizationVotingEventsProvider),
+                        ),
                         data: (events) => _buildBody(
                           context,
                           events,
@@ -140,45 +145,59 @@ class _ElectionCommandCenterScreenState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 8,
+          runSpacing: 8,
           children: [
-            Expanded(
+            Semantics(
+              header: true,
               child: Text('Election Command Center',
                   style: TextStyle(
-                      fontSize: isDesktop ? 26 : 20,
+                      fontSize: isDesktop ? 26 : 22,
                       fontWeight: FontWeight.bold,
                       color: kc.textPrimary)),
             ),
-            IconButton(
-              tooltip: 'Search (⌘K)',
-              icon: const Icon(KivoraIcons.search),
-              onPressed: () => showGlobalSearch(context),
-            ),
-            IconButton(
-              tooltip: 'Filter by date range',
-              icon: const Icon(Icons.date_range_outlined),
-              onPressed: _pickDateRange,
-            ),
-            const SizedBox(width: 4),
-            ElevatedButton.icon(
-              onPressed: () => context.go('/admin/events/new'),
-              icon: const Icon(KivoraIcons.plus, size: 18),
-              label: const Text('Create Event'),
+            Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 4,
+              children: [
+                IconButton(
+                  tooltip: 'Search',
+                  constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                  icon: const Icon(KivoraIcons.search),
+                  onPressed: () => showGlobalSearch(context),
+                ),
+                IconButton(
+                  tooltip: 'Filter by date range',
+                  constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                  icon: const Icon(Icons.date_range_outlined),
+                  onPressed: _pickDateRange,
+                ),
+                FilledButton.icon(
+                  style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+                  onPressed: () => context.go('/admin/events/new'),
+                  icon: const Icon(KivoraIcons.plus, size: 18),
+                  label: const Text('Create election'),
+                ),
+              ],
             ),
           ],
         ),
         const SizedBox(height: 8),
-        Row(
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 10,
+          runSpacing: 8,
           children: [
             const OrganizationContextSwitcher(),
-            if (_dateRange != null) ...[
-              const SizedBox(width: 10),
+            if (_dateRange != null)
               Chip(
                 label: Text(
                     '${DateFormat.yMMMd().format(_dateRange!.start)} - ${DateFormat.yMMMd().format(_dateRange!.end)}'),
                 onDeleted: () => setState(() => _dateRange = null),
               ),
-            ],
           ],
         ),
         if (orgSuspended) ...[
@@ -186,18 +205,19 @@ class _ElectionCommandCenterScreenState
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: AppTheme.error.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppTheme.error.withValues(alpha: 0.3)),
+              color: kc.errorText.withValues(alpha: kc.isDark ? 0.14 : 0.08),
+              borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+              border: Border.all(color: kc.errorText.withValues(alpha: 0.5)),
             ),
-            child: const Row(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.warning_amber_rounded, color: AppTheme.error),
-                SizedBox(width: 10),
+                Icon(Icons.warning_amber_rounded, color: kc.errorText),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'This organization is suspended. Voting event management is disabled until it is reinstated.',
-                    style: TextStyle(color: AppTheme.error, fontWeight: FontWeight.bold, fontSize: 13),
+                    'This organization is suspended. Election management is disabled until it is reinstated.',
+                    style: TextStyle(color: kc.textPrimary, fontWeight: FontWeight.bold, fontSize: 14),
                   ),
                 ),
               ],
@@ -240,14 +260,10 @@ class _ElectionCommandCenterScreenState
         e.eligibilityDepartmentIds.isEmpty &&
         e.eligibilityUserIds.isEmpty);
 
-    final statsRow = isDesktop
-        ? Row(children: _statCards(allEvents, active, scheduled, closed, totalMembers)
-            .map((c) => Expanded(child: Padding(padding: const EdgeInsets.only(right: 12), child: c)))
-            .toList())
-        : Column(
-            children: _statCards(allEvents, active, scheduled, closed, totalMembers)
-                .map((c) => Padding(padding: const EdgeInsets.only(bottom: 12), child: c))
-                .toList());
+    final statsRow = AdaptiveCardGrid(
+      minColumnWidth: 200,
+      children: _statCards(allEvents, active, scheduled, closed, totalMembers),
+    );
 
     final leftPanels = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -282,7 +298,7 @@ class _ElectionCommandCenterScreenState
               context,
               title: 'Alerts',
               icon: Icons.warning_amber_rounded,
-              accentColor: AppTheme.error,
+              accentColor: KivoraColors.of(context).errorText,
               child: Column(
                 children: misconfigured
                     .map((e) => _AlertTile(
@@ -308,7 +324,7 @@ class _ElectionCommandCenterScreenState
                       ),
                     if ((pendingInvites ?? 0) > 0)
                       _AlertTile(
-                        text: '$pendingInvites invitation(s) awaiting response.',
+                        text: pendingInvites == 1 ? '1 invitation is awaiting a response.' : '$pendingInvites invitations are awaiting a response.',
                         onTap: () => context.go('/orgs/members'),
                       ),
                   ],
@@ -321,9 +337,9 @@ class _ElectionCommandCenterScreenState
           icon: Icons.groups_rounded,
           child: Column(
             children: [
-              _summaryRow(context, 'Total members', totalMembers?.toString() ?? '-',
+              _summaryRow(context, 'Total members', totalMembers?.toString() ?? '—',
                   () => context.go('/orgs/members')),
-              _summaryRow(context, 'Pending invitations', (pendingInvites ?? 0).toString(),
+              _summaryRow(context, 'Pending invitations', pendingInvites?.toString() ?? '—',
                   () => context.go('/orgs/members')),
             ],
           ),
@@ -387,10 +403,10 @@ class _ElectionCommandCenterScreenState
       KivoraMetricCard(
           title: 'Closed', value: '${closed.length}', icon: Icons.task_alt_rounded, iconColor: AppTheme.textSecondary),
       KivoraMetricCard(
-          title: 'Eligible Voters',
-          value: totalMembers?.toString() ?? '-',
+          title: 'Members',
+          value: totalMembers?.toString() ?? '—',
           icon: KivoraIcons.users,
-          subtitle: 'Active org members',
+          subtitle: 'All organization members',
           iconColor: AppTheme.secondaryBlue),
     ];
   }
@@ -423,8 +439,11 @@ class _ElectionCommandCenterScreenState
                     style: TextStyle(fontSize: 13, color: kc.textPrimary)),
               ),
               if (date != null)
-                Text(DateFormat.MMMd().add_jm().format(date),
-                    style: TextStyle(fontSize: 11, color: kc.textSecondary)),
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(start: 8),
+                  child: Text(DateFormat.MMMd().add_jm().format(date),
+                      style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+                ),
             ],
           ),
         );
@@ -437,14 +456,14 @@ class _ElectionCommandCenterScreenState
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 48),
         child: Row(
           children: [
-            Expanded(child: Text(label, style: TextStyle(fontSize: 13, color: kc.textSecondary))),
+            Expanded(child: Text(label, style: TextStyle(fontSize: 14, color: kc.textSecondary))),
             Text(value, style: TextStyle(fontWeight: FontWeight.bold, color: kc.textPrimary)),
             const SizedBox(width: 4),
-            Icon(Icons.chevron_right, size: 16, color: kc.textSecondary),
+            Icon(Icons.chevron_right, size: 20, color: kc.textSecondary),
           ],
         ),
       ),
@@ -455,7 +474,7 @@ class _ElectionCommandCenterScreenState
     final kc = KivoraColors.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Text(text, style: TextStyle(fontSize: 13, color: kc.textSecondary)),
+      child: Text(text, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
     );
   }
 
@@ -481,11 +500,16 @@ class _ElectionCommandCenterScreenState
         children: [
           Row(
             children: [
-              Icon(icon, size: 18, color: color),
+              Icon(icon, size: 20, color: color == AppTheme.primaryBlue ? kc.accentText : color),
               const SizedBox(width: 8),
-              Text(title,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 15, color: kc.textPrimary)),
+              Expanded(
+                child: Semantics(
+                  header: true,
+                  child: Text(title,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16, color: kc.textPrimary)),
+                ),
+              ),
             ],
           ),
           const Divider(height: 24),
@@ -507,14 +531,17 @@ class _AlertTile extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Row(
-          children: [
-            const Icon(Icons.arrow_right_rounded, size: 18, color: AppTheme.warning),
-            const SizedBox(width: 6),
-            Expanded(child: Text(text, style: TextStyle(fontSize: 13, color: kc.textPrimary))),
-          ],
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 48),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            children: [
+              Icon(Icons.arrow_right_rounded, size: 22, color: kc.warningText),
+              const SizedBox(width: 6),
+              Expanded(child: Text(text, style: TextStyle(fontSize: 14, color: kc.textPrimary))),
+            ],
+          ),
         ),
       ),
     );
@@ -543,13 +570,17 @@ class _ActiveEventTile extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Expanded(
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 480),
                 child: Text(event.title,
                     style: TextStyle(fontWeight: FontWeight.bold, color: kc.textPrimary)),
               ),
               TextButton(
+                style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
                 onPressed: () => context.go('/admin/events/${event.id}/monitor'),
                 child: const Text('Monitor'),
               ),
@@ -558,7 +589,7 @@ class _ActiveEventTile extends ConsumerWidget {
           summaryAsync.when(
             loading: () => const LinearProgressIndicator(minHeight: 3),
             error: (_, __) => Text('Live turnout unavailable',
-                style: TextStyle(fontSize: 12, color: kc.textSecondary)),
+                style: TextStyle(fontSize: 14, color: kc.textSecondary)),
             data: (summary) {
               if (summary == null) {
                 return Text('Live turnout unavailable',
@@ -577,12 +608,12 @@ class _ActiveEventTile extends ConsumerWidget {
                       value: eligible == 0 ? 0 : (voted / eligible).clamp(0, 1),
                       minHeight: 6,
                       backgroundColor: kc.border,
-                      color: AppTheme.success,
+                      color: kc.successText,
                     ),
                   ),
                   const SizedBox(height: 6),
                   Text('$voted of $eligible voted (${percent.toStringAsFixed(0)}%)',
-                      style: TextStyle(fontSize: 12, color: kc.textSecondary)),
+                      style: TextStyle(fontSize: 14, color: kc.textSecondary)),
                 ],
               );
             },
