@@ -18,6 +18,9 @@ import 'plan_providers.dart';
 /// Optional sales contact, injected at build time: --dart-define=SALES_EMAIL=...
 const _salesEmail = String.fromEnvironment('SALES_EMAIL');
 
+/// Flip on once the Stripe functions are deployed: --dart-define=BILLING_ENABLED=true
+const _billingEnabled = bool.fromEnvironment('BILLING_ENABLED');
+
 class PlansScreen extends ConsumerStatefulWidget {
   const PlansScreen({super.key});
 
@@ -108,6 +111,14 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
 
   Widget? _action(PlanInfo plan, PlanId current, bool isOwner, String? orgId) {
     if (orgId == null || plan.id == current) return null;
+    if (!_billingEnabled && plan.id == PlanId.pro) {
+      return const KivoraButton(
+        type: KivoraButtonType.secondary,
+        label: 'Online upgrade coming soon',
+        icon: Icons.schedule_rounded,
+        onPressed: null,
+      );
+    }
     if (plan.id == PlanId.pro && current == PlanId.free) {
       return KivoraButton(
         label: _busy ? 'Opening…' : 'Upgrade to Pro',
