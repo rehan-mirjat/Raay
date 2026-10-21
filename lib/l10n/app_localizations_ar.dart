@@ -266,411 +266,408 @@ class AppLocalizationsAr extends AppLocalizations {
   String get observerDashboardTitle => 'لوحة معلومات المراقب';
 
   @override
-  String get voterHomeTitle => 'My elections';
+  String get voterHomeTitle => 'انتخاباتي';
 
   @override
-  String get voterHomeSubtitle =>
-      'Elections you can see across your organizations.';
+  String get voterHomeSubtitle => 'الانتخابات التي يمكنك رؤيتها في مؤسساتك.';
 
   @override
-  String get voterSearchHint => 'Search by election or organization';
+  String get voterSearchHint => 'ابحث باسم الانتخاب أو المؤسسة';
 
   @override
-  String get voterFilterAll => 'All';
+  String get voterFilterAll => 'الكل';
 
   @override
-  String get voterFilterReady => 'Ready to vote';
+  String get voterFilterReady => 'جاهز للتصويت';
 
   @override
-  String get voterFilterUpcoming => 'Upcoming';
+  String get voterFilterUpcoming => 'القادمة';
 
   @override
-  String get voterFilterParticipated => 'Participated';
+  String get voterFilterParticipated => 'شاركت';
 
   @override
-  String get voterFilterClosed => 'Closed';
+  String get voterFilterClosed => 'المغلقة';
 
   @override
-  String get voterFilterResults => 'Results published';
+  String get voterFilterResults => 'النتائج المنشورة';
 
   @override
-  String get voterSectionReady => 'Ready to vote';
+  String get voterSectionReady => 'جاهز للتصويت';
 
   @override
-  String get voterSectionUpcoming => 'Upcoming';
+  String get voterSectionUpcoming => 'القادمة';
 
   @override
-  String get voterSectionParticipated => 'Participated';
+  String get voterSectionParticipated => 'شاركت';
 
   @override
-  String get voterSectionOther => 'Other elections';
+  String get voterSectionOther => 'انتخابات أخرى';
 
   @override
-  String get voterNoElectionsTitle => 'No elections yet';
+  String get voterNoElectionsTitle => 'لا توجد انتخابات بعد';
 
   @override
   String get voterNoElectionsBody =>
-      'Elections you are eligible for will appear here.';
+      'ستظهر هنا الانتخابات التي تحق لك المشاركة فيها.';
 
   @override
-  String get voterNoMatchTitle => 'No matching elections';
+  String get voterNoMatchTitle => 'لا توجد انتخابات مطابقة';
 
   @override
-  String get voterNoMatchBody => 'Try a different search or filter.';
+  String get voterNoMatchBody => 'جرّب بحثًا أو عامل تصفية مختلفًا.';
 
   @override
-  String get voterLoadError => 'We could not load your elections.';
+  String get voterLoadError => 'تعذّر تحميل انتخاباتك.';
 
   @override
-  String get voterRetry => 'Try again';
+  String get voterRetry => 'حاول مرة أخرى';
 
   @override
   String get voterStatusWarning =>
-      'Some details could not be loaded. Actions that depend on them are hidden until they load.';
+      'تعذّر تحميل بعض التفاصيل. الإجراءات التي تعتمد عليها مخفية حتى يتم تحميلها.';
 
   @override
-  String get voterActionVoteNow => 'Vote now';
+  String get voterActionVoteNow => 'صوّت الآن';
 
   @override
-  String get voterActionViewReceipt => 'View receipt';
+  String get voterActionViewReceipt => 'عرض الإيصال';
 
   @override
-  String get voterActionViewDetails => 'View details';
+  String get voterActionViewDetails => 'عرض التفاصيل';
 
   @override
-  String get voterActionChecking => 'Checking your status...';
+  String get voterActionChecking => 'جارٍ التحقق من حالتك...';
 
   @override
-  String get voterActionResultsPending => 'Results pending';
+  String get voterActionResultsPending => 'النتائج قيد الانتظار';
 
   @override
-  String get voterActionViewResults => 'View published results';
+  String get voterActionViewResults => 'عرض النتائج المنشورة';
 
   @override
-  String get voterChipParticipated => 'Participated';
+  String get voterChipParticipated => 'شاركت';
 
   @override
-  String get voterChipNotEligible => 'Not eligible';
+  String get voterChipNotEligible => 'غير مؤهل';
 
   @override
-  String get voterChipChecking => 'Checking status';
+  String get voterChipChecking => 'جارٍ التحقق من الحالة';
 
   @override
   String voterOpens(String date) {
-    return 'Opens $date';
+    return 'يفتح $date';
   }
 
   @override
   String voterCloses(String date) {
-    return 'Closes $date';
+    return 'يُغلق $date';
   }
 
   @override
   String voterClosedOn(String date) {
-    return 'Closed $date';
+    return 'أُغلق $date';
   }
 
   @override
-  String get voterCalendar => 'Calendar';
+  String get voterCalendar => 'التقويم';
 
   @override
-  String get voterLoadMore => 'Show more';
+  String get voterLoadMore => 'عرض المزيد';
 
   @override
-  String get builderLeaveTitle => 'Leave without saving?';
+  String get builderLeaveTitle => 'المغادرة دون حفظ؟';
 
   @override
   String get builderLeaveBody =>
-      'You have changes that have not been saved to this draft. If you leave now they will be lost.';
+      'لديك تغييرات لم تُحفظ في هذه المسودة. إذا غادرت الآن فستفقدها.';
 
   @override
-  String get builderStay => 'Keep editing';
+  String get builderStay => 'متابعة التعديل';
 
   @override
-  String get builderLeave => 'Leave and discard changes';
+  String get builderLeave => 'المغادرة وتجاهل التغييرات';
 
   @override
-  String get navMyElections => 'My elections';
+  String get navMyElections => 'انتخاباتي';
 
   @override
-  String get navOverview => 'Overview';
+  String get navOverview => 'نظرة عامة';
 
   @override
-  String get navPeople => 'People';
+  String get navPeople => 'الأشخاص';
 
   @override
-  String get navActivity => 'Activity';
+  String get navActivity => 'النشاط';
 
   @override
-  String get navBilling => 'Billing';
+  String get navBilling => 'الفوترة';
 
   @override
-  String get navOrgSettings => 'Organization settings';
+  String get navOrgSettings => 'إعدادات المؤسسة';
 
   @override
-  String get navAccount => 'Account';
+  String get navAccount => 'الحساب';
 
   @override
-  String get navHelp => 'Help';
+  String get navHelp => 'المساعدة';
 
   @override
-  String get navMore => 'More';
+  String get navMore => 'المزيد';
 
   @override
-  String get navObserver => 'Observer';
+  String get navObserver => 'مراقب';
 
   @override
-  String get navPlatform => 'Platform';
+  String get navPlatform => 'المنصة';
 
   @override
-  String get navCreateElection => 'Create election';
+  String get navCreateElection => 'إنشاء انتخاب';
 
   @override
-  String get navMainLabel => 'Main navigation';
+  String get navMainLabel => 'التنقل الرئيسي';
 
   @override
-  String get navMoreSectionLabel => 'More';
+  String get navMoreSectionLabel => 'المزيد';
 
   @override
-  String get navPlatformSectionLabel => 'Platform';
+  String get navPlatformSectionLabel => 'المنصة';
 
   @override
-  String get adminEventsTitle => 'Elections';
+  String get adminEventsTitle => 'الانتخابات';
 
   @override
   String get adminEventsSubtitle =>
-      'Create, schedule and monitor elections for your organization.';
+      'أنشئ الانتخابات لمؤسستك وحدّد مواعيدها وراقبها.';
 
   @override
-  String get adminCreateElection => 'Create election';
+  String get adminCreateElection => 'إنشاء انتخاب';
 
   @override
-  String get adminCommandCenter => 'Command center';
+  String get adminCommandCenter => 'مركز القيادة';
 
   @override
-  String get adminSearchEvents => 'Search elections';
+  String get adminSearchEvents => 'البحث في الانتخابات';
 
   @override
-  String get adminFilterAll => 'All';
+  String get adminFilterAll => 'الكل';
 
   @override
-  String get adminFilterActive => 'Active';
+  String get adminFilterActive => 'نشطة';
 
   @override
-  String get adminFilterScheduled => 'Scheduled';
+  String get adminFilterScheduled => 'مجدولة';
 
   @override
-  String get adminFilterDraft => 'Draft';
+  String get adminFilterDraft => 'مسودة';
 
   @override
-  String get adminFilterClosed => 'Closed';
+  String get adminFilterClosed => 'مغلقة';
 
   @override
-  String get adminFilterArchived => 'Archived';
+  String get adminFilterArchived => 'مؤرشفة';
 
   @override
-  String get adminNoEventsTitle => 'No elections yet';
+  String get adminNoEventsTitle => 'لا توجد انتخابات بعد';
 
   @override
   String get adminNoEventsBody =>
-      'Create your first election. You can save it as a draft and publish it when it is ready.';
+      'أنشئ أول انتخاب. يمكنك حفظه كمسودة ونشره عندما يصبح جاهزًا.';
 
   @override
-  String get adminNoMatch => 'No elections match your search or filter.';
+  String get adminNoMatch => 'لا توجد انتخابات تطابق بحثك أو عامل التصفية.';
 
   @override
   String get adminLoadError =>
-      'We could not load your elections. Check your connection and try again.';
+      'تعذّر تحميل انتخاباتك. تحقق من اتصالك وحاول مرة أخرى.';
 
   @override
-  String get adminOrgRequiredTitle => 'No active organization';
+  String get adminOrgRequiredTitle => 'لا توجد مؤسسة نشطة';
 
   @override
-  String get adminOrgRequiredBody =>
-      'Choose an organization to manage its elections.';
+  String get adminOrgRequiredBody => 'اختر مؤسسة لإدارة انتخاباتها.';
 
   @override
-  String get adminSuspendedTitle => 'Organization suspended';
+  String get adminSuspendedTitle => 'المؤسسة موقوفة';
 
   @override
   String get adminSuspendedBody =>
-      'This organization is suspended, so election management is disabled.';
+      'هذه المؤسسة موقوفة، لذلك تم تعطيل إدارة الانتخابات.';
 
   @override
-  String get adminProcessing => 'Updating election...';
+  String get adminProcessing => 'جارٍ تحديث الانتخاب...';
 
   @override
   String adminEventRange(String start, String end) {
-    return '$start to $end';
+    return 'من $start إلى $end';
   }
 
   @override
-  String get adminTypeCandidate => 'Candidate election';
+  String get adminTypeCandidate => 'انتخاب مرشحين';
 
   @override
-  String get adminTypeSingle => 'Single-choice poll';
+  String get adminTypeSingle => 'استطلاع باختيار واحد';
 
   @override
-  String get adminTypeYesNo => 'Yes/No poll';
+  String get adminTypeYesNo => 'استطلاع نعم/لا';
 
   @override
-  String get adminActionDelete => 'Delete draft';
+  String get adminActionDelete => 'حذف المسودة';
 
   @override
-  String get adminActionManageChoices => 'Manage choices';
+  String get adminActionManageChoices => 'إدارة الخيارات';
 
   @override
-  String get adminActionEdit => 'Edit details';
+  String get adminActionEdit => 'تعديل التفاصيل';
 
   @override
-  String get adminActionPublish => 'Review and publish';
+  String get adminActionPublish => 'مراجعة ونشر';
 
   @override
-  String get adminActionCancel => 'Cancel election';
+  String get adminActionCancel => 'إلغاء الانتخاب';
 
   @override
-  String get adminActionViewDetails => 'View details';
+  String get adminActionViewDetails => 'عرض التفاصيل';
 
   @override
-  String get adminActionCloseEarly => 'Close early';
+  String get adminActionCloseEarly => 'إغلاق مبكر';
 
   @override
-  String get adminActionMonitor => 'Monitor turnout';
+  String get adminActionMonitor => 'متابعة نسبة المشاركة';
 
   @override
-  String get adminActionResults => 'View results';
+  String get adminActionResults => 'عرض النتائج';
 
   @override
-  String get adminDeleteTitle => 'Delete this draft?';
+  String get adminDeleteTitle => 'حذف هذه المسودة؟';
 
   @override
   String adminDeleteBody(String title) {
-    return '\"$title\" will be permanently deleted. This cannot be undone.';
+    return 'سيتم حذف \"$title\" نهائيًا. لا يمكن التراجع عن ذلك.';
   }
 
   @override
-  String get adminCancelTitle => 'Cancel this election?';
+  String get adminCancelTitle => 'إلغاء هذا الانتخاب؟';
 
   @override
   String adminCancelBody(String title) {
-    return '\"$title\" will not open for voting. Voters will no longer see it as upcoming.';
+    return 'لن يُفتح \"$title\" للتصويت. ولن يراه الناخبون كانتخاب قادم.';
   }
 
   @override
-  String get adminCloseTitle => 'Close voting now?';
+  String get adminCloseTitle => 'إغلاق التصويت الآن؟';
 
   @override
   String adminCloseBody(String title) {
-    return '\"$title\" will stop accepting votes immediately. This cannot be undone.';
+    return 'سيتوقف \"$title\" عن قبول الأصوات فورًا. لا يمكن التراجع عن ذلك.';
   }
 
   @override
-  String get adminKeep => 'Keep it';
+  String get adminKeep => 'إبقاؤه';
 
   @override
-  String get adminConfirmDelete => 'Delete draft';
+  String get adminConfirmDelete => 'حذف المسودة';
 
   @override
-  String get adminConfirmCancel => 'Cancel election';
+  String get adminConfirmCancel => 'إلغاء الانتخاب';
 
   @override
-  String get adminConfirmClose => 'Close voting';
+  String get adminConfirmClose => 'إغلاق التصويت';
 
   @override
-  String get adminGuideTitle1 => 'Set up';
+  String get adminGuideTitle1 => 'الإعداد';
 
   @override
-  String get adminGuideBody1 => 'Details, schedule and who can vote.';
+  String get adminGuideBody1 => 'التفاصيل والجدول ومن يحق له التصويت.';
 
   @override
-  String get adminGuideTitle2 => 'Add choices';
+  String get adminGuideTitle2 => 'إضافة الخيارات';
 
   @override
-  String get adminGuideBody2 => 'Candidates or poll options.';
+  String get adminGuideBody2 => 'المرشحون أو خيارات الاستطلاع.';
 
   @override
-  String get adminGuideTitle3 => 'Publish';
+  String get adminGuideTitle3 => 'النشر';
 
   @override
-  String get adminGuideBody3 => 'Review, then open it to voters.';
+  String get adminGuideBody3 => 'راجع ثم افتحه للناخبين.';
 
   @override
-  String get adminGuideTitle4 => 'Monitor';
+  String get adminGuideTitle4 => 'المتابعة';
 
   @override
-  String get adminGuideBody4 => 'Turnout while open, results after.';
+  String get adminGuideBody4 => 'نسبة المشاركة أثناء التصويت، والنتائج بعده.';
 
   @override
-  String get builderCreateTitle => 'Create election';
+  String get builderCreateTitle => 'إنشاء انتخاب';
 
   @override
-  String get builderEditTitle => 'Edit election draft';
+  String get builderEditTitle => 'تعديل مسودة الانتخاب';
 
   @override
-  String get builderBack => 'Back';
+  String get builderBack => 'رجوع';
 
   @override
   String builderStepOf(int current, int total) {
-    return 'Step $current of $total';
+    return 'الخطوة $current من $total';
   }
 
   @override
-  String get builderStepBasic => 'Details';
+  String get builderStepBasic => 'التفاصيل';
 
   @override
-  String get builderStepSchedule => 'Schedule';
+  String get builderStepSchedule => 'الجدول';
 
   @override
-  String get builderStepEligibility => 'Eligibility';
+  String get builderStepEligibility => 'الأهلية';
 
   @override
-  String get builderStepChoices => 'Choices';
+  String get builderStepChoices => 'الخيارات';
 
   @override
-  String get builderStepReview => 'Review';
+  String get builderStepReview => 'المراجعة';
 
   @override
-  String get builderStepsLabel => 'Election setup steps';
+  String get builderStepsLabel => 'خطوات إعداد الانتخاب';
 
   @override
   String get builderDraftNeeded =>
-      'Save the draft first. Finish the earlier steps, then continue.';
+      'احفظ المسودة أولًا. أكمل الخطوات السابقة ثم تابع.';
 
   @override
-  String get builderCreateDraftNow => 'Save draft now';
+  String get builderCreateDraftNow => 'حفظ المسودة الآن';
 
   @override
   String get builderCreateDraftFailed =>
-      'Could not save the draft. Please try again.';
+      'تعذّر حفظ المسودة. يُرجى المحاولة مرة أخرى.';
 
   @override
   String get builderStepBlocked =>
-      'Finish each step with its Continue button before moving ahead.';
+      'أكمل كل خطوة بزر «متابعة» الخاص بها قبل المتابعة.';
 
   @override
-  String get builderLoadingDraft => 'Loading election draft...';
+  String get builderLoadingDraft => 'جارٍ تحميل مسودة الانتخاب...';
 
   @override
   String get builderAdminsOnly =>
-      'Only organization admins can create or edit elections.';
+      'يمكن لمسؤولي المؤسسة فقط إنشاء الانتخابات أو تعديلها.';
 
   @override
-  String get builderReturnHome => 'Back to home';
+  String get builderReturnHome => 'العودة إلى الرئيسية';
 
   @override
-  String get overviewSubtitle =>
-      'What needs attention and what is happening in your organization.';
+  String get overviewSubtitle => 'ما يحتاج إلى انتباه وما يحدث في مؤسستك.';
 
   @override
-  String get overviewRequiredTitle => 'Needs your attention';
+  String get overviewRequiredTitle => 'يحتاج إلى انتباهك';
 
   @override
   String overviewFinishDrafts(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count draft elections are not published',
-      one: '1 draft election is not published',
+      other: '$count انتخابات في المسودة لم تُنشر',
+      one: 'انتخاب واحد في المسودة لم يُنشر',
     );
     return '$_temp0';
   }
@@ -680,283 +677,283 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count invitations are waiting for a response',
-      one: '1 invitation is waiting for a response',
+      other: '$count دعوات بانتظار الرد',
+      one: 'دعوة واحدة بانتظار الرد',
     );
     return '$_temp0';
   }
 
   @override
-  String get overviewOpenElections => 'Open elections';
+  String get overviewOpenElections => 'فتح الانتخابات';
 
   @override
-  String get overviewOpenPeople => 'Open people';
+  String get overviewOpenPeople => 'فتح الأشخاص';
 
   @override
-  String get overviewMetricMembers => 'Members';
+  String get overviewMetricMembers => 'الأعضاء';
 
   @override
-  String get overviewMetricDepartments => 'Departments';
+  String get overviewMetricDepartments => 'الأقسام';
 
   @override
-  String get overviewMetricLive => 'Live elections';
+  String get overviewMetricLive => 'الانتخابات الجارية';
 
   @override
-  String get overviewMetricUpcoming => 'Upcoming elections';
+  String get overviewMetricUpcoming => 'الانتخابات القادمة';
 
   @override
-  String get overviewMetricInvites => 'Pending invitations';
+  String get overviewMetricInvites => 'الدعوات المعلقة';
 
   @override
-  String get overviewUnavailable => 'Unavailable';
+  String get overviewUnavailable => 'غير متاح';
 
   @override
-  String get overviewLoading => 'Loading';
+  String get overviewLoading => 'جارٍ التحميل';
 
   @override
-  String get overviewElectionsTitle => 'Live and upcoming elections';
+  String get overviewElectionsTitle => 'الانتخابات الجارية والقادمة';
 
   @override
-  String get overviewViewAll => 'View all';
+  String get overviewViewAll => 'عرض الكل';
 
   @override
-  String get overviewNoLive => 'No live or upcoming elections.';
+  String get overviewNoLive => 'لا توجد انتخابات جارية أو قادمة.';
 
   @override
-  String get overviewNoLiveBody => 'Create an election to get started.';
+  String get overviewNoLiveBody => 'أنشئ انتخابًا للبدء.';
 
   @override
-  String get overviewElectionsError => 'We could not load elections.';
+  String get overviewElectionsError => 'تعذّر تحميل الانتخابات.';
 
   @override
-  String get overviewRetry => 'Try again';
+  String get overviewRetry => 'حاول مرة أخرى';
 
   @override
-  String get overviewActivityTitle => 'Recent activity';
+  String get overviewActivityTitle => 'النشاط الأخير';
 
   @override
-  String get overviewNoActivity => 'No recent activity yet.';
+  String get overviewNoActivity => 'لا يوجد نشاط حديث بعد.';
 
   @override
-  String get overviewActivityError => 'Recent activity is unavailable.';
+  String get overviewActivityError => 'النشاط الأخير غير متاح.';
 
   @override
-  String get overviewActivityUnknown => 'Admin action';
+  String get overviewActivityUnknown => 'إجراء إداري';
 
   @override
-  String get overviewShortcuts => 'Shortcuts';
+  String get overviewShortcuts => 'اختصارات';
 
   @override
-  String get overviewShortcutPeople => 'People';
+  String get overviewShortcutPeople => 'الأشخاص';
 
   @override
-  String get overviewShortcutDepartments => 'Departments';
+  String get overviewShortcutDepartments => 'الأقسام';
 
   @override
-  String get overviewShortcutCodes => 'Joining codes';
+  String get overviewShortcutCodes => 'رموز الانضمام';
 
   @override
-  String get overviewShortcutInvites => 'Invitations';
+  String get overviewShortcutInvites => 'الدعوات';
 
   @override
-  String get overviewShortcutCommand => 'Command center';
+  String get overviewShortcutCommand => 'مركز القيادة';
 
   @override
-  String get overviewShortcutSettings => 'Organization settings';
+  String get overviewShortcutSettings => 'إعدادات المؤسسة';
 
   @override
-  String get overviewShortcutBilling => 'Plans and billing';
+  String get overviewShortcutBilling => 'الخطط والفوترة';
 
   @override
-  String get overviewAgoNow => 'Just now';
+  String get overviewAgoNow => 'الآن';
 
   @override
   String overviewAgoMinutes(int n) {
-    return '${n}m ago';
+    return 'قبل $n دقيقة';
   }
 
   @override
   String overviewAgoHours(int n) {
-    return '${n}h ago';
+    return 'قبل $n ساعة';
   }
 
   @override
   String overviewAgoDays(int n) {
-    return '${n}d ago';
+    return 'قبل $n يوم';
   }
 
   @override
   String overviewAgoWeeks(int n) {
-    return '${n}w ago';
+    return 'قبل $n أسبوع';
   }
 
   @override
   String overviewRole(String role) {
-    return 'Your role: $role';
+    return 'دورك: $role';
   }
 
   @override
   String get overviewLoadError =>
-      'We could not load your organization. Please try again.';
+      'تعذّر تحميل مؤسستك. يُرجى المحاولة مرة أخرى.';
 
   @override
-  String get orgsTitle => 'Organizations';
+  String get orgsTitle => 'المؤسسات';
 
   @override
   String get orgsSubtitle =>
-      'Switch workspace, join another organization or create your own.';
+      'بدّل مساحة العمل أو انضم إلى مؤسسة أخرى أو أنشئ مؤسستك.';
 
   @override
-  String get orgsCreate => 'Create';
+  String get orgsCreate => 'إنشاء';
 
   @override
-  String get orgsJoin => 'Join with code';
+  String get orgsJoin => 'الانضمام برمز';
 
   @override
-  String get orgsScan => 'Scan QR to join';
+  String get orgsScan => 'مسح رمز QR للانضمام';
 
   @override
-  String get orgsInvitations => 'Invitations';
+  String get orgsInvitations => 'الدعوات';
 
   @override
-  String get orgsEmptyTitle => 'No organizations yet';
+  String get orgsEmptyTitle => 'لا توجد مؤسسات بعد';
 
   @override
   String get orgsEmptyBody =>
-      'Join an existing organization with a code or invitation, or create a new one to run elections.';
+      'انضم إلى مؤسسة موجودة برمز أو دعوة، أو أنشئ مؤسسة جديدة لإجراء الانتخابات.';
 
   @override
-  String get orgsCreateFull => 'Create organization';
+  String get orgsCreateFull => 'إنشاء مؤسسة';
 
   @override
-  String get orgsJoinFull => 'Join with code';
+  String get orgsJoinFull => 'الانضمام برمز';
 
   @override
-  String get orgsOpen => 'Open workspace';
+  String get orgsOpen => 'فتح مساحة العمل';
 
   @override
-  String get orgsCurrent => 'Current workspace';
+  String get orgsCurrent => 'مساحة العمل الحالية';
 
   @override
   String get orgsLoadError =>
-      'We could not load your organizations. Check your connection and try again.';
+      'تعذّر تحميل مؤسساتك. تحقق من اتصالك وحاول مرة أخرى.';
 
   @override
-  String get orgsRetry => 'Try again';
+  String get orgsRetry => 'حاول مرة أخرى';
 
   @override
-  String get orgsStatusPending => 'Pending review';
+  String get orgsStatusPending => 'قيد المراجعة';
 
   @override
-  String get orgsStatusSuspended => 'Suspended';
+  String get orgsStatusSuspended => 'موقوفة';
 
   @override
-  String get orgsStatusRejected => 'Rejected';
+  String get orgsStatusRejected => 'مرفوضة';
 
   @override
   String orgsRoleLine(String role) {
-    return 'Your role: $role';
+    return 'دورك: $role';
   }
 
   @override
-  String get peopleTitle => 'People';
+  String get peopleTitle => 'الأشخاص';
 
   @override
-  String get peopleSubtitle => 'Manage members, roles and invitations.';
+  String get peopleSubtitle => 'أدر الأعضاء والأدوار والدعوات.';
 
   @override
-  String get peopleAddExisting => 'Add existing user';
+  String get peopleAddExisting => 'إضافة مستخدم موجود';
 
   @override
-  String get peopleInvite => 'Invite member';
+  String get peopleInvite => 'دعوة عضو';
 
   @override
-  String get peopleSearchHint => 'Search by name or email';
+  String get peopleSearchHint => 'ابحث بالاسم أو البريد الإلكتروني';
 
   @override
-  String get peopleSearchClear => 'Clear search';
+  String get peopleSearchClear => 'مسح البحث';
 
   @override
-  String get peopleFilterAll => 'All';
+  String get peopleFilterAll => 'الكل';
 
   @override
-  String get peopleFilterManagers => 'Owners and admins';
+  String get peopleFilterManagers => 'المالكون والمسؤولون';
 
   @override
-  String get peopleFilterMembers => 'Members';
+  String get peopleFilterMembers => 'الأعضاء';
 
   @override
-  String get peopleFilterNotActive => 'Not active';
+  String get peopleFilterNotActive => 'غير نشطين';
 
   @override
-  String get peopleNoMembersTitle => 'No members yet';
+  String get peopleNoMembersTitle => 'لا يوجد أعضاء بعد';
 
   @override
   String get peopleNoMembersBody =>
-      'Add existing users or invite people to your organization.';
+      'أضف مستخدمين موجودين أو ادعُ أشخاصًا إلى مؤسستك.';
 
   @override
-  String get peopleNoMatchTitle => 'No matches';
+  String get peopleNoMatchTitle => 'لا توجد نتائج مطابقة';
 
   @override
-  String get peopleNoMatchBody => 'No one matches your search or filter.';
+  String get peopleNoMatchBody => 'لا أحد يطابق بحثك أو عامل التصفية.';
 
   @override
   String get peopleLoadError =>
-      'We could not load the member list. Check your connection and try again.';
+      'تعذّر تحميل قائمة الأعضاء. تحقق من اتصالك وحاول مرة أخرى.';
 
   @override
-  String get peopleRetry => 'Try again';
+  String get peopleRetry => 'حاول مرة أخرى';
 
   @override
-  String get peopleRestricted => 'Access restricted';
+  String get peopleRestricted => 'الوصول مقيّد';
 
   @override
   String get peopleRestrictedBody =>
-      'Only organization admins can see the member list.';
+      'يمكن لمسؤولي المؤسسة فقط رؤية قائمة الأعضاء.';
 
   @override
-  String get peopleNoOrgTitle => 'No active organization';
+  String get peopleNoOrgTitle => 'لا توجد مؤسسة نشطة';
 
   @override
-  String get peopleNoOrgBody => 'Choose an organization to see its people.';
+  String get peopleNoOrgBody => 'اختر مؤسسة لعرض أشخاصها.';
 
   @override
-  String get peopleUnknownUser => 'Unknown user';
+  String get peopleUnknownUser => 'مستخدم غير معروف';
 
   @override
   String peopleCount(int shown, int total) {
-    return '$shown of $total people';
+    return '$shown من $total أشخاص';
   }
 
   @override
-  String get invTitle => 'Pending invitations';
+  String get invTitle => 'الدعوات المعلقة';
 
   @override
-  String get invRefresh => 'Refresh invitations';
+  String get invRefresh => 'تحديث الدعوات';
 
   @override
-  String get invLoadError => 'We could not load pending invitations.';
+  String get invLoadError => 'تعذّر تحميل الدعوات المعلقة.';
 
   @override
-  String get invTryAgain => 'Try again';
+  String get invTryAgain => 'حاول مرة أخرى';
 
   @override
-  String get invNone => 'No pending invitations.';
+  String get invNone => 'لا توجد دعوات معلقة.';
 
   @override
-  String get invExpired => 'Expired';
+  String get invExpired => 'منتهية';
 
   @override
-  String get invExpiringSoon => 'Expiring soon';
+  String get invExpiringSoon => 'تنتهي قريبًا';
 
   @override
   String invExpiresDays(int n) {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: 'Expires in $n days',
-      one: 'Expires in 1 day',
+      other: 'تنتهي خلال $n أيام',
+      one: 'تنتهي خلال يوم واحد',
     );
     return '$_temp0';
   }
@@ -966,8 +963,8 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: 'Expires in $n hours',
-      one: 'Expires in 1 hour',
+      other: 'تنتهي خلال $n ساعات',
+      one: 'تنتهي خلال ساعة واحدة',
     );
     return '$_temp0';
   }
@@ -977,150 +974,146 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: 'Expires in $n minutes',
-      one: 'Expires in 1 minute',
+      other: 'تنتهي خلال $n دقائق',
+      one: 'تنتهي خلال دقيقة واحدة',
     );
     return '$_temp0';
   }
 
   @override
-  String get invRevoke => 'Revoke';
+  String get invRevoke => 'إلغاء';
 
   @override
-  String get invRemove => 'Remove';
+  String get invRemove => 'إزالة';
 
   @override
-  String get invKeep => 'Keep it';
+  String get invKeep => 'إبقاؤها';
 
   @override
-  String get invRevokeTitle => 'Revoke this invitation?';
+  String get invRevokeTitle => 'إلغاء هذه الدعوة؟';
 
   @override
   String invRevokeBody(String who) {
-    return '$who will no longer be able to accept it. You can invite them again later.';
+    return 'لن يتمكن $who من قبولها بعد الآن. يمكنك دعوته مرة أخرى لاحقًا.';
   }
 
   @override
-  String get invRecipient => 'The recipient';
+  String get invRecipient => 'المستلم';
 
   @override
-  String get invRevoked => 'Invitation revoked.';
+  String get invRevoked => 'تم إلغاء الدعوة.';
 
   @override
-  String get invRevokeFailed =>
-      'Could not revoke the invitation. Please try again.';
+  String get invRevokeFailed => 'تعذّر إلغاء الدعوة. يُرجى المحاولة مرة أخرى.';
 
   @override
-  String get invOwnerOnly => 'Only an owner can revoke admin invitations';
+  String get invOwnerOnly => 'يمكن للمالك فقط إلغاء دعوات المسؤولين';
 
   @override
-  String get deptTitle => 'Departments';
+  String get deptTitle => 'الأقسام';
 
   @override
   String get deptSubtitle =>
-      'Group members into departments to limit who can vote in an election.';
+      'قسّم الأعضاء إلى أقسام لتحديد من يحق له التصويت في الانتخاب.';
 
   @override
-  String get deptNew => 'New department';
+  String get deptNew => 'قسم جديد';
 
   @override
-  String get deptSearchHint => 'Search departments';
+  String get deptSearchHint => 'البحث في الأقسام';
 
   @override
-  String get deptSortName => 'Name A to Z';
+  String get deptSortName => 'الاسم من الألف إلى الياء';
 
   @override
-  String get deptSortNameDesc => 'Name Z to A';
+  String get deptSortNameDesc => 'الاسم من الياء إلى الألف';
 
   @override
-  String get deptSortMembers => 'Most members';
+  String get deptSortMembers => 'الأكثر أعضاء';
 
   @override
-  String get deptSortLabel => 'Sort';
+  String get deptSortLabel => 'الترتيب';
 
   @override
-  String get deptNoOrgTitle => 'Choose an organization';
+  String get deptNoOrgTitle => 'اختر مؤسسة';
 
   @override
-  String get deptNoOrgBody =>
-      'Departments belong to an organization. Choose one to see its departments.';
+  String get deptNoOrgBody => 'الأقسام تتبع مؤسسة. اختر مؤسسة لعرض أقسامها.';
 
   @override
-  String get deptNoOrgAction => 'Go to home';
+  String get deptNoOrgAction => 'الذهاب إلى الرئيسية';
 
   @override
-  String get deptEmptyManagerTitle => 'No departments yet';
+  String get deptEmptyManagerTitle => 'لا توجد أقسام بعد';
 
   @override
   String get deptEmptyManagerBody =>
-      'Create departments to organize members and limit who can vote.';
+      'أنشئ أقسامًا لتنظيم الأعضاء وتحديد من يحق له التصويت.';
 
   @override
-  String get deptEmptyMemberTitle => 'No department assigned';
+  String get deptEmptyMemberTitle => 'لم يتم تعيين قسم';
 
   @override
-  String get deptEmptyMemberBody =>
-      'You are not assigned to a department in this organization.';
+  String get deptEmptyMemberBody => 'لم يتم تعيينك في أي قسم في هذه المؤسسة.';
 
   @override
-  String get deptNoMatch => 'No departments match your search.';
+  String get deptNoMatch => 'لا توجد أقسام تطابق بحثك.';
 
   @override
   String get deptLoadError =>
-      'We could not load departments. Check your connection and try again.';
+      'تعذّر تحميل الأقسام. تحقق من اتصالك وحاول مرة أخرى.';
 
   @override
-  String get deptRetry => 'Try again';
+  String get deptRetry => 'حاول مرة أخرى';
 
   @override
-  String get deptMembersUnknown => 'Members: unavailable';
+  String get deptMembersUnknown => 'الأعضاء: غير متاح';
 
   @override
-  String get deptEventsNone => 'Not used in an election yet';
+  String get deptEventsNone => 'لم يُستخدم في أي انتخاب بعد';
 
   @override
-  String get deptManageMembers => 'Manage members';
+  String get deptManageMembers => 'إدارة الأعضاء';
 
   @override
-  String get deptActions => 'Department actions';
+  String get deptActions => 'إجراءات القسم';
 
   @override
-  String get deptEdit => 'Edit details';
+  String get deptEdit => 'تعديل التفاصيل';
 
   @override
-  String get deptDelete => 'Delete department';
+  String get deptDelete => 'حذف القسم';
 
   @override
-  String get deptDeleteTitle => 'Delete department?';
+  String get deptDeleteTitle => 'حذف القسم؟';
 
   @override
   String deptDeleteBody(String name) {
-    return '\"$name\" will be permanently deleted. Members keep their records, but the department can no longer be assigned or used for voter eligibility.';
+    return 'سيتم حذف \"$name\" نهائيًا. يحتفظ الأعضاء بسجلاتهم، لكن لن يمكن تعيين هذا القسم أو استخدامه لأهلية الناخبين بعد الآن.';
   }
 
   @override
-  String get deptDeleteConfirm => 'Delete department';
+  String get deptDeleteConfirm => 'حذف القسم';
 
   @override
-  String get deptKeep => 'Keep it';
+  String get deptKeep => 'إبقاؤه';
 
   @override
-  String get deptDeleted => 'Department deleted.';
+  String get deptDeleted => 'تم حذف القسم.';
 
   @override
-  String get deptDeleteFailed =>
-      'Could not delete the department. Please try again.';
+  String get deptDeleteFailed => 'تعذّر حذف القسم. يُرجى المحاولة مرة أخرى.';
 
   @override
-  String get deptCreateHint => 'Create a group for your members';
+  String get deptCreateHint => 'أنشئ مجموعة لأعضائك';
 
   @override
   String deptCount(int n) {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '$n departments',
-      one: '1 department',
+      other: '$n أقسام',
+      one: 'قسم واحد',
     );
     return '$_temp0';
   }
@@ -1130,8 +1123,8 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '$n members',
-      one: '1 member',
+      other: '$n أعضاء',
+      one: 'عضو واحد',
     );
     return '$_temp0';
   }
@@ -1141,434 +1134,430 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: 'Used in $n elections',
-      one: 'Used in 1 election',
+      other: 'استُخدم في $n انتخابات',
+      one: 'استُخدم في انتخاب واحد',
     );
     return '$_temp0';
   }
 
   @override
-  String get inbTitle => 'Invitations';
+  String get inbTitle => 'الدعوات';
 
   @override
   String get inbSubtitle =>
-      'Review invitations to join an organization and choose how to respond.';
+      'راجع دعوات الانضمام إلى مؤسسة واختر كيف تريد الرد.';
 
   @override
   String inbPending(int n) {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '$n pending invitations',
-      one: '1 pending invitation',
+      other: '$n دعوات معلقة',
+      one: 'دعوة معلقة واحدة',
     );
     return '$_temp0';
   }
 
   @override
-  String get inbEmptyTitle => 'You are all caught up';
+  String get inbEmptyTitle => 'لا شيء بانتظارك';
 
   @override
   String get inbEmptyBody =>
-      'Organization invitations appear here. You can accept or decline each one.';
+      'تظهر دعوات المؤسسات هنا. يمكنك قبول كل دعوة أو رفضها.';
 
   @override
   String get inbLoadError =>
-      'We could not load your invitations. Check your connection and try again.';
+      'تعذّر تحميل دعواتك. تحقق من اتصالك وحاول مرة أخرى.';
 
   @override
-  String get inbRetry => 'Try again';
+  String get inbRetry => 'حاول مرة أخرى';
 
   @override
-  String get inbAccept => 'Accept invitation';
+  String get inbAccept => 'قبول الدعوة';
 
   @override
-  String get inbDecline => 'Decline';
+  String get inbDecline => 'رفض';
 
   @override
-  String get inbAcceptExpired => 'Invitation expired';
+  String get inbAcceptExpired => 'انتهت صلاحية الدعوة';
 
   @override
-  String get inbRole => 'Role';
+  String get inbRole => 'الدور';
 
   @override
   String inbExpires(String date) {
-    return 'Expires $date';
+    return 'تنتهي في $date';
   }
 
   @override
-  String get inbExpired => 'Expired';
+  String get inbExpired => 'منتهية';
 
   @override
-  String get inbNoExpiry => 'No expiry';
+  String get inbNoExpiry => 'بلا انتهاء';
 
   @override
-  String get inbDefaultOrg => 'Organization';
+  String get inbDefaultOrg => 'المؤسسة';
 
   @override
   String inbJoinLine(String org, String role) {
-    return 'Join $org as $role';
+    return 'الانضمام إلى $org بصفة $role';
   }
 
   @override
   String inbAcceptNote(String org) {
-    return 'Accepting adds $org to your organizations. You can switch workspaces at any time.';
+    return 'سيؤدي القبول إلى إضافة $org إلى مؤسساتك. يمكنك تبديل مساحات العمل في أي وقت.';
   }
 
   @override
-  String get inbDeclineTitle => 'Decline this invitation?';
+  String get inbDeclineTitle => 'رفض هذه الدعوة؟';
 
   @override
   String inbDeclineBody(String org) {
-    return 'You will not join $org. An admin can invite you again later.';
+    return 'لن تنضم إلى $org. يمكن للمسؤول دعوتك مرة أخرى لاحقًا.';
   }
 
   @override
-  String get inbKeep => 'Keep invitation';
+  String get inbKeep => 'إبقاء الدعوة';
 
   @override
-  String get inbDeclineConfirm => 'Decline';
+  String get inbDeclineConfirm => 'رفض';
 
   @override
   String inbJoined(String org) {
-    return 'You joined $org.';
+    return 'لقد انضممت إلى $org.';
   }
 
   @override
-  String get inbDeclined => 'Invitation declined.';
+  String get inbDeclined => 'تم رفض الدعوة.';
 
   @override
-  String get inbRespondFailed =>
-      'We could not complete that. Please try again.';
+  String get inbRespondFailed => 'تعذّر إكمال ذلك. يُرجى المحاولة مرة أخرى.';
 
   @override
-  String get inbHelp => 'Need help with an invitation? Contact Kivora support.';
+  String get inbHelp => 'تحتاج إلى مساعدة بشأن دعوة؟ تواصل مع دعم Kivora.';
 
   @override
-  String get ballotTitle => 'Your ballot';
+  String get ballotTitle => 'بطاقة اقتراعك';
 
   @override
-  String get ballotSelectFirst => 'Choose an option before continuing.';
+  String get ballotSelectFirst => 'اختر خيارًا قبل المتابعة.';
 
   @override
   String get ballotLoadError =>
-      'We could not load this ballot. Check your connection and try again.';
+      'تعذّر تحميل بطاقة الاقتراع. تحقق من اتصالك وحاول مرة أخرى.';
 
   @override
-  String get ballotRetry => 'Try again';
+  String get ballotRetry => 'حاول مرة أخرى';
 
   @override
-  String get ballotNotFound => 'This election could not be found.';
+  String get ballotNotFound => 'تعذّر العثور على هذا الانتخاب.';
 
   @override
-  String get ballotSignIn => 'Sign in to vote.';
+  String get ballotSignIn => 'سجّل الدخول للتصويت.';
 
   @override
-  String get ballotNoCandidates =>
-      'No candidates have been added to this election.';
+  String get ballotNoCandidates => 'لم تتم إضافة مرشحين إلى هذا الانتخاب.';
 
   @override
-  String get ballotNoOptions => 'No options have been added to this election.';
+  String get ballotNoOptions => 'لم تتم إضافة خيارات إلى هذا الانتخاب.';
 
   @override
-  String get ballotOptionsLoadError =>
-      'We could not load the choices. Try again.';
+  String get ballotOptionsLoadError => 'تعذّر تحميل الخيارات. حاول مرة أخرى.';
 
   @override
-  String get ballotYes => 'Yes';
+  String get ballotYes => 'نعم';
 
   @override
-  String get ballotYesDesc => 'In favor of this proposal';
+  String get ballotYesDesc => 'مؤيد لهذا المقترح';
 
   @override
-  String get ballotNo => 'No';
+  String get ballotNo => 'لا';
 
   @override
-  String get ballotNoDesc => 'Opposed to this proposal';
+  String get ballotNoDesc => 'معارض لهذا المقترح';
 
   @override
-  String get ballotOfficial => 'Official ballot';
+  String get ballotOfficial => 'بطاقة اقتراع رسمية';
 
   @override
   String get ballotFinality =>
-      'Your vote is final. After you confirm, you cannot change it or vote again.';
+      'صوتك نهائي. بعد التأكيد لا يمكنك تغييره أو التصويت مرة أخرى.';
 
   @override
   String ballotTimeDays(int n) {
-    return '${n}d left';
+    return 'باقي $n يوم';
   }
 
   @override
   String ballotTimeHours(int n) {
-    return '${n}h left';
+    return 'باقي $n ساعة';
   }
 
   @override
   String ballotTimeMinutes(int n) {
-    return '${n}m left';
+    return 'باقي $n دقيقة';
   }
 
   @override
-  String get ballotTimeSoon => 'Closing soon';
+  String get ballotTimeSoon => 'يُغلق قريبًا';
 
   @override
-  String get ballotTimeClosed => 'Voting closed';
+  String get ballotTimeClosed => 'أُغلق التصويت';
 
   @override
   String ballotCandidate(String name) {
-    return '$name, candidate';
+    return '$name، مرشح';
   }
 
   @override
   String ballotOption(String name) {
-    return '$name, option';
+    return '$name، خيار';
   }
 
   @override
-  String get ballotSelectedSuffix => 'selected';
+  String get ballotSelectedSuffix => 'محدد';
 
   @override
   String get ballotReceiptMissing =>
-      'We could not find your receipt yet. Try again in a moment.';
+      'لم نعثر على إيصالك بعد. حاول مرة أخرى بعد قليل.';
 
   @override
-  String get ballotYourChoice => 'Your choice';
+  String get ballotYourChoice => 'اختيارك';
 
   @override
   String ballotStepsLabel(int current, int total, String label) {
-    return '$current of $total: $label';
+    return '$current من $total: $label';
   }
 
   @override
-  String get receiptSuccess => 'Your ballot was recorded';
+  String get receiptSuccess => 'تم تسجيل بطاقة اقتراعك';
 
   @override
   String get receiptSecrecy =>
-      'This receipt confirms that your ballot was accepted. It does not reveal or encode what you chose, and it cannot prove your choice to anyone.';
+      'يؤكد هذا الإيصال أنه تم قبول بطاقة اقتراعك. لا يكشف ما اخترته ولا يتضمنه، ولا يمكنه إثبات اختيارك لأي شخص.';
 
   @override
   String get receiptKeep =>
-      'Keep your receipt ID. You can use it later to check that your ballot was recorded.';
+      'احتفظ برقم الإيصال. يمكنك استخدامه لاحقًا للتحقق من تسجيل بطاقة اقتراعك.';
 
   @override
-  String get receiptDetails => 'Receipt details';
+  String get receiptDetails => 'تفاصيل الإيصال';
 
   @override
-  String get receiptTime => 'Submitted';
+  String get receiptTime => 'وقت التقديم';
 
   @override
-  String get receiptTechnical => 'Technical details';
+  String get receiptTechnical => 'التفاصيل التقنية';
 
   @override
-  String get receiptHashLabel => 'Verification hash (SHA-256)';
+  String get receiptHashLabel => 'بصمة التحقق (SHA-256)';
 
   @override
   String receiptCopyLabel(String label) {
-    return 'Copy $label';
+    return 'نسخ $label';
   }
 
   @override
   String receiptCopied(String label) {
-    return '$label copied';
+    return 'تم نسخ $label';
   }
 
   @override
-  String get receiptVerify => 'Verify a receipt';
+  String get receiptVerify => 'التحقق من إيصال';
 
   @override
-  String get receiptClose => 'Close';
+  String get receiptClose => 'إغلاق';
 
   @override
-  String get evBack => 'Back to elections';
+  String get evBack => 'العودة إلى الانتخابات';
 
   @override
   String get evLoadError =>
-      'We could not load this election. Check your connection and try again.';
+      'تعذّر تحميل هذا الانتخاب. تحقق من اتصالك وحاول مرة أخرى.';
 
   @override
-  String get evRetry => 'Try again';
+  String get evRetry => 'حاول مرة أخرى';
 
   @override
-  String get evNotFoundTitle => 'Election not found';
+  String get evNotFoundTitle => 'الانتخاب غير موجود';
 
   @override
-  String get evNotFoundBody => 'This election does not exist or was removed.';
+  String get evNotFoundBody => 'هذا الانتخاب غير موجود أو تمت إزالته.';
 
   @override
-  String get evSignInTitle => 'Sign in required';
+  String get evSignInTitle => 'تسجيل الدخول مطلوب';
 
   @override
-  String get evSignInBody => 'Sign in to view this election.';
+  String get evSignInBody => 'سجّل الدخول لعرض هذا الانتخاب.';
 
   @override
   String get evStatusLoadError =>
-      'We could not check whether you have voted. Try again before voting.';
+      'تعذّر التحقق مما إذا كنت قد صوّتت. حاول مرة أخرى قبل التصويت.';
 
   @override
-  String get evVotedTitle => 'You voted in this election';
+  String get evVotedTitle => 'لقد صوّتت في هذا الانتخاب';
 
   @override
-  String get evVotedBody => 'Your participation was recorded.';
+  String get evVotedBody => 'تم تسجيل مشاركتك.';
 
   @override
   String get evVotedNote =>
-      'Each member can vote once, so voting again is not possible. Keep your receipt ID to check later that your ballot was recorded.';
+      'يمكن لكل عضو التصويت مرة واحدة، لذا لا يمكن التصويت مجددًا. احتفظ برقم الإيصال للتحقق لاحقًا من تسجيل بطاقة اقتراعك.';
 
   @override
-  String get evViewReceipt => 'View your receipt';
+  String get evViewReceipt => 'عرض إيصالك';
 
   @override
   String get evReceiptMissing =>
-      'We could not find your receipt yet. Try again in a moment.';
+      'لم نعثر على إيصالك بعد. حاول مرة أخرى بعد قليل.';
 
   @override
-  String get evProceed => 'Go to ballot';
+  String get evProceed => 'الانتقال إلى بطاقة الاقتراع';
 
   @override
   String evNotAccepting(String status) {
-    return 'This election is $status and is not accepting votes.';
+    return 'هذا الانتخاب $status ولا يقبل الأصوات.';
   }
 
   @override
-  String get evResultsPublishedTitle => 'Results are published';
+  String get evResultsPublishedTitle => 'النتائج منشورة';
 
   @override
   String evResultsPublishedBody(String date) {
-    return 'Voting closed $date.';
+    return 'أُغلق التصويت $date.';
   }
 
   @override
-  String get evResultsPendingTitle => 'Results are not published yet';
+  String get evResultsPendingTitle => 'لم تُنشر النتائج بعد';
 
   @override
   String evResultsPendingBody(String date) {
-    return 'Voting closed $date. Results appear here once the organization publishes them.';
+    return 'أُغلق التصويت $date. ستظهر النتائج هنا عندما تنشرها المؤسسة.';
   }
 
   @override
-  String get evResultsUnknownTitle => 'Results status unavailable';
+  String get evResultsUnknownTitle => 'حالة النتائج غير متاحة';
 
   @override
   String get evResultsUnknownBody =>
-      'We could not check whether results are published.';
+      'تعذّر التحقق مما إذا كانت النتائج منشورة.';
 
   @override
-  String get evViewResults => 'View results';
+  String get evViewResults => 'عرض النتائج';
 
   @override
-  String get evDetails => 'Election details';
+  String get evDetails => 'تفاصيل الانتخاب';
 
   @override
-  String get evType => 'Voting type';
+  String get evType => 'نوع التصويت';
 
   @override
-  String get evWho => 'Who can vote';
+  String get evWho => 'من يحق له التصويت';
 
   @override
-  String get evOpens => 'Opens';
+  String get evOpens => 'يفتح';
 
   @override
-  String get evOpened => 'Opened';
+  String get evOpened => 'فُتح';
 
   @override
-  String get evCloses => 'Closes';
+  String get evCloses => 'يُغلق';
 
   @override
-  String get evClosed => 'Closed';
+  String get evClosed => 'أُغلق';
 
   @override
-  String get evIdentifiableTitle => 'Identifiable ballot.';
+  String get evIdentifiableTitle => 'بطاقة اقتراع معروفة الهوية.';
 
   @override
   String get evIdentifiableBody =>
-      'Votes in this election are recorded together with the voter\'s identity.';
+      'تُسجَّل الأصوات في هذا الانتخاب مع هوية الناخب.';
 
   @override
-  String get evMonitor => 'Monitor turnout';
+  String get evMonitor => 'متابعة نسبة المشاركة';
 
   @override
-  String get evEditBuilder => 'Edit in builder';
+  String get evEditBuilder => 'التعديل في المنشئ';
 
   @override
-  String get evChecking => 'Checking your status';
+  String get evChecking => 'جارٍ التحقق من حالتك';
 
   @override
-  String get resTitle => 'Election results';
+  String get resTitle => 'نتائج الانتخاب';
 
   @override
-  String get resBack => 'Back to election';
+  String get resBack => 'العودة إلى الانتخاب';
 
   @override
-  String get resPublished => 'Published';
+  String get resPublished => 'منشورة';
 
   @override
-  String get resNotPublished => 'Not published';
+  String get resNotPublished => 'غير منشورة';
 
   @override
-  String get resSubtitle => 'Counted by the server after voting closed.';
+  String get resSubtitle => 'احتسبها الخادم بعد إغلاق التصويت.';
 
   @override
   String get resAdminOnly =>
-      'Only organization admins can see these results until they are published.';
+      'لا يمكن لغير مسؤولي المؤسسة رؤية هذه النتائج قبل نشرها.';
 
   @override
   String get resFootnote =>
-      'Percentages are of ballots counted. Members can see results only after an admin publishes them.';
+      'النسب محسوبة من بطاقات الاقتراع المحتسبة. لا يرى الأعضاء النتائج إلا بعد أن ينشرها المسؤول.';
 
   @override
-  String get resNotAvailableTitle => 'Results are not available';
+  String get resNotAvailableTitle => 'النتائج غير متاحة';
 
   @override
-  String get resNotAvailableBody =>
-      'Results appear here after the organization publishes them.';
+  String get resNotAvailableBody => 'تظهر النتائج هنا بعد أن تنشرها المؤسسة.';
 
   @override
-  String get resLoadErrorTitle => 'We could not load the results';
+  String get resLoadErrorTitle => 'تعذّر تحميل النتائج';
 
   @override
-  String get resLoadErrorBody => 'Check your connection and try again.';
+  String get resLoadErrorBody => 'تحقق من اتصالك وحاول مرة أخرى.';
 
   @override
-  String get resRetry => 'Try again';
+  String get resRetry => 'حاول مرة أخرى';
 
   @override
-  String get resNoneTitle => 'No results yet';
+  String get resNoneTitle => 'لا توجد نتائج بعد';
 
   @override
-  String get resNoneBody => 'Results have not been calculated yet.';
+  String get resNoneBody => 'لم تُحتسب النتائج بعد.';
 
   @override
-  String get resNoBallots => 'No ballots were recorded for this election.';
+  String get resNoBallots => 'لم تُسجَّل أي بطاقات اقتراع في هذا الانتخاب.';
 
   @override
-  String get resBallots => 'Ballots counted';
+  String get resBallots => 'بطاقات الاقتراع المحتسبة';
 
   @override
-  String get resEligible => 'Eligible voters';
+  String get resEligible => 'الناخبون المؤهلون';
 
   @override
-  String get resTurnout => 'Turnout';
+  String get resTurnout => 'نسبة المشاركة';
 
   @override
-  String get resSplit => 'Vote split';
+  String get resSplit => 'توزيع الأصوات';
 
   @override
-  String get resTie => 'It\'s a tie';
+  String get resTie => 'تعادل';
 
   @override
   String resTieBody(String names, int votes, String percent) {
     String _temp0 = intl.Intl.pluralLogic(
       votes,
       locale: localeName,
-      other: '$votes votes',
-      one: '1 vote',
+      other: '$votes أصوات',
+      one: 'صوت واحد',
     );
-    return '$names each received $_temp0 ($percent%).';
+    return 'حصل كل من $names على $_temp0 ($percent%).';
   }
 
   @override
   String resWins(String name) {
-    return '$name wins';
+    return 'فاز $name';
   }
 
   @override
@@ -1576,8 +1565,8 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       votes,
       locale: localeName,
-      other: '$votes votes',
-      one: '1 vote',
+      other: '$votes أصوات',
+      one: 'صوت واحد',
     );
     return '$_temp0 ($percent%).';
   }
@@ -1587,78 +1576,78 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       votes,
       locale: localeName,
-      other: '$votes votes',
-      one: '1 vote',
+      other: '$votes أصوات',
+      one: 'صوت واحد',
     );
     return '$_temp0';
   }
 
   @override
-  String get resRecalculate => 'Recalculate results';
+  String get resRecalculate => 'إعادة احتساب النتائج';
 
   @override
-  String get resWorking => 'Working...';
+  String get resWorking => 'جارٍ العمل...';
 
   @override
-  String get resPublish => 'Publish results to members';
+  String get resPublish => 'نشر النتائج للأعضاء';
 
   @override
-  String get resCalculate => 'Calculate results';
+  String get resCalculate => 'احتساب النتائج';
 
   @override
-  String get resExport => 'Export CSV';
+  String get resExport => 'تصدير CSV';
 
   @override
-  String get resExportTitle => 'Export results (CSV)';
+  String get resExportTitle => 'تصدير النتائج (CSV)';
 
   @override
-  String get resCopyCsv => 'Copy CSV';
+  String get resCopyCsv => 'نسخ CSV';
 
   @override
-  String get resCsvCopied => 'CSV copied';
+  String get resCsvCopied => 'تم نسخ CSV';
 
   @override
-  String get resClose => 'Close';
+  String get resClose => 'إغلاق';
 
   @override
-  String get resActionFailed => 'That did not work. Please try again.';
+  String get resActionFailed => 'لم تنجح العملية. يُرجى المحاولة مرة أخرى.';
 
   @override
-  String get resPublishConfirmTitle => 'Publish these results?';
+  String get resPublishConfirmTitle => 'نشر هذه النتائج؟';
 
   @override
   String get resPublishConfirmBody =>
-      'All eligible members will be able to see the results. You can still recalculate them afterwards.';
+      'سيتمكن جميع الأعضاء المؤهلين من رؤية النتائج. يمكنك إعادة احتسابها لاحقًا.';
 
   @override
-  String get resPublishConfirm => 'Publish';
+  String get resPublishConfirm => 'نشر';
 
   @override
-  String get resCancel => 'Cancel';
+  String get resCancel => 'إلغاء';
 
   @override
-  String get resEventFallback => 'Election';
+  String get resEventFallback => 'الانتخاب';
 
   @override
-  String get monTitle => 'Live turnout';
+  String get monTitle => 'نسبة المشاركة المباشرة';
 
   @override
-  String get monBack => 'Back';
+  String get monBack => 'رجوع';
 
   @override
-  String get monLive => 'Live';
+  String get monLive => 'مباشر';
 
   @override
   String monUpdated(int s) {
-    return 'Live · updated ${s}s ago';
+    return 'مباشر · تم التحديث قبل $s ث';
   }
 
   @override
-  String get monRefresh => 'Refresh';
+  String get monRefresh => 'تحديث';
 
   @override
   String monClosesIn(String when) {
-    return 'Closes in $when';
+    return 'يُغلق خلال $when';
   }
 
   @override
@@ -1666,14 +1655,14 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       d,
       locale: localeName,
-      other: '$d days',
-      one: '1 day',
+      other: '$d أيام',
+      one: 'يوم',
     );
     String _temp1 = intl.Intl.pluralLogic(
       h,
       locale: localeName,
-      other: '$h hours',
-      one: '1 hour',
+      other: '$h ساعات',
+      one: 'ساعة',
     );
     return '$_temp0 $_temp1';
   }
@@ -1683,271 +1672,306 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       h,
       locale: localeName,
-      other: '$h hours',
-      one: '1 hour',
+      other: '$h ساعات',
+      one: 'ساعة',
     );
-    return '$_temp0 $m min';
+    return '$_temp0 $m د';
   }
 
   @override
   String monRemainMin(int m) {
-    return '$m min';
+    return '$m د';
   }
 
   @override
   String get monPrivacy =>
-      'Counts only. No voter identities or ballot selections are shown here. Results stay hidden until the election is closed and published.';
+      'أعداد فقط. لا تُعرض هنا هويات الناخبين ولا اختياراتهم. تبقى النتائج مخفية حتى يُغلق الانتخاب وتُنشر النتائج.';
 
   @override
   String get monLoadError =>
-      'We could not load turnout. Check your connection and try again.';
+      'تعذّر تحميل نسبة المشاركة. تحقق من اتصالك وحاول مرة أخرى.';
 
   @override
-  String get monRetry => 'Try again';
+  String get monRetry => 'حاول مرة أخرى';
 
   @override
   String get monRefreshIssue =>
-      'The latest refresh failed. Showing the last numbers we loaded.';
+      'فشل آخر تحديث. تُعرض آخر الأرقام التي تم تحميلها.';
 
   @override
-  String get monTurnoutLabel => 'Eligible members who participated';
+  String get monTurnoutLabel => 'الأعضاء المؤهلون الذين شاركوا';
 
   @override
   String monOfEligible(int voted, int eligible) {
-    return '$voted of $eligible';
+    return '$voted من $eligible';
   }
 
   @override
-  String get monEligible => 'Eligible';
+  String get monEligible => 'المؤهلون';
 
   @override
-  String get monEligibleCap => 'All active members';
+  String get monEligibleCap => 'جميع الأعضاء النشطين';
 
   @override
-  String get monVoted => 'Voted';
+  String get monVoted => 'صوّتوا';
 
   @override
-  String get monVotedCap => 'Ballots submitted';
+  String get monVotedCap => 'بطاقات الاقتراع المقدّمة';
 
   @override
-  String get monNotYet => 'Not yet';
+  String get monNotYet => 'لم يصوّتوا بعد';
 
   @override
-  String get monNotYetCap => 'Members remaining';
+  String get monNotYetCap => 'الأعضاء المتبقون';
 
   @override
-  String get monChartTitle => 'Participation over time';
+  String get monChartTitle => 'المشاركة عبر الزمن';
 
   @override
-  String get monChartSub =>
-      'Cumulative participation since the election opened';
+  String get monChartSub => 'المشاركة التراكمية منذ فتح الانتخاب';
 
   @override
   String get monChartNone =>
-      'Not enough data yet to chart participation over time.';
+      'لا توجد بيانات كافية بعد لرسم المشاركة عبر الزمن.';
 
   @override
   String monChartTotal(int n) {
-    return '$n voted';
+    return 'صوّت $n';
   }
 
   @override
-  String get monChartStart => 'Opened';
+  String get monChartStart => 'فُتح';
 
   @override
-  String get monChartNow => 'Now';
+  String get monChartNow => 'الآن';
 
   @override
-  String get monDeptTitle => 'Turnout by department';
+  String get monDeptTitle => 'المشاركة حسب القسم';
 
   @override
-  String get monDeptNone => 'No department data for this election.';
+  String get monDeptNone => 'لا توجد بيانات أقسام لهذا الانتخاب.';
 
   @override
   String get monDeptNote =>
-      'Groups with fewer than 5 eligible members are combined to protect privacy.';
+      'تُدمج المجموعات التي تضم أقل من 5 أعضاء مؤهلين لحماية الخصوصية.';
 
   @override
   String monDeptRow(int participated, int eligible, String percent) {
-    return '$participated of $eligible · $percent%';
+    return '$participated من $eligible · $percent%';
   }
 
   @override
-  String get monDeptFallback => 'Department';
+  String get monDeptFallback => 'القسم';
 
   @override
-  String get monDetails => 'Election details';
+  String get monDetails => 'تفاصيل الانتخاب';
 
   @override
-  String get monWindow => 'Voting window';
+  String get monWindow => 'فترة التصويت';
 
   @override
-  String get monBallotType => 'Ballot type';
+  String get monBallotType => 'نوع بطاقة الاقتراع';
 
   @override
-  String get monAnonymous => 'Anonymous';
+  String get monAnonymous => 'مجهولة الهوية';
 
   @override
-  String get monIdentifiable => 'Identifiable';
+  String get monIdentifiable => 'معروفة الهوية';
 
   @override
-  String get monEligibility => 'Who can vote';
+  String get monEligibility => 'من يحق له التصويت';
 
   @override
-  String get monVotingType => 'Voting type';
+  String get monVotingType => 'نوع التصويت';
 
   @override
-  String get monBoostTitle => 'Boost turnout';
+  String get monBoostTitle => 'زيادة المشاركة';
 
   @override
   String get monBoostBody =>
-      'Remind members who have not voted. Reminders go to non-voters automatically; you will not see who has or has not voted.';
+      'ذكّر الأعضاء الذين لم يصوّتوا. تُرسل التذكيرات تلقائيًا إلى من لم يصوّت؛ ولن ترى من صوّت ومن لم يصوّت.';
 
   @override
-  String get monRemind => 'Remind non-voters';
+  String get monRemind => 'تذكير من لم يصوّت';
 
   @override
-  String get monSending => 'Sending...';
+  String get monSending => 'جارٍ الإرسال...';
 
   @override
-  String get monRemindNone => 'Everyone eligible has already voted.';
+  String get monRemindNone => 'صوّت جميع المؤهلين بالفعل.';
 
   @override
   String monRemindDone(int n) {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: 'Reminder sent to $n non-voters.',
-      one: 'Reminder sent to 1 non-voter.',
+      other: 'تم إرسال تذكير إلى $n ناخبين لم يصوّتوا.',
+      one: 'تم إرسال تذكير إلى ناخب واحد لم يصوّت.',
     );
     return '$_temp0';
   }
 
   @override
   String get monRemindFailed =>
-      'We could not send reminders. Please try again.';
+      'تعذّر إرسال التذكيرات. يُرجى المحاولة مرة أخرى.';
 
   @override
-  String get monPrivateNote => 'Participation stays private';
+  String get monPrivateNote => 'تبقى المشاركة خاصة';
 
   @override
-  String get monCloseTitle => 'Close voting early';
+  String get monCloseTitle => 'إغلاق التصويت مبكرًا';
 
   @override
   String get monCloseNote =>
-      'Closing is final. You may need to sign in again if your last sign-in was over 15 minutes ago. Results stay hidden until you calculate and publish them.';
+      'الإغلاق نهائي. قد تحتاج إلى تسجيل الدخول مرة أخرى إذا مرّ على آخر تسجيل دخول أكثر من 15 دقيقة. تبقى النتائج مخفية حتى تحتسبها وتنشرها.';
 
   @override
-  String get monCloseButton => 'Close voting now';
+  String get monCloseButton => 'إغلاق التصويت الآن';
 
   @override
-  String get monCloseDialogTitle => 'Close voting now?';
+  String get monCloseDialogTitle => 'إغلاق التصويت الآن؟';
 
   @override
   String get monCloseDialogBody =>
-      'Closing is final. Members will no longer be able to vote, and this cannot be undone. Results stay hidden until you calculate and publish them.';
+      'الإغلاق نهائي. لن يتمكن الأعضاء من التصويت بعد الآن، ولا يمكن التراجع عن ذلك. تبقى النتائج مخفية حتى تحتسبها وتنشرها.';
 
   @override
-  String get monCloseConfirm => 'Close voting';
+  String get monCloseConfirm => 'إغلاق التصويت';
 
   @override
-  String get monCancel => 'Cancel';
+  String get monCancel => 'إلغاء';
 
   @override
-  String get monClosed => 'Voting closed.';
+  String get monClosed => 'تم إغلاق التصويت.';
 
   @override
-  String get monCloseFailed => 'We could not close voting. Please try again.';
+  String get monCloseFailed => 'تعذّر إغلاق التصويت. يُرجى المحاولة مرة أخرى.';
 
   @override
   String get monReauth =>
-      'For security, closing an election requires you to have signed in within the last 15 minutes. Please verify your identity to continue.';
+      'للأمان، يتطلب إغلاق الانتخاب أن تكون قد سجّلت الدخول خلال آخر 15 دقيقة. يُرجى التحقق من هويتك للمتابعة.';
 
   @override
-  String get calTitle => 'Election calendar';
+  String get calTitle => 'تقويم الانتخابات';
 
   @override
-  String get calAgendaView => 'Agenda view';
+  String get calAgendaView => 'عرض القائمة';
 
   @override
-  String get calCalendarView => 'Calendar view';
+  String get calCalendarView => 'عرض التقويم';
 
   @override
   String get calLoadError =>
-      'We could not load the calendar. Check your connection and try again.';
+      'تعذّر تحميل التقويم. تحقق من اتصالك وحاول مرة أخرى.';
 
   @override
-  String get calRetry => 'Try again';
+  String get calRetry => 'حاول مرة أخرى';
 
   @override
-  String get calAllOrgs => 'All organizations';
+  String get calAllOrgs => 'جميع المؤسسات';
 
   @override
-  String get calMonth => 'Month';
+  String get calMonth => 'شهر';
 
   @override
-  String get calWeek => 'Week';
+  String get calWeek => 'أسبوع';
 
   @override
-  String get calNoneTitle => 'No elections to show';
+  String get calNoneTitle => 'لا توجد انتخابات للعرض';
 
   @override
-  String get calNoneBody => 'There are no elections in your organizations yet.';
+  String get calNoneBody => 'لا توجد انتخابات في مؤسساتك بعد.';
 
   @override
-  String get calNoDayTitle => 'No elections on this day';
+  String get calNoDayTitle => 'لا توجد انتخابات في هذا اليوم';
 
   @override
-  String get calNoDayBody => 'Pick another date to see what is scheduled.';
+  String get calNoDayBody => 'اختر تاريخًا آخر لمعرفة ما هو مجدول.';
 
   @override
   String calCount(int n) {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '$n elections',
-      one: '1 election',
-      zero: 'No elections',
+      other: '$n انتخابات',
+      one: 'انتخاب واحد',
+      zero: 'لا توجد انتخابات',
     );
     return '$_temp0';
   }
 
   @override
-  String get calDetails => 'Details';
+  String get calDetails => 'التفاصيل';
 
   @override
-  String get calAdd => 'Add to calendar';
+  String get calAdd => 'إضافة إلى التقويم';
 
   @override
   String calRange(String start, String end) {
-    return '$start to $end';
+    return 'من $start إلى $end';
   }
 
   @override
-  String get authOr => 'OR';
+  String get authOr => 'أو';
 
   @override
-  String get authNewUser => 'New here?';
+  String get authNewUser => 'جديد هنا؟';
 
   @override
-  String get authHaveAccount => 'Already have an account?';
+  String get authHaveAccount => 'لديك حساب بالفعل؟';
 
   @override
-  String get authSignIn => 'Sign in';
+  String get authSignIn => 'تسجيل الدخول';
 
   @override
-  String get authRemembered => 'Remember your password?';
+  String get authRemembered => 'تذكرت كلمة المرور؟';
 
   @override
-  String get authShowPassword => 'Show password';
+  String get authShowPassword => 'إظهار كلمة المرور';
 
   @override
-  String get authHidePassword => 'Hide password';
+  String get authHidePassword => 'إخفاء كلمة المرور';
 
   @override
-  String get authUnexpectedError => 'Something went wrong. Please try again.';
+  String get authUnexpectedError => 'حدث خطأ ما. يُرجى المحاولة مرة أخرى.';
 
   @override
   String get authMfaUnsupported =>
-      'This account\'s second sign-in step is not supported by this app yet. Please contact support.';
+      'خطوة تسجيل الدخول الثانية لهذا الحساب غير مدعومة في هذا التطبيق بعد. يُرجى التواصل مع الدعم.';
+
+  @override
+  String get statusActive => 'نشط';
+
+  @override
+  String get statusScheduled => 'مجدول';
+
+  @override
+  String get statusClosed => 'مغلق';
+
+  @override
+  String get statusArchived => 'مؤرشف';
+
+  @override
+  String get statusCancelled => 'ملغى';
+
+  @override
+  String get statusDraft => 'مسودة';
+
+  @override
+  String get statusUnknown => 'غير معروف';
+
+  @override
+  String get privacyAnonymous => 'مجهولة الهوية';
+
+  @override
+  String get privacyIdentifiable => 'معروفة الهوية';
+
+  @override
+  String get roleOwner => 'مالك';
+
+  @override
+  String get roleAdmin => 'مسؤول';
+
+  @override
+  String get roleMember => 'عضو';
 }

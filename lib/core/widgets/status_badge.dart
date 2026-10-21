@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../../l10n/app_localizations.dart';
 import '../theme/kivora_colors.dart';
 
 enum BadgeType { status, privacy, role }
@@ -7,6 +8,23 @@ enum BadgeType { status, privacy, role }
 /// Semantic tone. Colors are resolved at build time from [KivoraColors] so each
 /// tone meets contrast in both light and dark mode (see docs/design/contrast_check.py).
 enum BadgeTone { success, accent, neutral, error, warning, identifiable }
+
+/// Which translated word a badge shows. Resolved at build time so it follows
+/// the app language; unknown event statuses show their own text instead.
+enum BadgeWord {
+  active,
+  scheduled,
+  closed,
+  archived,
+  cancelled,
+  draft,
+  unknown,
+  anonymous,
+  identifiable,
+  owner,
+  admin,
+  member,
+}
 
 class StatusBadge extends StatelessWidget {
   /// Legacy constructor with explicit colors (kept for existing call sites).
@@ -16,11 +34,13 @@ class StatusBadge extends StatelessWidget {
     required Color this.backgroundColor,
     required Color this.textColor,
     this.icon,
-  }) : tone = null;
+  })  : tone = null,
+        word = null;
 
   const StatusBadge._tone({
     required this.label,
     required BadgeTone this.tone,
+    this.word,
     this.icon,
   })  : backgroundColor = null,
         textColor = null;
@@ -29,6 +49,7 @@ class StatusBadge extends StatelessWidget {
   final Color? backgroundColor;
   final Color? textColor;
   final BadgeTone? tone;
+  final BadgeWord? word;
   final IconData? icon;
 
   /// Event lifecycle badge. An unrecognized status shows its own text with a
@@ -38,25 +59,44 @@ class StatusBadge extends StatelessWidget {
     switch (clean) {
       case 'ACTIVE':
         return const StatusBadge._tone(
-            label: 'ACTIVE', tone: BadgeTone.success, icon: Icons.play_circle_fill_rounded);
+            label: 'ACTIVE',
+            word: BadgeWord.active,
+            tone: BadgeTone.success,
+            icon: Icons.play_circle_fill_rounded);
       case 'SCHEDULED':
         return const StatusBadge._tone(
-            label: 'SCHEDULED', tone: BadgeTone.accent, icon: Icons.event_rounded);
+            label: 'SCHEDULED',
+            word: BadgeWord.scheduled,
+            tone: BadgeTone.accent,
+            icon: Icons.event_rounded);
       case 'CLOSED':
         return const StatusBadge._tone(
-            label: 'CLOSED', tone: BadgeTone.neutral, icon: Icons.lock_clock_rounded);
+            label: 'CLOSED',
+            word: BadgeWord.closed,
+            tone: BadgeTone.neutral,
+            icon: Icons.lock_clock_rounded);
       case 'ARCHIVED':
         return const StatusBadge._tone(
-            label: 'ARCHIVED', tone: BadgeTone.neutral, icon: Icons.inventory_2_outlined);
+            label: 'ARCHIVED',
+            word: BadgeWord.archived,
+            tone: BadgeTone.neutral,
+            icon: Icons.inventory_2_outlined);
       case 'CANCELLED':
         return const StatusBadge._tone(
-            label: 'CANCELLED', tone: BadgeTone.error, icon: Icons.cancel_rounded);
+            label: 'CANCELLED',
+            word: BadgeWord.cancelled,
+            tone: BadgeTone.error,
+            icon: Icons.cancel_rounded);
       case 'DRAFT':
         return const StatusBadge._tone(
-            label: 'DRAFT', tone: BadgeTone.warning, icon: Icons.edit_note_rounded);
+            label: 'DRAFT',
+            word: BadgeWord.draft,
+            tone: BadgeTone.warning,
+            icon: Icons.edit_note_rounded);
       default:
         return StatusBadge._tone(
             label: clean.isEmpty ? 'UNKNOWN' : clean,
+            word: clean.isEmpty ? BadgeWord.unknown : null,
             tone: BadgeTone.neutral,
             icon: Icons.help_outline_rounded);
     }
@@ -66,26 +106,37 @@ class StatusBadge extends StatelessWidget {
     if (privacyMode.trim().toUpperCase() == 'IDENTIFIABLE') {
       return const StatusBadge._tone(
           label: 'IDENTIFIABLE',
+          word: BadgeWord.identifiable,
           tone: BadgeTone.identifiable,
           icon: Icons.account_circle_rounded);
     }
     return const StatusBadge._tone(
-        label: 'ANONYMOUS', tone: BadgeTone.success, icon: Icons.visibility_off_rounded);
+        label: 'ANONYMOUS',
+        word: BadgeWord.anonymous,
+        tone: BadgeTone.success,
+        icon: Icons.visibility_off_rounded);
   }
 
   factory StatusBadge.role(String role) {
     switch (role.trim().toLowerCase()) {
       case 'owner':
         return const StatusBadge._tone(
-            label: 'OWNER', tone: BadgeTone.warning, icon: Icons.stars_rounded);
+            label: 'OWNER',
+            word: BadgeWord.owner,
+            tone: BadgeTone.warning,
+            icon: Icons.stars_rounded);
       case 'admin':
         return const StatusBadge._tone(
             label: 'ADMIN',
+            word: BadgeWord.admin,
             tone: BadgeTone.accent,
             icon: Icons.admin_panel_settings_rounded);
       default:
         return const StatusBadge._tone(
-            label: 'MEMBER', tone: BadgeTone.neutral, icon: Icons.person_rounded);
+            label: 'MEMBER',
+            word: BadgeWord.member,
+            tone: BadgeTone.neutral,
+            icon: Icons.person_rounded);
     }
   }
 
@@ -110,6 +161,25 @@ class StatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final kc = KivoraColors.of(context);
     final fg = textColor ?? _toneColor(tone!, kc);
+    // Falls back to the English label when no localizations are mounted.
+    final l10n = Localizations.of<AppLocalizations>(context, AppLocalizations);
+    final text = l10n == null
+        ? label
+        : switch (word) {
+            BadgeWord.active => l10n.statusActive,
+            BadgeWord.scheduled => l10n.statusScheduled,
+            BadgeWord.closed => l10n.statusClosed,
+            BadgeWord.archived => l10n.statusArchived,
+            BadgeWord.cancelled => l10n.statusCancelled,
+            BadgeWord.draft => l10n.statusDraft,
+            BadgeWord.unknown => l10n.statusUnknown,
+            BadgeWord.anonymous => l10n.privacyAnonymous,
+            BadgeWord.identifiable => l10n.privacyIdentifiable,
+            BadgeWord.owner => l10n.roleOwner,
+            BadgeWord.admin => l10n.roleAdmin,
+            BadgeWord.member => l10n.roleMember,
+            null => label,
+          };
     final bg = backgroundColor ?? fg.withValues(alpha: kc.isDark ? 0.16 : 0.10);
 
     return Container(
@@ -132,7 +202,7 @@ class StatusBadge extends StatelessWidget {
               const SizedBox(width: 4),
             ],
             Text(
-              label,
+              text,
               maxLines: 1,
               style: TextStyle(
                 fontSize: 12,

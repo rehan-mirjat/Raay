@@ -1951,4 +1951,40 @@ class AppLocalizationsSd extends AppLocalizations {
   @override
   String get authMfaUnsupported =>
       'This account\'s second sign-in step is not supported by this app yet. Please contact support.';
+
+  @override
+  String get statusActive => 'ACTIVE';
+
+  @override
+  String get statusScheduled => 'SCHEDULED';
+
+  @override
+  String get statusClosed => 'CLOSED';
+
+  @override
+  String get statusArchived => 'ARCHIVED';
+
+  @override
+  String get statusCancelled => 'CANCELLED';
+
+  @override
+  String get statusDraft => 'DRAFT';
+
+  @override
+  String get statusUnknown => 'UNKNOWN';
+
+  @override
+  String get privacyAnonymous => 'ANONYMOUS';
+
+  @override
+  String get privacyIdentifiable => 'IDENTIFIABLE';
+
+  @override
+  String get roleOwner => 'OWNER';
+
+  @override
+  String get roleAdmin => 'ADMIN';
+
+  @override
+  String get roleMember => 'MEMBER';
 }

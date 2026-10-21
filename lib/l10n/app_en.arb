@@ -1005,5 +1005,17 @@
   "authShowPassword": "Show password",
   "authHidePassword": "Hide password",
   "authUnexpectedError": "Something went wrong. Please try again.",
-  "authMfaUnsupported": "This account's second sign-in step is not supported by this app yet. Please contact support."
+  "authMfaUnsupported": "This account's second sign-in step is not supported by this app yet. Please contact support.",
+  "statusActive": "ACTIVE",
+  "statusScheduled": "SCHEDULED",
+  "statusClosed": "CLOSED",
+  "statusArchived": "ARCHIVED",
+  "statusCancelled": "CANCELLED",
+  "statusDraft": "DRAFT",
+  "statusUnknown": "UNKNOWN",
+  "privacyAnonymous": "ANONYMOUS",
+  "privacyIdentifiable": "IDENTIFIABLE",
+  "roleOwner": "OWNER",
+  "roleAdmin": "ADMIN",
+  "roleMember": "MEMBER"
 }

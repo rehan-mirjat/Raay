@@ -678,12 +678,6 @@ class _MobileOnboardingScreenState
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
           ),
 
-          const SizedBox(height: 16),
-          Text(
-            'By continuing, you agree to our Terms and Privacy Policy.',
-            style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
-            textAlign: TextAlign.center,
-          ),
           const SizedBox(height: 12),
         ],
       ),

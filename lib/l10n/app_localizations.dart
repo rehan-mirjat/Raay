@@ -3413,6 +3413,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This account\'s second sign-in step is not supported by this app yet. Please contact support.'**
   String get authMfaUnsupported;
+
+  /// No description provided for @statusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'ACTIVE'**
+  String get statusActive;
+
+  /// No description provided for @statusScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'SCHEDULED'**
+  String get statusScheduled;
+
+  /// No description provided for @statusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'CLOSED'**
+  String get statusClosed;
+
+  /// No description provided for @statusArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'ARCHIVED'**
+  String get statusArchived;
+
+  /// No description provided for @statusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'CANCELLED'**
+  String get statusCancelled;
+
+  /// No description provided for @statusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'DRAFT'**
+  String get statusDraft;
+
+  /// No description provided for @statusUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'UNKNOWN'**
+  String get statusUnknown;
+
+  /// No description provided for @privacyAnonymous.
+  ///
+  /// In en, this message translates to:
+  /// **'ANONYMOUS'**
+  String get privacyAnonymous;
+
+  /// No description provided for @privacyIdentifiable.
+  ///
+  /// In en, this message translates to:
+  /// **'IDENTIFIABLE'**
+  String get privacyIdentifiable;
+
+  /// No description provided for @roleOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'OWNER'**
+  String get roleOwner;
+
+  /// No description provided for @roleAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'ADMIN'**
+  String get roleAdmin;
+
+  /// No description provided for @roleMember.
+  ///
+  /// In en, this message translates to:
+  /// **'MEMBER'**
+  String get roleMember;
 }
 
 class _AppLocalizationsDelegate
