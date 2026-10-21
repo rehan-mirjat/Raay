@@ -11,6 +11,8 @@ import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../data/organization_repository.dart';
+import '../../../core/theme/kivora_colors.dart';
+import '../../../core/widgets/status_badge.dart';
 import '../domain/organization_enums.dart';
 import 'providers/organization_providers.dart';
 
@@ -211,7 +213,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
         loading: () => const LoadingView(message: 'Loading organization…'),
         error: (error, _) => ErrorView(
           type: ErrorViewType.generic,
-          message: 'Could not load organization access: $error',
+          message: 'We could not load this organization. Check your connection and try again.',
           onRetry: () => ref.invalidate(activeOrganizationContextProvider),
         ),
         data: (active) {
@@ -257,7 +259,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
                     loading: () => const LoadingView(),
                     error: (error, _) => ErrorView(
                       type: ErrorViewType.generic,
-                      message: 'Could not load joining codes: $error',
+                      message: 'We could not load joining codes. Check your connection and try again.',
                       onRetry: () => ref
                           .invalidate(organizationJoiningCodesProvider(orgId)),
                     ),
@@ -370,20 +372,57 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
         ? 'Expiry unavailable'
         : 'Expires ${_dateFormat.format(expiry.toLocal())}';
     final active = rawStatus == 'active';
-    return Card(
+    final kc = KivoraColors.of(context);
+    final Color tone = switch (status) {
+      'active' => kc.successText,
+      'expired' || 'exhausted' => kc.warningText,
+      'revoked' => kc.errorText,
+      _ => kc.textSecondary,
+    };
+    return Container(
       margin: const EdgeInsets.only(bottom: 10),
-      child: ListTile(
-        leading: const CircleAvatar(child: Icon(Icons.key_outlined)),
-        title: Text('Code • ${code['displayId'] ?? '••••••••'}'),
-        subtitle: Text(
-            '$status • $uses${maxUses == 0 ? '' : ' of $maxUses'} uses\n$expiryLabel'),
-        isThreeLine: true,
-        trailing: active
-            ? TextButton(
-                onPressed: () => _revoke(orgId, code),
-                child: const Text('Revoke'),
-              )
-            : null,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: kc.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: kc.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.key_outlined, color: kc.accentText),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text('Code • ${code['displayId'] ?? '••••••••'}',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: kc.textPrimary)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Wrap(spacing: 8, runSpacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: [
+            StatusBadge(
+              label: status.toUpperCase(),
+              backgroundColor: tone.withValues(alpha: kc.isDark ? 0.16 : 0.10),
+              textColor: tone,
+            ),
+            Text('$uses${maxUses == 0 ? '' : ' of $maxUses'} uses',
+                style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+          ]),
+          const SizedBox(height: 6),
+          Text(expiryLabel, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+          if (active) ...[
+            const SizedBox(height: 8),
+            TextButton(
+              style: TextButton.styleFrom(
+                  minimumSize: const Size(48, 48), foregroundColor: kc.errorText),
+              onPressed: () => _revoke(orgId, code),
+              child: const Text('Revoke code'),
+            ),
+          ],
+        ],
       ),
     );
   }

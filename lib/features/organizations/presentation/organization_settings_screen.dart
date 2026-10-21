@@ -112,22 +112,13 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // 1. Back Navigation Link
-                    InkWell(
-                      onTap: () => context.go('/orgs/dashboard'),
-                      borderRadius: BorderRadius.circular(6),
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 2),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.arrow_back_rounded, size: 16, color: AppTheme.primaryBlue),
-                            SizedBox(width: 6),
-                            Text(
-                              'Organization dashboard',
-                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue),
-                            ),
-                          ],
-                        ),
+                    Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: TextButton.icon(
+                        style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                        onPressed: () => context.go('/home'),
+                        icon: const Icon(Icons.arrow_back_rounded, size: 18),
+                        label: const Text('Overview'),
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -248,8 +239,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Organization name *', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context))),
-              Text('${_name.text.length} / 100', style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
+              Expanded(child: Text('Organization name *', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)))),
+              const SizedBox(width: 8),
+              Text('${_name.text.length} / 100', style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
             ],
           ),
           const SizedBox(height: 6),
@@ -272,8 +264,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Description', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context))),
-              Text('${_description.text.length} / 500', style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
+              Expanded(child: Text('Description', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)))),
+              const SizedBox(width: 8),
+              Text('${_description.text.length} / 500', style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
             ],
           ),
           const SizedBox(height: 6),
@@ -332,8 +325,10 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            spacing: 12,
+            runSpacing: 4,
             children: [
               Text(
                 'Organization logo',
@@ -342,9 +337,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               Text(
                 hasLogo ? 'Logo active' : 'No logo uploaded',
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: hasLogo ? AppTheme.success : KivoraColors.textSecondaryOf(context),
+                  color: hasLogo ? KivoraColors.of(context).successText : KivoraColors.textSecondaryOf(context),
                 ),
               ),
             ],
@@ -562,15 +557,19 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                 Divider(height: 1, color: KivoraColors.borderOf(context)),
                 const SizedBox(height: 16),
 
-                ElevatedButton.icon(
-                  onPressed: null,
-                  icon: const Text('View events', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white)),
-                  label: const Icon(Icons.arrow_forward_rounded, size: 16, color: Colors.white),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryBlue,
-                    disabledBackgroundColor: AppTheme.primaryBlue,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                // Static preview of a button, not a control.
+                ExcludeSemantics(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text('View events',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onPrimary)),
                   ),
                 ),
               ],
@@ -799,16 +798,18 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.warning_amber_rounded, color: AppTheme.error, size: 22),
-              SizedBox(width: 10),
-              Text(
-                'Danger Zone',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.error,
+              Icon(Icons.warning_amber_rounded, color: KivoraColors.of(context).errorText, size: 22),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Danger zone',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: KivoraColors.of(context).errorText,
+                  ),
                 ),
               ),
             ],
@@ -821,10 +822,13 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           const SizedBox(height: 20),
           OutlinedButton.icon(
             onPressed: () => _confirmDeleteOrganization(org),
-            icon: const Icon(Icons.delete_forever_rounded, color: AppTheme.error, size: 18),
-            label: const Text('Delete Organization', style: TextStyle(color: AppTheme.error, fontWeight: FontWeight.bold)),
+            icon: Icon(Icons.delete_forever_rounded, color: KivoraColors.of(context).errorText, size: 18),
+            label: Text('Delete organization',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: KivoraColors.of(context).errorText, fontWeight: FontWeight.bold)),
             style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: AppTheme.error),
+              minimumSize: const Size.fromHeight(48),
+              side: BorderSide(color: KivoraColors.of(context).errorText),
             ),
           ),
         ],
@@ -843,13 +847,15 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
         ),
         actions: [
           TextButton(
+            style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: const Text('Keep organization'),
           ),
-          ElevatedButton(
+          TextButton(
+            style: TextButton.styleFrom(
+                minimumSize: const Size(48, 48), foregroundColor: KivoraColors.of(ctx).errorText),
             onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
-            child: const Text('Delete Organization', style: TextStyle(color: Colors.white)),
+            child: const Text('Delete organization'),
           ),
         ],
       ),
