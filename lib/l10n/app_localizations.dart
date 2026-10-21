@@ -803,6 +803,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show more'**
   String get voterLoadMore;
+
+  /// No description provided for @builderLeaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave without saving?'**
+  String get builderLeaveTitle;
+
+  /// No description provided for @builderLeaveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You have changes that have not been saved to this draft. If you leave now they will be lost.'**
+  String get builderLeaveBody;
+
+  /// No description provided for @builderStay.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep editing'**
+  String get builderStay;
+
+  /// No description provided for @builderLeave.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave and discard changes'**
+  String get builderLeave;
 }
 
 class _AppLocalizationsDelegate

@@ -147,5 +147,9 @@
     }
   },
   "voterCalendar": "Calendar",
-  "voterLoadMore": "Show more"
+  "voterLoadMore": "Show more",
+  "builderLeaveTitle": "Leave without saving?",
+  "builderLeaveBody": "You have changes that have not been saved to this draft. If you leave now they will be lost.",
+  "builderStay": "Keep editing",
+  "builderLeave": "Leave and discard changes"
 }

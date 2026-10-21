@@ -375,4 +375,17 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get voterLoadMore => 'Show more';
+
+  @override
+  String get builderLeaveTitle => 'Leave without saving?';
+
+  @override
+  String get builderLeaveBody =>
+      'You have changes that have not been saved to this draft. If you leave now they will be lost.';
+
+  @override
+  String get builderStay => 'Keep editing';
+
+  @override
+  String get builderLeave => 'Leave and discard changes';
 }

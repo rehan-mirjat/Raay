@@ -67,8 +67,31 @@ class DraftEventState {
   }
 }
 
+/// Stable fingerprint of the persisted draft fields, used to tell whether the
+/// form differs from what the server last accepted.
+String draftSignature(DraftEventState s) => [
+      s.title,
+      s.description,
+      s.votingType.name,
+      s.privacyMode.name,
+      s.startAt?.toIso8601String() ?? '',
+      s.endAt?.toIso8601String() ?? '',
+      s.eligibilityType.name,
+      ([...s.selectedDepartmentIds]..sort()).join(','),
+      ([...s.selectedUserIds]..sort()).join(','),
+    ].join('|');
+
 class DraftEventNotifier extends StateNotifier<DraftEventState> {
-  DraftEventNotifier(this._repository, this.organizationId) : super(DraftEventState());
+  DraftEventNotifier(this._repository, this.organizationId) : super(DraftEventState()) {
+    _savedSignature = draftSignature(state);
+  }
+
+  late String _savedSignature;
+
+  /// True when the form holds edits the server has not accepted: either brand
+  /// new input, or changes since the last successful create/update. A
+  /// freshly opened empty form and a just-saved draft are both "clean".
+  bool get hasUnsavedChanges => draftSignature(state) != _savedSignature;
 
   final VotingEventRepository _repository;
   final String organizationId;
@@ -99,6 +122,7 @@ class DraftEventNotifier extends StateNotifier<DraftEventState> {
       serverEventId: event.id,
       status: event.status,
     );
+    _savedSignature = draftSignature(state);
   }
 
   Future<bool> createServerDraft() async {
@@ -136,6 +160,7 @@ class DraftEventNotifier extends StateNotifier<DraftEventState> {
           eligibilityUserIds: eTypeStr == 'SELECTED_MEMBERS' ? state.selectedUserIds : const [],
         );
         state = state.copyWith(isLoading: false);
+        _savedSignature = draftSignature(state);
         return true;
       }
 
@@ -155,6 +180,7 @@ class DraftEventNotifier extends StateNotifier<DraftEventState> {
       );
 
       state = state.copyWith(serverEventId: eventId, isLoading: false);
+      _savedSignature = draftSignature(state);
       return true;
     } catch (e) {
       state = state.copyWith(error: e.toString().replaceAll('Exception: ', ''), isLoading: false);
@@ -164,6 +190,7 @@ class DraftEventNotifier extends StateNotifier<DraftEventState> {
 
   void reset() {
     state = DraftEventState();
+    _savedSignature = draftSignature(state);
   }
 }
 

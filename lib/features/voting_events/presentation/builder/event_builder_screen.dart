@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/navigation/exit_guard.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/kivora_colors.dart';
 import '../../../../core/layout/responsive.dart';
@@ -31,11 +33,70 @@ class EventBuilderScreen extends ConsumerStatefulWidget {
 class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
   int _currentStep = 0;
   String? _loadingEventId;
+  String? _orgIdForGuard;
+  late final ExitGuardNotifier _guardRegistry;
+  late final ExitGuard _guard;
+
+  /// Single exit path for system back, the on-screen back button and shell
+  /// navigation (via [exitGuardProvider]). Nothing unsaved -> leave silently.
+  Future<bool> _confirmLeave() async {
+    final orgId = _orgIdForGuard;
+    if (orgId == null) return true;
+    if (!ref.read(draftEventProvider(orgId).notifier).hasUnsavedChanges) return true;
+    final l10n = AppLocalizations.of(context);
+    final leave = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.builderLeaveTitle),
+        content: Text(l10n.builderLeaveBody),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.builderStay),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+                minimumSize: const Size(48, 48),
+                foregroundColor: KivoraColors.of(ctx).errorText),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.builderLeave),
+          ),
+        ],
+      ),
+    );
+    return leave == true;
+  }
+
+  Future<void> _leave() async {
+    if (!await _confirmLeave() || !mounted) return;
+    final orgId = _orgIdForGuard;
+    if (orgId != null) ref.read(draftEventProvider(orgId).notifier).reset();
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go('/admin/events');
+    }
+  }
+
+  @override
+  void dispose() {
+    final registry = _guardRegistry;
+    final guard = _guard;
+    // The registry notifies listeners; do not do that while the tree is locked.
+    Future.microtask(() => registry.unregister(guard));
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
     _currentStep = widget.initialStep.clamp(0, 4);
+    _guardRegistry = ref.read(exitGuardProvider.notifier);
+    _guard = _confirmLeave;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _guardRegistry.register(_guard);
+    });
 
     // If creating a NEW event (no existingEventId provided), reset any leftover draft
     if (widget.existingEventId == null) {
@@ -63,6 +124,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
     }
 
     final orgId = orgContext.organization.id;
+    _orgIdForGuard = orgId;
     final role = orgContext.member.role;
 
     if (widget.existingEventId != null &&
@@ -98,41 +160,9 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
 
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (didPop, result) async {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
-        final confirm = await showDialog<bool>(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Discard Changes?'),
-            content: const Text(
-                'Are you sure you want to leave the builder? Unsaved progress will be lost.'),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(ctx, false),
-                  child: const Text('Cancel')),
-              TextButton(
-                onPressed: () {
-                  ref.read(draftEventProvider(orgId).notifier).reset();
-                  Navigator.pop(ctx, true);
-                },
-                child: const Text('Leave',
-                    style: TextStyle(color: AppTheme.error)),
-              ),
-            ],
-          ),
-        );
-        if (confirm == true && context.mounted) {
-          // Not Navigator.pop(): canPop is pinned to false above, so a pop
-          // here would just re-trigger this same guard (this screen is also
-          // always reached via context.go(), never pushed, so there would be
-          // nothing on the Navigator stack to pop to anyway). Navigate away
-          // directly instead, exactly like the manual back button does.
-          if (context.canPop()) {
-            context.pop();
-          } else {
-            context.go('/admin/events');
-          }
-        }
+        _leave();
       },
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -148,13 +178,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
                     children: [
                       IconButton(
                         icon: Icon(Icons.arrow_back_rounded, color: KivoraColors.textPrimaryOf(context)),
-                        onPressed: () {
-                          if (context.canPop()) {
-                            context.pop();
-                          } else {
-                            context.go('/admin/events');
-                          }
-                        },
+                        onPressed: _leave,
                       ),
                       const SizedBox(width: 8),
                       Text(
