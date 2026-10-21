@@ -397,7 +397,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
             height: 1.12,
             letterSpacing: -1.2,
           ),
-          textAlign: alignLeft ? TextAlign.left : TextAlign.center,
+          textAlign: alignLeft ? TextAlign.start : TextAlign.center,
         ),
         const SizedBox(height: 20),
 
@@ -409,7 +409,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
             color: KivoraColors.textSecondaryOf(context),
             height: 1.5,
           ),
-          textAlign: alignLeft ? TextAlign.left : TextAlign.center,
+          textAlign: alignLeft ? TextAlign.start : TextAlign.center,
         ),
         const SizedBox(height: 32),
 

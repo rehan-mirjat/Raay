@@ -358,7 +358,7 @@ class _ElectionCommandCenterScreenState
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Align(
-          alignment: Alignment.centerRight,
+          alignment: AlignmentDirectional.centerEnd,
           child: TextButton.icon(
             onPressed: filteredByDate.isEmpty
                 ? null

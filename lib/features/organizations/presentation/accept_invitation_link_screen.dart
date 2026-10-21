@@ -205,7 +205,7 @@ class _AcceptInvitationLinkScreenState
         ),
         const SizedBox(height: 24),
         Align(
-          alignment: Alignment.centerRight,
+          alignment: AlignmentDirectional.centerEnd,
           child: FilledButton(
             onPressed: _continue,
             style: FilledButton.styleFrom(
@@ -240,7 +240,7 @@ class _AcceptInvitationLinkScreenState
         ),
         const SizedBox(height: 24),
         Align(
-          alignment: Alignment.centerRight,
+          alignment: AlignmentDirectional.centerEnd,
           child: FilledButton(
             onPressed: () => context.go('/home'),
             style: FilledButton.styleFrom(

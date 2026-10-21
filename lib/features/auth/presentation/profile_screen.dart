@@ -594,7 +594,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
                 const SizedBox(height: 32),
                 Align(
-                  alignment: Alignment.centerRight,
+                  alignment: AlignmentDirectional.centerEnd,
                   child: KivoraButton(
                     onPressed: _isSaving ? null : _saveProfile,
                     isLoading: _isSaving,

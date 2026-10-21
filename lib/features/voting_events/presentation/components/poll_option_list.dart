@@ -97,7 +97,7 @@ class PollOptionList extends ConsumerWidget {
                           ReorderableDragStartListener(
                             index: i,
                             child: Padding(
-                              padding: const EdgeInsets.only(right: 12.0),
+                              padding: const EdgeInsetsDirectional.only(end: 12.0),
                               child: Icon(KivoraIcons.gripVertical,
                                   color: kc.textSecondary, size: 18),
                             ),

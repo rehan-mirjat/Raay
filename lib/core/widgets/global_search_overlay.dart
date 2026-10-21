@@ -293,7 +293,7 @@ class _GlobalSearchDialogState extends ConsumerState<_GlobalSearchDialog> {
                             padding: EdgeInsets.zero,
                           ),
                         Container(
-                          margin: const EdgeInsets.only(left: 4),
+                          margin: const EdgeInsetsDirectional.only(start: 4),
                           padding: const EdgeInsets.symmetric(
                               horizontal: 6, vertical: 3),
                           decoration: BoxDecoration(

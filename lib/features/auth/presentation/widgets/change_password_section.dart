@@ -227,7 +227,7 @@ class _ChangePasswordSectionState extends ConsumerState<ChangePasswordSection> {
               ),
               const SizedBox(height: 24),
               Align(
-                alignment: Alignment.centerRight,
+                alignment: AlignmentDirectional.centerEnd,
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _submit,
                   child: _isLoading

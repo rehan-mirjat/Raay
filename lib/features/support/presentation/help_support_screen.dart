@@ -270,7 +270,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                           ),
                           const SizedBox(height: 24),
                           Align(
-                            alignment: Alignment.centerRight,
+                            alignment: AlignmentDirectional.centerEnd,
                             child: ElevatedButton.icon(
                               onPressed: _isSubmitting ? null : _submitFeedback,
                               icon: _isSubmitting

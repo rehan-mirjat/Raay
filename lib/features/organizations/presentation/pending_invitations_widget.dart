@@ -191,7 +191,7 @@ class _PendingInvitationsWidgetState extends ConsumerState<PendingInvitationsWid
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 12, right: 12),
+            padding: const EdgeInsetsDirectional.only(top: 12, end: 12),
             child: Icon(Icons.mark_email_unread_outlined, color: kc.accentText, size: 22),
           ),
           Expanded(

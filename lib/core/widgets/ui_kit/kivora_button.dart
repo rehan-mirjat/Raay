@@ -75,7 +75,7 @@ class KivoraButton extends StatelessWidget {
           Container(
             width: 20,
             height: 20,
-            margin: const EdgeInsets.only(right: 12),
+            margin: const EdgeInsetsDirectional.only(end: 12),
             child: CircularProgressIndicator(
               strokeWidth: 2.5,
               valueColor: AlwaysStoppedAnimation<Color>(fg),
@@ -83,7 +83,7 @@ class KivoraButton extends StatelessWidget {
           )
         else if (icon != null)
           Padding(
-            padding: const EdgeInsets.only(right: 8),
+            padding: const EdgeInsetsDirectional.only(end: 8),
             child: Icon(icon, size: 20),
           ),
         Flexible(
