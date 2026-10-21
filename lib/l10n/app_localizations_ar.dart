@@ -433,4 +433,170 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get navPlatformSectionLabel => 'Platform';
+
+  @override
+  String get adminEventsTitle => 'Elections';
+
+  @override
+  String get adminEventsSubtitle =>
+      'Create, schedule and monitor elections for your organization.';
+
+  @override
+  String get adminCreateElection => 'Create election';
+
+  @override
+  String get adminCommandCenter => 'Command center';
+
+  @override
+  String get adminSearchEvents => 'Search elections';
+
+  @override
+  String get adminFilterAll => 'All';
+
+  @override
+  String get adminFilterActive => 'Active';
+
+  @override
+  String get adminFilterScheduled => 'Scheduled';
+
+  @override
+  String get adminFilterDraft => 'Draft';
+
+  @override
+  String get adminFilterClosed => 'Closed';
+
+  @override
+  String get adminFilterArchived => 'Archived';
+
+  @override
+  String get adminNoEventsTitle => 'No elections yet';
+
+  @override
+  String get adminNoEventsBody =>
+      'Create your first election. You can save it as a draft and publish it when it is ready.';
+
+  @override
+  String get adminNoMatch => 'No elections match your search or filter.';
+
+  @override
+  String get adminLoadError =>
+      'We could not load your elections. Check your connection and try again.';
+
+  @override
+  String get adminOrgRequiredTitle => 'No active organization';
+
+  @override
+  String get adminOrgRequiredBody =>
+      'Choose an organization to manage its elections.';
+
+  @override
+  String get adminSuspendedTitle => 'Organization suspended';
+
+  @override
+  String get adminSuspendedBody =>
+      'This organization is suspended, so election management is disabled.';
+
+  @override
+  String get adminProcessing => 'Updating election...';
+
+  @override
+  String adminEventRange(String start, String end) {
+    return '$start to $end';
+  }
+
+  @override
+  String get adminTypeCandidate => 'Candidate election';
+
+  @override
+  String get adminTypeSingle => 'Single-choice poll';
+
+  @override
+  String get adminTypeYesNo => 'Yes/No poll';
+
+  @override
+  String get adminActionDelete => 'Delete draft';
+
+  @override
+  String get adminActionManageChoices => 'Manage choices';
+
+  @override
+  String get adminActionEdit => 'Edit details';
+
+  @override
+  String get adminActionPublish => 'Review and publish';
+
+  @override
+  String get adminActionCancel => 'Cancel election';
+
+  @override
+  String get adminActionViewDetails => 'View details';
+
+  @override
+  String get adminActionCloseEarly => 'Close early';
+
+  @override
+  String get adminActionMonitor => 'Monitor turnout';
+
+  @override
+  String get adminActionResults => 'View results';
+
+  @override
+  String get adminDeleteTitle => 'Delete this draft?';
+
+  @override
+  String adminDeleteBody(String title) {
+    return '\"$title\" will be permanently deleted. This cannot be undone.';
+  }
+
+  @override
+  String get adminCancelTitle => 'Cancel this election?';
+
+  @override
+  String adminCancelBody(String title) {
+    return '\"$title\" will not open for voting. Voters will no longer see it as upcoming.';
+  }
+
+  @override
+  String get adminCloseTitle => 'Close voting now?';
+
+  @override
+  String adminCloseBody(String title) {
+    return '\"$title\" will stop accepting votes immediately. This cannot be undone.';
+  }
+
+  @override
+  String get adminKeep => 'Keep it';
+
+  @override
+  String get adminConfirmDelete => 'Delete draft';
+
+  @override
+  String get adminConfirmCancel => 'Cancel election';
+
+  @override
+  String get adminConfirmClose => 'Close voting';
+
+  @override
+  String get adminGuideTitle1 => 'Set up';
+
+  @override
+  String get adminGuideBody1 => 'Details, schedule and who can vote.';
+
+  @override
+  String get adminGuideTitle2 => 'Add choices';
+
+  @override
+  String get adminGuideBody2 => 'Candidates or poll options.';
+
+  @override
+  String get adminGuideTitle3 => 'Publish';
+
+  @override
+  String get adminGuideBody3 => 'Review, then open it to voters.';
+
+  @override
+  String get adminGuideTitle4 => 'Monitor';
+
+  @override
+  String get adminGuideBody4 => 'Turnout while open, results after.';
 }

@@ -2,600 +2,322 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/layout/responsive.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/kivora_colors.dart';
 import '../../../../core/widgets/error_view.dart';
-import '../../../../core/widgets/kivora_animations.dart';
 import '../../../../core/widgets/loading_view.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../organizations/domain/organization_enums.dart';
 import '../../../organizations/presentation/providers/organization_providers.dart';
-import '../../domain/voting_event.dart';
 import '../../data/voting_event_repository.dart';
+import '../../domain/voting_event.dart';
 import '../providers/event_lifecycle_provider.dart';
 import '../voter_portal_screen.dart';
 import 'event_card.dart';
 
-enum _EventFilter { all, active, scheduled, draft, closed, archived }
+enum EventFilter { all, active, scheduled, draft, closed, archived }
 
-extension on _EventFilter {
-  String get label => switch (this) {
-        _EventFilter.all => 'All',
-        _EventFilter.active => 'Active',
-        _EventFilter.scheduled => 'Scheduled',
-        _EventFilter.draft => 'Draft',
-        _EventFilter.closed => 'Closed',
-        _EventFilter.archived => 'Archived',
+extension EventFilterX on EventFilter {
+  String label(AppLocalizations l10n) => switch (this) {
+        EventFilter.all => l10n.adminFilterAll,
+        EventFilter.active => l10n.adminFilterActive,
+        EventFilter.scheduled => l10n.adminFilterScheduled,
+        EventFilter.draft => l10n.adminFilterDraft,
+        EventFilter.closed => l10n.adminFilterClosed,
+        EventFilter.archived => l10n.adminFilterArchived,
       };
 
-  /// Null means "no status filter" (the All chip). Cancelled events have no
-  /// dedicated chip (matching the reference design) but remain visible
-  /// under All rather than being permanently hidden.
+  /// Null means "no status filter" (All). Cancelled events have no chip but
+  /// stay visible under All rather than being hidden.
   VotingEventStatus? get status => switch (this) {
-        _EventFilter.all => null,
-        _EventFilter.active => VotingEventStatus.active,
-        _EventFilter.scheduled => VotingEventStatus.scheduled,
-        _EventFilter.draft => VotingEventStatus.draft,
-        _EventFilter.closed => VotingEventStatus.closed,
-        _EventFilter.archived => VotingEventStatus.archived,
+        EventFilter.all => null,
+        EventFilter.active => VotingEventStatus.active,
+        EventFilter.scheduled => VotingEventStatus.scheduled,
+        EventFilter.draft => VotingEventStatus.draft,
+        EventFilter.closed => VotingEventStatus.closed,
+        EventFilter.archived => VotingEventStatus.archived,
       };
+}
+
+/// Pure filter used by the screen (and tested directly).
+List<VotingEvent> filterEvents(List<VotingEvent> events, EventFilter filter, String query) {
+  final status = filter.status;
+  final q = query.trim().toLowerCase();
+  return events.where((e) {
+    if (status != null && e.status != status) return false;
+    if (q.isNotEmpty && !e.title.toLowerCase().contains(q)) return false;
+    return true;
+  }).toList();
 }
 
 class AdminEventDashboardScreen extends ConsumerStatefulWidget {
   const AdminEventDashboardScreen({super.key});
 
   @override
-  ConsumerState<AdminEventDashboardScreen> createState() =>
-      _AdminEventDashboardScreenState();
+  ConsumerState<AdminEventDashboardScreen> createState() => _AdminEventDashboardScreenState();
 }
 
-class _AdminEventDashboardScreenState
-    extends ConsumerState<AdminEventDashboardScreen> {
-  _EventFilter _filter = _EventFilter.all;
+class _AdminEventDashboardScreenState extends ConsumerState<AdminEventDashboardScreen> {
+  EventFilter _filter = EventFilter.all;
   String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
-    final activeContextState = ref.watch(activeOrganizationContextProvider);
-    final orgContext = activeContextState.valueOrNull?.context;
+    final l10n = AppLocalizations.of(context);
+    final orgContext = ref.watch(activeOrganizationContextProvider).valueOrNull?.context;
 
     if (orgContext == null) {
-      return const Scaffold(
-        body: ErrorView(type: ErrorViewType.generic, 
-          title: 'No Active Organization',
-          message: 'Please select an organization context to access the event management dashboard.',
+      return Scaffold(
+        body: ErrorView(
+          type: ErrorViewType.generic,
+          title: l10n.adminOrgRequiredTitle,
+          message: l10n.adminOrgRequiredBody,
         ),
       );
     }
 
     final orgId = orgContext.organization.id;
-    final role = orgContext.member.role;
 
     if (orgContext.organization.status == OrganizationStatus.suspended) {
-      return const Scaffold(
-        body: ErrorView(type: ErrorViewType.generic, 
-          title: 'Organization suspended',
-          message: 'This organization is currently suspended. Voting event management is disabled.',
+      return Scaffold(
+        body: ErrorView(
+          type: ErrorViewType.generic,
+          title: l10n.adminSuspendedTitle,
+          message: l10n.adminSuspendedBody,
         ),
       );
     }
 
-    if (!role.isAdmin) {
-      // Members land on the same "Events" nav destination as admins, but see
-      // their own cross-organization voting portal instead of the admin
-      // management console - not a silent bounce back to /home.
-      return const Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SafeArea(child: VoterPortalScreen(embedded: true)),
-      );
+    if (!orgContext.member.role.isAdmin) {
+      // Members share the "Elections" destination but see their own voter home.
+      return const VoterPortalScreen(embedded: true);
     }
 
-    final eventsAsync = ref.watch(votingEventRepositoryProvider).watchOrganizationVotingEvents(orgId, includeDrafts: true);
+    // Stable provider: the stream is not recreated on rebuild, so typing in the
+    // search box never flashes the loading state.
+    final eventsAsync =
+        ref.watch(organizationVotingEventsProvider((orgId: orgId, includeDrafts: true)));
     final lifecycleState = ref.watch(eventLifecycleProvider);
 
     ref.listen<EventLifecycleState>(eventLifecycleProvider, (prev, next) {
-       if (next.error != null && (prev?.error != next.error)) {
-         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(next.error!), backgroundColor: AppTheme.error));
-       }
+      if (next.error != null && prev?.error != next.error) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(next.error!)));
+      }
     });
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: KivoraColors.backgroundOf(context),
       body: Stack(
         children: [
-          StreamBuilder<List<VotingEvent>>(
-            stream: eventsAsync,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const LoadingView(message: 'Loading organization events...');
-              }
-
-              if (snapshot.hasError) {
-                return ErrorView(type: ErrorViewType.generic, 
-                  message: 'Error loading events: ${snapshot.error}',
-                  onRetry: () => ref.invalidate(votingEventRepositoryProvider),
-                );
-              }
-
-              final events = snapshot.data ?? [];
-
-              return PageEntry(child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 1040),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // Page Header
-                        Wrap(
-                          alignment: WrapAlignment.spaceBetween,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          spacing: 16,
-                          runSpacing: 16,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                  child: const Icon(
-                                    Icons.calendar_today_rounded,
-                                    color: AppTheme.primaryBlue,
-                                    size: 22,
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Event Management',
-                                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: KivoraColors.textPrimaryOf(context),
-                                          ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'Create, manage and organize events for your community.',
-                                      style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Wrap(
-                              spacing: 12,
-                              runSpacing: 12,
-                              children: [
-                                OutlinedButton.icon(
-                                  onPressed: () => context.go('/admin/command-center'),
-                                  icon: const Icon(Icons.dashboard_customize_outlined, size: 18),
-                                  label: const Text('Command Center'),
-                                ),
-                                if (events.isNotEmpty)
-                                  _AnimatedCreateButton(
-                                    onPressed: () => context.go('/admin/events/new'),
-                                  ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 32),
-
-                        if (events.isEmpty)
-                          Column(
-                            children: [
-                              const SizedBox(height: 24),
-                              // Illustration Treatment
-                              Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Container(
-                                    width: 160,
-                                    height: 110,
-                                    decoration: BoxDecoration(
-                                      color: AppTheme.primaryBlue.withValues(alpha: 0.08),
-                                      borderRadius: BorderRadius.circular(70),
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.all(22),
-                                    decoration: BoxDecoration(
-                                      color: KivoraColors.surfaceOf(context),
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                        color: AppTheme.primaryBlue.withValues(alpha: 0.2),
-                                        width: 1.5,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: AppTheme.primaryBlue.withValues(alpha: 0.08),
-                                          blurRadius: 20,
-                                          offset: const Offset(0, 6),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        const Icon(
-                                          Icons.calendar_month_rounded,
-                                          size: 52,
-                                          color: AppTheme.primaryBlue,
-                                        ),
-                                        Positioned(
-                                          bottom: -4,
-                                          right: -4,
-                                          child: Container(
-                                            padding: const EdgeInsets.all(3),
-                                            decoration: const BoxDecoration(
-                                              color: AppTheme.primaryBlue,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: const Icon(
-                                              Icons.add,
-                                              size: 14,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 24),
-                              Text(
-                                'No voting events found.',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: KivoraColors.textPrimaryOf(context),
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Get started by creating a new voting event\nfor your organization members.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: KivoraColors.textSecondaryOf(context),
-                                  fontSize: 14,
-                                  height: 1.4,
-                                ),
-                              ),
-                              const SizedBox(height: 28),
-
-                              _AnimatedCreateButton(
-                                onPressed: () => context.go('/admin/events/new'),
-                                isPrimaryCta: true,
-                              ),
-
-                              const SizedBox(height: 48),
-
-                              _buildGuidanceCardsGrid(context),
-                            ],
-                          )
-                        else ...[
-                          _buildFilterAndSearchRow(context, events),
-                          const SizedBox(height: 20),
-                          Builder(builder: (context) {
-                            final filtered = _applyFilter(events);
-                            if (filtered.isEmpty) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 48),
-                                child: Center(
-                                  child: Text(
-                                    _searchQuery.isNotEmpty
-                                        ? 'No events match "$_searchQuery".'
-                                        : 'No ${_filter.label.toLowerCase()} events.',
-                                    style: TextStyle(
-                                        color: KivoraColors.textSecondaryOf(context), fontSize: 14),
-                                  ),
-                                ),
-                              );
-                            }
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: filtered.length,
-                              itemBuilder: (context, index) {
-                                final event = filtered[index];
-                                return StaggeredListItem(
-                                  index: index,
-                                  child: EventCard(event: event),
-                                );
-                              },
-                            );
-                          }),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-              )); // PageEntry
-            },
+          eventsAsync.when(
+            loading: () => const LoadingView(),
+            error: (_, __) => ErrorView(
+              type: ErrorViewType.generic,
+              message: l10n.adminLoadError,
+              onRetry: () => ref.invalidate(organizationVotingEventsProvider),
+            ),
+            data: (events) => _buildBody(context, l10n, events),
           ),
           if (lifecycleState.isLoading)
-            Container(
-              color: Colors.black.withValues(alpha: 0.2),
-              child: const LoadingView(message: 'Processing lifecycle update...'),
+            Positioned.fill(
+              child: ColoredBox(
+                color: KivoraColors.backgroundOf(context).withValues(alpha: 0.8),
+                child: LoadingView(message: l10n.adminProcessing),
+              ),
             ),
         ],
       ),
     );
   }
 
-  List<VotingEvent> _applyFilter(List<VotingEvent> events) {
-    final status = _filter.status;
-    final query = _searchQuery.trim().toLowerCase();
-    return events.where((e) {
-      if (status != null && e.status != status) return false;
-      if (query.isNotEmpty && !e.title.toLowerCase().contains(query)) return false;
-      return true;
-    }).toList();
-  }
+  Widget _buildBody(BuildContext context, AppLocalizations l10n, List<VotingEvent> events) {
+    final kc = KivoraColors.of(context);
+    final isDesktop = ResponsiveLayout.isWide(context);
+    final filtered = filterEvents(events, _filter, _searchQuery);
 
-  Widget _buildFilterAndSearchRow(BuildContext context, List<VotingEvent> events) {
-    final isWide = MediaQuery.sizeOf(context).width >= 700;
-
-    final chips = Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: _EventFilter.values.map((f) {
-        final count = f == _EventFilter.all
-            ? events.length
-            : events.where((e) => e.status == f.status).length;
-        final selected = _filter == f;
-        return InkWell(
-          onTap: () => setState(() => _filter = f),
-          borderRadius: BorderRadius.circular(999),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            decoration: BoxDecoration(
-              color: selected ? AppTheme.primaryBlue : KivoraColors.surfaceOf(context),
-              borderRadius: BorderRadius.circular(999),
-              border: Border.all(
-                color: selected ? AppTheme.primaryBlue : KivoraColors.borderOf(context),
-              ),
-            ),
-            child: Text(
-              '${f.label} $count',
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: selected ? Colors.white : KivoraColors.textPrimaryOf(context),
-              ),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-
-    final search = SizedBox(
-      width: isWide ? 260 : double.infinity,
-      child: TextField(
-        onChanged: (v) => setState(() => _searchQuery = v),
-        decoration: const InputDecoration(
-          hintText: 'Search events',
-          prefixIcon: Icon(Icons.search_rounded, size: 20),
-          isDense: true,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        ),
-      ),
-    );
-
-    if (isWide) {
-      return Row(
-        children: [
-          Expanded(child: chips),
-          const SizedBox(width: 16),
-          search,
-        ],
-      );
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    final header = Wrap(
+      alignment: WrapAlignment.spaceBetween,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 16,
+      runSpacing: 16,
       children: [
-        chips,
-        const SizedBox(height: 12),
-        search,
-      ],
-    );
-  }
-}
-
-Widget _buildGuidanceCardsGrid(BuildContext context) {
-  return LayoutBuilder(
-    builder: (context, constraints) {
-      final isWide = constraints.maxWidth >= 700;
-      final cardWidth = isWide ? (constraints.maxWidth - 36) / 4 : double.infinity;
-
-      final cards = [
-        _buildInfoCard(
-          context,
-          title: 'Set up your event',
-          subtitle: 'Define the event details, voting rules and schedule.',
-          icon: Icons.calendar_today_rounded,
-          width: cardWidth,
-        ),
-        _buildInfoCard(
-          context,
-          title: 'Invite participants',
-          subtitle: 'Add organization members and manage their access.',
-          icon: Icons.people_outline_rounded,
-          width: cardWidth,
-        ),
-        _buildInfoCard(
-          context,
-          title: 'Track & manage',
-          subtitle: 'Monitor participation and view results in real-time.',
-          icon: Icons.shield_outlined,
-          width: cardWidth,
-        ),
-        _buildInfoCard(
-          context,
-          title: 'Build engagement',
-          subtitle: 'Make decisions together with your community.',
-          icon: Icons.bar_chart_rounded,
-          width: cardWidth,
-        ),
-      ];
-
-      return Wrap(
-        spacing: 12,
-        runSpacing: 12,
-        children: cards,
-      );
-    },
-  );
-}
-
-Widget _buildInfoCard(
-  BuildContext context, {
-  required String title,
-  required String subtitle,
-  required IconData icon,
-  required double width,
-}) {
-  return Container(
-    width: width,
-    padding: const EdgeInsets.all(18),
-    decoration: BoxDecoration(
-      color: KivoraColors.surfaceOf(context),
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: KivoraColors.borderOf(context)),
-    ),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Icon(icon, color: AppTheme.primaryBlue, size: 20),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 560),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                  color: KivoraColors.textPrimaryOf(context),
-                ),
+              Semantics(
+                header: true,
+                child: Text(l10n.adminEventsTitle,
+                    style: TextStyle(
+                        fontSize: isDesktop ? 28 : 24,
+                        fontWeight: FontWeight.bold,
+                        color: kc.textPrimary)),
               ),
               const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: KivoraColors.textSecondaryOf(context),
-                  height: 1.3,
-                ),
-              ),
+              Text(l10n.adminEventsSubtitle, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
             ],
           ),
         ),
+        Wrap(spacing: 12, runSpacing: 12, children: [
+          OutlinedButton.icon(
+            style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+            onPressed: () => context.go('/admin/command-center'),
+            icon: const Icon(Icons.dashboard_customize_outlined, size: 18),
+            label: Text(l10n.adminCommandCenter),
+          ),
+          FilledButton.icon(
+            style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+            onPressed: () => context.go('/admin/events/new'),
+            icon: const Icon(Icons.add_rounded, size: 20),
+            label: Text(l10n.adminCreateElection),
+          ),
+        ]),
       ],
-    ),
-  );
-}
+    );
 
-class _AnimatedCreateButton extends StatefulWidget {
-  const _AnimatedCreateButton({
-    required this.onPressed,
-    this.isPrimaryCta = false,
-  });
-
-  final VoidCallback onPressed;
-  final bool isPrimaryCta;
-
-  @override
-  State<_AnimatedCreateButton> createState() => _AnimatedCreateButtonState();
-}
-
-class _AnimatedCreateButtonState extends State<_AnimatedCreateButton> {
-  bool _isHovered = false;
-  bool _isPressed = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final isReducedMotion = MediaQuery.of(context).disableAnimations;
-
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTapDown: (_) => setState(() => _isPressed = true),
-        onTapUp: (_) => setState(() => _isPressed = false),
-        onTapCancel: () => setState(() => _isPressed = false),
-        onTap: widget.onPressed,
-        child: AnimatedScale(
-          scale: (_isPressed && !isReducedMotion) ? 0.98 : 1.0,
-          duration: const Duration(milliseconds: 150),
-          curve: Curves.easeOutCubic,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeOutCubic,
-            padding: EdgeInsets.symmetric(
-              horizontal: widget.isPrimaryCta ? 24 : 18,
-              vertical: widget.isPrimaryCta ? 14 : 10,
+    final List<Widget> content;
+    if (events.isEmpty) {
+      content = [_EmptyState(l10n: l10n)];
+    } else {
+      content = [
+        _filters(context, l10n, events),
+        const SizedBox(height: 16),
+        if (filtered.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 48),
+            child: Center(
+              child: Text(l10n.adminNoMatch,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: kc.textSecondary, fontSize: 14)),
             ),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryBlue,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: AppTheme.primaryBlue.withValues(alpha: _isHovered ? 0.35 : 0.2),
-                  blurRadius: _isHovered ? 12 : 6,
-                  offset: Offset(0, _isHovered ? 4 : 2),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 1.5),
-                  ),
-                  child: const Icon(Icons.add, size: 12, color: Colors.white),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Create Voting Event',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: widget.isPrimaryCta ? 14 : 13,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                AnimatedSlide(
-                  offset: (_isHovered && !isReducedMotion)
-                      ? const Offset(0.2, 0)
-                      : Offset.zero,
-                  duration: const Duration(milliseconds: 150),
-                  child: const Icon(Icons.east_rounded, size: 16, color: Colors.white),
-                ),
-              ],
-            ),
+          )
+        else
+          AdaptiveCardGrid(
+            minColumnWidth: 420,
+            children: [for (final e in filtered) EventCard(key: ValueKey(e.id), event: e)],
+          ),
+      ];
+    }
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(isDesktop ? 32 : 16),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: ResponsiveLayout.maxContentWidth),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [header, const SizedBox(height: 24), ...content],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _filters(BuildContext context, AppLocalizations l10n, List<VotingEvent> events) {
+    final search = TextField(
+      onChanged: (v) => setState(() => _searchQuery = v),
+      decoration: InputDecoration(
+        hintText: l10n.adminSearchEvents,
+        prefixIcon: const Icon(Icons.search_rounded, size: 20),
+      ),
+    );
+    final chips = Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        for (final f in EventFilter.values)
+          ChoiceChip(
+            materialTapTargetSize: MaterialTapTargetSize.padded,
+            showCheckmark: true,
+            label: Text(
+                '${f.label(l10n)} ${f == EventFilter.all ? events.length : events.where((e) => e.status == f.status).length}'),
+            selected: _filter == f,
+            onSelected: (_) => setState(() => _filter = f),
+          ),
+      ],
+    );
+    return LayoutBuilder(builder: (context, c) {
+      if (c.maxWidth >= 700) {
+        return Row(children: [
+          Expanded(child: chips),
+          const SizedBox(width: 16),
+          SizedBox(width: 280, child: search),
+        ]);
+      }
+      return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [search, const SizedBox(height: 12), chips]);
+    });
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState({required this.l10n});
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    final steps = [
+      (Icons.tune_rounded, l10n.adminGuideTitle1, l10n.adminGuideBody1),
+      (Icons.people_outline_rounded, l10n.adminGuideTitle2, l10n.adminGuideBody2),
+      (Icons.rocket_launch_outlined, l10n.adminGuideTitle3, l10n.adminGuideBody3),
+      (Icons.bar_chart_rounded, l10n.adminGuideTitle4, l10n.adminGuideBody4),
+    ];
+    return Column(
+      children: [
+        const SizedBox(height: 24),
+        ExcludeSemantics(
+            child: Icon(Icons.how_to_vote_outlined, size: 48, color: kc.accentText)),
+        const SizedBox(height: 16),
+        Text(l10n.adminNoEventsTitle,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+        const SizedBox(height: 8),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 480),
+          child: Text(l10n.adminNoEventsBody,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14, height: 1.4, color: kc.textSecondary)),
+        ),
+        const SizedBox(height: 24),
+        FilledButton.icon(
+          style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+          onPressed: () => context.go('/admin/events/new'),
+          icon: const Icon(Icons.add_rounded),
+          label: Text(l10n.adminCreateElection),
+        ),
+        const SizedBox(height: 32),
+        AdaptiveCardGrid(
+          minColumnWidth: 220,
+          children: [
+            for (final (icon, title, body) in steps)
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: kc.surface,
+                  borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+                  border: Border.all(color: kc.border),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(icon, color: kc.accentText, size: 22),
+                    const SizedBox(height: 8),
+                    Text(title,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w700, fontSize: 14, color: kc.textPrimary)),
+                    const SizedBox(height: 4),
+                    Text(body, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ],
     );
   }
 }

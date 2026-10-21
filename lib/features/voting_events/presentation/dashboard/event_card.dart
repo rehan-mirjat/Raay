@@ -1,268 +1,183 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/kivora_colors.dart';
-import '../../../../core/widgets/kivora_animations.dart';
+import '../../../../core/widgets/status_badge.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/voting_event.dart';
 import '../providers/event_lifecycle_provider.dart';
+import '../voter_election_card.dart' show formatDeadline;
 
+/// One election in the admin list. Height follows content, the title wraps,
+/// every control is at least 48px, and the card's primary action is the only
+/// filled button.
 class EventCard extends ConsumerWidget {
   final VotingEvent event;
 
   const EventCard({super.key, required this.event});
 
+  static const _minSize = Size(48, 48);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final format = DateFormat('MMM d, yyyy - h:mm a');
+    final kc = KivoraColors.of(context);
+    final l10n = AppLocalizations.of(context);
 
-    return HoverLiftCard(
-      borderRadius: AppTheme.radiusCard,
-      onTap: () => context.go('/elections/${event.id}'),
-      child: Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppTheme.radiusCard)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    event.title,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.primaryBlue),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+    return Material(
+      color: kc.surface,
+      borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+        onTap: () => context.go('/elections/${event.id}'),
+        child: Ink(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+            border: Border.all(color: kc.border),
+          ),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                event.title,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kc.textPrimary),
+              ),
+              const SizedBox(height: 4),
+              Text(_typeLabel(l10n, event.votingType),
+                  style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+              const SizedBox(height: 12),
+              Wrap(spacing: 8, runSpacing: 8, children: [
+                StatusBadge.eventStatus(event.status.name),
+                StatusBadge.privacyMode(event.privacyMode.name),
+              ]),
+              const SizedBox(height: 12),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(top: 2, end: 8),
+                    child: ExcludeSemantics(
+                        child: Icon(Icons.schedule_rounded, size: 16, color: kc.textSecondary)),
                   ),
-                ),
-                _buildStatusBadge(event.status),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              _getTypeLabel(event.votingType),
-              style: TextStyle(fontWeight: FontWeight.w600, color: KivoraColors.textPrimaryOf(context)),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Icon(Icons.schedule, size: 16, color: KivoraColors.textSecondaryOf(context)),
-                const SizedBox(width: 8),
-                Text('${format.format(event.startAt)} to', style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
-              ],
-            ),
-            Row(
-              children: [
-                const SizedBox(width: 24),
-                Text(format.format(event.endAt), style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
-              ],
-            ),
-            const Divider(height: 32),
-            _buildActionButtons(context, ref),
-          ],
+                  Expanded(
+                    child: Text(
+                      l10n.adminEventRange(
+                          formatDeadline(context, event.startAt), formatDeadline(context, event.endAt)),
+                      style: TextStyle(fontSize: 14, color: kc.textSecondary),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              _actions(context, ref, l10n, kc),
+            ],
+          ),
         ),
       ),
-    )); // HoverLiftCard
-  }
-
-  Widget _buildStatusBadge(VotingEventStatus status) {
-    Color color;
-    String label;
-
-    switch (status) {
-      case VotingEventStatus.draft:
-        color = Colors.grey;
-        label = 'DRAFT';
-        break;
-      case VotingEventStatus.scheduled:
-        color = Colors.blue;
-        label = 'SCHEDULED';
-        break;
-      case VotingEventStatus.active:
-        color = AppTheme.success;
-        label = 'ACTIVE';
-        break;
-      case VotingEventStatus.closed:
-        color = AppTheme.error;
-        label = 'CLOSED';
-        break;
-      case VotingEventStatus.cancelled:
-        color = AppTheme.error;
-        label = 'CANCELLED';
-        break;
-      case VotingEventStatus.archived:
-        color = Colors.brown;
-        label = 'ARCHIVED';
-        break;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12), border: Border.all(color: color)),
-      child: Text(label, style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold)),
     );
   }
 
-  String _getTypeLabel(VotingType type) {
-    switch (type) {
-      case VotingType.candidateElection: return 'Candidate Election';
-      case VotingType.singleChoicePoll: return 'Single-Choice Poll';
-      case VotingType.yesNoPoll: return 'Yes/No Poll';
-    }
-  }
+  String _typeLabel(AppLocalizations l10n, VotingType type) => switch (type) {
+        VotingType.candidateElection => l10n.adminTypeCandidate,
+        VotingType.singleChoicePoll => l10n.adminTypeSingle,
+        VotingType.yesNoPoll => l10n.adminTypeYesNo,
+      };
 
-  Widget _buildActionButtons(BuildContext context, WidgetRef ref) {
+  Widget _actions(BuildContext context, WidgetRef ref, AppLocalizations l10n, KivoraColors kc) {
+    Widget filled(String label, String path) => FilledButton(
+          style: FilledButton.styleFrom(minimumSize: _minSize),
+          onPressed: () => context.go(path),
+          child: Text(label, textAlign: TextAlign.center),
+        );
+    Widget outlined(String label, String path) => OutlinedButton(
+          style: OutlinedButton.styleFrom(minimumSize: _minSize),
+          onPressed: () => context.go(path),
+          child: Text(label, textAlign: TextAlign.center),
+        );
+    Widget danger(String label, IconData icon, VoidCallback onTap) => TextButton.icon(
+          style: TextButton.styleFrom(minimumSize: _minSize, foregroundColor: kc.errorText),
+          onPressed: onTap,
+          icon: Icon(icon, size: 18),
+          label: Text(label),
+        );
+    Widget wrap(List<Widget> children) => Wrap(spacing: 8, runSpacing: 8, children: children);
+    final id = event.id;
+
     switch (event.status) {
       case VotingEventStatus.draft:
-        return Wrap(
-          alignment: WrapAlignment.end,
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            TextButton.icon(
-              onPressed: () => _confirmDelete(context, ref),
-              icon: const Icon(Icons.delete, color: AppTheme.error, size: 18),
-              label: const Text('Delete', style: TextStyle(color: AppTheme.error)),
-            ),
-            OutlinedButton(
-              onPressed: () => context.go('/admin/events/${event.id}/choices'),
-              child: const Text('Manage Choices'),
-            ),
-            ElevatedButton(
-              onPressed: () => context.go('/admin/events/${event.id}/edit'),
-              child: const Text('Edit Config'),
-            ),
-            ElevatedButton(
-              onPressed: () => context.go('/admin/events/${event.id}/review'),
-              child: const Text('Publish'),
-            ),
-          ],
-        );
+        return wrap([
+          filled(l10n.adminActionPublish, '/admin/events/$id/review'),
+          outlined(l10n.adminActionEdit, '/admin/events/$id/edit'),
+          outlined(l10n.adminActionManageChoices, '/admin/events/$id/choices'),
+          danger(l10n.adminActionDelete, Icons.delete_outline_rounded,
+              () => _confirm(context, ref, l10n, kind: _Destructive.delete)),
+        ]);
       case VotingEventStatus.scheduled:
-        return Wrap(
-          alignment: WrapAlignment.end,
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            TextButton.icon(
-              onPressed: () => _confirmCancel(context, ref),
-              icon: const Icon(Icons.cancel, color: AppTheme.error, size: 18),
-              label: const Text('Cancel Event', style: TextStyle(color: AppTheme.error)),
-            ),
-            OutlinedButton(
-              onPressed: () => context.go('/elections/${event.id}'),
-              child: const Text('View Details'),
-            ),
-          ],
-        );
+        return wrap([
+          outlined(l10n.adminActionViewDetails, '/elections/$id'),
+          danger(l10n.adminActionCancel, Icons.cancel_outlined,
+              () => _confirm(context, ref, l10n, kind: _Destructive.cancel)),
+        ]);
       case VotingEventStatus.active:
-        return Wrap(
-          alignment: WrapAlignment.end,
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            TextButton.icon(
-              onPressed: () => _confirmClose(context, ref),
-              icon: const Icon(Icons.stop_circle, color: AppTheme.error, size: 18),
-              label: const Text('Close Early', style: TextStyle(color: AppTheme.error)),
-            ),
-            ElevatedButton(
-              onPressed: () => context.go('/admin/events/${event.id}/monitor'),
-              child: const Text('Monitor Turnout'),
-            ),
-          ],
-        );
+        return wrap([
+          filled(l10n.adminActionMonitor, '/admin/events/$id/monitor'),
+          danger(l10n.adminActionCloseEarly, Icons.stop_circle_outlined,
+              () => _confirm(context, ref, l10n, kind: _Destructive.close)),
+        ]);
       case VotingEventStatus.closed:
       case VotingEventStatus.archived:
-        return Wrap(
-          alignment: WrapAlignment.end,
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            ElevatedButton(
-              onPressed: () => context.go('/elections/${event.id}/results'),
-              child: const Text('View Results'),
-            ),
-          ],
-        );
+        return wrap([filled(l10n.adminActionResults, '/elections/$id/results')]);
       case VotingEventStatus.cancelled:
-        return Wrap(
-          alignment: WrapAlignment.end,
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            OutlinedButton(
-              onPressed: () => context.go('/elections/${event.id}'),
-              child: const Text('View Details'),
-            ),
-          ],
-        );
+        return wrap([outlined(l10n.adminActionViewDetails, '/elections/$id')]);
     }
   }
 
-  void _confirmDelete(BuildContext context, WidgetRef ref) async {
-    final confirm = await showDialog<bool>(
+  Future<void> _confirm(BuildContext context, WidgetRef ref, AppLocalizations l10n,
+      {required _Destructive kind}) async {
+    final (title, body, confirmLabel, keepLabel) = switch (kind) {
+      _Destructive.delete => (
+          l10n.adminDeleteTitle, l10n.adminDeleteBody(event.title), l10n.adminConfirmDelete, l10n.adminKeep),
+      _Destructive.cancel => (
+          l10n.adminCancelTitle, l10n.adminCancelBody(event.title), l10n.adminConfirmCancel, l10n.adminKeep),
+      _Destructive.close => (
+          l10n.adminCloseTitle, l10n.adminCloseBody(event.title), l10n.adminConfirmClose, l10n.adminKeep),
+    };
+    final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Draft Event?'),
-        content: Text('Are you sure you want to permanently delete "${event.title}"? This cannot be undone.'),
+        title: Text(title),
+        content: Text(body),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
           TextButton(
+            style: TextButton.styleFrom(minimumSize: _minSize),
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(keepLabel),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+                minimumSize: _minSize, foregroundColor: KivoraColors.of(ctx).errorText),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete', style: TextStyle(color: AppTheme.error)),
+            child: Text(confirmLabel),
           ),
         ],
-      )
+      ),
     );
-    if (confirm == true) {
-      ref.read(eventLifecycleProvider.notifier).deleteEvent(event.id);
-    }
-  }
-
-  void _confirmCancel(BuildContext context, WidgetRef ref) async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Cancel Scheduled Event?'),
-        content: Text('Are you sure you want to cancel "${event.title}"? It will not become active.'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Keep Scheduled')),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Cancel Event', style: TextStyle(color: AppTheme.error)),
-          ),
-        ],
-      )
-    );
-    if (confirm == true) {
-      ref.read(eventLifecycleProvider.notifier).cancelEvent(event.id);
-    }
-  }
-
-  void _confirmClose(BuildContext context, WidgetRef ref) async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Close Event Early?'),
-        content: Text('Are you sure you want to close "${event.title}"? No further votes will be accepted.'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Close Early', style: TextStyle(color: AppTheme.error)),
-          ),
-        ],
-      )
-    );
-    if (confirm == true) {
-      ref.read(eventLifecycleProvider.notifier).closeEventEarly(event.id);
+    if (confirmed != true) return;
+    final notifier = ref.read(eventLifecycleProvider.notifier);
+    switch (kind) {
+      case _Destructive.delete:
+        notifier.deleteEvent(event.id);
+      case _Destructive.cancel:
+        notifier.cancelEvent(event.id);
+      case _Destructive.close:
+        notifier.closeEventEarly(event.id);
     }
   }
 }
+
+enum _Destructive { delete, cancel, close }

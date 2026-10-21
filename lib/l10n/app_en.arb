@@ -166,5 +166,87 @@
   "navCreateElection": "Create election",
   "navMainLabel": "Main navigation",
   "navMoreSectionLabel": "More",
-  "navPlatformSectionLabel": "Platform"
+  "navPlatformSectionLabel": "Platform",
+  "adminEventsTitle": "Elections",
+  "adminEventsSubtitle": "Create, schedule and monitor elections for your organization.",
+  "adminCreateElection": "Create election",
+  "adminCommandCenter": "Command center",
+  "adminSearchEvents": "Search elections",
+  "adminFilterAll": "All",
+  "adminFilterActive": "Active",
+  "adminFilterScheduled": "Scheduled",
+  "adminFilterDraft": "Draft",
+  "adminFilterClosed": "Closed",
+  "adminFilterArchived": "Archived",
+  "adminNoEventsTitle": "No elections yet",
+  "adminNoEventsBody": "Create your first election. You can save it as a draft and publish it when it is ready.",
+  "adminNoMatch": "No elections match your search or filter.",
+  "adminLoadError": "We could not load your elections. Check your connection and try again.",
+  "adminOrgRequiredTitle": "No active organization",
+  "adminOrgRequiredBody": "Choose an organization to manage its elections.",
+  "adminSuspendedTitle": "Organization suspended",
+  "adminSuspendedBody": "This organization is suspended, so election management is disabled.",
+  "adminProcessing": "Updating election...",
+  "adminEventRange": "{start} to {end}",
+  "@adminEventRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "adminTypeCandidate": "Candidate election",
+  "adminTypeSingle": "Single-choice poll",
+  "adminTypeYesNo": "Yes/No poll",
+  "adminActionDelete": "Delete draft",
+  "adminActionManageChoices": "Manage choices",
+  "adminActionEdit": "Edit details",
+  "adminActionPublish": "Review and publish",
+  "adminActionCancel": "Cancel election",
+  "adminActionViewDetails": "View details",
+  "adminActionCloseEarly": "Close early",
+  "adminActionMonitor": "Monitor turnout",
+  "adminActionResults": "View results",
+  "adminDeleteTitle": "Delete this draft?",
+  "adminDeleteBody": "\"{title}\" will be permanently deleted. This cannot be undone.",
+  "@adminDeleteBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "adminCancelTitle": "Cancel this election?",
+  "adminCancelBody": "\"{title}\" will not open for voting. Voters will no longer see it as upcoming.",
+  "@adminCancelBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "adminCloseTitle": "Close voting now?",
+  "adminCloseBody": "\"{title}\" will stop accepting votes immediately. This cannot be undone.",
+  "@adminCloseBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "adminKeep": "Keep it",
+  "adminConfirmDelete": "Delete draft",
+  "adminConfirmCancel": "Cancel election",
+  "adminConfirmClose": "Close voting",
+  "adminGuideTitle1": "Set up",
+  "adminGuideBody1": "Details, schedule and who can vote.",
+  "adminGuideTitle2": "Add choices",
+  "adminGuideBody2": "Candidates or poll options.",
+  "adminGuideTitle3": "Publish",
+  "adminGuideBody3": "Review, then open it to voters.",
+  "adminGuideTitle4": "Monitor",
+  "adminGuideBody4": "Turnout while open, results after."
 }

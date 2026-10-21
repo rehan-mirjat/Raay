@@ -917,6 +917,312 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Platform'**
   String get navPlatformSectionLabel;
+
+  /// No description provided for @adminEventsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Elections'**
+  String get adminEventsTitle;
+
+  /// No description provided for @adminEventsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create, schedule and monitor elections for your organization.'**
+  String get adminEventsSubtitle;
+
+  /// No description provided for @adminCreateElection.
+  ///
+  /// In en, this message translates to:
+  /// **'Create election'**
+  String get adminCreateElection;
+
+  /// No description provided for @adminCommandCenter.
+  ///
+  /// In en, this message translates to:
+  /// **'Command center'**
+  String get adminCommandCenter;
+
+  /// No description provided for @adminSearchEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Search elections'**
+  String get adminSearchEvents;
+
+  /// No description provided for @adminFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get adminFilterAll;
+
+  /// No description provided for @adminFilterActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get adminFilterActive;
+
+  /// No description provided for @adminFilterScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get adminFilterScheduled;
+
+  /// No description provided for @adminFilterDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get adminFilterDraft;
+
+  /// No description provided for @adminFilterClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get adminFilterClosed;
+
+  /// No description provided for @adminFilterArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get adminFilterArchived;
+
+  /// No description provided for @adminNoEventsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No elections yet'**
+  String get adminNoEventsTitle;
+
+  /// No description provided for @adminNoEventsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first election. You can save it as a draft and publish it when it is ready.'**
+  String get adminNoEventsBody;
+
+  /// No description provided for @adminNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No elections match your search or filter.'**
+  String get adminNoMatch;
+
+  /// No description provided for @adminLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load your elections. Check your connection and try again.'**
+  String get adminLoadError;
+
+  /// No description provided for @adminOrgRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No active organization'**
+  String get adminOrgRequiredTitle;
+
+  /// No description provided for @adminOrgRequiredBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an organization to manage its elections.'**
+  String get adminOrgRequiredBody;
+
+  /// No description provided for @adminSuspendedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization suspended'**
+  String get adminSuspendedTitle;
+
+  /// No description provided for @adminSuspendedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This organization is suspended, so election management is disabled.'**
+  String get adminSuspendedBody;
+
+  /// No description provided for @adminProcessing.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating election...'**
+  String get adminProcessing;
+
+  /// No description provided for @adminEventRange.
+  ///
+  /// In en, this message translates to:
+  /// **'{start} to {end}'**
+  String adminEventRange(String start, String end);
+
+  /// No description provided for @adminTypeCandidate.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate election'**
+  String get adminTypeCandidate;
+
+  /// No description provided for @adminTypeSingle.
+  ///
+  /// In en, this message translates to:
+  /// **'Single-choice poll'**
+  String get adminTypeSingle;
+
+  /// No description provided for @adminTypeYesNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes/No poll'**
+  String get adminTypeYesNo;
+
+  /// No description provided for @adminActionDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete draft'**
+  String get adminActionDelete;
+
+  /// No description provided for @adminActionManageChoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage choices'**
+  String get adminActionManageChoices;
+
+  /// No description provided for @adminActionEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit details'**
+  String get adminActionEdit;
+
+  /// No description provided for @adminActionPublish.
+  ///
+  /// In en, this message translates to:
+  /// **'Review and publish'**
+  String get adminActionPublish;
+
+  /// No description provided for @adminActionCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel election'**
+  String get adminActionCancel;
+
+  /// No description provided for @adminActionViewDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View details'**
+  String get adminActionViewDetails;
+
+  /// No description provided for @adminActionCloseEarly.
+  ///
+  /// In en, this message translates to:
+  /// **'Close early'**
+  String get adminActionCloseEarly;
+
+  /// No description provided for @adminActionMonitor.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitor turnout'**
+  String get adminActionMonitor;
+
+  /// No description provided for @adminActionResults.
+  ///
+  /// In en, this message translates to:
+  /// **'View results'**
+  String get adminActionResults;
+
+  /// No description provided for @adminDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this draft?'**
+  String get adminDeleteTitle;
+
+  /// No description provided for @adminDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{title}\" will be permanently deleted. This cannot be undone.'**
+  String adminDeleteBody(String title);
+
+  /// No description provided for @adminCancelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this election?'**
+  String get adminCancelTitle;
+
+  /// No description provided for @adminCancelBody.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{title}\" will not open for voting. Voters will no longer see it as upcoming.'**
+  String adminCancelBody(String title);
+
+  /// No description provided for @adminCloseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Close voting now?'**
+  String get adminCloseTitle;
+
+  /// No description provided for @adminCloseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{title}\" will stop accepting votes immediately. This cannot be undone.'**
+  String adminCloseBody(String title);
+
+  /// No description provided for @adminKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get adminKeep;
+
+  /// No description provided for @adminConfirmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete draft'**
+  String get adminConfirmDelete;
+
+  /// No description provided for @adminConfirmCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel election'**
+  String get adminConfirmCancel;
+
+  /// No description provided for @adminConfirmClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close voting'**
+  String get adminConfirmClose;
+
+  /// No description provided for @adminGuideTitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up'**
+  String get adminGuideTitle1;
+
+  /// No description provided for @adminGuideBody1.
+  ///
+  /// In en, this message translates to:
+  /// **'Details, schedule and who can vote.'**
+  String get adminGuideBody1;
+
+  /// No description provided for @adminGuideTitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Add choices'**
+  String get adminGuideTitle2;
+
+  /// No description provided for @adminGuideBody2.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidates or poll options.'**
+  String get adminGuideBody2;
+
+  /// No description provided for @adminGuideTitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get adminGuideTitle3;
+
+  /// No description provided for @adminGuideBody3.
+  ///
+  /// In en, this message translates to:
+  /// **'Review, then open it to voters.'**
+  String get adminGuideBody3;
+
+  /// No description provided for @adminGuideTitle4.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitor'**
+  String get adminGuideTitle4;
+
+  /// No description provided for @adminGuideBody4.
+  ///
+  /// In en, this message translates to:
+  /// **'Turnout while open, results after.'**
+  String get adminGuideBody4;
 }
 
 class _AppLocalizationsDelegate
