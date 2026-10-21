@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/layout/responsive.dart';
+import '../../../core/navigation/exit_guard.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../services/firebase_service.dart';
@@ -17,7 +20,10 @@ import 'providers/organization_providers.dart';
 import '../../../core/utils/friendly_error.dart';
 
 class OrganizationSettingsScreen extends ConsumerStatefulWidget {
-  const OrganizationSettingsScreen({super.key});
+  const OrganizationSettingsScreen({super.key, this.logoPicker});
+
+  /// Replaces the gallery picker (tests). Returns the chosen image bytes.
+  final Future<Uint8List?> Function()? logoPicker;
 
   @override
   ConsumerState<OrganizationSettingsScreen> createState() => _OrganizationSettingsScreenState();
@@ -32,11 +38,27 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
 
   String? _loadedOrgId;
   bool _saving = false;
+
+  /// True while a staged logo is being uploaded as part of Save.
   bool _uploadingLogo = false;
+
+  /// A logo the owner picked but has not saved yet. Nothing is uploaded or
+  /// published until Save; Reset and leaving discard it.
+  Uint8List? _pendingLogo;
+
+  // Exit-guard plumbing (system back, sidebar, search and workspace switching).
+  late final ExitGuardNotifier _guardRegistry;
+  late final ExitGuard _guard;
+  Organization? _currentOrg;
 
   @override
   void initState() {
     super.initState();
+    _guardRegistry = ref.read(exitGuardProvider.notifier);
+    _guard = _confirmLeave;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _guardRegistry.register(_guard);
+    });
     _name.addListener(() => setState(() {}));
     _description.addListener(() => setState(() {}));
     _website.addListener(() => setState(() {}));
@@ -45,6 +67,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
 
   @override
   void dispose() {
+    final registry = _guardRegistry;
+    final guard = _guard;
+    Future.microtask(() => registry.unregister(guard));
     _description.dispose();
     _name.dispose();
     _website.dispose();
@@ -56,7 +81,53 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     return _name.text.trim() != org.name ||
         _description.text.trim() != org.description ||
         _website.text.trim() != (org.website ?? '') ||
-        _logoUrl.text.trim() != (org.logoUrl ?? '');
+        _logoUrl.text.trim() != (org.logoUrl ?? '') ||
+        _pendingLogo != null;
+  }
+
+  /// Save / Discard / Stay. Returns true when it is fine to leave.
+  Future<bool> _confirmLeave() async {
+    final org = _currentOrg;
+    if (org == null || !_hasUnsavedChanges(org) || !mounted) return true;
+    final choice = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Save your branding changes?'),
+        content: const Text(
+            'You changed this organization\'s branding but have not saved it. Discarded changes cannot be recovered.'),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+            onPressed: () => Navigator.pop(ctx, 'stay'),
+            child: const Text('Keep editing'),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+                minimumSize: const Size(48, 48), foregroundColor: KivoraColors.of(ctx).errorText),
+            onPressed: () => Navigator.pop(ctx, 'discard'),
+            child: const Text('Discard'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+            onPressed: () => Navigator.pop(ctx, 'save'),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+    if (choice == 'discard') {
+      setState(() {
+        _pendingLogo = null;
+        _logoUrl.text = org.logoUrl ?? '';
+      });
+      return true;
+    }
+    if (choice == 'save') return _save(org.id);
+    return false;
+  }
+
+  Future<void> _leaveToOverview() async {
+    if (await _confirmLeave() && mounted) context.go('/home');
   }
 
   @override
@@ -64,8 +135,22 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     final state = ref.watch(activeOrganizationContextProvider);
     final isDesktop = ResponsiveLayout.isWide(context);
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
+    final dirty = _currentOrg != null && _hasUnsavedChanges(_currentOrg!);
+    return PopScope(
+      canPop: !dirty,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final router = GoRouter.of(context);
+        if (await _confirmLeave() && mounted) {
+          if (router.canPop()) {
+            router.pop();
+          } else {
+            router.go('/home');
+          }
+        }
+      },
+      child: Scaffold(
+      backgroundColor: KivoraColors.backgroundOf(context),
       body: state.when(
         skipLoadingOnReload: true,
         loading: () => const LoadingView(message: 'Loading organization…'),
@@ -99,6 +184,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
             _logoUrl.text = org.logoUrl ?? '';
           }
 
+          _currentOrg = org;
           final unsaved = _hasUnsavedChanges(org);
 
           return SingleChildScrollView(
@@ -117,7 +203,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                       alignment: AlignmentDirectional.centerStart,
                       child: TextButton.icon(
                         style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
-                        onPressed: () => context.go('/home'),
+                        onPressed: _leaveToOverview,
                         icon: const Icon(Icons.arrow_back_rounded, size: 18),
                         label: const Text('Overview'),
                       ),
@@ -200,6 +286,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
             ),
           );
         },
+      ),
       ),
     );
   }
@@ -307,7 +394,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
   // CARD 2: ORGANIZATION LOGO
   // ===========================================================================
   Widget _buildLogoCard(BuildContext context, String orgId) {
-    final hasLogo = _logoUrl.text.isNotEmpty;
+    final hasLogo = _pendingLogo != null || _logoUrl.text.isNotEmpty;
 
     return Container(
       padding: const EdgeInsets.all(28),
@@ -368,13 +455,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: hasLogo
-                      ? Image.network(
-                          FirebaseService.sanitizeStorageUrl(_logoUrl.text),
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Center(
-                            child: Icon(Icons.business_rounded, size: 32, color: KivoraColors.of(context).accentText),
-                          ),
-                        )
+                      ? _logoImage(32)
                       : Center(
                           child: Icon(Icons.business_rounded, size: 32, color: KivoraColors.of(context).accentText),
                         ),
@@ -392,14 +473,14 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                         runSpacing: 8,
                         children: [
                           OutlinedButton.icon(
-                            onPressed: _uploadingLogo || _saving ? null : () => _pickAndUploadLogo(orgId),
+                            onPressed: _uploadingLogo || _saving ? null : _pickLogo,
                             icon: _uploadingLogo
                                 ? const SizedBox.square(
                                     dimension: 16,
                                     child: CircularProgressIndicator(strokeWidth: 2),
                                   )
                                 : const Icon(Icons.upload_rounded, size: 18),
-                            label: Text(_uploadingLogo ? 'Uploading...' : 'Upload logo'),
+                            label: Text(_pendingLogo != null ? 'Choose a different logo' : 'Choose logo'),
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                             ),
@@ -410,6 +491,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                                   ? null
                                   : () {
                                       setState(() {
+                                        _pendingLogo = null;
                                         _logoUrl.text = '';
                                       });
                                     },
@@ -444,7 +526,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     final nameStr = _name.text.trim().isEmpty ? 'Organization Name' : _name.text.trim();
     final descStr = _description.text.trim().isEmpty ? 'Description will appear here...' : _description.text.trim();
     final websiteStr = _website.text.trim().isEmpty ? 'No website added' : _website.text.trim();
-    final hasLogo = _logoUrl.text.isNotEmpty;
+    final hasLogo = _pendingLogo != null || _logoUrl.text.isNotEmpty;
 
     return Container(
       padding: const EdgeInsets.all(24),
@@ -495,13 +577,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: hasLogo
-                      ? Image.network(
-                          FirebaseService.sanitizeStorageUrl(_logoUrl.text),
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Center(
-                            child: Icon(Icons.business_rounded, size: 24, color: KivoraColors.of(context).accentText),
-                          ),
-                        )
+                      ? _logoImage(24)
                       : Center(
                           child: Icon(Icons.business_rounded, size: 24, color: KivoraColors.of(context).accentText),
                         ),
@@ -671,7 +747,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  _uploadingLogo ? 'Logo uploaded. Save to publish changes.' : 'Save to publish your branding, or reset to discard your changes.',
+                  _pendingLogo != null
+                      ? 'A new logo is selected but not uploaded yet. Save to upload and publish it.'
+                      : 'Save to publish your branding, or reset to discard your changes.',
                   style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                 ),
               ],
@@ -684,6 +762,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                 ? null
                 : () {
                     setState(() {
+                      _pendingLogo = null;
                       _name.text = org.name;
                       _description.text = org.description;
                       _website.text = org.website ?? '';
@@ -713,41 +792,51 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     );
   }
 
-  Future<void> _pickAndUploadLogo(String organizationId) async {
+  /// Picks an image and stages it. Nothing is uploaded or published until Save.
+  Future<void> _pickLogo() async {
     try {
-      final image = await ImagePicker().pickImage(
-        source: ImageSource.gallery,
-        maxWidth: 1200,
-        maxHeight: 1200,
-        imageQuality: 85,
-      );
-      if (image == null || !mounted) return;
-      final bytes = await image.readAsBytes();
+      Uint8List? bytes;
+      final custom = widget.logoPicker;
+      if (custom != null) {
+        bytes = await custom();
+      } else {
+        final image = await ImagePicker().pickImage(
+          source: ImageSource.gallery,
+          maxWidth: 1200,
+          maxHeight: 1200,
+          imageQuality: 85,
+        );
+        bytes = image == null ? null : await image.readAsBytes();
+      }
+      if (bytes == null || !mounted) return;
       if (bytes.length > 5242880) {
         throw Exception('Organization logo exceeds 5MB size limit.');
       }
-      setState(() => _uploadingLogo = true);
-      final url = await ref.read(organizationRepositoryProvider).uploadOrganizationLogo(
-            organizationId: organizationId,
-            imageBytes: bytes,
-          );
       if (!mounted) return;
-      setState(() => _logoUrl.text = url);
-      ref.read(organizationRepositoryProvider).clearCache();
-      ref.invalidate(activeOrganizationContextProvider);
-      ref.invalidate(userOrganizationsProvider);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Organization logo uploaded successfully.')),
-      );
+      setState(() => _pendingLogo = bytes);
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(friendlyError(error))),
         );
       }
-    } finally {
-      if (mounted) setState(() => _uploadingLogo = false);
     }
+  }
+
+  /// The staged logo if there is one, otherwise the saved one.
+  Widget _logoImage(double iconSize) {
+    final fallback = Center(
+      child: Icon(Icons.business_rounded, size: iconSize, color: KivoraColors.of(context).accentText),
+    );
+    final pending = _pendingLogo;
+    if (pending != null) {
+      return Image.memory(pending, fit: BoxFit.cover, errorBuilder: (_, __, ___) => fallback);
+    }
+    return Image.network(
+      FirebaseService.sanitizeStorageUrl(_logoUrl.text),
+      fit: BoxFit.cover,
+      errorBuilder: (_, __, ___) => fallback,
+    );
   }
 
   bool _validOptionalHttps(String? input) {
@@ -757,34 +846,56 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     return uri != null && uri.scheme == 'https' && uri.host.contains('.') && !uri.host.startsWith('.');
   }
 
-  Future<void> _save(String organizationId) async {
-    if (!_formKey.currentState!.validate()) return;
+  /// Uploads a staged logo (if any), then saves every field in one update.
+  /// Returns true only when everything was saved.
+  Future<bool> _save(String organizationId) async {
+    if (!_formKey.currentState!.validate()) return false;
     setState(() => _saving = true);
     try {
+      var logoUrl = _logoUrl.text.trim();
+      final staged = _pendingLogo;
+      if (staged != null) {
+        setState(() => _uploadingLogo = true);
+        logoUrl = await ref.read(organizationRepositoryProvider).uploadOrganizationLogo(
+              organizationId: organizationId,
+              imageBytes: staged,
+            );
+      }
       await FirebaseService().functions.httpsCallable('updateOrganization').call({
         'organizationId': organizationId,
         'name': _name.text.trim(),
         'description': _description.text.trim(),
         'website': _website.text.trim(),
-        'logoUrl': _logoUrl.text.trim(),
+        'logoUrl': logoUrl,
       });
+      if (mounted) {
+        setState(() {
+          _pendingLogo = null;
+          _logoUrl.text = logoUrl;
+        });
+      }
       ref.read(organizationRepositoryProvider).clearCache();
       ref.invalidate(activeOrganizationContextProvider);
       ref.invalidate(userOrganizationsProvider);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Organization branding saved.'),
-            backgroundColor: AppTheme.success,
-          ),
+          const SnackBar(content: Text('Organization branding saved.')),
         );
       }
+      return true;
     } on FirebaseFunctionsException catch (error) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message ?? 'Could not save branding.')));
-    } catch (_) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not save branding.')));
+      return false;
+    } catch (error) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(friendlyError(error, fallback: 'Could not save branding.'))));
+      return false;
     } finally {
-      if (mounted) setState(() => _saving = false);
+      if (mounted) {
+        setState(() {
+          _saving = false;
+          _uploadingLogo = false;
+        });
+      }
     }
   }
 

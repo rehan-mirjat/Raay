@@ -74,6 +74,12 @@ class _ScheduleStepState extends ConsumerState<ScheduleStep> {
         _endAt = selected;
       }
     });
+    // Keep the draft in step with the pickers so leaving is guarded.
+    final start = _startAt;
+    final end = _endAt;
+    if (start != null && end != null) {
+      ref.read(draftEventProvider(widget.orgId).notifier).updateSchedule(start, end);
+    }
   }
 
   void _validateAndProceed() {

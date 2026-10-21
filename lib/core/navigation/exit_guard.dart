@@ -8,12 +8,15 @@ typedef ExitGuard = Future<bool> Function();
 class ExitGuardNotifier extends StateNotifier<ExitGuard?> {
   ExitGuardNotifier() : super(null);
 
-  void register(ExitGuard guard) => state = guard;
+  void register(ExitGuard guard) {
+    if (mounted) state = guard;
+  }
 
   /// Only clears the guard if [guard] is still the registered one, so a screen
   /// being disposed cannot remove a newer screen's guard.
   void unregister(ExitGuard guard) {
-    if (identical(state, guard)) state = null;
+    // The whole scope may already be gone (app/test teardown).
+    if (mounted && identical(state, guard)) state = null;
   }
 }
 

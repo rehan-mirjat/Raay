@@ -33,8 +33,22 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
     _type = draft.votingType;
     _privacyMode = draft.privacyMode;
 
-    _titleCtrl.addListener(() => setState(() {}));
-    _descCtrl.addListener(() => setState(() {}));
+    // Every edit goes to the draft right away, so the builder's exit guard
+    // sees typed-but-not-yet-continued changes as unsaved work.
+    _titleCtrl.addListener(() {
+      setState(() {});
+      _syncDraft();
+    });
+    _descCtrl.addListener(() {
+      setState(() {});
+      _syncDraft();
+    });
+  }
+
+  void _syncDraft() {
+    if (!mounted) return;
+    ref.read(draftEventProvider(widget.orgId).notifier).updateBasicInfo(
+          _titleCtrl.text, _descCtrl.text, _type, _privacyMode);
   }
 
   @override
@@ -56,6 +70,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
       _type = type;
       _privacyMode = privacy;
     });
+    _syncDraft();
   }
 
   void _showTemplateSelector(BuildContext context) {
@@ -412,6 +427,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                         ? (value) {
                             if (value != null) {
                               setState(() => _privacyMode = value);
+                              _syncDraft();
                             }
                           }
                         : null,
@@ -480,7 +496,12 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
       // though onTap below is already correctly a no-op.
       opacity: enabled ? 1.0 : 0.5,
       child: InkWell(
-        onTap: enabled ? () => setState(() => _type = type) : null,
+        onTap: enabled
+            ? () {
+                setState(() => _type = type);
+                _syncDraft();
+              }
+            : null,
         borderRadius: BorderRadius.circular(12),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),

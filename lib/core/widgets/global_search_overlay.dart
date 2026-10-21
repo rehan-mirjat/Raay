@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../navigation/exit_guard.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -184,9 +185,14 @@ class _GlobalSearchDialogState extends ConsumerState<_GlobalSearchDialog> {
     return merged;
   }
 
-  void _navigate(String route) {
-    Navigator.of(context).pop();
-    context.go(route);
+  Future<void> _navigate(String route) async {
+    final navigator = Navigator.of(context);
+    final router = GoRouter.of(context);
+    // Leaving a screen with unsaved work (e.g. the election builder) asks first.
+    final canLeave = await canLeaveCurrentScreen(ProviderScope.containerOf(context));
+    if (!canLeave || !mounted) return;
+    navigator.pop();
+    router.go(route);
   }
 
   @override

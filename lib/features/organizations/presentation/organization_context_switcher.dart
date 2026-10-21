@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/navigation/exit_guard.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -113,11 +114,18 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                                 return _SwitcherOrgItem(
                                   org: org,
                                   isSelected: isSelected,
-                                  onTap: () {
-                                    ref
-                                        .read(activeOrgIdProvider.notifier)
-                                        .selectOrganization(org.id);
-                                    Navigator.pop(context);
+                                  onTap: () async {
+                                    final navigator = Navigator.of(context);
+                                    final container = ProviderScope.containerOf(context);
+                                    // Switching workspace leaves the current screen: ask first
+                                    // if it holds unsaved work.
+                                    final canLeave = await canLeaveCurrentScreen(container);
+                                    if (canLeave && !isSelected) {
+                                      await container
+                                          .read(activeOrgIdProvider.notifier)
+                                          .selectOrganization(org.id);
+                                    }
+                                    if (navigator.mounted) navigator.pop();
                                   },
                                 );
                               }),
