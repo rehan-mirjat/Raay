@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'core/widgets/glass/glass.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +17,7 @@ import 'core/router/app_router.dart';
 import 'core/deep_link/deep_link_handler.dart';
 import 'core/presentation/session_lock_screen.dart';
 import 'core/presentation/splash_screen.dart';
+import 'core/theme/kivora_colors.dart';
 import 'core/session/session_lock_provider.dart';
 import 'features/organizations/presentation/providers/organization_providers.dart';
 import 'features/onboarding/providers/onboarding_providers.dart';
@@ -212,7 +212,7 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
             child: content,
           );
         }
-        return GlassBackground(child: content);
+        return ColoredBox(color: KivoraColors.backgroundOf(context), child: content);
       },
     );
   }

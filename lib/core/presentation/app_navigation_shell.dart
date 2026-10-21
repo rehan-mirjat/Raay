@@ -13,10 +13,10 @@ import '../../services/firebase_service.dart';
 import '../layout/responsive.dart';
 import '../../features/auth/data/user_repository.dart';
 import '../theme/app_theme.dart';
+import '../theme/kivora_colors.dart';
 import '../theme/theme_provider.dart';
 import '../../features/onboarding/presentation/tour_keys.dart';
 import '../widgets/global_search_overlay.dart';
-import '../widgets/glass/glass.dart';
 
 // Persists sidebar collapsed state across navigations
 final _sidebarCollapsedProvider = StateProvider<bool>((ref) => false);
@@ -445,9 +445,8 @@ class _FloatingMobileNavBar extends StatelessWidget {
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          GlassSurface(
+          _BarSurface(
             borderRadius: 28,
-            blur: 22,
             child: SizedBox(
             height: 64,
             child: Padding(
@@ -609,9 +608,8 @@ class _TopHeader extends ConsumerWidget {
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1200),
-          child: GlassSurface(
+          child: _BarSurface(
             borderRadius: 20,
-            blur: 20,
             padding: EdgeInsets.symmetric(
               horizontal: isDesktop ? 16 : 10,
               vertical: 6,
@@ -1358,6 +1356,30 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                   color: color, fontSize: 13, fontWeight: FontWeight.w500)),
         ],
       ),
+    );
+  }
+}
+
+
+/// Solid, bordered bar surface used by the header and bottom navigation.
+class _BarSurface extends StatelessWidget {
+  const _BarSurface({required this.borderRadius, required this.child, this.padding});
+
+  final double borderRadius;
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+
+  @override
+  Widget build(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    return Container(
+      padding: padding,
+      decoration: BoxDecoration(
+        color: kc.surface,
+        borderRadius: BorderRadius.circular(borderRadius),
+        border: Border.all(color: kc.border),
+      ),
+      child: child,
     );
   }
 }

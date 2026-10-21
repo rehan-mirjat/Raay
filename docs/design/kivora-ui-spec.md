@@ -1,0 +1,177 @@
+# Kivora UI/UX Specification: "Clear & Confident"
+
+Status: **design specification + implementation plan**, written before screen changes.
+The wireframes below are ASCII layout intent, **not rendered mockups of the running app**.
+Nothing in this document claims a live visual audit of authenticated screens (see
+"Verification limits").
+
+## 1. Verification findings
+
+### 1.1 Confirmed defects (reproduced by reading the code path; fix status in section 9)
+
+| # | Defect | Evidence |
+|---|--------|----------|
+| 1 | Receipt verification shows "Not Found" for network/service failures | `receipt_verification_screen.dart`: `catch (_) { // Ignored - will show "Not Found" }` |
+| 2 | Portal "Results available" is inferred from lifecycle status | `voter_portal_screen.dart`: filter `resultsAvailable` returns `closed \|\| archived` |
+| 3 | Participation failure/loading falls back to "not voted" | `participationMap[id] ?? false`; provider failure -> empty map |
+| 4 | Unreachable medium branch + fixed aspect ratio | `isDesktop ? (isMedium ? 2 : 3)`: `isMedium` is false whenever `isWide` is true; `childAspectRatio: 1.15 / 1.9` |
+| 5 | `StatusBadge` has no Archived case, defaults to Draft | `status_badge.dart` `default:` falls into DRAFT |
+| 6 | Builder exits are not guarded consistently | `PopScope` guards system back; the on-screen back button calls `context.pop()/go()` directly |
+| 7 | "System" theme reloads as dark | `ThemeModeNotifier._load`: `default: return ThemeMode.dark` (the saved value `'system'` is not handled) |
+| 8 | Hardcoded colors bypass branding/high contrast; custom animations ignore reduced motion | many `AppTheme.primaryBlue`, `Colors.white`, `AnimatedContainer`, `FadeThrough` usages |
+| 9 | Hardcoded English strings / directional spacing | e.g. `'Participated'`, `'Results available'`, `EdgeInsets.only(left/right)` |
+
+### 1.2 Not reproduced / unverified
+* All authenticated-screen layouts at 360-1440px. No emulator seed data or demo accounts exist in the repo,
+  and production election data must not be used to populate screens.
+* Urdu/Arabic/Sindhi font glyph coverage (to be checked with a rendered test, section 8).
+* Whether the previous glass pass hurts readability. The spec replaces it; no measurement was made.
+
+### 1.3 Starting-token contrast problem (found by `contrast_check.py`)
+The brief's `#6D4AFF` fails as **text** on the dark surfaces (3.20:1 on `#171F2E`, 3.57:1 on `#0F1420`;
+need 4.5:1). It passes as a **filled button with white text** (5.15:1). Dark mode therefore gets a separate
+accent-text token (`#B8A8FF`, 6.8-8.8:1). Re-run `python3 docs/design/contrast_check.py` after any token change.
+
+## 2. Tokens (single source: `lib/core/theme/app_tokens.dart`, consumed by `AppTheme`/`KivoraColors`)
+
+| Token | Light | Dark |
+|-------|-------|------|
+| background | `#F7F8FC` | `#0F1420` |
+| surface | `#FFFFFF` | `#171F2E` |
+| surfaceElevated | `#FFFFFF` | `#202B3D` |
+| textPrimary | `#172033` | `#F4F6FB` |
+| textSecondary | `#526078` | `#B0BCD0` |
+| border | `#E2E7F0` | `#354158` |
+| primary (filled controls) | `#6D4AFF` (white label 5.15:1) | `#6D4AFF` (white label 5.15:1) |
+| primaryPressed | `#5936DB` | `#5936DB` |
+| accentText (links, selected text, focus ring) | `#5936DB` | `#B8A8FF` |
+| selectedFill | primary at 10% over surface | primary at 16% over surface |
+| success / warning / error / info | `#0F7A4F` / `#8A5A00` / `#B42318` / `#0B5CAD` | `#4ADE9A` / `#F5B94A` / `#FF8A80` / `#7DB8FF` |
+
+Rules: status is never color-only (icon + label). Disabled controls are exempt from contrast but must keep
+a text label. Organization branding may replace `primary`/`primaryPressed`; the theme re-derives `onPrimary`
+by contrast so a light brand color gets a dark label. High contrast mode raises borders and text.
+
+* Spacing: 4, 8, 12, 16, 24, 32, 48. Card radius 14, controls 12, chips 10.
+* Type: body 14-16, secondary at least 13, page heading 24-32 (clamped by text scale), min touch target 48x48.
+* Surfaces are solid. Borders separate. Shadow only on overlays (menus, dialogs, bottom sheets).
+* No global gradient/orbs/blur. Gradients allowed only in landing/auth branding panels.
+* Motion: every custom animation checks `MediaQuery.disableAnimations` (the app's reduced-motion setting already sets it).
+
+## 3. Responsive policy
+
+`ResponsiveLayout`: compact `< 600`, medium `600 <= w < 1024`, expanded `>= 1024` (replaces 600/900).
+Grids use a `LayoutBuilder` on the **available content width** (not window width), because the sidebar
+or rail consumes width: columns = `floor(contentWidth / 360)` clamped 1..3. Cards size to content
+(no `childAspectRatio`). Max content width 1200; forms 640-720; ballot 680.
+
+## 4. Navigation and information architecture
+
+| Width | Shell |
+|-------|-------|
+| Expanded | 248px sidebar (org switcher at top, grouped nav, active state) + compact header (page title, search, notifications, account) |
+| Medium | NavigationRail with labels as tooltips/semantics + same header |
+| Compact | Compact top bar (logo, org switcher chip, notifications, account) + 4 bottom destinations + "More" sheet |
+
+Destinations by role (membership role + `isObserver` capability, no new enum):
+
+| Role | Primary | Secondary ("More" / sidebar groups) |
+|------|---------|--------------------------------------|
+| Voter | My Elections, Organizations, Activity, Account | Calendar (inside My Elections), Help, Trust & Transparency |
+| Admin/Owner | Overview, Elections, People, Activity | Departments, Organization Settings, Billing (owner only), Calendar, Command Center |
+| Observer (capability) | Monitored elections first, aggregate turnout, timeline | Observer view is added for any member with `isObserver` |
+| Platform admin | adds a separate "Platform" group: Organization moderation, Accounts | |
+
+Route compatibility (existing deep links keep working via redirects):
+`/home` -> My Elections (voters) / Overview (admins). `/admin/events` stays for admins and redirects
+voters to `/home`. `/orgs/members`, `/orgs/departments`, `/orgs/audit`, `/calendar`, `/receipt`,
+`/receipt-verify`, `/transparency`, `/plans`, `/invite`, `/elections/:id/*` are unchanged.
+
+## 5. Screen layouts (wireframes)
+
+**Voter home (compact):**
+```
+[ Kivora ]  [Org v]        [bell][acct]
+My elections                 <- title + one line of context
+[search_____________] [filter v]
+READY TO VOTE
++--------------------------------------+
+| Board election          [ACTIVE]     |  title wraps, never clipped
+| Nexaura                              |
+| Closes Oct 24, 6:00 PM PKT | Anonymous|
+| [ Vote now ]                         |
++--------------------------------------+
+UPCOMING ...   PARTICIPATED (receipt) ...
+[Home][Orgs][Activity][Account]
+```
+Primary action by authoritative state: Vote now / View receipt / View details / Results pending /
+View published results. Participation unknown (loading or failed) shows a neutral "Checking..." chip with
+**View details**, never "Vote now" and never "Participated".
+
+**Admin overview (expanded):**
+```
+Nexaura                                    [ + Create election ]
+REQUIRED ACTIONS  (incomplete drafts, pending tasks; hidden if none)
+Metrics: [Members] [Active elections] [Pending invites]  (error -> "Unavailable", never 0)
+ACTIVE ELECTIONS   turnout bar + live count      | UPCOMING | RECENT ACTIVITY
+```
+Home, Organization Dashboard and Command Center overlap today: Overview becomes the single landing page;
+Command Center keeps its report/date-range tools as a section reachable from Elections.
+
+**Builder:** desktop = left step list (Details, Schedule, Eligibility, Choices, Review) + form (max 720);
+mobile = one step with a step counter. Footer: Back (left) / Continue (right) on every step.
+Saving state is shown only for real persistence ("Draft saved" after the server confirms,
+"Could not save" on failure). Timezone label next to the schedule fields.
+
+**Ballot:** `Choose -> Review -> Confirm -> Receipt`. Candidate cards: full names (wrap), equal size,
+selected = check icon + label + border + fill. The consequences panel states (a) anonymous: your choice is
+not linked to your account; (b) identifiable: your choice is recorded with your identity and visible to
+administrators. Finality note before the Confirm button. The sticky action bar reserves bottom padding
+in the scroll view and sits above the keyboard inset.
+
+**Receipt:** success banner first; Receipt ID and time with Copy/Verify; the hash in a collapsed
+"Technical details" section. Copy states that an anonymous receipt does not prove the selected choice.
+
+**Verification states:** `verified`, `not found` (genuine negative), `invalid input`, `service unavailable`
+(retry), each with its own message/icon.
+
+## 6. Component states
+
+Buttons: default, hover, pressed, focused (3px ring, accentText), disabled, loading (label kept, spinner,
+width stable). Cards: static vs tappable (hover border + focus ring). Badges: status and privacy with
+icon + text, Archived included. Inputs: error text below the field, helper text, 48px height.
+Every list/async region has loading, empty, error (with retry), permission-denied and populated states.
+Failed refreshes keep the last successful data and show a warning banner.
+
+## 7. Authentication, onboarding, settings, platform
+
+Auth: one split layout (branding panel on expanded, compact form otherwise), autofill hints, Enter submits,
+password visibility, inline errors, one primary action. Verification, resend (cooldown), MFA challenge
+and session unlock share the layout. Onboarding: 3 short skippable pages; pending invitation context is
+kept through sign-up. Settings: account and organization settings are separate screens with a shared
+unsaved-changes guard. Billing text follows `BILLING_ENABLED` and owner permission. Ads policy unchanged:
+never on ballot, receipt, verification, transparency, or management screens. Platform admin has its own
+nav group and confirmation dialogs that state the consequence of each moderation/privilege action.
+
+## 8. Validation plan
+
+Widths 360, 390, 600, 768, 1024, 1440; light/dark/system; en + ur/ar/sd (RTL); long names;
+text scale up to 2.0; keyboard focus order and visible focus; empty/populated; slow and failing network;
+already-voted and unknown participation; unpublished results; builder exit; submission failure and
+receipt recovery. Method: widget tests with `tester.view` sizes and `textScaler`, golden-free layout assertions
+(no overflow exceptions, key widgets reachable), plus Chrome-headless screenshots of public screens
+(landing, login, receipt verification). Authenticated screens are covered by widget tests with
+provider overrides and clearly-labelled fixtures, **not** by screenshots of live data.
+
+## 9. Implementation phases and status
+
+| Phase | Scope | Status |
+|-------|-------|--------|
+| 0 | Specification, contrast validation | done |
+| 1 | Tokens, theme, breakpoints, StatusBadge, theme-preference fix, remove glass/orbs | see commit log |
+| 2 | Navigation shell + role IA | pending |
+| 3 | Voter journey (home, details, ballot, receipt, verification) | pending |
+| 4 | Admin journey (overview, election list, builder) | pending |
+| 5 | Organizations, invitations, people, departments | pending |
+| 6 | Remaining screens, localization sweep, reduced motion | pending |
+| 7 | Verification pass and final report | pending |

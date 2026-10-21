@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/kivora_colors.dart';
-import '../glass/glass.dart';
 
 class KivoraCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry margin;
   final VoidCallback? onTap;
+  /// Emphasized card (e.g. the current plan): accent border, still solid.
+  /// Name kept for API compatibility; there is no glass effect.
   final bool isGlass;
 
   const KivoraCard({
@@ -29,17 +30,17 @@ class KivoraCard extends StatelessWidget {
         child: Padding(padding: padding, child: child),
       ),
     );
-    if (isGlass) {
-      return GlassSurface(margin: margin, child: content);
-    }
     final colors = KivoraColors.of(context);
     return Container(
       margin: margin,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: colors.elevated,
+        color: colors.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: colors.border),
+        border: Border.all(
+          color: isGlass ? colors.accentText : colors.border,
+          width: isGlass ? 1.5 : 1,
+        ),
       ),
       child: content,
     );

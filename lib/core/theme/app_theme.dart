@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // ── Brand Colors ────────────────────────────────────────────────────────────
-  static const Color primaryBlue = Color(0xFF7857F7);   // Kivora Violet (primary)
-  static const Color primaryBlueDark = Color(0xFF6644E8);
+  static const Color primaryBlue = Color(0xFF6D4AFF);   // Kivora Violet (primary, filled controls)
+  static const Color primaryBlueDark = Color(0xFF5936DB);   // pressed / hover
   static const Color secondaryBlue = Color(0xFF3284FF); // Secondary Blue
   static const Color accentCyan = Color(0xFF28C8FF);    // Accent Cyan
   static const Color secondaryNavy = Color(0xFF0B1020); // Deep Midnight
@@ -17,28 +17,42 @@ class AppTheme {
   static const Color warning = Color(0xFFF59E0B);
   static const Color identifiable = Color(0xFFBF360C);
 
+  // ── Accessible text accents (validated by docs/design/contrast_check.py) ───
+  // primaryBlue is for FILLED controls (white label, 5.15:1). As text on dark
+  // surfaces it fails (3.2:1), so text/links/selected states use these.
+  static const Color accentTextLight = Color(0xFF5936DB);
+  static const Color accentTextDark = Color(0xFFB8A8FF);
+  static const Color successTextLight = Color(0xFF0F7A4F);
+  static const Color warningTextLight = Color(0xFF8A5A00);
+  static const Color errorTextLight = Color(0xFFB42318);
+  static const Color infoTextLight = Color(0xFF0B5CAD);
+  static const Color successTextDark = Color(0xFF4ADE9A);
+  static const Color warningTextDark = Color(0xFFF5B94A);
+  static const Color errorTextDark = Color(0xFFFF8A80);
+  static const Color infoTextDark = Color(0xFF7DB8FF);
+
   // ── Light Mode Surfaces ──────────────────────────────────────────────────────
-  static const Color backgroundLight = Color(0xFFF6F8FC);
+  static const Color backgroundLight = Color(0xFFF7F8FC);
   static const Color surfaceWhite = Colors.white;
-  static const Color textPrimary = Color(0xFF0B1020);
-  static const Color textSecondary = Color(0xFF64748B);
-  static const Color borderLight = Color(0xFFE2E8F0);
-  static const Color surfaceBlue = Color(0xFFEEF2FF);   // Light violet tint
+  static const Color textPrimary = Color(0xFF172033);
+  static const Color textSecondary = Color(0xFF526078);
+  static const Color borderLight = Color(0xFFE2E7F0);
+  static const Color surfaceBlue = Color(0xFFF0EDFF);   // Light violet tint
 
   // ── Dark Mode Surfaces ───────────────────────────────────────────────────────
-  static const Color darkBackground = Color(0xFF0B1020);
-  static const Color darkSurface = Color(0xFF151B30);
-  static const Color darkElevated = Color(0xFF202740);
-  static const Color darkBorder = Color(0xFF2A3356);
-  static const Color darkTextPrimary = Color(0xFFF1F5F9);
-  static const Color darkTextSecondary = Color(0xFF94A3B8);
+  static const Color darkBackground = Color(0xFF0F1420);
+  static const Color darkSurface = Color(0xFF171F2E);
+  static const Color darkElevated = Color(0xFF202B3D);
+  static const Color darkBorder = Color(0xFF354158);
+  static const Color darkTextPrimary = Color(0xFFF4F6FB);
+  static const Color darkTextSecondary = Color(0xFFB0BCD0);
 
   // ── Shape Scale ──────────────────────────────────────────────────────────────
-  static const double radiusButton = 14.0;
-  static const double radiusInput = 14.0;
-  static const double radiusCard = 20.0;
-  static const double radiusDialog = 24.0;
-  static const double radiusSheet = 28.0;
+  static const double radiusButton = 12.0;
+  static const double radiusInput = 12.0;
+  static const double radiusCard = 14.0;
+  static const double radiusDialog = 16.0;
+  static const double radiusSheet = 20.0;
 
   // ── Gradient Helpers ─────────────────────────────────────────────────────────
   static const LinearGradient primaryGradient = LinearGradient(
@@ -51,19 +65,6 @@ class AppTheme {
     colors: [Color(0xFF151B30), Color(0xFF202740)],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-  );
-
-  static BoxDecoration get glassCard => BoxDecoration(
-    color: darkElevated.withValues(alpha: 0.85),
-    borderRadius: BorderRadius.circular(radiusCard),
-    border: Border.all(color: darkBorder, width: 1),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withValues(alpha: 0.2),
-        blurRadius: 20,
-        offset: const Offset(0, 6),
-      ),
-    ],
   );
 
   // ── Organization Branding ────────────────────────────────────────────────────
@@ -167,7 +168,7 @@ class AppTheme {
         onSecondary: Colors.white,
         onSurface: textPrimary,
       ),
-      scaffoldBackgroundColor: Colors.transparent,
+      scaffoldBackgroundColor: backgroundLight,
       textTheme: _buildTextTheme(isLight: true),
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
@@ -179,7 +180,7 @@ class AppTheme {
         },
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
+        backgroundColor: backgroundLight,
         foregroundColor: textPrimary,
         elevation: 0,
         centerTitle: false,
@@ -226,7 +227,7 @@ class AppTheme {
         hintColor: textSecondary,
       ),
       cardTheme: CardThemeData(
-        color: surfaceWhite.withValues(alpha: 0.72),
+        color: surfaceWhite,
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         shadowColor: Colors.black.withValues(alpha: 0.06),
@@ -237,7 +238,7 @@ class AppTheme {
         margin: EdgeInsets.zero,
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: surfaceWhite.withValues(alpha: 0.94),
+        backgroundColor: surfaceWhite,
         elevation: 8,
         surfaceTintColor: Colors.transparent,
         shadowColor: Colors.black.withValues(alpha: 0.12),
@@ -319,7 +320,7 @@ class AppTheme {
         onSecondary: Colors.white,
         onSurface: darkTextPrimary,
       ),
-      scaffoldBackgroundColor: Colors.transparent,
+      scaffoldBackgroundColor: darkBackground,
       textTheme: _buildTextTheme(isLight: false),
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
@@ -331,7 +332,7 @@ class AppTheme {
         },
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
+        backgroundColor: darkBackground,
         foregroundColor: darkTextPrimary,
         elevation: 0,
         centerTitle: false,
@@ -378,7 +379,7 @@ class AppTheme {
         hintColor: darkTextSecondary,
       ),
       cardTheme: CardThemeData(
-        color: darkSurface.withValues(alpha: 0.62),
+        color: darkSurface,
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         shadowColor: Colors.black.withValues(alpha: 0.3),
@@ -389,7 +390,7 @@ class AppTheme {
         margin: EdgeInsets.zero,
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: darkSurface.withValues(alpha: 0.92),
+        backgroundColor: darkSurface,
         elevation: 12,
         surfaceTintColor: Colors.transparent,
         shadowColor: Colors.black.withValues(alpha: 0.4),
@@ -612,7 +613,14 @@ class _SmoothPageTransitionsBuilder extends PageTransitionsBuilder {
           begin: const Offset(0, 0.03),
           end: Offset.zero,
         ).animate(curved),
-        child: child,
+        // Solid backing: screens that leave their Scaffold transparent must
+        // still paint an opaque page so the previous route never shows through.
+        child: ColoredBox(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? AppTheme.darkBackground
+              : AppTheme.backgroundLight,
+          child: child,
+        ),
       ),
     );
   }

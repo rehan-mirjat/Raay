@@ -17,9 +17,7 @@ class KivoraColors {
   Color get background =>
       _isDark ? AppTheme.darkBackground : AppTheme.backgroundLight;
 
-  Color get surface => _isDark
-      ? AppTheme.darkSurface.withValues(alpha: 0.58)
-      : AppTheme.surfaceWhite.withValues(alpha: 0.72);
+  Color get surface => _isDark ? AppTheme.darkSurface : AppTheme.surfaceWhite;
 
   Color get elevated =>
       _isDark ? AppTheme.darkElevated : AppTheme.surfaceWhite;
@@ -37,6 +35,20 @@ class KivoraColors {
       _isDark
           ? AppTheme.primaryBlue.withValues(alpha: 0.12)
           : AppTheme.surfaceBlue;
+
+  /// Text/link/selected-state accent. Use this (not [AppTheme.primaryBlue])
+  /// for violet TEXT or thin icons: primaryBlue fails contrast on dark surfaces.
+  Color get accentText =>
+      _isDark ? AppTheme.accentTextDark : AppTheme.accentTextLight;
+
+  Color get successText =>
+      _isDark ? AppTheme.successTextDark : AppTheme.successTextLight;
+  Color get warningText =>
+      _isDark ? AppTheme.warningTextDark : AppTheme.warningTextLight;
+  Color get errorText =>
+      _isDark ? AppTheme.errorTextDark : AppTheme.errorTextLight;
+  Color get infoText =>
+      _isDark ? AppTheme.infoTextDark : AppTheme.infoTextLight;
 
   bool get isDark => _isDark;
 
