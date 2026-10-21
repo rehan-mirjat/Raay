@@ -13,6 +13,7 @@ import '../../../core/theme/theme_provider.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
+import '../../../core/widgets/status_badge.dart';
 import '../../../core/widgets/totp_enroll_dialog.dart';
 import '../../../core/widgets/ui_kit/kivora_button.dart';
 import '../../../core/widgets/ui_kit/kivora_card.dart';
@@ -55,6 +56,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   void initState() {
     super.initState();
     _selectedIndex = widget.initialTab;
+  }
+
+  /// Only messages our own service layer wrote (plain `Exception: text`) reach
+  /// the user; anything else (platform/network errors) becomes a generic line.
+  String _friendly(Object e) {
+    final text = e.toString();
+    if (e is Exception && text.startsWith('Exception: ') && !text.contains('Firebase')) {
+      return text.substring('Exception: '.length);
+    }
+    return 'Something went wrong. Please try again.';
   }
 
   @override
@@ -110,7 +121,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       });
     } catch (e) {
       setState(() {
-        _error = 'Failed to upload photo: $e';
+        _error = 'Could not upload the photo. Please try again.';
         _isUploadingPhoto = false;
       });
     }
@@ -143,7 +154,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       });
     } catch (e) {
       setState(() {
-        _error = e.toString().replaceAll('Exception: ', '');
+        _error = _friendly(e);
       });
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -156,7 +167,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final kc = KivoraColors.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: kc.background,
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Center(
@@ -165,12 +176,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Account Settings',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: kc.textPrimary,
-                      ),
+                Semantics(
+                  header: true,
+                  child: Text(
+                    'Account Settings',
+                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: kc.textPrimary),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 userAsync.when(
@@ -178,7 +189,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       const LoadingView(message: 'Loading user profile...'),
                   error: (err, stack) => ErrorView(
                     type: ErrorViewType.generic,
-                    message: 'Error loading profile: $err',
+                    message: 'We could not load your profile. Check your connection and try again.',
                     onRetry: () =>
                         ref.invalidate(userProfileProvider(widget.uid)),
                   ),
@@ -269,11 +280,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    final color = isSelected ? AppTheme.primaryBlue : KivoraColors.textPrimaryOf(context);
+    final color = isSelected ? KivoraColors.of(context).accentText : KivoraColors.textPrimaryOf(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
+        constraints: const BoxConstraints(minHeight: 48),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: isSelected
@@ -285,11 +297,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           children: [
             Icon(icon, color: color, size: 20),
             const SizedBox(width: 12),
-            Text(
-              title,
-              style: TextStyle(
-                color: color,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: color,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                ),
               ),
             ),
           ],
@@ -299,86 +313,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Widget _buildMobileSectionCards(BuildContext context) {
-    final kc = KivoraColors.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        for (var i = 0; i < _tabs.length; i++) ...[
-          if (i > 0) const SizedBox(height: 8),
-          _buildSectionCard(
-            context: context,
-            icon: _tabs[i].icon,
-            title: _tabs[i].title,
-            isSelected: _selectedIndex == i,
-            onTap: () => setState(() => _selectedIndex = i),
-            kc: kc,
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildSectionCard({
-    required BuildContext context,
-    required IconData icon,
-    required String title,
-    required bool isSelected,
-    required VoidCallback onTap,
-    required KivoraColors kc,
-  }) {
-    const accentColor = AppTheme.primaryBlue;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? accentColor.withValues(alpha: 0.08)
-                : kc.surface,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: isSelected ? accentColor.withValues(alpha: 0.35) : kc.border,
-              width: isSelected ? 1.5 : 1,
-            ),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? accentColor.withValues(alpha: 0.12)
-                      : kc.border.withValues(alpha: 0.35),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  icon,
-                  size: 18,
-                  color: isSelected ? accentColor : kc.textSecondary,
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                    color: isSelected ? accentColor : kc.textPrimary,
-                  ),
-                ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                size: 20,
-                color: isSelected ? accentColor : kc.textSecondary,
-              ),
-            ],
+    // One compact, scrollable row instead of five stacked cards that pushed
+    // the actual settings below the fold.
+    return SizedBox(
+      height: 48,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: _tabs.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (context, i) => Center(
+          child: ChoiceChip(
+            avatar: Icon(_tabs[i].icon, size: 18),
+            label: Text(_tabs[i].shortTitle),
+            selected: _selectedIndex == i,
+            showCheckmark: false,
+            materialTapTargetSize: MaterialTapTargetSize.padded,
+            onSelected: (_) => setState(() => _selectedIndex = i),
           ),
         ),
       ),
@@ -481,48 +431,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Row(
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: isEmailVerified
-                                ? AppTheme.success.withValues(alpha: 0.12)
-                                : AppTheme.warning.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            isEmailVerified ? 'VERIFIED' : 'UNVERIFIED',
-                            style: TextStyle(
-                              color: isEmailVerified
-                                  ? AppTheme.success
-                                  : AppTheme.warning,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 10,
-                            ),
-                          ),
+                        StatusBadge(
+                          label: isEmailVerified ? 'VERIFIED' : 'UNVERIFIED',
+                          backgroundColor: (isEmailVerified ? kc.successText : kc.warningText)
+                              .withValues(alpha: kc.isDark ? 0.16 : 0.10),
+                          textColor: isEmailVerified ? kc.successText : kc.warningText,
+                          icon: isEmailVerified ? Icons.verified_outlined : Icons.info_outline_rounded,
                         ),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: user.status == 'active'
-                                ? AppTheme.primaryBlue.withValues(alpha: 0.12)
-                                : AppTheme.warning.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            user.status.toUpperCase(),
-                            style: TextStyle(
-                              color: user.status == 'active'
-                                  ? AppTheme.primaryBlue
-                                  : AppTheme.warning,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 10,
-                            ),
-                          ),
+                        StatusBadge(
+                          label: user.status.toUpperCase(),
+                          backgroundColor: (user.status == 'active' ? kc.accentText : kc.warningText)
+                              .withValues(alpha: kc.isDark ? 0.16 : 0.10),
+                          textColor: user.status == 'active' ? kc.accentText : kc.warningText,
                         ),
                       ],
                     ),
@@ -914,7 +838,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 title: Text('Reduce motion', style: TextStyle(color: kc.textPrimary)),
                 subtitle: Text('Minimize animations throughout the app.',
                     style: TextStyle(fontSize: 12, color: kc.textSecondary)),
-                activeThumbColor: AppTheme.primaryBlue,
+                
                 contentPadding: EdgeInsets.zero,
               ),
               SwitchListTile(
@@ -923,7 +847,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 title: Text('High contrast', style: TextStyle(color: kc.textPrimary)),
                 subtitle: Text('Increase text and border contrast for better visibility.',
                     style: TextStyle(fontSize: 12, color: kc.textSecondary)),
-                activeThumbColor: AppTheme.primaryBlue,
+                
                 contentPadding: EdgeInsets.zero,
               ),
               const SizedBox(height: 4),
@@ -947,7 +871,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           .updateNotificationPreferences(preferences: updated);
     } catch (e) {
       if (mounted) {
-        setState(() => _error = e.toString().replaceAll('Exception: ', ''));
+        setState(() => _error = _friendly(e));
       }
     } finally {
       if (mounted) setState(() => _isSavingPrefs = false);
@@ -980,7 +904,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
             Switch(
               value: prefs[key] ?? true,
-              activeThumbColor: AppTheme.primaryBlue,
+              
               onChanged: _isSavingPrefs
                   ? null
                   : (value) => _updateNotificationPreference(prefs, key, value),
@@ -1059,7 +983,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         }
       } catch (e) {
         if (mounted) {
-          setState(() => _error = e.toString().replaceAll('Exception: ', ''));
+          setState(() => _error = _friendly(e));
         }
       } finally {
         if (mounted) setState(() => _isLinkingAccount = false);
@@ -1098,7 +1022,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         }
       } catch (e) {
         if (mounted) {
-          setState(() => _error = e.toString().replaceAll('Exception: ', ''));
+          setState(() => _error = _friendly(e));
         }
       } finally {
         if (mounted) setState(() => _isLinkingAccount = false);
@@ -1115,63 +1039,68 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: AppTheme.primaryBlue.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(icon, color: AppTheme.primaryBlue, size: 20),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryBlue.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(icon, color: kc.accentText, size: 20),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 15, color: kc.textPrimary)),
+                      const SizedBox(height: 2),
+                      Text(subtitle, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsetsDirectional.only(start: 54),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  Text(title,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                          color: kc.textPrimary)),
-                  const SizedBox(height: 2),
-                  Text(subtitle,
-                      style: TextStyle(fontSize: 12, color: kc.textSecondary)),
+                  if (isConnected)
+                    StatusBadge(
+                      label: 'CONNECTED',
+                      backgroundColor: kc.successText.withValues(alpha: kc.isDark ? 0.16 : 0.10),
+                      textColor: kc.successText,
+                      icon: Icons.check_circle_outline,
+                    )
+                  else if (onConnect != null)
+                    KivoraButton(
+                      type: KivoraButtonType.secondary,
+                      label: 'Connect',
+                      isExpanded: false,
+                      isLoading: _isLinkingAccount,
+                      onPressed: _isLinkingAccount ? null : onConnect,
+                    ),
+                  if (isConnected && onDisconnect != null)
+                    TextButton(
+                      style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                      onPressed: _isLinkingAccount ? null : onDisconnect,
+                      child: Text('Disconnect', style: TextStyle(color: kc.errorText)),
+                    ),
                 ],
               ),
             ),
-            if (isConnected)
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppTheme.success.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Text('CONNECTED',
-                    style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.success)),
-              )
-            else if (onConnect != null)
-              KivoraButton(
-                type: KivoraButtonType.secondary,
-                label: 'Connect',
-                isExpanded: false,
-                isLoading: _isLinkingAccount,
-                onPressed: _isLinkingAccount ? null : onConnect,
-              ),
-            if (isConnected && onDisconnect != null) ...[
-              const SizedBox(width: 8),
-              TextButton(
-                onPressed: _isLinkingAccount ? null : onDisconnect,
-                child: const Text('Disconnect',
-                    style: TextStyle(color: AppTheme.error)),
-              ),
-            ],
           ],
         ),
       );
