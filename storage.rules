@@ -111,8 +111,10 @@ service firebase.storage {
     // updateOrganization callable.
     match /organizations/{orgId}/logo/{fileName} {
       allow read: if isActiveMember(orgId);
+      // A pending (not yet verified) organization may still set its branding:
+      // updateOrganization has no status check either. Suspended/rejected may not.
       allow create, update: if isOwner(orgId)
-        && orgOperational(orgId)
+        && orgCanRunEvents(orgId)
         && request.resource.contentType.matches('image/(png|jpeg|webp)')
         && request.resource.size > 0
         && request.resource.size <= 2 * 1024 * 1024;
