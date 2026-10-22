@@ -809,8 +809,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
         bytes = image == null ? null : await image.readAsBytes();
       }
       if (bytes == null || !mounted) return;
-      if (bytes.length > 5242880) {
-        throw Exception('Organization logo exceeds 5MB size limit.');
+      // Storage rules reject anything over 2 MB, so refuse it here with a clear message.
+      if (bytes.length > 2 * 1024 * 1024) {
+        throw Exception('The logo is larger than 2 MB. Choose a smaller image.');
       }
       if (!mounted) return;
       setState(() => _pendingLogo = bytes);

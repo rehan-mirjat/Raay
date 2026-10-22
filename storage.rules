@@ -32,6 +32,11 @@ service firebase.storage {
         && firestore.get(memberPath(orgId)).data.organizationId == orgId;
     }
 
+    function isOwner(orgId) {
+      return isActiveMember(orgId)
+        && firestore.get(memberPath(orgId)).data.role == "owner";
+    }
+
     function isOwnerOrAdmin(orgId) {
       return isActiveMember(orgId)
         && firestore.get(memberPath(orgId)).data.role in ["owner", "admin"];
@@ -82,14 +87,17 @@ service firebase.storage {
     }
 
     // ---- Organization logo (Owner only manages branding; 2 MB) ----
+    // Only the Owner may change the file: an Admin overwriting logo.png would
+    // change what members see without going through the Owner-only
+    // updateOrganization callable.
     match /organizations/{orgId}/logo/{fileName} {
       allow read: if isActiveMember(orgId);
-      allow create, update: if isOwnerOrAdmin(orgId)
+      allow create, update: if isOwner(orgId)
         && orgOperational(orgId)
         && request.resource.contentType.matches('image/(png|jpeg|webp)')
         && request.resource.size > 0
         && request.resource.size <= 2 * 1024 * 1024;
-      allow delete: if isOwnerOrAdmin(orgId);
+      allow delete: if isOwner(orgId);
     }
 
     // ---- Deny everything else ----
