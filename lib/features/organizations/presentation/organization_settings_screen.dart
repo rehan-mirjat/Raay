@@ -1,3 +1,4 @@
+import '../../../core/utils/error_utils.dart';
 import 'dart:typed_data';
 
 import 'package:cloud_functions/cloud_functions.dart';
@@ -505,7 +506,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'PNG, JPEG or WebP · Up to 5 MB\nUse a square image for the best result.',
+                        'PNG, JPEG or WebP · Up to 2 MB\nUse a square image for the best result.',
                         style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.3),
                       ),
                     ],
@@ -885,10 +886,15 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
       }
       return true;
     } on FirebaseFunctionsException catch (error) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message ?? 'Could not save branding.')));
+      debugPrint('Save branding failed: ${error.code} ${error.message}');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(mapFirebaseFunctionsError(error))));
+      }
       return false;
     } catch (error) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(friendlyError(error, fallback: 'Could not save branding.'))));
+      debugPrint('Save branding failed: $error');
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(friendlyError(error, fallback: 'Could not save branding. Check your connection and try again.'))));
       return false;
     } finally {
       if (mounted) {

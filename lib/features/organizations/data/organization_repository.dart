@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -691,10 +691,9 @@ class OrganizationRepository {
       throw Exception('Unauthorized organization logo upload.');
     }
 
-    // Enforce 5 MB (5,242,880 bytes) limit
-    if (imageBytes.length > 5242880) {
-      throw Exception(
-          'Organization logo exceeds 5MB size limit.');
+    // Same limit as the Storage rule (2 MB); the rule rejects anything larger.
+    if (imageBytes.length > 2 * 1024 * 1024) {
+      throw Exception('The logo is larger than 2 MB. Choose a smaller image.');
     }
 
     // Determine content type
@@ -712,25 +711,28 @@ class OrganizationRepository {
     final storageRef = _firebase.storage
         .ref()
         .child('organizations/$organizationId/logo/logo.$extension');
-    final uploadTask = await storageRef.putData(
-      Uint8List.fromList(imageBytes),
-      SettableMetadata(contentType: contentType),
-    );
-
-    final downloadUrl = await uploadTask.ref.getDownloadURL();
-
-    // Update Firestore via server-authoritative updateOrganization Cloud Function
+    final String downloadUrl;
     try {
-      final callable = _firebase.functions.httpsCallable('updateOrganization');
-      await callable.call({
-        'organizationId': organizationId,
-        'logoUrl': downloadUrl,
+      final uploadTask = await storageRef.putData(
+        Uint8List.fromList(imageBytes),
+        SettableMetadata(contentType: contentType),
+      );
+      downloadUrl = await uploadTask.ref.getDownloadURL();
+    } on FirebaseException catch (e) {
+      debugPrint('Logo upload failed: ${e.code} ${e.message}');
+      throw Exception(switch (e.code) {
+        'unauthorized' || 'permission-denied' =>
+          'The logo could not be uploaded. Only the Owner can change it, and it must be a PNG, JPEG or WebP under 2 MB.',
+        'canceled' => 'The logo upload was cancelled.',
+        'retry-limit-exceeded' || 'unavailable' =>
+          'The logo upload was interrupted. Check your connection and try again.',
+        _ => 'The logo could not be uploaded. Please try again.',
       });
-      _orgCache.remove(organizationId);
-    } on FirebaseFunctionsException catch (e) {
-      throw Exception(mapFirebaseFunctionsError(e));
     }
 
+    // The caller saves the URL together with the other fields through the
+    // server-authoritative updateOrganization callable (one request, one place
+    // to report failure).
     return downloadUrl;
   }
 }
