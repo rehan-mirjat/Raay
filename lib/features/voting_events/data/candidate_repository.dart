@@ -75,13 +75,17 @@ class CandidateRepository {
       if (problem != null) throw Exception(candidatePhotoMessage(problem));
     }
     try {
-      final updateCallable = _firebase.functions.httpsCallable('updateCandidate');
-      await updateCallable.call({
-        'candidateId': candidateId,
-        if (name != null) 'name': name,
-        if (party != null) 'party': party,
-        if (bio != null) 'bio': bio,
-      });
+      // Only call the server when text actually changed; it rejects an
+      // update with nothing to change.
+      if (name != null || party != null || bio != null) {
+        final updateCallable = _firebase.functions.httpsCallable('updateCandidate');
+        await updateCallable.call({
+          'candidateId': candidateId,
+          if (name != null) 'name': name,
+          if (party != null) 'party': party,
+          if (bio != null) 'bio': bio,
+        });
+      }
 
       if (newPhotoBytes != null && expectedPhotoPath != null) {
         // Upload over the same path first; the old photo is only replaced once

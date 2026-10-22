@@ -5,7 +5,8 @@ rules_version = '2';
 // Candidate photo path (exactly as used by createCandidate / finalizeCandidatePhoto):
 //   organizations/{orgId}/events/{eventId}/candidates/{candidateId}/photo.jpg
 //
-// - Read:   any ACTIVE member of that organization (no public/token URLs are issued).
+// - Read:   Owner/Admin always; other ACTIVE members only after the event leaves DRAFT
+//           (no public/token URLs are issued).
 // - Write:  Owner/Admin of the organization, only while the event is DRAFT,
 //           only to the fixed file name photo.jpg, image/jpeg, max 5 MB.
 //           finalizeCandidatePhoto re-verifies size, content type and JPEG signature.
@@ -59,6 +60,20 @@ service firebase.storage {
       return ev.organizationId == orgId && ev.status == "DRAFT";
     }
 
+    // Members may only see a candidate photo once the election is out of DRAFT,
+    // mirroring the Firestore rule that hides draft candidates from members.
+    function eventVisibleToMembers(orgId, eventId) {
+      let ev = firestore.get(/databases/(default)/documents/votingEvents/$(eventId)).data;
+      return ev.organizationId == orgId && ev.status != "DRAFT";
+    }
+
+    // The path must name a real candidate of THIS event; otherwise an admin could
+    // park arbitrary 5 MB objects under invented candidate ids.
+    function candidateBelongsToEvent(orgId, eventId, candidateId) {
+      let c = firestore.get(/databases/(default)/documents/candidates/$(candidateId)).data;
+      return c.organizationId == orgId && c.votingEventId == eventId;
+    }
+
     function validJpeg() {
       return request.resource.contentType == "image/jpeg"
         && request.resource.size > 0
@@ -67,10 +82,14 @@ service firebase.storage {
 
     // ---- Candidate photographs ----
     match /organizations/{orgId}/events/{eventId}/candidates/{candidateId}/photo.jpg {
-      allow read: if isActiveMember(orgId);
+      allow read: if isOwnerOrAdmin(orgId)
+        || (isActiveMember(orgId)
+            && orgCanRunEvents(orgId)
+            && eventVisibleToMembers(orgId, eventId));
       allow create, update: if isOwnerOrAdmin(orgId)
         && orgCanRunEvents(orgId)
         && eventIsDraft(orgId, eventId)
+        && candidateBelongsToEvent(orgId, eventId, candidateId)
         && validJpeg();
       allow delete: if isOwnerOrAdmin(orgId);
     }

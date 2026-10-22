@@ -100,14 +100,28 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
           photoBytes: _selectedImageBytes,
         );
       } else {
+        final saved = widget.existingCandidate!;
+        final changes = changedCandidateText(
+          savedName: saved.name,
+          savedParty: saved.party,
+          savedBio: saved.bio,
+          name: _nameCtrl.text,
+          party: _partyCtrl.text,
+          bio: _bioCtrl.text,
+        );
+        if (changes.isEmpty && _selectedImageBytes == null) {
+          // Nothing to save; just close instead of showing a server error.
+          if (mounted) Navigator.pop(context);
+          return;
+        }
         await repo.updateCandidate(
-          candidateId: widget.existingCandidate!.id,
-          name: _nameCtrl.text.trim(),
-          party: _partyCtrl.text.trim(),
-          bio: _bioCtrl.text.trim(),
+          candidateId: saved.id,
+          name: changes['name'],
+          party: changes['party'],
+          bio: changes['bio'],
           newPhotoBytes: _selectedImageBytes,
-          expectedPhotoPath: _selectedImageBytes != null 
-              ? widget.existingCandidate!.photoPath ?? 'organizations/${widget.orgId}/events/${widget.eventId}/candidates/${widget.existingCandidate!.id}/photo.jpg'
+          expectedPhotoPath: _selectedImageBytes != null
+              ? saved.photoPath ?? 'organizations/${widget.orgId}/events/${widget.eventId}/candidates/${saved.id}/photo.jpg'
               : null,
         );
       }
@@ -229,13 +243,19 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                     controller: _nameCtrl,
                     label: 'Full name *',
                     hint: 'e.g. Dr. Sarah Jenkins',
-                    validator: (v) => v == null || v.trim().length < 2 ? 'Enter the candidate\'s name (at least 2 characters).' : null,
+                    validator: (v) {
+                      final n = v?.trim().length ?? 0;
+                      if (n < 2) return 'Enter the candidate\'s name (at least 2 characters).';
+                      if (n > 100) return 'Use 100 characters or fewer.';
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
                   KivoraTextField(
                     controller: _partyCtrl,
                     label: 'Party / Affiliation (Optional)',
                     hint: 'e.g. Progressive Coalition',
+                    validator: (v) => (v?.trim().length ?? 0) > 100 ? 'Use 100 characters or fewer.' : null,
                   ),
                   const SizedBox(height: 16),
                   KivoraTextField(
@@ -243,6 +263,7 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                     label: 'Candidate Bio / Vision Statement (Optional)',
                     hint: 'Brief summary of experience and objectives...',
                     maxLines: 3,
+                    validator: (v) => (v?.trim().length ?? 0) > 1000 ? 'Use 1,000 characters or fewer.' : null,
                   ),
                   if (_error != null) ...[
                     const SizedBox(height: 16),

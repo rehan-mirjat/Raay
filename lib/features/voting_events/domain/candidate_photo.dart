@@ -23,3 +23,21 @@ String candidatePhotoMessage(CandidatePhotoProblem p) => switch (p) {
       CandidatePhotoProblem.notJpeg => 'Candidate photos must be JPEG (.jpg) images. Choose a JPEG photo.',
       CandidatePhotoProblem.tooLarge => 'That photo is larger than 5 MB. Choose a smaller one.',
     };
+
+/// Which text fields differ from the saved candidate. updateCandidate rejects a
+/// call with no changes ("No changes provided"), so a photo-only edit must not
+/// call it at all. Values are trimmed and compared as the server stores them.
+Map<String, String> changedCandidateText({
+  required String savedName,
+  required String savedParty,
+  required String savedBio,
+  required String name,
+  required String party,
+  required String bio,
+}) {
+  final out = <String, String>{};
+  if (name.trim() != savedName.trim()) out['name'] = name.trim();
+  if (party.trim() != savedParty.trim()) out['party'] = party.trim();
+  if (bio.trim() != savedBio.trim()) out['bio'] = bio.trim();
+  return out;
+}

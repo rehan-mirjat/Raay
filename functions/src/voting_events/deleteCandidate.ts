@@ -46,7 +46,9 @@ export const deleteCandidate = onCall(CALLABLE_OPTIONS, async (request) => {
         resourceId: candidateId,
         metadata: { candidateName: cand.name, votingEventId: cand.votingEventId },
       });
-      return (cand.photoPath as string | null) || null;
+      // Also clear a photo that was uploaded but never finalized (photoPath still null).
+      return (cand.photoPath as string | null) ||
+        `organizations/${organizationId}/events/${cand.votingEventId}/candidates/${candidateId}/photo.jpg`;
     });
   } catch (error) {
     failWith("deleteCandidate", error, "Failed to delete candidate.");
