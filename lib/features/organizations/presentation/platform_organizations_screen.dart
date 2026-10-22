@@ -7,6 +7,7 @@ import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../services/auth_service.dart';
 import '../../../services/firebase_service.dart';
+import '../domain/platform_organization_filter.dart';
 
 class PlatformOrganizationsScreen extends ConsumerStatefulWidget {
   const PlatformOrganizationsScreen({super.key});
@@ -20,6 +21,14 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
   bool _loading = true;
   String? _error;
   String? _busyId;
+  OrgFilter? _filter; // null until the first load picks a sensible default
+  final _search = TextEditingController();
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -48,6 +57,10 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
       if (!mounted) return;
       setState(() {
         _organizations = rows.map((row) => Map<String, dynamic>.from(row as Map)).toList();
+        // First load: land on what needs a decision; otherwise show everything.
+        _filter ??= countByFilter(_organizations)[OrgFilter.needsReview]! > 0
+            ? OrgFilter.needsReview
+            : OrgFilter.all;
         _loading = false;
       });
     } on FirebaseFunctionsException catch (error) {
@@ -122,17 +135,68 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
                             title: 'No organizations yet',
                             message: 'No organizations have been registered on the platform yet.',
                           )
-                        : Center(
-                            child: ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 820),
-                              child: ListView.builder(
-                                padding: const EdgeInsets.all(16),
-                                itemCount: _organizations.length,
-                                itemBuilder: (context, index) =>
-                                    _organizationCard(_organizations[index]),
-                              ),
-                            ),
-                          ),
+                        : _list(),
+      ),
+    );
+  }
+
+  static const _tap = ButtonStyle(minimumSize: WidgetStatePropertyAll(Size(48, 48)));
+
+  Widget _list() {
+    final filter = _filter ?? OrgFilter.all;
+    final counts = countByFilter(_organizations);
+    final shown = filterOrganizations(_organizations, filter, _search.text);
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 820),
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            TextField(
+              controller: _search,
+              onChanged: (_) => setState(() {}),
+              decoration: InputDecoration(
+                labelText: 'Search by name, email or city',
+                prefixIcon: const Icon(Icons.search_rounded),
+                suffixIcon: _search.text.isEmpty
+                    ? null
+                    : IconButton(
+                        tooltip: 'Clear search',
+                        icon: const Icon(Icons.close_rounded),
+                        onPressed: () => setState(_search.clear),
+                      ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Wrap(spacing: 8, runSpacing: 8, children: [
+              for (final f in OrgFilter.values)
+                ChoiceChip(
+                  label: Text('${f.label} (${counts[f]})'),
+                  selected: f == filter,
+                  onSelected: (_) => setState(() => _filter = f),
+                ),
+            ]),
+            if (_organizations.length >= 100)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text('Showing the 100 most recent organizations.',
+                    style: Theme.of(context).textTheme.bodySmall),
+              ),
+            const SizedBox(height: 12),
+            if (shown.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 32),
+                child: Text(
+                  _search.text.trim().isNotEmpty
+                      ? 'No organization matches "${_search.text.trim()}" in this view.'
+                      : 'Nothing in "${filter.label}".',
+                  textAlign: TextAlign.center,
+                ),
+              )
+            else
+              for (final o in shown) _organizationCard(o),
+          ],
+        ),
       ),
     );
   }
@@ -149,6 +213,9 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
           Row(children: [Expanded(child: Text(name, style: Theme.of(context).textTheme.titleMedium)), Chip(label: Text(status.toUpperCase()))]),
           if ((organization['email'] as String? ?? '').isNotEmpty) Text(organization['email'] as String),
           if (address.isNotEmpty) Text(address, style: Theme.of(context).textTheme.bodySmall),
+          if (organization['createdAt'] is String)
+            Text('Registered ${(organization['createdAt'] as String).split('T').first}',
+                style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 12),
           // Every status needs either an action or a reason there is none.
           if (status == 'archived')
@@ -159,13 +226,13 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
                 style: Theme.of(context).textTheme.bodySmall),
           Wrap(spacing: 8, runSpacing: 8, children: [
             if (status == 'pending') ...[
-              FilledButton.tonal(onPressed: _busyId != null ? null : () => _review(organization, 'VERIFY'), child: const Text('Verify')),
-              OutlinedButton(onPressed: _busyId != null ? null : () => _review(organization, 'REJECT'), child: const Text('Reject')),
+              FilledButton.tonal(style: _tap, onPressed: _busyId != null ? null : () => _review(organization, 'VERIFY'), child: const Text('Verify')),
+              OutlinedButton(style: _tap, onPressed: _busyId != null ? null : () => _review(organization, 'REJECT'), child: const Text('Reject')),
             ],
             if (status == 'verified' || status == 'active')
-              OutlinedButton(onPressed: _busyId != null ? null : () => _review(organization, 'SUSPEND'), child: const Text('Suspend')),
+              OutlinedButton(style: _tap, onPressed: _busyId != null ? null : () => _review(organization, 'SUSPEND'), child: const Text('Suspend')),
             if (status == 'suspended')
-              FilledButton.tonal(onPressed: _busyId != null ? null : () => _review(organization, 'REACTIVATE'), child: const Text('Reactivate')),
+              FilledButton.tonal(style: _tap, onPressed: _busyId != null ? null : () => _review(organization, 'REACTIVATE'), child: const Text('Reactivate')),
           ]),
         ]),
       ),
