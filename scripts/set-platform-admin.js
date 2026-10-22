@@ -11,7 +11,9 @@
 // After granting, sign out and sign back in so the new claim is in your token.
 
 const path = require("path");
-const admin = require(path.join(__dirname, "..", "functions", "node_modules", "firebase-admin"));
+const nm = (m) => require(path.join(__dirname, "..", "functions", "node_modules", m));
+const { initializeApp } = nm("firebase-admin/app");
+const { getAuth } = nm("firebase-admin/auth");
 
 const args = process.argv.slice(2);
 const pi = args.indexOf("--project");
@@ -24,8 +26,8 @@ if (!who || !["grant", "revoke"].includes(action)) {
 }
 
 (async () => {
-  admin.initializeApp({ projectId });
-  const auth = admin.auth();
+  initializeApp({ projectId });
+  const auth = getAuth();
   const user = who.includes("@") ? await auth.getUserByEmail(who) : await auth.getUser(who);
   const before = user.customClaims || {};
   const next = { ...before };
