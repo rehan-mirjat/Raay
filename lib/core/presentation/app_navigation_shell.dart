@@ -1203,8 +1203,10 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                 'Account settings'),
             _buildMenuItem(
                 context, isDark, 'help', Icons.help_outline, 'Help & support'),
-            _buildMenuItem(context, isDark, 'plans',
-                Icons.workspace_premium_outlined, 'Plans & Billing'),
+            if (ref.watch(activeOrganizationContextProvider).valueOrNull?.context?.member.role ==
+                OrganizationRole.owner)
+              _buildMenuItem(context, isDark, 'plans',
+                  Icons.workspace_premium_outlined, 'Plans & Billing'),
             _buildMenuItem(context, isDark, 'transparency',
                 Icons.verified_outlined, 'Trust & Transparency'),
             if (ref.watch(platformAdminProvider).valueOrNull == true) ...[

@@ -8,7 +8,9 @@ import '../../../organizations/domain/organization.dart';
 import '../../../organizations/domain/organization_enums.dart';
 import '../../../organizations/domain/organization_member.dart';
 import '../../../organizations/presentation/providers/organization_providers.dart';
+import '../../data/eligibility_repository.dart';
 import '../../data/voting_event_repository.dart';
+import '../../domain/eligibility_decision.dart';
 import '../../domain/election_card_state.dart';
 import '../../domain/voting_event.dart';
 
@@ -20,7 +22,11 @@ class VoterPortalEntry {
     required this.event,
     required this.organization,
     required this.member,
+    this.eligibility,
   });
+
+  /// The server's decision for the signed-in user (restricted elections only).
+  final EligibilityDecision? eligibility;
 
   final VotingEvent event;
   final Organization organization;
@@ -32,15 +38,11 @@ class VoterPortalEntry {
   /// returns, so a stale or wrong client guess here can only ever hide or
   /// show a button, never let someone vote who shouldn't be able to.
   bool get isLikelyEligible {
-    switch (event.eligibilityType) {
-      case EligibilityType.allMembers:
-        return true;
-      case EligibilityType.selectedMembers:
-        return event.eligibilityUserIds.contains(member.userId);
-      case EligibilityType.selectedDepartments:
-        return member.departmentId != null &&
-            event.eligibilityDepartmentIds.contains(member.departmentId);
-    }
+    if (event.eligibilityType == EligibilityType.allMembers) return true;
+    // Restricted elections: the voter roll is private and server-side, so the
+    // server's per-user answer is the only source. No answer = unknown, which
+    // still lets the vote action show (castVote enforces).
+    return eligibility?.showsAsEligible ?? true;
   }
 }
 
@@ -72,12 +74,19 @@ final voterPortalEntriesProvider =
 
   final membersByOrgId = {for (final m in activeMemberships) m.organizationId: m};
 
+  final restricted = events
+      .where((e) => e.eligibilityType != EligibilityType.allMembers)
+      .map((e) => e.id)
+      .toList();
+  final decisions = await ref.watch(eligibilityRepositoryProvider).fetchMine(restricted);
+
   return events
       .map((event) {
         final org = orgsById[event.organizationId];
         final member = membersByOrgId[event.organizationId];
         if (org == null || member == null) return null;
-        return VoterPortalEntry(event: event, organization: org, member: member);
+        return VoterPortalEntry(
+            event: event, organization: org, member: member, eligibility: decisions[event.id]);
       })
       .whereType<VoterPortalEntry>()
       .toList();

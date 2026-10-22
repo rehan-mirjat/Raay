@@ -69,6 +69,7 @@ export * from "./voting/castVote";
 export * from "./voting/calculateResults";
 export * from "./voting/publishResults";
 export * from "./voting/getEventMonitoring";
+export * from "./voting/getMyEligibility";
 export * from "./voting/remindNonVoters";
 export * from "./platform/listOrganizations";
 export * from "./platform/reviewOrganization";

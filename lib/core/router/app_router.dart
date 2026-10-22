@@ -1,3 +1,4 @@
+import '../navigation/route_access.dart' show routeNeed, roleMayOpen;
 import '../../features/voting/presentation/receipt_verification_screen.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -110,6 +111,7 @@ class RouterNotifier extends ChangeNotifier {
   bool get isEmailVerified => _isEmailVerified;
   bool get isOrgLoading => _isOrgLoading;
   bool get hasSeenIntro => _ref.read(hasSeenIntroProvider);
+  OrganizationRole? get activeRole => _activeRole;
   bool get isAdmin =>
       _activeRole == OrganizationRole.owner ||
       _activeRole == OrganizationRole.admin;
@@ -144,7 +146,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final isAuth = notifier.isAuth;
       final isVerified = notifier.isEmailVerified;
-      final isAdmin = notifier.isAdmin;
 
       final location = state.matchedLocation;
 
@@ -160,7 +161,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       final isPublicLanding = location == '/';
       final isVerifyRoute = location == '/verify-email';
       final isSplashRoute = location == '/splash';
-      final isAdminRoute = location.startsWith('/admin') && location != '/admin/events';
       final isInviteRoute = location == '/invite';
 
       if (isInviteRoute) {
@@ -193,13 +193,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         return '/home';
       }
 
-      if (isAdminRoute) {
-        if (notifier.isOrgLoading) {
-          return null;
-        }
-        if (!isAdmin) {
-          return '/home';
-        }
+      // Central role guard (see route_access.dart). While the organization is
+      // still loading we cannot know the role yet, so wait instead of
+      // redirecting; the notifier refreshes the router when it resolves.
+      if (routeNeed(location) != null && !notifier.isOrgLoading) {
+        if (!roleMayOpen(location, notifier.activeRole)) return '/home';
       }
 
       return null;

@@ -1,4 +1,5 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
+import { OPERATIONAL_ORG_STATUSES } from "../voting_events/votingCommon";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { requireActiveMembership, requireNotRevoked } from "../utils/authorization";
 import { requireAuth, requireId, ADMIN_ROLES, CALLABLE_OPTIONS, enforceRateLimit } from "../voting_events/votingCommon";
@@ -29,7 +30,7 @@ export const remindNonVoters = onCall(CALLABLE_OPTIONS, async (request) => {
   await requireActiveMembership(db, organizationId, uid, ADMIN_ROLES);
 
   const organization = await db.collection("organizations").doc(organizationId).get();
-  if (!organization.exists || !["verified", "active"].includes(organization.data()?.status)) {
+  if (!organization.exists || !OPERATIONAL_ORG_STATUSES.includes(organization.data()?.status)) {
     throw new HttpsError("failed-precondition", "The organization is not currently authorized to manage voting events.");
   }
   if (event.status !== "ACTIVE") {

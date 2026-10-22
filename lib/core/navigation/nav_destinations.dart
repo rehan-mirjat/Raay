@@ -96,7 +96,7 @@ NavModel navModelFor({
         _calendar,
         _organizations,
         if (isObserver) _observer,
-        _orgSettings,
+        if (isOwner) _orgSettings,
         if (isOwner) _billing,
         _account,
         _help,

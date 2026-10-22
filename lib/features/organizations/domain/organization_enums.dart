@@ -23,6 +23,7 @@ extension OrganizationRoleAdmin on OrganizationRole {
 enum MembershipStatus {
   pending('pending'),
   active('active'),
+  inactive('inactive'),
   suspended('suspended'),
   removed('removed');
 
