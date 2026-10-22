@@ -11,7 +11,8 @@
 // After granting, sign out and sign back in so the new claim is in your token.
 
 const path = require("path");
-const nm = (m) => require(path.join(__dirname, "..", "functions", "node_modules", m));
+const { createRequire } = require("module");
+const nm = createRequire(path.join(__dirname, "..", "functions", "package.json"));
 const { initializeApp } = nm("firebase-admin/app");
 const { getAuth } = nm("firebase-admin/auth");
 
