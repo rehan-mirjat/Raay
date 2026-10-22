@@ -45,8 +45,7 @@ final memberInvitationsProvider =
       .asyncMap((snapshot) async {
     final invites = <Map<String, dynamic>>[];
     for (final doc in snapshot.docs) {
-      final data = doc.data();
-      data['id'] = doc.id;
+      final data = invitationRow(doc.id, doc.data());
       if (memberOrgIds.contains(data['organizationId'])) continue;
       
       // Try to fetch organization details from public projection
@@ -237,3 +236,10 @@ bool isInvitationExpired(Map<String, dynamic> invitation, {DateTime? now}) {
   final expiresAt = parseFirestoreDate(invitation['expiresAt']);
   return expiresAt != null && expiresAt.isBefore(now ?? DateTime.now());
 }
+
+/// The map the inbox, the accept/decline calls and the notification badge work
+/// with. The Firestore document does not store its own id, but the UI and the
+/// respondToInvitation callable are keyed on `invitationId`; without it the
+/// card read as permanently "busy" and Accept/Decline silently did nothing.
+Map<String, dynamic> invitationRow(String docId, Map<String, dynamic> data) =>
+    {...data, 'id': docId, 'invitationId': docId};

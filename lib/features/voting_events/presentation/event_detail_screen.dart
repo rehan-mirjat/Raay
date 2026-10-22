@@ -269,7 +269,14 @@ class _NotVotedCard extends StatelessWidget {
           if (!isActive) ...[
             const SizedBox(height: 12),
             Text(
-              l10n.evNotAccepting(event.status.name),
+              l10n.evNotAccepting(switch (event.status) {
+                VotingEventStatus.draft => l10n.statusDraft,
+                VotingEventStatus.scheduled => l10n.statusScheduled,
+                VotingEventStatus.active => l10n.statusActive,
+                VotingEventStatus.closed => l10n.statusClosed,
+                VotingEventStatus.cancelled => l10n.statusCancelled,
+                VotingEventStatus.archived => l10n.statusArchived,
+              }.toLowerCase()),
               textAlign: TextAlign.center,
               style: TextStyle(color: kc.textSecondary, fontSize: 14, fontWeight: FontWeight.w600),
             ),

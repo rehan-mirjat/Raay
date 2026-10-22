@@ -340,32 +340,6 @@ class OrganizationRepository {
     }
   }
 
-  /// Loads invitations addressed to the signed-in account.
-  Future<List<Map<String, dynamic>>> getMyInvitations() async {
-    try {
-      final response = await _firebase.functions
-          .httpsCallable('memberInvitations')
-          .call({'action': 'list'});
-      final data = response.data as Map<dynamic, dynamic>?;
-      if (data != null &&
-          data['status'] == 'success' &&
-          data['invitations'] is List) {
-        return (data['invitations'] as List<dynamic>)
-            .map((item) => Map<String, dynamic>.from(item as Map))
-            .toList();
-      }
-      throw Exception('Unable to load your invitations. Please try again.');
-    } on FirebaseFunctionsException catch (error) {
-      if (error.code == 'not-found') {
-        throw Exception(
-            'Invitation notifications are not available yet. The server function must be deployed.');
-      }
-      throw Exception(mapFirebaseFunctionsError(error));
-    } catch (_) {
-      throw Exception('Unable to load your invitations. Please try again.');
-    }
-  }
-
   /// Accepts or declines an invitation addressed to the signed-in account.
   Future<({String organizationId, String organizationName})>
       respondToInvitation({
