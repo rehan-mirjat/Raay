@@ -149,6 +149,27 @@ export const joinOrganizationWithCode = onCall(
       }
       await requireMemberCapacity(db, transaction, orgId, orgSnap.data());
 
+      // The caller may already hold a pending invitation to this organization.
+      // Joining by code makes it moot; left pending it would sit in their inbox
+      // and notification badge forever. Reads must come before any write.
+      const callerEmail = request.auth?.token?.email_verified === true && typeof request.auth.token.email === "string" ?
+        request.auth.token.email.trim().toLowerCase() : null;
+      // Best-effort tidy-up: if this lookup ever fails (e.g. an index still
+      // building) the join itself must still succeed, so log and carry on.
+      let pendingInvites: FirebaseFirestore.QuerySnapshot | null = null;
+      if (callerEmail) {
+        try {
+          pendingInvites = await transaction.get(
+            db.collection("organizationInvitations")
+              .where("organizationId", "==", orgId)
+              .where("status", "==", "pending")
+              .where("email", "==", callerEmail)
+          );
+        } catch (e) {
+          console.warn("joinOrganizationWithCode: pending-invitation lookup failed", e);
+        }
+      }
+
       // SUCCESSFUL JOIN: Transactional Writes
       // Write 1: Create Organization Member Document
       transaction.set(membershipRef, {
@@ -162,6 +183,17 @@ export const joinOrganizationWithCode = onCall(
         joinedAt: FieldValue.serverTimestamp(),
         updatedAt: FieldValue.serverTimestamp(),
       });
+
+      // Write 1b: close the now-moot invitation(s) (same fields acceptInvitation sets,
+      // so they cannot be redeemed later) and free the duplicate-invite lock.
+      for (const invite of pendingInvites?.docs ?? []) {
+        transaction.update(invite.ref, {
+          status: "accepted",
+          acceptedAt: FieldValue.serverTimestamp(),
+          acceptedVia: "joining_code",
+        });
+        transaction.delete(db.collection("organizationInvitationKeys").doc(`${orgId}_${callerEmail}`));
+      }
 
       // Write 2: Increment Code Uses
       transaction.update(codeRef, {
