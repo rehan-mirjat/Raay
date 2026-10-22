@@ -150,6 +150,13 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
           if ((organization['email'] as String? ?? '').isNotEmpty) Text(organization['email'] as String),
           if (address.isNotEmpty) Text(address, style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 12),
+          // Every status needs either an action or a reason there is none.
+          if (status == 'archived')
+            Text('Deleted by its owner. No moderation actions are available.',
+                style: Theme.of(context).textTheme.bodySmall),
+          if (status == 'rejected')
+            Text('Rejected. No further actions are available.',
+                style: Theme.of(context).textTheme.bodySmall),
           Wrap(spacing: 8, runSpacing: 8, children: [
             if (status == 'pending') ...[
               FilledButton.tonal(onPressed: _busyId != null ? null : () => _review(organization, 'VERIFY'), child: const Text('Verify')),
