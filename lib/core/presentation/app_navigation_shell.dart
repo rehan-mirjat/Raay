@@ -743,8 +743,8 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
             true);
     final invitationsAsync = ref.watch(memberInvitationsProvider);
     final items = invitationAlertsEnabled
-        ? (invitationsAsync.valueOrNull ?? [])
-        : const [];
+        ? (invitationsAsync.valueOrNull ?? []).where((i) => !isInvitationExpired(i)).toList()
+        : const <Map<String, dynamic>>[];
     final reminders = ref.watch(unreadNotificationsProvider).valueOrNull ?? [];
     final unreadCount = items.length + reminders.length;
     final hasUnread = unreadCount > 0;

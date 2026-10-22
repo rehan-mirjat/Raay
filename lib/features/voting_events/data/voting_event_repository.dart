@@ -135,6 +135,8 @@ class VotingEventRepository {
   /// voter-facing aggregate, and Firestore rules already hide drafts from
   /// non-admins anyway, so this just keeps admins' own drafts out of a view
   /// that's meant to show what's open to vote on, not what they're building.
+  static const _visibleToMembersStatuses = ['SCHEDULED', 'ACTIVE', 'CLOSED', 'CANCELLED', 'ARCHIVED'];
+
   Future<List<VotingEvent>> fetchEventsAcrossOrganizations(
     List<String> organizationIds,
   ) async {
@@ -150,6 +152,11 @@ class VotingEventRepository {
         .firestore
         .collection('votingEvents')
         .where('organizationId', whereIn: chunk)
+        // Firestore rules are not filters: a member may not read DRAFT events,
+        // so a query that could return one is rejected outright (even when
+        // there are none). Asking only for visible statuses makes the query
+        // provably allowed, and an empty result is just an empty list.
+        .where('status', whereIn: _visibleToMembersStatuses)
         .orderBy('startAt', descending: true)
         .limit(200)
         .get()));

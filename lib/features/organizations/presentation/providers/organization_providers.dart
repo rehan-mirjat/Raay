@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../core/utils/date_utils.dart';
 import '../../../../services/auth_service.dart';
 import '../../../../services/firebase_service.dart';
 import '../../data/organization_repository.dart';
@@ -26,6 +27,14 @@ final memberInvitationsProvider =
     return Stream.value([]);
   }
 
+  // An invitation to an organization the user already belongs to is stale
+  // (they joined by code or another invitation); it must not stay in the
+  // inbox or the notification badge.
+  final memberOrgIds = (ref.watch(userMembershipsProvider).valueOrNull ?? const [])
+      .where((m) => m.isActive)
+      .map((m) => m.organizationId)
+      .toSet();
+
   // Stream directly from Firestore for real-time updates and zero polling
   return FirebaseService()
       .firestore
@@ -38,6 +47,7 @@ final memberInvitationsProvider =
     for (final doc in snapshot.docs) {
       final data = doc.data();
       data['id'] = doc.id;
+      if (memberOrgIds.contains(data['organizationId'])) continue;
       
       // Try to fetch organization details from public projection
       try {
@@ -219,3 +229,11 @@ final memberGrowthProvider =
     StreamProvider.family<List<MemberGrowthPoint>, String>((ref, orgId) {
   return ref.watch(organizationRepositoryProvider).watchMemberGrowth(orgId);
 });
+
+/// True when an invitation can no longer be accepted. Expired invitations stay
+/// visible in the inbox (so the user sees why) but do not count as
+/// notifications.
+bool isInvitationExpired(Map<String, dynamic> invitation, {DateTime? now}) {
+  final expiresAt = parseFirestoreDate(invitation['expiresAt']);
+  return expiresAt != null && expiresAt.isBefore(now ?? DateTime.now());
+}
