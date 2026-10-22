@@ -1,206 +1,216 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kivora/core/theme/kivora_colors.dart';
-import 'package:kivora/core/theme/kivora_icons.dart';
-import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
-import 'package:kivora/core/widgets/ui_kit/kivora_card.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/kivora_colors.dart';
+import '../../../../core/theme/kivora_icons.dart';
+import '../../../../core/utils/friendly_error.dart';
 import '../../../../core/widgets/loading_view.dart';
+import '../../../voting/presentation/cast_vote_screen.dart' show eventCandidatesProvider;
 import '../../data/candidate_repository.dart';
 import '../../domain/candidate.dart';
+import 'candidate_avatar.dart';
 import 'candidate_form_dialog.dart';
+
+/// An election needs at least this many candidates before it can be published.
+const kMinCandidatesToPublish = 2;
 
 class CandidateList extends ConsumerWidget {
   final String orgId;
   final String eventId;
   final bool isDraft;
 
-  const CandidateList(
-      {super.key,
-      required this.orgId,
-      required this.eventId,
-      required this.isDraft});
+  const CandidateList({super.key, required this.orgId, required this.eventId, required this.isDraft});
+
+  Future<void> _delete(BuildContext context, WidgetRef ref, Candidate cand) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final kc = KivoraColors.of(context);
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: const Text('Remove this candidate?'),
+        content: Text('${cand.name} will be removed from this election. You can add them again while the election is a draft.'),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+            onPressed: () => Navigator.pop(c, false),
+            child: const Text('Keep candidate'),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(minimumSize: const Size(48, 48), foregroundColor: kc.errorText),
+            onPressed: () => Navigator.pop(c, true),
+            child: const Text('Remove'),
+          ),
+        ],
+      ),
+    );
+    if (confirm != true) return;
+    try {
+      await ref.read(candidateRepositoryProvider).deleteCandidate(cand.id);
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(
+          content: Text(friendlyError(e, fallback: 'Could not remove the candidate. Please try again.'))));
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final candsAsync =
-        ref.watch(candidateRepositoryProvider).watchEventCandidates(eventId);
     final kc = KivoraColors.of(context);
+    // Stable provider: a stream created in build() would reload on every rebuild
+    // (for example each time a dialog closes).
+    final candsAsync = ref.watch(eventCandidatesProvider(eventId));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (isDraft)
-          KivoraButton(
-            icon: KivoraIcons.plus,
-            label: 'Add Candidate',
-            onPressed: () {
-              showDialog(
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: FilledButton.icon(
+              style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+              icon: const Icon(KivoraIcons.plus, size: 18),
+              label: const Text('Add candidate'),
+              onPressed: () => showDialog<void>(
                 context: context,
                 barrierDismissible: false,
-                builder: (ctx) =>
-                    CandidateFormDialog(orgId: orgId, eventId: eventId),
-              );
-            },
-          ),
-        const SizedBox(height: 20),
-        StreamBuilder<List<Candidate>>(
-          stream: candsAsync,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const LoadingView();
-            }
-            if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}',
-                  style: TextStyle(color: KivoraColors.of(context).errorText));
-            }
-            final candidates = snapshot.data ?? [];
-            if (candidates.isEmpty) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24.0),
-                child: Text(
-                  'No candidates added to this election roster yet.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: kc.textSecondary),
-                ),
-              );
-            }
-            return ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: candidates.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (ctx, i) {
-                final cand = candidates[i];
-                return KivoraCard(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: AppTheme.primaryBlue.withValues(alpha: 0.1),
-                          shape: BoxShape.circle,
-                          image: cand.photoUrl != null
-                              ? DecorationImage(
-                                  image: NetworkImage(cand.photoUrl!),
-                                  fit: BoxFit.cover,
-                                )
-                              : null,
-                        ),
-                        child: cand.photoUrl == null
-                            ? Icon(KivoraIcons.user, color: KivoraColors.of(context).accentText)
-                            : null,
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              cand.name,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: kc.textPrimary,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              cand.party.isNotEmpty ? cand.party : 'Independent / No affiliation',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: kc.textSecondary,
-                              ),
-                            ),
-                            if (cand.bio.isNotEmpty) ...[
-                              const SizedBox(height: 6),
-                              Text(
-                                cand.bio,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: kc.textSecondary,
-                                  height: 1.3,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                      if (isDraft)
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(KivoraIcons.edit3, size: 18),
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (ctx) => CandidateFormDialog(
-                                      orgId: orgId,
-                                      eventId: eventId,
-                                      existingCandidate: cand),
-                                );
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(KivoraIcons.trash2,
-                                  size: 18, color: KivoraColors.of(context).errorText),
-                              onPressed: () async {
-                                final confirm = await showDialog<bool>(
-                                    context: context,
-                                    builder: (c) => AlertDialog(
-                                          title:
-                                              const Text('Delete Candidate?'),
-                                          content: Text(
-                                              'Are you sure you want to delete ${cand.name}?'),
-                                          actions: [
-                                            TextButton(
-                                                onPressed: () =>
-                                                    Navigator.pop(c, false),
-                                                child: const Text('Cancel')),
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(c, true),
-                                              child: Text('Delete',
-                                                  style: TextStyle(
-                                                      color: KivoraColors.of(context).errorText)),
-                                            ),
-                                          ],
-                                        ));
-                                if (confirm == true) {
-                                  try {
-                                    await ref
-                                        .read(candidateRepositoryProvider)
-                                        .deleteCandidate(cand.id);
-                                  } catch (e) {
-                                    if (context.mounted) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text(e
-                                                  .toString()
-                                                  .replaceAll(
-                                                      'Exception: ', ''))));
-                                    }
-                                  }
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                    ],
+                builder: (_) => CandidateFormDialog(orgId: orgId, eventId: eventId),
+              ),
+            ),
+          )
+        else
+          _note(kc, Icons.lock_outline_rounded, 'This election is no longer a draft, so its candidates cannot be changed.'),
+        const SizedBox(height: 16),
+        candsAsync.when(
+          loading: () => const LoadingView(),
+          error: (_, __) => Column(children: [
+            Text('We could not load the candidates.', style: TextStyle(color: kc.errorText)),
+            TextButton(
+              style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+              onPressed: () => ref.invalidate(eventCandidatesProvider(eventId)),
+              child: const Text('Try again'),
+            ),
+          ]),
+          data: (candidates) {
+            final missing = kMinCandidatesToPublish - candidates.length;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Tells the admin what is still needed before Review will allow publishing.
+                Semantics(
+                  liveRegion: true,
+                  child: _note(
+                    kc,
+                    missing > 0 ? Icons.info_outline_rounded : Icons.check_circle_outline_rounded,
+                    missing > 0
+                        ? 'Add at least $missing more ${missing == 1 ? 'candidate' : 'candidates'} to publish (minimum $kMinCandidatesToPublish).'
+                        : '${candidates.length} candidates added.',
+                    color: missing > 0 ? kc.warningText : kc.successText,
                   ),
-                );
-              },
+                ),
+                const SizedBox(height: 12),
+                if (candidates.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: Text('No candidates added yet.',
+                        textAlign: TextAlign.center, style: TextStyle(color: kc.textSecondary)),
+                  )
+                else
+                  for (final cand in candidates) ...[
+                    _CandidateCard(
+                      cand: cand,
+                      isDraft: isDraft,
+                      onEdit: () => showDialog<void>(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (_) => CandidateFormDialog(orgId: orgId, eventId: eventId, existingCandidate: cand),
+                      ),
+                      onDelete: () => _delete(context, ref, cand),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+              ],
             );
           },
         ),
       ],
+    );
+  }
+
+  Widget _note(KivoraColors kc, IconData icon, String text, {Color? color}) {
+    final c = color ?? kc.accentText;
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: c.withValues(alpha: kc.isDark ? 0.14 : 0.08),
+        borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+        border: Border.all(color: c.withValues(alpha: 0.5)),
+      ),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Icon(icon, size: 20, color: c),
+        const SizedBox(width: 10),
+        Expanded(child: Text(text, style: TextStyle(fontSize: 14, color: kc.textPrimary))),
+      ]),
+    );
+  }
+}
+
+class _CandidateCard extends StatelessWidget {
+  const _CandidateCard({required this.cand, required this.isDraft, required this.onEdit, required this.onDelete});
+  final Candidate cand;
+  final bool isDraft;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: kc.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+        border: Border.all(color: kc.border),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CandidateAvatar(candidate: cand),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(cand.name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                const SizedBox(height: 2),
+                Text(cand.party.isNotEmpty ? cand.party : 'Independent / no affiliation',
+                    style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+                if (cand.bio.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Text(cand.bio,
+                      style: TextStyle(fontSize: 14, color: kc.textSecondary, height: 1.3),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis),
+                ],
+              ],
+            ),
+          ),
+          if (isDraft)
+            Column(mainAxisSize: MainAxisSize.min, children: [
+              IconButton(
+                tooltip: 'Edit ${cand.name}',
+                constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                icon: const Icon(KivoraIcons.edit3, size: 20),
+                onPressed: onEdit,
+              ),
+              IconButton(
+                tooltip: 'Remove ${cand.name}',
+                constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                icon: Icon(KivoraIcons.trash2, size: 20, color: kc.errorText),
+                onPressed: onDelete,
+              ),
+            ]),
+        ],
+      ),
     );
   }
 }

@@ -4,6 +4,16 @@ import 'package:firebase_storage/firebase_storage.dart';
 import '../../../services/firebase_service.dart';
 import '../../../core/utils/error_utils.dart';
 import '../domain/candidate.dart';
+import '../domain/candidate_photo.dart';
+
+/// The candidate itself was saved but its photo was not. Callers should treat
+/// the candidate as created (retrying "add" would hit the duplicate-name check).
+class CandidatePhotoException implements Exception {
+  const CandidatePhotoException(this.message);
+  final String message;
+  @override
+  String toString() => 'Exception: $message';
+}
 
 class CandidateRepository {
   final FirebaseService _firebase = FirebaseService();
@@ -16,6 +26,13 @@ class CandidateRepository {
     String? bio,
     Uint8List? photoBytes,
   }) async {
+    // Reject a bad photo BEFORE creating anything remotely.
+    if (photoBytes != null) {
+      final problem = checkCandidatePhoto(photoBytes);
+      if (problem != null) throw Exception(candidatePhotoMessage(problem));
+    }
+    String candidateId;
+    String? expectedPhotoPath;
     try {
       final createCallable = _firebase.functions.httpsCallable('createCandidate');
       final result = await createCallable.call({
@@ -26,20 +43,22 @@ class CandidateRepository {
         if (bio != null && bio.isNotEmpty) 'bio': bio,
       });
 
-      final candidateId = result.data['candidateId'] as String;
-      final expectedPhotoPath = result.data['expectedPhotoPath'] as String?;
-
-      if (photoBytes != null && expectedPhotoPath != null) {
-        // Upload photo
-        final storageRef = FirebaseStorage.instance.ref().child(expectedPhotoPath);
-        await storageRef.putData(photoBytes, SettableMetadata(contentType: 'image/jpeg'));
-
-        // Finalize photo
-        final finalizeCallable = _firebase.functions.httpsCallable('finalizeCandidatePhoto');
-        await finalizeCallable.call({'candidateId': candidateId});
-      }
+      candidateId = result.data['candidateId'] as String;
+      expectedPhotoPath = result.data['expectedPhotoPath'] as String?;
     } catch (e) {
       throw Exception(mapFirebaseFunctionsError(e));
+    }
+
+    if (photoBytes != null && expectedPhotoPath != null) {
+      try {
+        final storageRef = FirebaseStorage.instance.ref().child(expectedPhotoPath);
+        await storageRef.putData(photoBytes, SettableMetadata(contentType: 'image/jpeg'));
+        final finalizeCallable = _firebase.functions.httpsCallable('finalizeCandidatePhoto');
+        await finalizeCallable.call({'candidateId': candidateId});
+      } catch (_) {
+        throw const CandidatePhotoException(
+            'The candidate was added, but the photo could not be uploaded. Edit the candidate to try the photo again.');
+      }
     }
   }
 
@@ -51,6 +70,10 @@ class CandidateRepository {
     Uint8List? newPhotoBytes,
     String? expectedPhotoPath, // Required if uploading a new photo
   }) async {
+    if (newPhotoBytes != null) {
+      final problem = checkCandidatePhoto(newPhotoBytes);
+      if (problem != null) throw Exception(candidatePhotoMessage(problem));
+    }
     try {
       final updateCallable = _firebase.functions.httpsCallable('updateCandidate');
       await updateCallable.call({
@@ -61,13 +84,9 @@ class CandidateRepository {
       });
 
       if (newPhotoBytes != null && expectedPhotoPath != null) {
-        final deletePhotoCallable = _firebase.functions.httpsCallable('deleteCandidatePhoto');
-        try {
-           await deletePhotoCallable.call({'candidateId': candidateId});
-        } catch (_) {
-           // Ignore errors if no photo existed previously
-        }
-
+        // Upload over the same path first; the old photo is only replaced once
+        // the new bytes are in place (deleting first used to lose the old
+        // photo whenever the new upload failed).
         final storageRef = FirebaseStorage.instance.ref().child(expectedPhotoPath);
         await storageRef.putData(newPhotoBytes, SettableMetadata(contentType: 'image/jpeg'));
 

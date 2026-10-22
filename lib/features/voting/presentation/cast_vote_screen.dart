@@ -18,6 +18,7 @@ import '../../voting_events/domain/poll_option.dart';
 import '../../voting_events/domain/voting_event.dart';
 import '../data/voting_repository.dart';
 import 'vote_receipt_screen.dart';
+import '../../voting_events/presentation/components/candidate_avatar.dart';
 import '../../../core/utils/friendly_error.dart';
 
 final eventCandidatesProvider =
@@ -583,17 +584,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                   child: Row(children: [
                     _RadioMark(selected: _selectedCandidateId == cand.id),
                     const SizedBox(width: 12),
-                    CircleAvatar(
-                      radius: 24,
-                      backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
-                      backgroundImage: cand.photoUrl != null && cand.photoUrl!.isNotEmpty
-                          ? NetworkImage(cand.photoUrl!)
-                          : null,
-                      child: cand.photoUrl == null || cand.photoUrl!.isEmpty
-                          ? Text(cand.name.isNotEmpty ? cand.name[0].toUpperCase() : 'C',
-                              style: TextStyle(fontWeight: FontWeight.bold, color: kc.accentText))
-                          : null,
-                    ),
+                    CandidateAvatar(candidate: cand),
                     const SizedBox(width: 16),
                     Expanded(
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

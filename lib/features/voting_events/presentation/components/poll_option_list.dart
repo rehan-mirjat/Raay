@@ -6,10 +6,14 @@ import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
 import 'package:kivora/core/widgets/ui_kit/kivora_card.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/friendly_error.dart';
 import '../../../../core/widgets/loading_view.dart';
+import '../../../voting/presentation/cast_vote_screen.dart' show eventPollOptionsProvider;
 import '../../data/poll_option_repository.dart';
-import '../../domain/poll_option.dart';
 import 'poll_option_form_dialog.dart';
+
+/// A poll needs at least this many options before it can be published.
+const kMinOptionsToPublish = 2;
 
 class PollOptionList extends ConsumerWidget {
   final String orgId;
@@ -24,8 +28,8 @@ class PollOptionList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final optsAsync =
-        ref.watch(pollOptionRepositoryProvider).watchEventPollOptions(eventId);
+    // Stable provider: a stream created in build() reloads on every rebuild.
+    final optsAsync = ref.watch(eventPollOptionsProvider(eventId));
     final kc = KivoraColors.of(context);
 
     return Column(
@@ -45,22 +49,25 @@ class PollOptionList extends ConsumerWidget {
             },
           ),
         const SizedBox(height: 20),
-        StreamBuilder<List<PollOption>>(
-          stream: optsAsync,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const LoadingView();
-            }
-            if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}',
-                  style: TextStyle(color: KivoraColors.of(context).errorText));
-            }
-            final options = snapshot.data ?? [];
+        optsAsync.when(
+          loading: () => const LoadingView(),
+          error: (_, __) => Column(children: [
+            Text('We could not load the options.',
+                style: TextStyle(color: KivoraColors.of(context).errorText)),
+            TextButton(
+              style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+              onPressed: () => ref.invalidate(eventPollOptionsProvider(eventId)),
+              child: const Text('Try again'),
+            ),
+          ]),
+          data: (loaded) {
+            // Work on a copy: reordering must not mutate the provider's list.
+            final options = [...loaded];
             if (options.isEmpty) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 24.0),
                 child: Text(
-                  'No poll options added to this ballot yet.',
+                  'No options added yet. Add at least $kMinOptionsToPublish to publish.',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: kc.textSecondary),
                 ),
@@ -196,10 +203,8 @@ class PollOptionList extends ConsumerWidget {
                                       if (context.mounted) {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(SnackBar(
-                                                content: Text(e
-                                                    .toString()
-                                                    .replaceAll(
-                                                        'Exception: ', ''))));
+                                                content: Text(friendlyError(e,
+                                                    fallback: 'Could not remove the option. Please try again.'))));
                                       }
                                     }
                                   }

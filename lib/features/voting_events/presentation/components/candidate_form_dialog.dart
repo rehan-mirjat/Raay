@@ -2,15 +2,15 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:kivora/core/theme/app_theme.dart';
 import 'package:kivora/core/theme/kivora_icons.dart';
-import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
 import 'package:kivora/core/widgets/ui_kit/kivora_text_field.dart';
 
 import '../../../../core/theme/kivora_colors.dart';
 import '../../../../core/widgets/inline_error_banner.dart';
 import '../../data/candidate_repository.dart';
 import '../../domain/candidate.dart';
+import '../../domain/candidate_photo.dart';
+import 'candidate_avatar.dart';
 import '../../../../core/utils/friendly_error.dart';
 
 class CandidateFormDialog extends ConsumerStatefulWidget {
@@ -38,6 +38,7 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
   Uint8List? _selectedImageBytes;
   bool _isLoading = false;
   String? _error;
+  String? _photoError;
 
   @override
   void initState() {
@@ -63,12 +64,20 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
       maxWidth: 1024,
       imageQuality: 85,
     );
-    if (file != null) {
-      final bytes = await file.readAsBytes();
-      setState(() {
+    if (file == null) return;
+    final bytes = await file.readAsBytes();
+    if (!mounted) return;
+    // Check now (JPEG signature + size) so a bad photo never gets as far as
+    // creating a candidate whose photo then fails.
+    final problem = checkCandidatePhoto(bytes);
+    setState(() {
+      if (problem == null) {
         _selectedImageBytes = bytes;
-      });
-    }
+        _photoError = null;
+      } else {
+        _photoError = candidatePhotoMessage(problem);
+      }
+    });
   }
 
   Future<void> _submit() async {
@@ -103,6 +112,14 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
         );
       }
       if (mounted) Navigator.pop(context);
+    } on CandidatePhotoException catch (e) {
+      // The candidate exists now; keeping the form open would invite a second
+      // "add" that the duplicate-name check rejects.
+      if (mounted) {
+        final messenger = ScaffoldMessenger.of(context);
+        Navigator.pop(context);
+        messenger.showSnackBar(SnackBar(content: Text(e.message)));
+      }
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -133,19 +150,21 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        widget.existingCandidate == null ? 'Add Candidate' : 'Edit Candidate',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: kc.textPrimary,
+                      Expanded(
+                        child: Semantics(
+                          header: true,
+                          child: Text(
+                            widget.existingCandidate == null ? 'Add candidate' : 'Edit candidate',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kc.textPrimary),
+                          ),
                         ),
                       ),
                       IconButton(
+                        tooltip: 'Close',
+                        constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                         icon: const Icon(KivoraIcons.x, size: 20),
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: _isLoading ? null : () => Navigator.pop(context),
                       ),
                     ],
                   ),
@@ -155,51 +174,62 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                       children: [
                         Semantics(
                           button: true,
-                          label: 'Select candidate photo',
-                          child: Material(
-                            color: Colors.transparent,
-                            shape: const CircleBorder(),
-                            clipBehavior: Clip.antiAlias,
-                            child: InkWell(
-                              onTap: _pickImage,
-                              child: Container(
-                                width: 84,
-                                height: 84,
-                                decoration: BoxDecoration(
-                                  color: AppTheme.primaryBlue.withValues(alpha: 0.1),
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.3), width: 1.5),
-                                  image: _selectedImageBytes != null
-                                      ? DecorationImage(
-                                          image: MemoryImage(_selectedImageBytes!),
-                                          fit: BoxFit.cover,
-                                        )
-                                      : (widget.existingCandidate?.photoUrl != null
-                                          ? DecorationImage(
-                                              image: NetworkImage(widget.existingCandidate!.photoUrl!),
-                                              fit: BoxFit.cover,
-                                            )
-                                          : null),
+                          label: 'Choose candidate photo',
+                          child: InkWell(
+                            customBorder: const CircleBorder(),
+                            onTap: _isLoading ? null : _pickImage,
+                            child: Stack(
+                              alignment: Alignment.bottomRight,
+                              children: [
+                                CandidateAvatar(
+                                  radius: 42,
+                                  candidate: widget.existingCandidate ??
+                                      Candidate(
+                                        id: '',
+                                        organizationId: widget.orgId,
+                                        votingEventId: widget.eventId,
+                                        name: _nameCtrl.text,
+                                        party: '',
+                                        bio: '',
+                                        createdAt: DateTime.now(),
+                                        updatedAt: DateTime.now(),
+                                      ),
+                                  previewBytes: _selectedImageBytes == null ? null : MemoryImage(_selectedImageBytes!),
                                 ),
-                                child: _selectedImageBytes == null && widget.existingCandidate?.photoUrl == null
-                                    ? Icon(KivoraIcons.camera, size: 28, color: KivoraColors.of(context).accentText)
-                                    : null,
-                              ),
+                                Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.primary,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(KivoraIcons.camera, size: 16, color: Theme.of(context).colorScheme.onPrimary),
+                                ),
+                              ],
                             ),
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text('Tap to upload candidate photo',
-                            style: TextStyle(fontSize: 12, color: kc.textSecondary)),
+                        TextButton(
+                          style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                          onPressed: _isLoading ? null : _pickImage,
+                          child: Text(_selectedImageBytes == null ? 'Choose a photo (JPEG, optional)' : 'Choose a different photo'),
+                        ),
+                        if (_photoError != null)
+                          Semantics(
+                            liveRegion: true,
+                            child: Text(_photoError!,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 14, color: kc.errorText)),
+                          ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 20),
                   KivoraTextField(
                     controller: _nameCtrl,
-                    label: 'Full Name *',
+                    label: 'Full name *',
                     hint: 'e.g. Dr. Sarah Jenkins',
-                    validator: (v) => v == null || v.trim().length < 3 ? 'Name must be at least 3 characters' : null,
+                    validator: (v) => v == null || v.trim().length < 2 ? 'Enter the candidate\'s name (at least 2 characters).' : null,
                   ),
                   const SizedBox(height: 16),
                   KivoraTextField(
@@ -219,22 +249,23 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                     InlineErrorBanner(message: _error!),
                   ],
                   const SizedBox(height: 24),
-                  Row(
+                  Wrap(
+                    alignment: WrapAlignment.end,
+                    spacing: 12,
+                    runSpacing: 12,
                     children: [
-                      Expanded(
-                        child: KivoraButton(
-                          type: KivoraButtonType.secondary,
-                          label: 'Cancel',
-                          onPressed: _isLoading ? null : () => Navigator.pop(context),
-                        ),
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+                        onPressed: _isLoading ? null : () => Navigator.pop(context),
+                        child: const Text('Cancel'),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: KivoraButton(
-                          label: widget.existingCandidate == null ? 'Add Candidate' : 'Save Changes',
-                          isLoading: _isLoading,
-                          onPressed: _submit,
-                        ),
+                      FilledButton.icon(
+                        style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+                        onPressed: _isLoading ? null : _submit,
+                        icon: _isLoading
+                            ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                            : const SizedBox.shrink(),
+                        label: Text(widget.existingCandidate == null ? 'Add candidate' : 'Save changes'),
                       ),
                     ],
                   ),
