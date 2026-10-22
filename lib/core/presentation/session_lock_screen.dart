@@ -9,6 +9,18 @@ import '../../services/auth_service.dart';
 import '../widgets/totp_challenge_dialog.dart';
 import '../utils/friendly_error.dart';
 
+/// The lock screen mounted where it is used: from MaterialApp.builder, which
+/// sits ABOVE the app's Navigator. Nothing there provides an Overlay or a
+/// Navigator, but the password field needs an Overlay (text selection handles,
+/// toolbar) and the MFA challenge needs a Navigator to show its dialog. Without
+/// them, focusing the field crashed with "Null check operator used on a null
+/// value" in Overlay.of. A private single-route Navigator supplies both.
+Widget sessionLockGate() => Navigator(
+      onGenerateRoute: (_) => PageRouteBuilder<void>(
+        pageBuilder: (_, __, ___) => const SessionLockScreen(),
+      ),
+    );
+
 /// Full-screen gate shown when the app was backgrounded or closed for
 /// longer than [sessionIdleTimeout]. Blocks all app content until the
 /// signed-in user re-proves their identity (or explicitly signs out),

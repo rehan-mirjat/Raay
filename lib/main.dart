@@ -25,6 +25,8 @@ import 'firebase_options.dart';
 import 'services/auth_service.dart';
 import 'services/firebase_service.dart';
 
+import 'core/theme/fallback_localizations.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -192,7 +194,11 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
       darkTheme: darkTheme,
       themeMode: themeMode,
       locale: locale,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        const FallbackMaterialLocalizationDelegate(),
+        const FallbackCupertinoLocalizationDelegate(),
+      ],
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: goRouter,
       builder: (context, child) {
@@ -201,7 +207,7 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
         // applies when someone is actually signed in; an already-signed-out
         // user just sees the normal /login redirect.
         Widget content = isLocked && hasSignedInUser
-            ? const SessionLockScreen()
+            ? sessionLockGate()
             : (child ?? const SizedBox.shrink());
 
         // Package C3: "Reduce motion" is a user preference layered on top of
