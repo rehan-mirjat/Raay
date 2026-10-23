@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/theme/app_theme.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
-import '../../../../core/layout/responsive.dart';
+import '../../../core/theme/theme_provider.dart';
+import 'landing_content.dart';
+import 'landing_widgets.dart';
 
+/// Public landing page. Every button goes to an existing route or scrolls to a
+/// section on this page; see landing_content.dart for where each claim comes
+/// from.
 class LandingPageScreen extends ConsumerStatefulWidget {
   const LandingPageScreen({super.key});
 
@@ -14,2576 +19,923 @@ class LandingPageScreen extends ConsumerStatefulWidget {
 }
 
 class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
-  final ScrollController _scrollController = ScrollController();
+  final _scroll = ScrollController();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final GlobalKey _featuresKey = GlobalKey();
-  final GlobalKey _howItWorksKey = GlobalKey();
-  final GlobalKey _organizationsKey = GlobalKey();
-  final GlobalKey _securityKey = GlobalKey();
-  final GlobalKey _faqKey = GlobalKey();
-
-  int _heroSelectedCandidate = 0;
-  bool _heroVoteSubmitted = false;
-
-  int? _expandedFaqIndex;
-
-  void _scrollToSection(GlobalKey key) {
-    final context = key.currentContext;
-    if (context != null) {
-      Scrollable.ensureVisible(
-        context,
-        duration: const Duration(milliseconds: 600),
-        curve: Curves.easeInOutCubic,
-      );
-    }
-  }
+  final _featuresKey = GlobalKey();
+  final _howKey = GlobalKey();
+  final _orgsKey = GlobalKey();
+  final _securityKey = GlobalKey();
+  final _faqKey = GlobalKey();
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _scroll.dispose();
     super.dispose();
   }
 
+  // ---- actions (all real) ---------------------------------------------------
+
+  void _scrollTo(GlobalKey key) {
+    final ctx = key.currentContext;
+    if (ctx == null) return;
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    Scrollable.ensureVisible(ctx,
+        duration: reduce ? Duration.zero : const Duration(milliseconds: 550),
+        curve: Curves.easeInOutCubic);
+  }
+
+  void _top() => _scroll.animateTo(0,
+      duration: MediaQuery.disableAnimationsOf(context)
+          ? Duration.zero
+          : const Duration(milliseconds: 450),
+      curve: Curves.easeInOut);
+
+  void _go(String route) => context.go(route);
+  void _open(String route) => context.push(route);
+
+  void _toggleTheme() {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    ref
+        .read(themeModeProvider.notifier)
+        .setMode(dark ? ThemeMode.light : ThemeMode.dark);
+  }
+
+  List<_NavItem> get _navItems => [
+        _NavItem('Features', () => _scrollTo(_featuresKey)),
+        _NavItem('How it works', () => _scrollTo(_howKey)),
+        _NavItem('Organizations', () => _scrollTo(_orgsKey)),
+        _NavItem('Security & privacy', () => _scrollTo(_securityKey)),
+        _NavItem('Transparency', () => _open('/transparency')),
+      ];
+
+  // ---- build ---------------------------------------------------------------
+
   @override
   Widget build(BuildContext context) {
-    final isDesktop = ResponsiveLayout.isWide(context);
-    final screenWidth = MediaQuery.of(context).size.width;
-    // The six links plus two buttons need ~1100px; below that (or with large
-    // text) the menu moves into the drawer instead of overflowing.
-    final inlineNav = screenWidth >= 1100 && MediaQuery.textScalerOf(context).scale(14) / 14 <= 1.3;
+    final width = MediaQuery.sizeOf(context).width;
+    final largeText = MediaQuery.textScalerOf(context).scale(14) / 14 > 1.3;
+    // Six links and two buttons need about 1100px; below that, or at large text,
+    // the menu moves into the drawer instead of overflowing.
+    final inline = width >= 1100 && !largeText;
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.transparent,
-      endDrawer: !inlineNav ? _buildMobileDrawer(context) : null,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          child: Column(
-            children: [
-              _buildNavBar(context, inlineNav),
-              _buildHeroSection(context, isDesktop, screenWidth),
-              _buildTrustStrip(context, screenWidth),
-              _buildFeaturesSection(context, key: _featuresKey),
-              _buildHowItWorksSection(context, key: _howItWorksKey),
-              _buildOrganizationTypesSection(context, key: _organizationsKey),
-              _buildSecurityAndPrivacySection(context, key: _securityKey),
-              _buildAnonymousVotingSection(context),
-              _buildProductShowcaseSection(context),
-              _buildFaqSection(context, key: _faqKey),
-              _buildFinalCtaSection(context),
-              _buildFooter(context),
-            ],
+      endDrawer: inline ? null : _drawer(context),
+      body: Stack(children: [
+        const Positioned.fill(child: _AmbientGlow()),
+        SafeArea(
+          bottom: false,
+          child: SingleChildScrollView(
+            controller: _scroll,
+            child: Column(children: [
+              const SizedBox(height: 92),
+              _hero(context, width),
+              _trustStrip(context),
+              KeyedSubtree(key: _featuresKey, child: _features(context)),
+              KeyedSubtree(key: _howKey, child: _howItWorks(context)),
+              KeyedSubtree(key: _orgsKey, child: _organizations(context)),
+              KeyedSubtree(key: _securityKey, child: _security(context)),
+              _anonymous(context),
+              _receipt(context),
+              KeyedSubtree(key: _faqKey, child: _faq(context)),
+              _finalCta(context),
+              _footer(context),
+            ]),
           ),
         ),
-      ),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                  width < 640 ? 10 : 20, 12, width < 640 ? 10 : 20, 0),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: kLandingMaxWidth),
+                  child: GlassBar(child: _navBar(context, inline)),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ]),
     );
   }
 
-  // ===========================================================================
-  // 1. NAVIGATION BAR
-  // ===========================================================================
-  Widget _buildNavBar(BuildContext context, bool inlineNav) {
-    final isDesktop = inlineNav;
-    return Container(
-      height: 72,
-      padding: const EdgeInsets.symmetric(horizontal: 28),
-      decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
-        border:
-            Border(bottom: BorderSide(color: KivoraColors.borderOf(context), width: 1.0)),
-      ),
-      child: Center(
+  // ---- navigation ------------------------------------------------------------
+
+  Widget _navBar(BuildContext context, bool inline) {
+    final kc = KivoraColors.of(context);
+    final dark = kc.isDark;
+    final brand = Semantics(
+      button: true,
+      label: 'Kivora, back to top',
+      child: InkWell(
+        onTap: _top,
+        borderRadius: BorderRadius.circular(12),
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Left: Logo & Brand (Kivora)
-              Flexible(
-                child: InkWell(
-                onTap: () {
-                  _scrollController.animateTo(
-                    0,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeInOut,
-                  );
-                },
-                borderRadius: BorderRadius.circular(10),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.asset(
-                        'assets/icon/app_icon.png',
-                        width: 38,
-                        height: 38,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Flexible(
-                      child: Text(
-                        'Kivora',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w800,
-                          color: KivoraColors.textPrimaryOf(context),
-                          letterSpacing: -0.6,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )),
-
-              // Center Navigation (Desktop)
-              if (isDesktop)
-                Flexible(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _AnimatedNavLink(
-                        label: 'Features',
-                        onTap: () => _scrollToSection(_featuresKey)),
-                    _AnimatedNavLink(
-                        label: 'How it works',
-                        onTap: () => _scrollToSection(_howItWorksKey)),
-                    _AnimatedNavLink(
-                        label: 'Organizations',
-                        onTap: () => _scrollToSection(_organizationsKey)),
-                    _AnimatedNavLink(
-                        label: 'Security & Privacy',
-                        onTap: () => _scrollToSection(_securityKey)),
-                    _AnimatedNavLink(
-                        label: 'Verify Receipt', onTap: () => context.go('/receipt-verify')),
-                    _AnimatedNavLink(
-                        label: 'Transparency', onTap: () => context.go('/transparency')),
-                  ],
-                ))),
-
-              // Right CTAs
-              if (isDesktop)
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _AnimatedButton(
-                      isPrimary: false,
-                      label: 'Sign in',
-                      onPressed: () => context.go('/login'),
-                    ),
-                    const SizedBox(width: 12),
-                    _AnimatedButton(
-                      isPrimary: true,
-                      label: 'Get started',
-                      onPressed: () => context.go('/register'),
-                    ),
-                  ],
-                )
-              else
-                Builder(
-                  builder: (ctx) => IconButton(
-                    tooltip: 'Menu',
-                    constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-                    icon: Icon(Icons.menu_rounded,
-                        color: KivoraColors.textPrimaryOf(context)),
-                    onPressed: () => Scaffold.of(ctx).openEndDrawer(),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMobileDrawer(BuildContext context) {
-    return Drawer(
-      backgroundColor: KivoraColors.surfaceOf(context),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.asset(
-                          'assets/icon/app_icon.png',
-                          width: 32,
-                          height: 32,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Kivora',
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: KivoraColors.textPrimaryOf(context)),
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close_rounded),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
-              Divider(height: 1, color: KivoraColors.borderOf(context)),
-              const SizedBox(height: 16),
-              _drawerTile('Features', () {
-                Navigator.pop(context);
-                _scrollToSection(_featuresKey);
-              }),
-              _drawerTile('How it works', () {
-                Navigator.pop(context);
-                _scrollToSection(_howItWorksKey);
-              }),
-              _drawerTile('Organizations', () {
-                Navigator.pop(context);
-                _scrollToSection(_organizationsKey);
-              }),
-              _drawerTile('Security & Privacy', () {
-                Navigator.pop(context);
-                _scrollToSection(_securityKey);
-              }),
-              _drawerTile('FAQ', () {
-                Navigator.pop(context);
-                _scrollToSection(_faqKey);
-              }),
-              const Spacer(),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    context.go('/login');
-                  },
-                  child: const Text('Sign in'),
-                ),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    context.go('/register');
-                  },
-                  style: FilledButton.styleFrom(
-                      backgroundColor: AppTheme.primaryBlue),
-                  child: const Text('Get started'),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _drawerTile(String label, VoidCallback onTap) {
-    return ListTile(
-      title: Text(label,
-          style: TextStyle(
-              fontWeight: FontWeight.w600, color: KivoraColors.textPrimaryOf(context))),
-      onTap: onTap,
-      contentPadding: EdgeInsets.zero,
-    );
-  }
-
-  // ===========================================================================
-  // 2. HERO SECTION
-  // ===========================================================================
-  Widget _buildHeroSection(
-      BuildContext context, bool isDesktop, double screenWidth) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 24,
-        vertical: isDesktop ? 64 : 40,
-      ),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              if (isDesktop) {
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      flex: 6,
-                      child: _buildHeroTextContent(context, true),
-                    ),
-                    const SizedBox(width: 48),
-                    Expanded(
-                      flex: 5,
-                      child: _buildHeroInteractiveWidget(context),
-                    ),
-                  ],
-                );
-              } else {
-                return Column(
-                  children: [
-                    _buildHeroTextContent(context, false),
-                    const SizedBox(height: 40),
-                    _buildHeroInteractiveWidget(context),
-                  ],
-                );
-              }
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeroTextContent(BuildContext context, bool alignLeft) {
-    return Column(
-      crossAxisAlignment:
-          alignLeft ? CrossAxisAlignment.start : CrossAxisAlignment.center,
-      children: [
-        // Eyebrow Tag
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-          decoration: BoxDecoration(
-            color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(20),
-            border:
-                Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.25)),
-          ),
-          child: const Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.shield_outlined,
-                  size: 14, color: AppTheme.primaryBlue),
-              SizedBox(width: 6),
-              Flexible(
-                child: Text(
-                  'KIVORA — SECURE E-VOTING AND POLLING',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.primaryBlue,
-                    letterSpacing: 0.8,
-                  ),
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset('assets/icon/app_icon.png',
+                  width: 36, height: 36, fit: BoxFit.cover),
+            ),
+            const SizedBox(width: 10),
+            Flexible(
+              child: Text('Kivora',
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
+                  style: TextStyle(
+                      fontSize: 21,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.5,
+                      color: kc.textPrimary)),
+            ),
+          ]),
+        ),
+      ),
+    );
+    final theme = IconButton(
+      tooltip: dark ? 'Switch to light theme' : 'Switch to dark theme',
+      constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+      onPressed: _toggleTheme,
+      icon: Icon(dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+          color: kc.textPrimary),
+    );
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(
+          start: 16, end: 8, top: 4, bottom: 4),
+      child: Row(children: [
+        if (inline)
+          brand
+        else
+          Expanded(
+              child: Align(
+                  alignment: AlignmentDirectional.centerStart, child: brand)),
+        if (inline) ...[
+          const SizedBox(width: 24),
+          Expanded(
+            // scaleDown keeps the links on one line whatever the font metrics.
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                for (final item in _navItems)
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size(48, 48),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      foregroundColor: kc.textSecondary,
+                      textStyle: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.w600),
+                    ),
+                    onPressed: item.onTap,
+                    child: Text(item.label),
+                  ),
+              ]),
+            ),
           ),
+          theme,
+          TextButton(
+            style: TextButton.styleFrom(
+                minimumSize: const Size(48, 48),
+                foregroundColor: kc.textPrimary),
+            onPressed: () => _go('/login'),
+            child: const Text('Sign in',
+                style: TextStyle(fontWeight: FontWeight.w700)),
+          ),
+          const SizedBox(width: 4),
+          FilledButton(
+            style: FilledButton.styleFrom(
+                minimumSize: const Size(48, 48),
+                padding: const EdgeInsets.symmetric(horizontal: 20)),
+            onPressed: () => _go('/register'),
+            child: const Text('Get started'),
+          ),
+        ] else ...[
+          theme,
+          IconButton(
+            tooltip: 'Menu',
+            constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+            onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
+            icon: Icon(Icons.menu_rounded, color: kc.textPrimary),
+          ),
+        ],
+      ]),
+    );
+  }
+
+  Widget _drawer(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    Widget tile(String label, VoidCallback onTap) => ListTile(
+          minVerticalPadding: 12,
+          title: Text(label,
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: kc.textPrimary)),
+          onTap: () {
+            Navigator.of(context).pop();
+            // Let the drawer close before the page moves.
+            Future.delayed(const Duration(milliseconds: 220), () {
+              if (mounted) onTap();
+            });
+          },
+        );
+    return Drawer(
+      backgroundColor: kc.surface,
+      child: SafeArea(
+        child: ListView(padding: const EdgeInsets.all(12), children: [
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: IconButton(
+              tooltip: 'Close menu',
+              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const Icon(Icons.close_rounded),
+            ),
+          ),
+          for (final item in _navItems) tile(item.label, item.onTap),
+          tile('Verify a receipt', () => _open('/receipt-verify')),
+          const Divider(height: 32),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(48)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      _go('/login');
+                    },
+                    child: const Text('Sign in'),
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton(
+                    style: FilledButton.styleFrom(
+                        minimumSize: const Size.fromHeight(48)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      _go('/register');
+                    },
+                    child: const Text('Get started'),
+                  ),
+                ]),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  // ---- sections --------------------------------------------------------------
+
+  Widget _hero(BuildContext context, double width) {
+    final kc = KivoraColors.of(context);
+    final wide = width >= 960;
+    final narrow = width < 640;
+
+    final text = Column(
+      crossAxisAlignment:
+          wide ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color:
+                AppTheme.primaryBlue.withValues(alpha: kc.isDark ? 0.18 : 0.09),
+            borderRadius: BorderRadius.circular(999),
+            border:
+                Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.3)),
+          ),
+          child: Text('Kivora · secure e-voting and polling',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: kc.accentText)),
+        ),
+        const SizedBox(height: 22),
+        Semantics(
+          header: true,
+          child: Text('Run fair elections for your organization.',
+              textAlign: wide ? TextAlign.start : TextAlign.center,
+              style: TextStyle(
+                  fontSize: narrow ? 36 : (wide ? 58 : 48),
+                  height: 1.08,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -1.4,
+                  color: kc.textPrimary)),
         ),
         const SizedBox(height: 20),
-
-        // Headline
-        Text(
-          'Run fair elections for your organization.',
-          style: TextStyle(
-            fontSize: alignLeft ? 50 : 34,
-            fontWeight: FontWeight.w800,
-            color: KivoraColors.textPrimaryOf(context),
-            height: 1.12,
-            letterSpacing: -1.2,
-          ),
-          textAlign: alignLeft ? TextAlign.start : TextAlign.center,
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 560),
+          child: Text(
+              'Hold elections and polls for your members, choose between anonymous and identifiable voting, and let the server enforce eligibility, timing and one vote per person.',
+              textAlign: wide ? TextAlign.start : TextAlign.center,
+              style: TextStyle(
+                  fontSize: narrow ? 16 : 18,
+                  height: 1.6,
+                  color: kc.textSecondary)),
         ),
-        const SizedBox(height: 20),
-
-        // Supporting Text
-        Text(
-          'Bring your members together. Hold elections and polls with Kivora’s verified identities, protected ballots, and server-authoritative audit logs.',
-          style: TextStyle(
-            fontSize: 16,
-            color: KivoraColors.textSecondaryOf(context),
-            height: 1.5,
-          ),
-          textAlign: alignLeft ? TextAlign.start : TextAlign.center,
-        ),
-        const SizedBox(height: 32),
-
-        // Primary Action Buttons
+        const SizedBox(height: 28),
         Wrap(
           spacing: 12,
           runSpacing: 12,
-          alignment: alignLeft ? WrapAlignment.start : WrapAlignment.center,
+          alignment: wide ? WrapAlignment.start : WrapAlignment.center,
           children: [
-            _AnimatedButton(
-              isPrimary: true,
-              label: 'Get started →',
-              padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 16),
-              onPressed: () => context.go('/register'),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                  minimumSize: const Size(48, 52),
+                  padding: const EdgeInsets.symmetric(horizontal: 28)),
+              onPressed: () => _go('/register'),
+              child: const Text('Get started',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
             ),
-            _AnimatedButton(
-              isPrimary: false,
-              label: 'Sign in',
-              padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 16),
-              onPressed: () => context.go('/login'),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                  minimumSize: const Size(48, 52),
+                  padding: const EdgeInsets.symmetric(horizontal: 28)),
+              onPressed: () => _go('/login'),
+              child: const Text('Sign in',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
             ),
           ],
         ),
-        const SizedBox(height: 20),
-
-        // Micro-link
-        InkWell(
-          onTap: () => context.go('/login'),
-          borderRadius: BorderRadius.circular(6),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Text(
-                  'Have a joining code or invitation? ',
-                  style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context)),
-                ),
-                const Text(
-                  'Join an organization →',
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryBlue),
-                ),
-              ],
+        const SizedBox(height: 18),
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          alignment: wide ? WrapAlignment.start : WrapAlignment.center,
+          children: [
+            Text('Have a joining code or invitation?  ',
+                style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+            TextButton(
+              style: TextButton.styleFrom(
+                  minimumSize: const Size(48, 48),
+                  foregroundColor: kc.accentText),
+              // Joining needs an account, so this opens registration; the join
+              // screen is reached from Organizations after signing in.
+              onPressed: () => _go('/register'),
+              child: const Text('Create an account to join',
+                  style: TextStyle(fontWeight: FontWeight.w700)),
             ),
-          ),
+          ],
         ),
       ],
     );
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(narrow ? 16 : 24, narrow ? 24 : 40,
+          narrow ? 16 : 24, narrow ? 40 : 72),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: kLandingMaxWidth),
+          child: Reveal(
+            child: wide
+                ? Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                    Expanded(flex: 6, child: text),
+                    const SizedBox(width: 48),
+                    const Expanded(
+                        flex: 5, child: Center(child: IllustrativeBallot())),
+                  ])
+                : Column(children: [
+                    text,
+                    const SizedBox(height: 40),
+                    const IllustrativeBallot()
+                  ]),
+          ),
+        ),
+      ),
+    );
   }
 
-  // Interactive Mock Product Preview
-  Widget _buildHeroInteractiveWidget(BuildContext context) {
-    return _HoverContainer(
-      backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.08),
-      padding: const EdgeInsets.all(24),
-      borderRadius: BorderRadius.circular(24),
-      hoverBorderColor: AppTheme.primaryBlue.withValues(alpha: 0.3),
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: KivoraColors.surfaceOf(context),
-              borderRadius: BorderRadius.circular(18),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.06),
-                  blurRadius: 20,
-                  offset: const Offset(0, 6),
-                ),
-              ],
+  Widget _trustStrip(BuildContext context) {
+    return SectionShell(
+      tinted: true,
+      child: ReflowGrid(
+        maxColumns: 3,
+        minColumnWidth: 280,
+        children: [for (final p in landingTrustPoints) _trustItem(context, p)],
+      ),
+    );
+  }
+
+  Widget _trustItem(BuildContext context, LandingFeature p) {
+    final kc = KivoraColors.of(context);
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      IconTile(p.icon, size: 44),
+      const SizedBox(width: 14),
+      Expanded(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(p.title,
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: kc.textPrimary)),
+          const SizedBox(height: 4),
+          Text(p.body,
+              style: TextStyle(
+                  fontSize: 14, height: 1.5, color: kc.textSecondary)),
+        ]),
+      ),
+    ]);
+  }
+
+  Widget _features(BuildContext context) => SectionShell(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const SectionHeader(
+            eyebrow: 'Built for collective decisions',
+            title: 'One place to vote and to manage who can.',
+            body:
+                'From choosing representatives to settling a yes/no question, every vote has a clear home.',
+          ),
+          const SizedBox(height: 40),
+          ReflowGrid(
+              children: [for (final f in landingFeatures) FeatureCard(f)]),
+        ]),
+      );
+
+  Widget _howItWorks(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    return SectionShell(
+      tinted: true,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const SectionHeader(
+          eyebrow: 'How it works',
+          title: 'A clear path from setup to result.',
+          body:
+              'Make participation straightforward for organizers and members alike.',
+        ),
+        const SizedBox(height: 40),
+        ReflowGrid(maxColumns: 4, minColumnWidth: 240, children: [
+          for (var i = 0; i < landingSteps.length; i++)
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: kc.surface,
+                borderRadius: BorderRadius.circular(AppTheme.radiusCard + 4),
+                border: Border.all(color: kc.border),
+              ),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('0${i + 1}',
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w800,
+                            color: kc.accentText,
+                            letterSpacing: -0.5)),
+                    const SizedBox(height: 12),
+                    Text(landingSteps[i].title,
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: kc.textPrimary)),
+                    const SizedBox(height: 8),
+                    Text(landingSteps[i].body,
+                        style: TextStyle(
+                            fontSize: 15,
+                            height: 1.55,
+                            color: kc.textSecondary)),
+                  ]),
             ),
-            padding: const EdgeInsets.all(24),
+        ]),
+        const SizedBox(height: 32),
+        FilledButton(
+          style: FilledButton.styleFrom(
+              minimumSize: const Size(48, 52),
+              padding: const EdgeInsets.symmetric(horizontal: 28)),
+          onPressed: () => _go('/register'),
+          child: const Text('Start with Kivora',
+              style: TextStyle(fontWeight: FontWeight.w700)),
+        ),
+      ]),
+    );
+  }
+
+  Widget _organizations(BuildContext context) => SectionShell(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const SectionHeader(
+            eyebrow: 'For every kind of organization',
+            title: 'Your community, represented.',
+            body:
+                'Kivora organizations are set up as one of these types, then shaped around the people who take part.',
+          ),
+          const SizedBox(height: 40),
+          ReflowGrid(maxColumns: 5, minColumnWidth: 200, gap: 16, children: [
+            for (final t in landingOrgTypes) FeatureCard(t),
+          ]),
+        ]),
+      );
+
+  Widget _security(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    final wide = MediaQuery.sizeOf(context).width >= 960;
+    final header =
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const SectionHeader(
+        eyebrow: 'Security & privacy',
+        title: 'Trust built into every step.',
+        body:
+            'The rules that matter run on the server, and the voting mode is visible to members before they choose.',
+      ),
+      const SizedBox(height: 24),
+      OutlinedButton(
+        style: OutlinedButton.styleFrom(
+            minimumSize: const Size(48, 52),
+            padding: const EdgeInsets.symmetric(horizontal: 24)),
+        onPressed: () => _open('/transparency'),
+        child: const Text('Explore transparency',
+            style: TextStyle(fontWeight: FontWeight.w700)),
+      ),
+    ]);
+    final points = ReflowGrid(
+      maxColumns: 2,
+      minColumnWidth: 240,
+      gap: 16,
+      children: [
+        for (final p in landingSecurityPoints)
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: kc.surface,
+              borderRadius: BorderRadius.circular(AppTheme.radiusCard + 2),
+              border: Border.all(color: kc.border),
+            ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Icon(Icons.school_outlined,
-                                size: 18, color: AppTheme.primaryBlue),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              'Student Council',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                  color: KivoraColors.textPrimaryOf(context)),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppTheme.success.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Text('ACTIVE',
-                          style: TextStyle(
-                              color: AppTheme.success,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold)),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-
-                Text(
-                  'Student Council Election 2026',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: KivoraColors.textPrimaryOf(context)),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Choose one candidate to represent your department.',
-                  style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
-                ),
-                const SizedBox(height: 20),
-
-                // Candidate options
-                _heroCandidateOption(0, 'Candidate A — Sarah Jenkins'),
-                const SizedBox(height: 10),
-                _heroCandidateOption(1, 'Candidate B — Michael Chen'),
-                const SizedBox(height: 10),
-                _heroCandidateOption(2, 'Candidate C — David Miller'),
-
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Icon(Icons.lock_outline_rounded,
-                        size: 14, color: KivoraColors.textSecondaryOf(context)),
-                    const SizedBox(width: 6),
-                    Flexible(
-                      child: Text('Anonymous ballot',
-                          style: TextStyle(
-                              fontSize: 13, color: KivoraColors.textSecondaryOf(context))),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _heroVoteSubmitted = true;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryBlue,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                    ),
-                    child: Text(
-                        _heroVoteSubmitted ? 'Vote Confirmed!' : 'Submit vote'),
-                  ),
-                ),
-
-                if (_heroVoteSubmitted) ...[
-                  const SizedBox(height: 16),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeOut,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: AppTheme.success.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                          color: AppTheme.success.withValues(alpha: 0.3)),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.check_circle_rounded,
-                            color: AppTheme.success, size: 18),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Vote recorded',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                      color: KivoraColors.textPrimaryOf(context))),
-                              Text('Receipt code: #0x82f9...a42',
-                                  style: TextStyle(
-                                      fontSize: 11,
-                                      color: KivoraColors.textSecondaryOf(context))),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'ILLUSTRATIVE BALLOT · MEMBER VIEW DEMO',
-            style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                color: KivoraColors.textSecondaryOf(context),
-                letterSpacing: 0.8),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _heroCandidateOption(int index, String label) {
-    final isSelected = _heroSelectedCandidate == index;
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _heroSelectedCandidate = index;
-          _heroVoteSubmitted = false;
-        });
-      },
-      borderRadius: BorderRadius.circular(12),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppTheme.primaryBlue.withValues(alpha: 0.12).withValues(alpha: 0.6)
-              : KivoraColors.surfaceOf(context),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? AppTheme.primaryBlue : KivoraColors.borderOf(context),
-            width: isSelected ? 1.8 : 1.0,
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              isSelected
-                  ? Icons.radio_button_checked_rounded
-                  : Icons.radio_button_unchecked_rounded,
-              color: isSelected ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context),
-              size: 18,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                  fontSize: 13,
-                  color: isSelected
-                      ? AppTheme.primaryBlue
-                      : KivoraColors.textPrimaryOf(context),
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ===========================================================================
-  // 3. TRUST / VALUE STRIP
-  // ===========================================================================
-  Widget _buildTrustStrip(BuildContext context, double screenWidth) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
-        border: Border.symmetric(
-            horizontal: BorderSide(color: KivoraColors.borderOf(context))),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final isWide = constraints.maxWidth >= 800;
-              final colWidth =
-                  isWide ? (constraints.maxWidth - 48) / 3 : double.infinity;
-
-              return Wrap(
-                spacing: 24,
-                runSpacing: 24,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
-                    width: colWidth,
-                    child: _trustItem(
-                      icon: Icons.verified_user_outlined,
-                      title: 'Kivora verified organizations',
-                      subtitle:
-                          'Phone verification + admin two-step verification.',
-                    ),
-                  ),
-                  SizedBox(
-                    width: colWidth,
-                    child: _trustItem(
-                      icon: Icons.shield_outlined,
-                      title: 'Private ballots',
-                      subtitle: 'Optional anonymous voting for your members.',
-                    ),
-                  ),
-                  SizedBox(
-                    width: colWidth,
-                    child: _trustItem(
-                      icon: Icons.list_alt_rounded,
-                      title: 'Every action on record',
-                      subtitle:
-                          'An administrative audit log members cannot edit.',
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _trustItem(
-      {required IconData icon,
-      required String title,
-      required String subtitle}) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(icon, color: AppTheme.primaryBlue, size: 22),
-        ),
-        const SizedBox(width: 14),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: KivoraColors.textPrimaryOf(context))),
-              const SizedBox(height: 2),
-              Text(subtitle,
-                  style: TextStyle(
-                      fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  // ===========================================================================
-  // 4. FEATURES SECTION
-  // ===========================================================================
-  Widget _buildFeaturesSection(BuildContext context, {required Key key}) {
-    return Container(
-      key: key,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'BUILT FOR COLLECTIVE DECISIONS',
-                style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.primaryBlue,
-                    letterSpacing: 1.0),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'One place to vote.\nMore ways to be heard.',
+                  Icon(p.icon, color: kc.successText),
+                  const SizedBox(height: 12),
+                  Text(p.title,
                       style: TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.w800,
-                          color: KivoraColors.textPrimaryOf(context),
-                          height: 1.15,
-                          letterSpacing: -0.8),
-                    ),
-                  ),
-                  if (ResponsiveLayout.isWide(context))
-                    SizedBox(
-                      width: 320,
-                      child: Text(
-                        'From choosing your next representative to finding a meeting time, give every decision a clear home.',
-                        style: TextStyle(
-                            color: KivoraColors.textSecondaryOf(context),
-                            fontSize: 14,
-                            height: 1.4),
-                      ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 48),
-
-              _buildDualPreviewCards(context),
-
-              const SizedBox(height: 48),
-
-              // 6 Feature Cards Grid
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final isWide = constraints.maxWidth >= 900;
-                  final isTablet = constraints.maxWidth >= 600 && !isWide;
-                  final cols = isWide ? 3 : (isTablet ? 2 : 1);
-                  final itemWidth =
-                      (constraints.maxWidth - (cols - 1) * 20) / cols;
-
-                  return Wrap(
-                    spacing: 20,
-                    runSpacing: 20,
-                    children: [
-                      SizedBox(
-                        width: itemWidth,
-                        child: _featureCard(
-                          title: 'Organization Management',
-                          description:
-                              'Manage members, roles, departments, invitations, and joining codes seamlessly.',
-                          icon: Icons.corporate_fare_outlined,
-                        ),
-                      ),
-                      SizedBox(
-                        width: itemWidth,
-                        child: _featureCard(
-                          title: 'Secure Voting Events',
-                          description:
-                              'Create elections and polls with controlled lifecycle management and automatic tallying.',
-                          icon: Icons.how_to_vote_outlined,
-                        ),
-                      ),
-                      SizedBox(
-                        width: itemWidth,
-                        child: _featureCard(
-                          title: 'Anonymous Voting',
-                          description:
-                              'Keep voter participation records separate from anonymous ballot data models.',
-                          icon: Icons.shield_outlined,
-                        ),
-                      ),
-                      SizedBox(
-                        width: itemWidth,
-                        child: _featureCard(
-                          title: 'Eligibility Control',
-                          description:
-                              'Support organization-wide, selected-member, and department-based voter eligibility.',
-                          icon: Icons.tune_rounded,
-                        ),
-                      ),
-                      SizedBox(
-                        width: itemWidth,
-                        child: _featureCard(
-                          title: 'Results & Turnout',
-                          description:
-                              'Provide controlled access to turnout and voting results according to event state.',
-                          icon: Icons.bar_chart_rounded,
-                        ),
-                      ),
-                      SizedBox(
-                        width: itemWidth,
-                        child: _featureCard(
-                          title: 'Audit & Governance',
-                          description:
-                              'Track important administrative actions through tamper-evident application audit logging.',
-                          icon: Icons.history_rounded,
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ],
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: kc.textPrimary)),
+                  const SizedBox(height: 6),
+                  Text(p.body,
+                      style: TextStyle(
+                          fontSize: 14, height: 1.5, color: kc.textSecondary)),
+                ]),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDualPreviewCards(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isWide = constraints.maxWidth >= 850;
-        final width =
-            isWide ? (constraints.maxWidth - 24) / 2 : double.infinity;
-
-        return Wrap(
-          spacing: 24,
-          runSpacing: 24,
-          children: [
-            // Left Card: Elections
-            SizedBox(
-              width: width,
-              child: _HoverContainer(
-                backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.08),
-                padding: const EdgeInsets.all(28),
-                borderRadius: BorderRadius.circular(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: KivoraColors.surfaceOf(context),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Icon(Icons.how_to_vote_outlined,
-                          color: AppTheme.primaryBlue, size: 20),
-                    ),
-                    const SizedBox(height: 16),
-                    Text('Elections with a clear purpose.',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: KivoraColors.textPrimaryOf(context))),
-                    const SizedBox(height: 8),
-                    Text(
-                        'Bring candidates and members into a focused ballot experience. Make participation feel straightforward.',
-                        style: TextStyle(
-                            fontSize: 13,
-                            color: KivoraColors.textSecondaryOf(context),
-                            height: 1.4)),
-                    const SizedBox(height: 24),
-
-                    // Mock Election Card
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: KivoraColors.surfaceOf(context),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: KivoraColors.borderOf(context)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  'Student council 2026',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
-                                      color: KivoraColors.textPrimaryOf(context)),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                    color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-                                    borderRadius: BorderRadius.circular(6)),
-                                child: const Text('Election',
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppTheme.primaryBlue)),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          _miniCandidateRow('A', 'Candidate A'),
-                          const SizedBox(height: 8),
-                          _miniCandidateRow('B', 'Candidate B'),
-                          const SizedBox(height: 8),
-                          _miniCandidateRow('C', 'Candidate C'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // Right Card: Polls
-            SizedBox(
-              width: width,
-              child: _HoverContainer(
-                backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.08),
-                padding: const EdgeInsets.all(28),
-                borderRadius: BorderRadius.circular(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: KivoraColors.surfaceOf(context),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Icon(Icons.bar_chart_rounded,
-                          color: AppTheme.primaryBlue, size: 20),
-                    ),
-                    const SizedBox(height: 16),
-                    Text('Everyday questions, shared answers.',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: KivoraColors.textPrimaryOf(context))),
-                    const SizedBox(height: 8),
-                    Text(
-                        'Use polls to hear what members think. Keep everyday input alongside your organization’s elections.',
-                        style: TextStyle(
-                            fontSize: 13,
-                            color: KivoraColors.textSecondaryOf(context),
-                            height: 1.4)),
-                    const SizedBox(height: 24),
-
-                    // Mock Poll Card
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: KivoraColors.surfaceOf(context),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: KivoraColors.borderOf(context)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  'When should we meet?',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
-                                      color: KivoraColors.textPrimaryOf(context)),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                    color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-                                    borderRadius: BorderRadius.circular(6)),
-                                child: const Text('Poll',
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppTheme.primaryBlue)),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          _pollBarRow('Wednesday afternoon', 0.75),
-                          const SizedBox(height: 8),
-                          _pollBarRow('Thursday evening', 0.45),
-                          const SizedBox(height: 8),
-                          _pollBarRow('Friday morning', 0.30),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _miniCandidateRow(String letter, String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: KivoraColors.backgroundOf(context),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 10,
-            backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.12),
-            child: Text(letter,
-                style: const TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.primaryBlue)),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: KivoraColors.textPrimaryOf(context)),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _pollBarRow(String label, double ratio) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label,
-            style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-                color: KivoraColors.textPrimaryOf(context))),
-        const SizedBox(height: 4),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: LinearProgressIndicator(
-            value: ratio,
-            minHeight: 6,
-            backgroundColor: KivoraColors.borderOf(context),
-            valueColor:
-                const AlwaysStoppedAnimation<Color>(AppTheme.primaryBlue),
-          ),
-        ),
       ],
     );
-  }
-
-  Widget _featureCard(
-      {required String title,
-      required String description,
-      required IconData icon}) {
-    return _HoverContainer(
-      padding: const EdgeInsets.all(28),
-      borderRadius: BorderRadius.circular(18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: AppTheme.primaryBlue, size: 24),
-          ),
-          const SizedBox(height: 20),
-          Text(title,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: KivoraColors.textPrimaryOf(context))),
-          const SizedBox(height: 8),
-          Text(description,
-              style: TextStyle(
-                  fontSize: 13, color: KivoraColors.textSecondaryOf(context), height: 1.4)),
-        ],
-      ),
+    return SectionShell(
+      tinted: true,
+      child: wide
+          ? Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Expanded(flex: 4, child: header),
+              const SizedBox(width: 56),
+              Expanded(flex: 6, child: points),
+            ])
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [header, const SizedBox(height: 32), points]),
     );
   }
 
-  // ===========================================================================
-  // 5. HOW IT WORKS
-  // ===========================================================================
-  Widget _buildHowItWorksSection(BuildContext context, {required Key key}) {
-    return Container(
-      key: key,
-      color: KivoraColors.surfaceOf(context),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'HOW IT WORKS',
-                          style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.primaryBlue,
-                              letterSpacing: 1.0),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'A simpler path to participation.',
-                          style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.w800,
-                              color: KivoraColors.textPrimaryOf(context),
-                              letterSpacing: -0.6),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (ResponsiveLayout.isWide(context)) ...[
-                    const SizedBox(width: 16),
-                    _AnimatedButton(
-                      isPrimary: true,
-                      label: 'Get started →',
-                      onPressed: () => context.go('/register'),
-                    ),
-                  ],
-                ],
-              ),
-              const SizedBox(height: 48),
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final isWide = constraints.maxWidth >= 850;
-                  final width = isWide
-                      ? (constraints.maxWidth - 48) / 3
-                      : double.infinity;
-
-                  return Wrap(
-                    spacing: 24,
-                    runSpacing: 24,
-                    children: [
-                      SizedBox(
-                        width: width,
-                        child: _stepCard(
-                          step: '01',
-                          title: 'Start with your organization',
-                          description:
-                              'Create your organization and complete phone verification. Admins set up two-step verification.',
-                          caption: 'A verified starting point.',
-                        ),
-                      ),
-                      SizedBox(
-                        width: width,
-                        child: _stepCard(
-                          step: '02',
-                          title: 'Bring your members in',
-                          description:
-                              'Invite your members to join your organization with an invitation or joining code.',
-                          caption: 'Your community, connected.',
-                        ),
-                      ),
-                      SizedBox(
-                        width: width,
-                        child: _stepCard(
-                          step: '03',
-                          title: 'Put a decision to a vote',
-                          description:
-                              'Set up an election or poll. Choose whether voting is anonymous, then let members have their say.',
-                          caption: 'From a question to a decision.',
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _stepCard(
-      {required String step,
-      required String title,
-      required String description,
-      required String caption}) {
-    return _HoverContainer(
-      padding: const EdgeInsets.all(24),
-      borderRadius: BorderRadius.circular(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(step,
-              style: const TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.w800,
-                  color: AppTheme.primaryBlue,
-                  height: 1.0)),
-          const SizedBox(height: 16),
-          Text(title,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: KivoraColors.textPrimaryOf(context))),
-          const SizedBox(height: 8),
-          Text(description,
-              style: TextStyle(
-                  fontSize: 13, color: KivoraColors.textSecondaryOf(context), height: 1.4)),
-          const SizedBox(height: 12),
-          Text(caption,
-              style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.primaryBlue)),
-        ],
-      ),
-    );
-  }
-
-  // ===========================================================================
-  // 6. ORGANIZATION TYPES
-  // ===========================================================================
-  Widget _buildOrganizationTypesSection(BuildContext context,
-      {required Key key}) {
-    return Container(
-      key: key,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('FOR YOUR ORGANIZATION',
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryBlue,
-                      letterSpacing: 1.0)),
-              const SizedBox(height: 8),
-              Text(
-                'Different communities.\nA shared need to be heard.',
-                style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w800,
-                    color: KivoraColors.textPrimaryOf(context),
-                    height: 1.15,
-                    letterSpacing: -0.6),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Kivora brings e-voting and polling to the groups that make decisions together.',
-                style: TextStyle(fontSize: 14, color: KivoraColors.textSecondaryOf(context)),
-              ),
-              const SizedBox(height: 40),
-
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final isWide = constraints.maxWidth >= 800;
-
-                  return _HoverContainer(
-                    padding: const EdgeInsets.all(28),
-                    borderRadius: BorderRadius.circular(20),
-                    child: isWide
-                        ? Row(
-                            children: [
-                              Expanded(
-                                flex: 6,
-                                child: Container(
-                                  height: 240,
-                                  decoration: BoxDecoration(
-                                    color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: const Center(
-                                    child: Icon(Icons.groups_rounded,
-                                        size: 80, color: AppTheme.primaryBlue),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 32),
-                              Expanded(
-                                flex: 6,
-                                child: _orgTypesQuoteCard(),
-                              ),
-                            ],
-                          )
-                        : Column(
-                            children: [
-                              Container(
-                                height: 180,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: const Center(
-                                  child: Icon(Icons.groups_rounded,
-                                      size: 60, color: AppTheme.primaryBlue),
-                                ),
-                              ),
-                              const SizedBox(height: 24),
-                              _orgTypesQuoteCard(),
-                            ],
-                          ),
-                  );
-                },
-              ),
-              const SizedBox(height: 32),
-
-              // 3 Sub-types
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final isWide = constraints.maxWidth >= 750;
-                  final width = isWide
-                      ? (constraints.maxWidth - 32) / 3
-                      : double.infinity;
-
-                  return Wrap(
-                    spacing: 16,
-                    runSpacing: 16,
-                    children: [
-                      SizedBox(
-                          width: width,
-                          child: _orgTypeItem(
-                              'Student councils',
-                              'Elect representatives and ask students what matters on campus.',
-                              Icons.school_outlined)),
-                      SizedBox(
-                          width: width,
-                          child: _orgTypeItem(
-                              'Clubs & associations',
-                              'Gather member input on committee options and annual initiatives.',
-                              Icons.groups_outlined)),
-                      SizedBox(
-                          width: width,
-                          child: _orgTypeItem(
-                              'Community organizations',
-                              'Poll members on local priorities and company decisions.',
-                              Icons.business_outlined)),
-                    ],
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _orgTypesQuoteCard() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(10),
+  Widget _anonymous(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    final wide = MediaQuery.sizeOf(context).width >= 860;
+    Widget card(IconData icon, String title, String body) => Container(
+          padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(12)),
-          child: const Icon(Icons.chat_bubble_outline_rounded,
-              color: AppTheme.primaryBlue, size: 20),
+            color: kc.surface,
+            borderRadius: BorderRadius.circular(AppTheme.radiusCard + 4),
+            border: Border.all(color: kc.border),
+          ),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconTile(icon),
+                const SizedBox(height: 14),
+                Text(title,
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: kc.textPrimary)),
+                const SizedBox(height: 6),
+                Text(body,
+                    style: TextStyle(
+                        fontSize: 15, height: 1.55, color: kc.textSecondary)),
+              ]),
+        );
+    final a = card(Icons.how_to_reg_rounded, 'Participation record',
+        'Records that an eligible member voted, so nobody can vote twice. It does not hold the choice in an anonymous vote.');
+    final b = card(Icons.ballot_rounded, 'Ballot record',
+        'Holds the choice. In an anonymous vote it has no field linking it to the voter\'s account.');
+    final link = Padding(
+      padding: const EdgeInsets.all(12),
+      child: Icon(wide ? Icons.sync_alt_rounded : Icons.swap_vert_rounded,
+          size: 32, color: kc.accentText),
+    );
+    return SectionShell(
+      child: Column(children: [
+        const SectionHeader(
+          eyebrow: 'Anonymous voting',
+          title: 'Participation is recorded. Ballots stay separate.',
+          body:
+              'Two separate records let Kivora prevent double voting while keeping an anonymous choice anonymous.',
+          center: true,
         ),
-        const SizedBox(height: 16),
-        Text(
-          'Good decisions start with people.',
-          style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: KivoraColors.textPrimaryOf(context)),
+        const SizedBox(height: 40),
+        wide
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [Expanded(child: a), link, Expanded(child: b)])
+            : Column(children: [a, link, b]),
+      ]),
+    );
+  }
+
+  Widget _receipt(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    return SectionShell(
+      tinted: true,
+      child: Container(
+        padding: const EdgeInsets.all(28),
+        decoration: BoxDecoration(
+          color: kc.surface,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: kc.border),
         ),
+        child: LayoutBuilder(builder: (context, c) {
+          final row = c.maxWidth >= 720;
+          const text =
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            SectionHeader(
+              eyebrow: 'Verify a receipt',
+              title: 'Check a receipt without an account.',
+              body:
+                  'Paste a receipt hash to confirm that a ballot with that receipt exists. It does not reveal a choice or a voter, and it is a record-existence check, not a formal proof of the whole process.',
+            ),
+          ]);
+          final button = FilledButton.icon(
+            style: FilledButton.styleFrom(
+                minimumSize: const Size(48, 52),
+                padding: const EdgeInsets.symmetric(horizontal: 24)),
+            onPressed: () => _open('/receipt-verify'),
+            icon: const Icon(Icons.verified_outlined),
+            label: const Text('Verify a receipt',
+                style: TextStyle(fontWeight: FontWeight.w700)),
+          );
+          return row
+              ? Row(children: [
+                  const Expanded(child: text),
+                  const SizedBox(width: 32),
+                  button
+                ])
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [text, const SizedBox(height: 24), button]);
+        }),
+      ),
+    );
+  }
+
+  Widget _faq(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    return SectionShell(
+      child: Column(children: [
+        const SectionHeader(
+          eyebrow: 'Frequently asked questions',
+          title: 'Good decisions start with clear answers.',
+          center: true,
+        ),
+        const SizedBox(height: 36),
+        ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 820),
+            child: const FaqList(items: landingFaqs)),
         const SizedBox(height: 8),
         Text(
-          'Build a space where your members can take part, not just stay informed.',
-          style: TextStyle(
-              fontSize: 14, color: KivoraColors.textSecondaryOf(context), height: 1.4),
+            'Need help with access or eligibility? Ask your organization administrator.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+      ]),
+    );
+  }
+
+  Widget _finalCta(BuildContext context) {
+    final narrow = MediaQuery.sizeOf(context).width < 640;
+    return SectionShell(
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(
+            horizontal: narrow ? 24 : 56, vertical: narrow ? 40 : 64),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(28),
+          gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [AppTheme.primaryBlue, AppTheme.primaryBlueDark]),
         ),
-      ],
-    );
-  }
-
-  Widget _orgTypeItem(String title, String subtitle, IconData icon) {
-    return _HoverContainer(
-      padding: const EdgeInsets.all(20),
-      borderRadius: BorderRadius.circular(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: KivoraColors.textPrimaryOf(context)),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Icon(icon, size: 18, color: AppTheme.primaryBlue),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text(subtitle,
-              style: TextStyle(
-                  fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.3)),
-        ],
-      ),
-    );
-  }
-
-  // ===========================================================================
-  // 7. SECURITY & PRIVACY SECTION
-  // ===========================================================================
-  Widget _buildSecurityAndPrivacySection(BuildContext context,
-      {required Key key}) {
-    return Container(
-      key: key,
-      color: KivoraColors.textPrimaryOf(context),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final isWide = constraints.maxWidth >= 900;
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('SECURITY & PRIVACY',
-                      style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF8AB4FF),
-                          letterSpacing: 1.0)),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Private choices.\nAccountable actions.',
-                    style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                        height: 1.15,
-                        letterSpacing: -0.8),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Trust starts with Kivora’s clear rules: who administers your organization, how members vote, and what stays on record.',
-                    style: TextStyle(
-                        fontSize: 15, color: Color(0xFF94A3B8), height: 1.4),
-                  ),
-                  const SizedBox(height: 48),
-                  if (isWide)
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(flex: 6, child: _securityFeaturesList()),
-                        const SizedBox(width: 48),
-                        Expanded(flex: 6, child: _securityPipelineCard()),
-                      ],
-                    )
-                  else
-                    Column(
-                      children: [
-                        _securityFeaturesList(),
-                        const SizedBox(height: 40),
-                        _securityPipelineCard(),
-                      ],
-                    ),
-                ],
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _securityFeaturesList() {
-    return Column(
-      children: [
-        _secFeatureItem(
-          icon: Icons.verified_user_outlined,
-          title: 'Verification before participation',
-          subtitle:
-              'Organizations are verified with a phone number. Admins use two-step verification for an extra sign-in step.',
-        ),
-        const SizedBox(height: 24),
-        _secFeatureItem(
-          icon: Icons.lock_outline_rounded,
-          title: 'Privacy is a choice, not an afterthought',
-          subtitle:
-              'Enable anonymous voting when a decision calls for it. Make the voting mode clear to members on their ballot.',
-        ),
-        const SizedBox(height: 24),
-        _secFeatureItem(
-          icon: Icons.history_rounded,
-          title: 'A record members cannot rewrite',
-          subtitle:
-              'Administrative actions are written to an activity log that members cannot edit.',
-        ),
-      ],
-    );
-  }
-
-  Widget _secFeatureItem(
-      {required IconData icon,
-      required String title,
-      required String subtitle}) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: const Color(0xFF1E293B),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(icon, color: const Color(0xFF8AB4FF), size: 20),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Colors.white)),
-              const SizedBox(height: 4),
-              Text(subtitle,
-                  style: const TextStyle(
-                      fontSize: 13, color: Color(0xFF94A3B8), height: 1.4)),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _securityPipelineCard() {
-    return Container(
-      padding: const EdgeInsets.all(28),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFF334155)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
-            children: [
-              Expanded(
-                child: Text('SECURITY PIPELINE',
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF8AB4FF),
-                        letterSpacing: 0.8)),
-              ),
-              SizedBox(width: 8),
-              Icon(Icons.security_rounded, color: Color(0xFF8AB4FF), size: 18),
-            ],
-          ),
-          const SizedBox(height: 24),
-          _pipeStep('1. Authenticated User', 'Firebase Auth identity token'),
-          _pipeArrow(),
-          _pipeStep(
-              '2. Organization Membership', 'Active status & tenant check'),
-          _pipeArrow(),
-          _pipeStep(
-              '3. Role Authorization', 'Owner / Admin permission evaluation'),
-          _pipeArrow(),
-          _pipeStep('4. Eligibility Validation', 'Member / Department match'),
-          _pipeArrow(),
-          _pipeStep('5. Server-Side Processing',
-              'Cloud Functions & atomic transaction write'),
-        ],
-      ),
-    );
-  }
-
-  Widget _pipeStep(String title, String desc) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFF334155)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-                color: Colors.white),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            desc,
-            style: const TextStyle(fontSize: 13, color: Color(0xFFB4C0D0)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _pipeArrow() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 4),
-      child: Center(
-        child: Icon(Icons.arrow_downward_rounded,
-            size: 14, color: Color(0xFF64748B)),
-      ),
-    );
-  }
-
-  // ===========================================================================
-  // 8. ANONYMOUS VOTING EXPLANATION
-  // ===========================================================================
-  Widget _buildAnonymousVotingSection(BuildContext context) {
-    return Container(
-      color: KivoraColors.backgroundOf(context),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('DATA SEPARATION ARCHITECTURE',
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryBlue,
-                      letterSpacing: 1.0)),
-              const SizedBox(height: 8),
-              Text(
-                'How anonymous voting works in Kivora.',
+        child: Column(children: [
+          Semantics(
+            header: true,
+            child: Text('Make your next decision count.',
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontSize: 28,
+                    fontSize: narrow ? 28 : 40,
+                    height: 1.15,
                     fontWeight: FontWeight.w800,
-                    color: KivoraColors.textPrimaryOf(context)),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Voter participation records are strictly separated from anonymous ballot records during server-side processing.',
-                style: TextStyle(fontSize: 14, color: KivoraColors.textSecondaryOf(context)),
-              ),
-              const SizedBox(height: 36),
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final isWide = constraints.maxWidth >= 800;
-                  final colWidth = isWide
-                      ? (constraints.maxWidth - 24) / 2
-                      : double.infinity;
-
-                  return Wrap(
-                    spacing: 24,
-                    runSpacing: 24,
-                    children: [
-                      SizedBox(
-                        width: colWidth,
-                        child: _anonCard(
-                          title: 'Participation Record',
-                          subtitle: 'User → Participation',
-                          icon: Icons.person_outline_rounded,
-                          fields: [
-                            'organizationId',
-                            'votingEventId',
-                            'userId',
-                            'votedAt'
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        width: colWidth,
-                        child: _anonCard(
-                          title: 'Anonymous Ballot',
-                          subtitle: 'Vote → Anonymous Record',
-                          icon: Icons.how_to_vote_outlined,
-                          fields: [
-                            'organizationId',
-                            'votingEventId',
-                            'selectedOptionId',
-                            'castAt'
-                          ],
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-              const SizedBox(height: 24),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: KivoraColors.surfaceOf(context),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: KivoraColors.borderOf(context)),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.info_outline_rounded,
-                        color: AppTheme.primaryBlue, size: 20),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'Notice: The stored data contains no direct join between participation records and anonymous ballots.',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: KivoraColors.textPrimaryOf(context)),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+                    letterSpacing: -0.8,
+                    color: Colors.white)),
           ),
-        ),
+          const SizedBox(height: 14),
+          const Text('Give every member a clear, secure way to be heard.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 17, height: 1.5, color: Colors.white)),
+          const SizedBox(height: 28),
+          Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              alignment: WrapAlignment.center,
+              children: [
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: AppTheme.primaryBlueDark,
+                      minimumSize: const Size(48, 52),
+                      padding: const EdgeInsets.symmetric(horizontal: 28)),
+                  onPressed: () => _go('/register'),
+                  child: const Text('Get started',
+                      style: TextStyle(fontWeight: FontWeight.w800)),
+                ),
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                      // The app theme fills outlined buttons with the surface
+                      // colour; on the violet panel that hides the white label.
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: Colors.white,
+                      side: const BorderSide(color: Colors.white, width: 1.5),
+                      minimumSize: const Size(48, 52),
+                      padding: const EdgeInsets.symmetric(horizontal: 28)),
+                  onPressed: () => _go('/login'),
+                  child: const Text('Sign in',
+                      style: TextStyle(fontWeight: FontWeight.w700)),
+                ),
+              ]),
+        ]),
       ),
     );
   }
 
-  Widget _anonCard(
-      {required String title,
-      required String subtitle,
-      required IconData icon,
-      required List<String> fields}) {
-    return _HoverContainer(
-      padding: const EdgeInsets.all(24),
-      borderRadius: BorderRadius.circular(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: AppTheme.primaryBlue, size: 22),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: KivoraColors.textPrimaryOf(context))),
-                    Text(subtitle,
-                        style: TextStyle(
-                            fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
-                  ],
-                ),
-              ),
-            ],
+  Widget _footer(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    final narrow = MediaQuery.sizeOf(context).width < 640;
+    Widget link(String label, VoidCallback onTap) => TextButton(
+          style: TextButton.styleFrom(
+            minimumSize: const Size(48, 48),
+            alignment: AlignmentDirectional.centerStart,
+            foregroundColor: kc.textSecondary,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
           ),
-          const SizedBox(height: 16),
-          Divider(height: 1, color: KivoraColors.borderOf(context)),
-          const SizedBox(height: 16),
-          Text('STORED FIELDS:',
-              style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                  color: KivoraColors.textSecondaryOf(context))),
-          const SizedBox(height: 8),
-          ...fields.map((f) => Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: Row(
-                  children: [
-                    const Icon(Icons.check_rounded,
-                        size: 14, color: AppTheme.primaryBlue),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(f,
-                          style: TextStyle(
-                              fontSize: 13,
-                              fontFamily: 'monospace',
-                              color: KivoraColors.textPrimaryOf(context))),
-                    ),
-                  ],
-                ),
-              )),
-        ],
-      ),
-    );
-  }
-
-  // ===========================================================================
-  // 9. PRODUCT SHOWCASE / DEMO
-  // ===========================================================================
-  Widget _buildProductShowcaseSection(BuildContext context) {
-    return Container(
-      color: KivoraColors.surfaceOf(context),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('PRODUCT SHOWCASE',
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryBlue,
-                      letterSpacing: 1.0)),
-              const SizedBox(height: 8),
-              Text(
-                'A single administration suite for your organization.',
+          onPressed: onTap,
+          child: Text(label,
+              style:
+                  const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+        );
+    Widget col(String title, List<Widget> links) =>
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 4),
+            child: Text(title,
                 style: TextStyle(
-                    fontSize: 28,
+                    fontSize: 13,
                     fontWeight: FontWeight.w800,
-                    color: KivoraColors.textPrimaryOf(context)),
-              ),
-              const SizedBox(height: 36),
-              _HoverContainer(
-                backgroundColor: KivoraColors.backgroundOf(context),
-                padding: const EdgeInsets.all(28),
-                borderRadius: BorderRadius.circular(20),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'KIVORA DASHBOARD DEMO',
-                            style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                color: KivoraColors.textSecondaryOf(context)),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                              color: AppTheme.primaryBlue.withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(8)),
-                          child: const Text('Admin View',
-                              style: TextStyle(
-                                  color: AppTheme.primaryBlue,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Wrap(
-                      spacing: 16,
-                      runSpacing: 16,
-                      children: [
-                        _showcaseChip(
-                            'Members Management', Icons.people_outline_rounded),
-                        _showcaseChip('Joining Codes', Icons.key_outlined),
-                        _showcaseChip(
-                            'Departments Roster', Icons.domain_outlined),
-                        _showcaseChip(
-                            'Elections & Polls', Icons.how_to_vote_outlined),
-                        _showcaseChip('Audit History', Icons.history_rounded),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
+                    letterSpacing: 0.6,
+                    color: kc.textPrimary)),
           ),
-        ),
-      ),
-    );
-  }
+          ...links,
+        ]);
 
-  Widget _showcaseChip(String label, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: KivoraColors.borderOf(context)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 18, color: AppTheme.primaryBlue),
-          const SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              label,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                  color: KivoraColors.textPrimaryOf(context)),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ===========================================================================
-  // 10. FAQ SECTION
-  // ===========================================================================
-  Widget _buildFaqSection(BuildContext context, {required Key key}) {
-    final faqs = [
-      {
-        'q': 'What can we use Kivora for?',
-        'a':
-            'Kivora supports secure e-voting and polling for organizations. Use it for representative elections, committee decisions, or everyday questions for your members.',
-      },
-      {
-        'q': 'How are organizations verified?',
-        'a':
-            'Organizations complete phone verification, and admins use two-step verification. These checks help establish a verified organization and its administrators.',
-      },
-      {
-        'q': 'Can members vote anonymously?',
-        'a':
-            'Yes. Anonymous voting is optional, so your organization can choose the voting mode appropriate for each decision.',
-      },
-      {
-        'q': 'Can members change the administrative activity log?',
-        'a':
-            'No. Members cannot edit the administrative activity log. It provides an immutable record of administrative actions within the organization.',
-      },
-      {
-        'q': 'How do I join an existing organization?',
-        'a':
-            'Choose Join an organization and use your joining code or invitation. If you already have an account, choose Sign in.',
-      },
-    ];
-
-    return Container(
-      key: key,
-      color: KivoraColors.surfaceOf(context),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1000),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('A LITTLE MORE CLARITY',
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryBlue,
-                      letterSpacing: 1.0)),
-              const SizedBox(height: 8),
-              Text('Good questions. Clear answers.',
-                  style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w800,
-                      color: KivoraColors.textPrimaryOf(context))),
-              const SizedBox(height: 36),
-              ...faqs.asMap().entries.map((entry) {
-                final idx = entry.key;
-                final faq = entry.value;
-                final isExpanded = _expandedFaqIndex == idx;
-
-                return Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          _expandedFaqIndex = isExpanded ? null : idx;
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                faq['q']!,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: KivoraColors.textPrimaryOf(context)),
-                              ),
-                            ),
-                            Icon(
-                              isExpanded
-                                  ? Icons.remove_rounded
-                                  : Icons.add_rounded,
-                              color: AppTheme.primaryBlue,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    if (isExpanded)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        child: Text(
-                          faq['a']!,
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: KivoraColors.textSecondaryOf(context),
-                              height: 1.5),
-                        ),
-                      ),
-                    Divider(height: 1, color: KivoraColors.borderOf(context)),
-                  ],
-                );
-              }),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // ===========================================================================
-  // 11. FINAL CTA SECTION
-  // ===========================================================================
-  Widget _buildFinalCtaSection(BuildContext context) {
     return Container(
       width: double.infinity,
-      color: AppTheme.primaryBlue,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
+      decoration: BoxDecoration(
+          color: kc.surface, border: Border(top: BorderSide(color: kc.border))),
+      padding: EdgeInsets.symmetric(horizontal: narrow ? 16 : 24, vertical: 40),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 800),
-          child: Column(
-            children: [
-              const Text('YOUR NEXT DECISION STARTS HERE',
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white70,
-                      letterSpacing: 1.0)),
-              const SizedBox(height: 16),
-              const Text(
-                'Give your organization a voice. With Kivora.',
-                style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                    height: 1.2),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Create a home for your elections and polls. Bring your members in, and move forward together.',
-                style:
-                    TextStyle(fontSize: 15, color: Colors.white70, height: 1.4),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 36),
-
-              Wrap(
-                spacing: 16,
-                runSpacing: 12,
-                alignment: WrapAlignment.center,
-                children: [
-                  _AnimatedButton(
-                    isPrimary: true,
-                    label: 'Get started →',
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 28, vertical: 16),
-                    backgroundColor: Colors.white,
-                    foregroundColor: AppTheme.primaryBlue,
-                    onPressed: () => context.go('/register'),
-                  ),
-                  _AnimatedButton(
-                    isPrimary: false,
-                    label: 'Sign in',
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 28, vertical: 16),
-                    backgroundColor: Colors.transparent,
-                    borderColor: Colors.white,
-                    foregroundColor: Colors.white,
-                    onPressed: () => context.go('/login'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // Sub-link
-              InkWell(
-                onTap: () => context.go('/login'),
-                borderRadius: BorderRadius.circular(6),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                  child: Text(
-                    'Already invited? Join an organization →',
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white70),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // ===========================================================================
-  // 12. FOOTER
-  // ===========================================================================
-  Widget _buildFooter(BuildContext context) {
-    return Container(
-      color: KivoraColors.surfaceOf(context),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: Column(
-            children: [
-              Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                crossAxisAlignment: WrapCrossAlignment.start,
-                spacing: 36,
-                runSpacing: 24,
-                children: [
-                  Column(
+          constraints: const BoxConstraints(maxWidth: kLandingMaxWidth),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            ReflowGrid(maxColumns: 4, minColumnWidth: 200, gap: 28, children: [
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 300),
+                child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
-                            child: Image.asset(
-                              'assets/icon/app_icon.png',
-                              width: 28,
-                              height: 28,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text('Kivora',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                  color: KivoraColors.textPrimaryOf(context))),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        width: 260,
-                        child: Text(
-                          'Secure e-voting and polling. For organizations. For every voice.',
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: KivoraColors.textSecondaryOf(context),
-                              height: 1.4),
+                      Row(mainAxisSize: MainAxisSize.min, children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.asset('assets/icon/app_icon.png',
+                              width: 32, height: 32, fit: BoxFit.cover),
                         ),
-                      ),
-                    ],
-                  ),
-                  Wrap(
-                    spacing: 36,
-                    runSpacing: 24,
-                    children: [
-                      _footerCol('Explore', [
-                        _footerLink(
-                            'Features', () => _scrollToSection(_featuresKey)),
-                        _footerLink('How it works',
-                            () => _scrollToSection(_howItWorksKey)),
-                        _footerLink(
-                            'Security', () => _scrollToSection(_securityKey)),
+                        const SizedBox(width: 10),
+                        Flexible(
+                          child: Text('Kivora',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w800,
+                                  color: kc.textPrimary)),
+                        ),
                       ]),
-                      _footerCol('Your organization', [
-                        _footerLink(
-                            'Get started', () => context.go('/register')),
-                        _footerLink('Sign in', () => context.go('/login')),
-                        _footerLink(
-                            'Join organization', () => context.go('/login')),
-                      ]),
-                    ],
-                  ),
-                ],
+                      const SizedBox(height: 12),
+                      Text('Secure e-voting and polling for organizations.',
+                          style: TextStyle(
+                              fontSize: 14,
+                              height: 1.5,
+                              color: kc.textSecondary)),
+                    ]),
               ),
-              const SizedBox(height: 40),
-              Divider(height: 1, color: KivoraColors.borderOf(context)),
-              const SizedBox(height: 24),
-              Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                spacing: 16,
-                runSpacing: 8,
-                children: [
-                  Text('© 2026 Kivora',
-                      style: TextStyle(
-                          fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
-                  Text('Built for collective decisions',
-                      style: TextStyle(
-                          fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _footerCol(String title, List<Widget> links) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title,
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                color: KivoraColors.textPrimaryOf(context))),
-        const SizedBox(height: 12),
-        ...links,
-      ],
-    );
-  }
-
-  Widget _footerLink(String label, VoidCallback onTap) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: InkWell(
-        onTap: onTap,
-        child: Text(label,
-            style:
-                TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
-      ),
-    );
-  }
-}
-
-// =============================================================================
-// ANIMATED HOVER WIDGETS
-// =============================================================================
-
-class _HoverContainer extends StatefulWidget {
-  final Widget child;
-  final EdgeInsetsGeometry padding;
-  final BorderRadius borderRadius;
-  final Color? backgroundColor;
-  final Color? hoverBorderColor;
-
-  const _HoverContainer({
-    required this.child,
-    this.padding = const EdgeInsets.all(24),
-    this.borderRadius = const BorderRadius.all(Radius.circular(18)),
-    this.backgroundColor,
-    this.hoverBorderColor,
-  });
-
-  @override
-  State<_HoverContainer> createState() => _HoverContainerState();
-}
-
-class _HoverContainerState extends State<_HoverContainer> {
-  bool _isHovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOutCubic,
-        transform: _isHovered
-            ? Matrix4.translationValues(0, -6, 0)
-            : Matrix4.identity(),
-        padding: widget.padding,
-        decoration: BoxDecoration(
-          color: widget.backgroundColor ?? KivoraColors.surfaceOf(context),
-          borderRadius: widget.borderRadius,
-          border: Border.all(
-            color: _isHovered
-                ? (widget.hoverBorderColor ??
-                    AppTheme.primaryBlue.withValues(alpha: 0.6))
-                : KivoraColors.borderOf(context),
-            width: _isHovered ? 1.5 : 1.0,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: _isHovered
-                  ? AppTheme.primaryBlue.withValues(alpha: 0.08)
-                  : Colors.black.withValues(alpha: 0.02),
-              blurRadius: _isHovered ? 20 : 8,
-              offset: _isHovered ? const Offset(0, 8) : const Offset(0, 2),
+              col('Product', [
+                link('Features', () => _scrollTo(_featuresKey)),
+                link('How it works', () => _scrollTo(_howKey)),
+                link('Organizations', () => _scrollTo(_orgsKey)),
+              ]),
+              col('Trust', [
+                link('Security & privacy', () => _scrollTo(_securityKey)),
+                link('Transparency', () => _open('/transparency')),
+                link('Verify a receipt', () => _open('/receipt-verify')),
+              ]),
+              col('Account', [
+                link('Sign in', () => _go('/login')),
+                link('Create an account', () => _go('/register')),
+                link('FAQ', () => _scrollTo(_faqKey)),
+              ]),
+            ]),
+            const SizedBox(height: 28),
+            Divider(color: kc.border),
+            const SizedBox(height: 8),
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              runSpacing: 4,
+              spacing: 16,
+              children: [
+                Text('© 2026 Sonryan Technologies. All rights reserved.',
+                    style: TextStyle(fontSize: 13, color: kc.textSecondary)),
+                TextButton.icon(
+                  style: TextButton.styleFrom(
+                      minimumSize: const Size(48, 48),
+                      foregroundColor: kc.textSecondary),
+                  onPressed: _top,
+                  icon: const Icon(Icons.arrow_upward_rounded, size: 16),
+                  label: const Text('Back to top'),
+                ),
+              ],
             ),
-          ],
+          ]),
         ),
-        child: widget.child,
       ),
     );
   }
 }
 
-class _AnimatedNavLink extends StatefulWidget {
+class _NavItem {
+  const _NavItem(this.label, this.onTap);
   final String label;
   final VoidCallback onTap;
-
-  const _AnimatedNavLink({required this.label, required this.onTap});
-
-  @override
-  State<_AnimatedNavLink> createState() => _AnimatedNavLinkState();
 }
 
-class _AnimatedNavLinkState extends State<_AnimatedNavLink> {
-  bool _isHovered = false;
+/// Soft violet and teal light behind the page. Decorative only.
+class _AmbientGlow extends StatelessWidget {
+  const _AmbientGlow();
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      cursor: SystemMouseCursors.click,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: widget.onTap,
-          borderRadius: BorderRadius.circular(8),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: _isHovered
-                  ? AppTheme.primaryBlue.withValues(alpha: 0.12).withValues(alpha: 0.7)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: AnimatedDefaultTextStyle(
-              duration: const Duration(milliseconds: 150),
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: _isHovered ? FontWeight.bold : FontWeight.w500,
-                color:
-                    _isHovered ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context),
-              ),
-              child: Text(widget.label),
-            ),
+    final dark = KivoraColors.of(context).isDark;
+    Widget orb(Color c, double size) => Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(colors: [
+              c.withValues(alpha: dark ? 0.20 : 0.14),
+              c.withValues(alpha: 0)
+            ]),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _AnimatedButton extends StatefulWidget {
-  final bool isPrimary;
-  final String label;
-  final EdgeInsetsGeometry padding;
-  final Color? backgroundColor;
-  final Color? foregroundColor;
-  final Color? borderColor;
-  final VoidCallback onPressed;
-
-  const _AnimatedButton({
-    required this.isPrimary,
-    required this.label,
-    this.padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-    this.backgroundColor,
-    this.foregroundColor,
-    this.borderColor,
-    required this.onPressed,
-  });
-
-  @override
-  State<_AnimatedButton> createState() => _AnimatedButtonState();
-}
-
-class _AnimatedButtonState extends State<_AnimatedButton> {
-  bool _isHovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final effectiveBg = widget.backgroundColor ??
-        (widget.isPrimary
-            ? (_isHovered ? AppTheme.primaryBlueDark : AppTheme.primaryBlue)
-            : (_isHovered ? AppTheme.primaryBlue.withValues(alpha: 0.12) : KivoraColors.surfaceOf(context)));
-
-    final effectiveHoverBg = widget.backgroundColor != null
-        ? (widget.backgroundColor == Colors.white
-            ? AppTheme.primaryBlue.withValues(alpha: 0.12)
-            : widget.backgroundColor!.withValues(alpha: 0.2))
-        : effectiveBg;
-
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      cursor: SystemMouseCursors.click,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: widget.onPressed,
-          borderRadius: BorderRadius.circular(10),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            curve: Curves.easeOutCubic,
-            transform: _isHovered
-                ? Matrix4.translationValues(0, -2, 0)
-                : Matrix4.identity(),
-            padding: widget.padding,
-            decoration: BoxDecoration(
-              color: _isHovered ? effectiveHoverBg : effectiveBg,
-              borderRadius: BorderRadius.circular(10),
-              border: widget.borderColor != null
-                  ? Border.all(
-                      color: _isHovered ? Colors.white : widget.borderColor!,
-                      width: 1.5)
-                  : (widget.isPrimary
-                      ? null
-                      : Border.all(
-                          color: _isHovered
-                              ? AppTheme.primaryBlue
-                              : KivoraColors.borderOf(context),
-                          width: 1.5)),
-              boxShadow: widget.isPrimary && widget.backgroundColor == null
-                  ? [
-                      BoxShadow(
-                        color: AppTheme.primaryBlue
-                            .withValues(alpha: _isHovered ? 0.35 : 0.2),
-                        blurRadius: _isHovered ? 12 : 6,
-                        offset: _isHovered
-                            ? const Offset(0, 4)
-                            : const Offset(0, 2),
-                      ),
-                    ]
-                  : [],
-            ),
-            child: Text(
-              widget.label,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-                color: widget.foregroundColor ??
-                    (widget.isPrimary
-                        ? Colors.white
-                        : (_isHovered
-                            ? AppTheme.primaryBlue
-                            : KivoraColors.textPrimaryOf(context))),
-              ),
-            ),
-          ),
-        ),
+        );
+    return IgnorePointer(
+      child: ExcludeSemantics(
+        child: Stack(clipBehavior: Clip.hardEdge, children: [
+          Positioned(
+              top: -160, right: -120, child: orb(AppTheme.primaryBlue, 560)),
+          Positioned(
+              top: 380, left: -200, child: orb(AppTheme.accentTeal, 460)),
+        ]),
       ),
     );
   }
