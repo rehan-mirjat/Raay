@@ -1983,4 +1983,232 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get navInvitations => 'الدعوات';
+
+  @override
+  String get acctTitle => 'إعدادات الحساب';
+
+  @override
+  String get acctTabProfile => 'الملف الشخصي';
+
+  @override
+  String get acctTabSecurity => 'الأمان والإعدادات';
+
+  @override
+  String get acctTabNotifications => 'الإشعارات';
+
+  @override
+  String get acctTabPreferences => 'التفضيلات';
+
+  @override
+  String get acctTabAccounts => 'الحسابات المرتبطة';
+
+  @override
+  String get acctTabSecurityShort => 'الأمان';
+
+  @override
+  String get acctTabNotificationsShort => 'التنبيهات';
+
+  @override
+  String get acctTabPreferencesShort => 'التفضيلات';
+
+  @override
+  String get acctTabAccountsShort => 'الحسابات';
+
+  @override
+  String get acctLoading => 'جارٍ تحميل الملف الشخصي...';
+
+  @override
+  String get acctLoadError =>
+      'تعذّر تحميل ملفك الشخصي. تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get acctNotFound => 'لم يتم العثور على الملف الشخصي.';
+
+  @override
+  String get acctPhotoUpdated => 'تم تحديث صورة الملف الشخصي بنجاح.';
+
+  @override
+  String get acctPhotoFailed => 'تعذّر رفع الصورة. حاول مرة أخرى.';
+
+  @override
+  String get acctProfileUpdated => 'تم تحديث الملف الشخصي بنجاح.';
+
+  @override
+  String get acctVerified => 'موثّق';
+
+  @override
+  String get acctUnverified => 'غير موثّق';
+
+  @override
+  String acctMemberSince(String date) {
+    return 'عضو منذ $date';
+  }
+
+  @override
+  String get acctPersonalInfo => 'المعلومات الشخصية';
+
+  @override
+  String get acctFirstName => 'الاسم الأول';
+
+  @override
+  String get acctLastName => 'اسم العائلة';
+
+  @override
+  String get acctFirstNameField => 'الاسم الأول';
+
+  @override
+  String get acctLastNameField => 'اسم العائلة';
+
+  @override
+  String get acctPhone => 'رقم الهاتف (اختياري)';
+
+  @override
+  String get acctSaveChanges => 'حفظ التغييرات';
+
+  @override
+  String get acctAuthMethod => 'طريقة المصادقة';
+
+  @override
+  String get acctGoogleNote =>
+      'حسابك مرتبط بـ Google. تتم إدارة تغيير كلمة المرور من خلال حساب Google الخاص بك.';
+
+  @override
+  String get acct2fa => 'المصادقة الثنائية';
+
+  @override
+  String get acct2faBody => 'احمِ حسابك بطلب خطوة مصادقة إضافية.';
+
+  @override
+  String get acctSetupAuth => 'إعداد تطبيق المصادقة';
+
+  @override
+  String get acctSignOut => 'تسجيل الخروج';
+
+  @override
+  String get acctAppearance => 'المظهر';
+
+  @override
+  String get acctAppearanceBody => 'اختر مظهر Kivora على هذا الجهاز.';
+
+  @override
+  String get acctThemeLight => 'فاتح';
+
+  @override
+  String get acctThemeDark => 'داكن';
+
+  @override
+  String get acctThemeSystem => 'النظام';
+
+  @override
+  String get acctLanguage => 'اللغة';
+
+  @override
+  String get acctLanguageNote =>
+      'ترجمات الأردية والسندية والعربية بمساعدة الآلة ولم يراجعها بعد متحدث أصلي. يرجى الإبلاغ عن أي شيء يبدو غير صحيح.';
+
+  @override
+  String get acctSystemDefault => 'افتراضي النظام';
+
+  @override
+  String get acctAccessibility => 'إمكانية الوصول';
+
+  @override
+  String get acctReduceMotion => 'تقليل الحركة';
+
+  @override
+  String get acctReduceMotionBody => 'تقليل الرسوم المتحركة في التطبيق.';
+
+  @override
+  String get acctHighContrast => 'تباين عالٍ';
+
+  @override
+  String get acctHighContrastBody => 'زيادة تباين النص والحدود لرؤية أفضل.';
+
+  @override
+  String get acctTextSizeNote =>
+      'يتبع حجم النص إعدادات إمكانية الوصول في جهازك. اختيارات المرشحين/الخيارات في شاشة الاقتراع مُسمّاة بالفعل لقارئات الشاشة.';
+
+  @override
+  String get acctNotifications => 'الإشعارات';
+
+  @override
+  String get acctNotificationsBody =>
+      'اختر الإشعارات التي تريد استلامها. تنطبق على جرس الإشعارات ورسائل التذكير الإلكترونية.';
+
+  @override
+  String get acctVoteReminders => 'تذكيرات التصويت';
+
+  @override
+  String get acctVoteRemindersBody =>
+      'احصل على إشعار عندما يوشك انتخاب نشط على الإغلاق ولم تصوّت بعد.';
+
+  @override
+  String get acctResultsPublished => 'نشر النتائج';
+
+  @override
+  String get acctResultsPublishedBody =>
+      'احصل على إشعار عند نشر نتائج انتخاب كنت مؤهلاً للتصويت فيه.';
+
+  @override
+  String get acctInvitationAlerts => 'دعوات المؤسسات';
+
+  @override
+  String get acctInvitationAlertsBody =>
+      'إظهار دعوات المؤسسات المعلّقة في جرس الإشعارات.';
+
+  @override
+  String get acctConnectedTitle => 'الحسابات المرتبطة';
+
+  @override
+  String get acctConnectedBody =>
+      'طرق تسجيل الدخول المرتبطة بحسابك في Kivora. يجب إبقاء طريقة واحدة على الأقل.';
+
+  @override
+  String get acctEmailPassword => 'البريد الإلكتروني وكلمة المرور';
+
+  @override
+  String get acctGoogleSignIn => 'سجّل الدخول بحساب Google الخاص بك.';
+
+  @override
+  String get acctConnectedBadge => 'مرتبط';
+
+  @override
+  String get acctConnect => 'ربط';
+
+  @override
+  String get acctDisconnect => 'إلغاء الربط';
+
+  @override
+  String acctDisconnectTitle(String name) {
+    return 'إلغاء ربط $name؟';
+  }
+
+  @override
+  String acctDisconnectBody(String name) {
+    return 'لن تتمكن من تسجيل الدخول إلى Kivora باستخدام $name.';
+  }
+
+  @override
+  String get acctCancel => 'إلغاء';
+
+  @override
+  String get acctGoogleConnected => 'تم ربط حساب Google.';
+
+  @override
+  String get acctChangePassword => 'تغيير كلمة المرور';
+
+  @override
+  String get acctCurrentPassword => 'كلمة المرور الحالية';
+
+  @override
+  String get acctNewPassword => 'كلمة المرور الجديدة';
+
+  @override
+  String get acctConfirmPassword => 'تأكيد كلمة المرور الجديدة';
+
+  @override
+  String get acctUpdatePassword => 'تحديث كلمة المرور';
+
+  @override
+  String get acctPasswordUpdated => 'تم تحديث كلمة المرور بنجاح!';
 }

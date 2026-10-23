@@ -456,13 +456,18 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
 /// "active" until something updates it).
 String effectiveJoiningCodeStatus(Map<String, dynamic> code, {DateTime? now}) {
   final raw = code['status'] as String? ?? 'unknown';
-  if (raw != 'active') return raw;
+  if (raw != 'active') {
+    return raw;
+  }
   final uses = (code['currentUses'] as num?)?.toInt() ?? 0;
   final maxUses = (code['maxUses'] as num?)?.toInt() ?? 0;
   final expiry = parseFirestoreDate(code['expiresAt']);
-  if (expiry != null && expiry.isBefore(now ?? DateTime.now()))
+  if (expiry != null && expiry.isBefore(now ?? DateTime.now())) {
     return 'expired';
-  if (maxUses > 0 && uses >= maxUses) return 'exhausted';
+  }
+  if (maxUses > 0 && uses >= maxUses) {
+    return 'exhausted';
+  }
   return 'active';
 }
 

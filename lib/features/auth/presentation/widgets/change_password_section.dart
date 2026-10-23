@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/validators.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../services/auth_service.dart';
 import '../../../../core/utils/friendly_error.dart';
 import '../../../../core/theme/kivora_colors.dart';
@@ -55,7 +56,7 @@ class _ChangePasswordSectionState extends ConsumerState<ChangePasswordSection> {
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _successMessage = 'Password updated successfully!';
+          _successMessage = AppLocalizations.of(context).acctPasswordUpdated;
           _currentPasswordController.clear();
           _newPasswordController.clear();
           _confirmPasswordController.clear();
@@ -82,7 +83,7 @@ class _ChangePasswordSectionState extends ConsumerState<ChangePasswordSection> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Change Password',
+                AppLocalizations.of(context).acctChangePassword,
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -105,7 +106,9 @@ class _ChangePasswordSectionState extends ConsumerState<ChangePasswordSection> {
                       const SizedBox(width: 12),
                       Expanded(
                           child: Text(_successMessage!,
-                              style: TextStyle(color: KivoraColors.of(context).successText))),
+                              style: TextStyle(
+                                  color:
+                                      KivoraColors.of(context).successText))),
                     ],
                   ),
                 ),
@@ -122,11 +125,13 @@ class _ChangePasswordSectionState extends ConsumerState<ChangePasswordSection> {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.error_outline, color: KivoraColors.of(context).errorText),
+                      Icon(Icons.error_outline,
+                          color: KivoraColors.of(context).errorText),
                       const SizedBox(width: 12),
                       Expanded(
                           child: Text(_error!,
-                              style: TextStyle(color: KivoraColors.of(context).errorText))),
+                              style: TextStyle(
+                                  color: KivoraColors.of(context).errorText))),
                     ],
                   ),
                 ),
@@ -135,7 +140,7 @@ class _ChangePasswordSectionState extends ConsumerState<ChangePasswordSection> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('CURRENT PASSWORD',
+                  Text(AppLocalizations.of(context).acctCurrentPassword,
                       style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 11,
@@ -166,7 +171,7 @@ class _ChangePasswordSectionState extends ConsumerState<ChangePasswordSection> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('NEW PASSWORD',
+                  Text(AppLocalizations.of(context).acctNewPassword,
                       style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 11,
@@ -197,7 +202,7 @@ class _ChangePasswordSectionState extends ConsumerState<ChangePasswordSection> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('CONFIRM NEW PASSWORD',
+                  Text(AppLocalizations.of(context).acctConfirmPassword,
                       style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 11,
@@ -236,7 +241,7 @@ class _ChangePasswordSectionState extends ConsumerState<ChangePasswordSection> {
                           width: 18,
                           child: CircularProgressIndicator(
                               color: Colors.white, strokeWidth: 2))
-                      : const Text('Update Password'),
+                      : Text(AppLocalizations.of(context).acctUpdatePassword),
                 ),
               ),
             ],

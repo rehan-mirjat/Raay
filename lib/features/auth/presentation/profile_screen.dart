@@ -20,6 +20,7 @@ import '../../../core/widgets/ui_kit/kivora_card.dart';
 import '../../../core/widgets/ui_kit/kivora_text_field.dart';
 import '../../../services/auth_service.dart';
 import '../../../services/firebase_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../data/user_repository.dart';
 import '../domain/app_user.dart';
 import 'widgets/change_password_section.dart';
@@ -62,7 +63,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   /// the user; anything else (platform/network errors) becomes a generic line.
   String _friendly(Object e) {
     final text = e.toString();
-    if (e is Exception && text.startsWith('Exception: ') && !text.contains('Firebase')) {
+    if (e is Exception &&
+        text.startsWith('Exception: ') &&
+        !text.contains('Firebase')) {
       return text.substring('Exception: '.length);
     }
     return 'Something went wrong. Please try again.';
@@ -112,7 +115,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       setState(() {
         _uploadedPhotoUrl = url;
         _isUploadingPhoto = false;
-        _successMessage = 'Profile photo updated successfully.';
+        _successMessage = AppLocalizations.of(context).acctPhotoUpdated;
         _error = null;
       });
 
@@ -121,7 +124,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       });
     } catch (e) {
       setState(() {
-        _error = 'Could not upload the photo. Please try again.';
+        _error = AppLocalizations.of(context).acctPhotoFailed;
         _isUploadingPhoto = false;
       });
     }
@@ -147,7 +150,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           );
 
       setState(() {
-        _successMessage = 'Profile updated successfully.';
+        _successMessage = AppLocalizations.of(context).acctProfileUpdated;
       });
       Future.delayed(const Duration(seconds: 3), () {
         if (mounted) setState(() => _successMessage = null);
@@ -179,25 +182,28 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 Semantics(
                   header: true,
                   child: Text(
-                    'Account Settings',
-                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: kc.textPrimary),
+                    AppLocalizations.of(context).acctTitle,
+                    style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: kc.textPrimary),
                   ),
                 ),
                 const SizedBox(height: 20),
                 userAsync.when(
-                  loading: () =>
-                      const LoadingView(message: 'Loading user profile...'),
+                  loading: () => LoadingView(
+                      message: AppLocalizations.of(context).acctLoading),
                   error: (err, stack) => ErrorView(
                     type: ErrorViewType.generic,
-                    message: 'We could not load your profile. Check your connection and try again.',
+                    message: AppLocalizations.of(context).acctLoadError,
                     onRetry: () =>
                         ref.invalidate(userProfileProvider(widget.uid)),
                   ),
                   data: (user) {
                     if (user == null) {
-                      return const ErrorView(
+                      return ErrorView(
                           type: ErrorViewType.generic,
-                          message: 'User profile not found.');
+                          message: AppLocalizations.of(context).acctNotFound);
                     }
 
                     _populateControllers(user);
@@ -249,23 +255,39 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     };
   }
 
-  static const _tabs = [
-    (icon: KivoraIcons.user, title: 'Profile', shortTitle: 'Profile'),
-    (icon: KivoraIcons.lock, title: 'Security & Settings', shortTitle: 'Security'),
-    (icon: KivoraIcons.bell, title: 'Notifications', shortTitle: 'Alerts'),
-    (icon: KivoraIcons.settings, title: 'Preferences', shortTitle: 'Prefs'),
-    (icon: KivoraIcons.link, title: 'Connected Accounts', shortTitle: 'Accounts'),
+  static const _tabIcons = [
+    KivoraIcons.user,
+    KivoraIcons.lock,
+    KivoraIcons.bell,
+    KivoraIcons.settings,
+    KivoraIcons.link,
   ];
+
+  String _tabTitle(AppLocalizations l, int i) => switch (i) {
+        0 => l.acctTabProfile,
+        1 => l.acctTabSecurity,
+        2 => l.acctTabNotifications,
+        3 => l.acctTabPreferences,
+        _ => l.acctTabAccounts,
+      };
+
+  String _tabShort(AppLocalizations l, int i) => switch (i) {
+        0 => l.acctTabProfile,
+        1 => l.acctTabSecurityShort,
+        2 => l.acctTabNotificationsShort,
+        3 => l.acctTabPreferencesShort,
+        _ => l.acctTabAccountsShort,
+      };
 
   Widget _buildSidebar(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (var i = 0; i < _tabs.length; i++) ...[
+        for (var i = 0; i < _tabIcons.length; i++) ...[
           if (i > 0) const SizedBox(height: 8),
           _buildSidebarItem(
-            icon: _tabs[i].icon,
-            title: _tabs[i].title,
+            icon: _tabIcons[i],
+            title: _tabTitle(AppLocalizations.of(context), i),
             isSelected: _selectedIndex == i,
             onTap: () => setState(() => _selectedIndex = i),
           ),
@@ -280,7 +302,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    final color = isSelected ? KivoraColors.of(context).accentText : KivoraColors.textPrimaryOf(context);
+    final color = isSelected
+        ? KivoraColors.of(context).accentText
+        : KivoraColors.textPrimaryOf(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -319,12 +343,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       height: 48,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        itemCount: _tabs.length,
+        itemCount: _tabIcons.length,
         separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (context, i) => Center(
           child: ChoiceChip(
-            avatar: Icon(_tabs[i].icon, size: 18),
-            label: Text(_tabs[i].shortTitle),
+            avatar: Icon(_tabIcons[i], size: 18),
+            label: Text(_tabShort(AppLocalizations.of(context), i)),
             selected: _selectedIndex == i,
             showCheckmark: false,
             materialTapTargetSize: MaterialTapTargetSize.padded,
@@ -356,7 +380,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 children: [
                   CircleAvatar(
                     radius: 38,
-                    backgroundColor: AppTheme.primaryBlue.withValues(alpha: 0.15),
+                    backgroundColor:
+                        AppTheme.primaryBlue.withValues(alpha: 0.15),
                     backgroundImage: sanitizedPhotoUrl.isNotEmpty
                         ? NetworkImage(sanitizedPhotoUrl)
                         : null,
@@ -436,23 +461,35 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       runSpacing: 8,
                       children: [
                         StatusBadge(
-                          label: isEmailVerified ? 'VERIFIED' : 'UNVERIFIED',
-                          backgroundColor: (isEmailVerified ? kc.successText : kc.warningText)
+                          label: isEmailVerified
+                              ? AppLocalizations.of(context).acctVerified
+                              : AppLocalizations.of(context).acctUnverified,
+                          backgroundColor: (isEmailVerified
+                                  ? kc.successText
+                                  : kc.warningText)
                               .withValues(alpha: kc.isDark ? 0.16 : 0.10),
-                          textColor: isEmailVerified ? kc.successText : kc.warningText,
-                          icon: isEmailVerified ? Icons.verified_outlined : Icons.info_outline_rounded,
+                          textColor:
+                              isEmailVerified ? kc.successText : kc.warningText,
+                          icon: isEmailVerified
+                              ? Icons.verified_outlined
+                              : Icons.info_outline_rounded,
                         ),
                         StatusBadge(
                           label: user.status.toUpperCase(),
-                          backgroundColor: (user.status == 'active' ? kc.accentText : kc.warningText)
+                          backgroundColor: (user.status == 'active'
+                                  ? kc.accentText
+                                  : kc.warningText)
                               .withValues(alpha: kc.isDark ? 0.16 : 0.10),
-                          textColor: user.status == 'active' ? kc.accentText : kc.warningText,
+                          textColor: user.status == 'active'
+                              ? kc.accentText
+                              : kc.warningText,
                         ),
                       ],
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'Member since ${dateFormat.format(user.createdAt)}',
+                      AppLocalizations.of(context)
+                          .acctMemberSince(dateFormat.format(user.createdAt)),
                       style: TextStyle(
                         fontSize: 12,
                         color: kc.textSecondary,
@@ -532,7 +569,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Personal Information',
+                  AppLocalizations.of(context).acctPersonalInfo,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -547,17 +584,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       return Column(
                         children: [
                           KivoraTextField(
-                            label: 'First Name',
+                            label: AppLocalizations.of(context).acctFirstName,
                             controller: _firstNameController,
-                            validator: (v) =>
-                                Validators.required(v, 'First name'),
+                            validator: (v) => Validators.required(
+                                v,
+                                AppLocalizations.of(context)
+                                    .acctFirstNameField),
                           ),
                           const SizedBox(height: 16),
                           KivoraTextField(
-                            label: 'Last Name',
+                            label: AppLocalizations.of(context).acctLastName,
                             controller: _lastNameController,
-                            validator: (v) =>
-                                Validators.required(v, 'Last name'),
+                            validator: (v) => Validators.required(v,
+                                AppLocalizations.of(context).acctLastNameField),
                           ),
                         ],
                       );
@@ -566,19 +605,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       children: [
                         Expanded(
                           child: KivoraTextField(
-                            label: 'First Name',
+                            label: AppLocalizations.of(context).acctFirstName,
                             controller: _firstNameController,
-                            validator: (v) =>
-                                Validators.required(v, 'First name'),
+                            validator: (v) => Validators.required(
+                                v,
+                                AppLocalizations.of(context)
+                                    .acctFirstNameField),
                           ),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
                           child: KivoraTextField(
-                            label: 'Last Name',
+                            label: AppLocalizations.of(context).acctLastName,
                             controller: _lastNameController,
-                            validator: (v) =>
-                                Validators.required(v, 'Last name'),
+                            validator: (v) => Validators.required(v,
+                                AppLocalizations.of(context).acctLastNameField),
                           ),
                         ),
                       ],
@@ -587,7 +628,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
                 const SizedBox(height: 16),
                 KivoraTextField(
-                  label: 'Phone Number (Optional)',
+                  label: AppLocalizations.of(context).acctPhone,
                   controller: _phoneController,
                   hint: '+1 234 567 8900',
                   keyboardType: TextInputType.phone,
@@ -598,7 +639,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   child: KivoraButton(
                     onPressed: _isSaving ? null : _saveProfile,
                     isLoading: _isSaving,
-                    label: 'Save Changes',
+                    label: AppLocalizations.of(context).acctSaveChanges,
                     isExpanded: false,
                   ),
                 ),
@@ -627,7 +668,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Authentication Method',
+                  AppLocalizations.of(context).acctAuthMethod,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -636,7 +677,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Your account is connected to Google. Password changes are managed through your Google account.',
+                  AppLocalizations.of(context).acctGoogleNote,
                   style: TextStyle(
                     fontSize: 14,
                     color: kc.textSecondary,
@@ -655,7 +696,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Two-Factor Authentication',
+                AppLocalizations.of(context).acct2fa,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -664,7 +705,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                'Protect your account by requiring an additional authentication step.',
+                AppLocalizations.of(context).acct2faBody,
                 style: TextStyle(
                   fontSize: 14,
                   color: kc.textSecondary,
@@ -674,7 +715,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               KivoraButton(
                 type: KivoraButtonType.secondary,
                 icon: KivoraIcons.shieldCheck,
-                label: 'Setup Authenticator App',
+                label: AppLocalizations.of(context).acctSetupAuth,
                 onPressed: () {
                   showTotpEnrollDialog(context, ref);
                 },
@@ -686,7 +727,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         const SizedBox(height: 24),
         KivoraButton(
           type: KivoraButtonType.destructive,
-          label: 'Sign Out',
+          label: AppLocalizations.of(context).acctSignOut,
           icon: KivoraIcons.logIn,
           onPressed: () async {
             await ref.read(authServiceProvider).signOut();
@@ -723,7 +764,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               children: [
                 Icon(icon,
                     size: 22,
-                    color: isSelected ? AppTheme.primaryBlue : kc.textSecondary),
+                    color:
+                        isSelected ? AppTheme.primaryBlue : kc.textSecondary),
                 const SizedBox(height: 8),
                 Text(
                   label,
@@ -744,8 +786,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final reducedMotion = ref.watch(reducedMotionProvider);
     final highContrast = ref.watch(highContrastProvider);
 
-    const languages = [
-      (code: null, label: 'System default'),
+    final languages = [
+      (code: null, label: AppLocalizations.of(context).acctSystemDefault),
       (code: 'en', label: 'English'),
       (code: 'ur', label: 'اردو (Urdu)'),
       (code: 'sd', label: 'سنڌي (Sindhi)'),
@@ -759,23 +801,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Appearance',
+              Text(AppLocalizations.of(context).acctAppearance,
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: kc.textPrimary)),
               const SizedBox(height: 6),
-              Text('Choose how Kivora looks on this device.',
+              Text(AppLocalizations.of(context).acctAppearanceBody,
                   style: TextStyle(fontSize: 14, color: kc.textSecondary)),
               const SizedBox(height: 20),
               Row(
                 children: [
-                  modeOption(ThemeMode.light, Icons.light_mode_outlined, 'Light'),
+                  modeOption(ThemeMode.light, Icons.light_mode_outlined,
+                      AppLocalizations.of(context).acctThemeLight),
                   const SizedBox(width: 12),
-                  modeOption(ThemeMode.dark, Icons.dark_mode_outlined, 'Dark'),
+                  modeOption(ThemeMode.dark, Icons.dark_mode_outlined,
+                      AppLocalizations.of(context).acctThemeDark),
                   const SizedBox(width: 12),
-                  modeOption(
-                      ThemeMode.system, Icons.brightness_auto_outlined, 'System'),
+                  modeOption(ThemeMode.system, Icons.brightness_auto_outlined,
+                      AppLocalizations.of(context).acctThemeSystem),
                 ],
               ),
             ],
@@ -786,15 +830,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Language',
+              Text(AppLocalizations.of(context).acctLanguage,
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: kc.textPrimary)),
               const SizedBox(height: 6),
-              Text(
-                  'Urdu, Sindhi, and Arabic translations are machine-assisted and have not yet been reviewed by a native speaker - please report anything that reads incorrectly.',
-                  style: TextStyle(fontSize: 12, color: kc.textSecondary, height: 1.4)),
+              Text(AppLocalizations.of(context).acctLanguageNote,
+                  style: TextStyle(
+                      fontSize: 12, color: kc.textSecondary, height: 1.4)),
               const SizedBox(height: 16),
               ...languages.map((lang) {
                 final isSelected = currentLocale?.languageCode == lang.code;
@@ -806,14 +850,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     isSelected
                         ? Icons.radio_button_checked
                         : Icons.radio_button_unchecked,
-                    color: isSelected
-                        ? AppTheme.primaryBlue
-                        : kc.textSecondary,
+                    color: isSelected ? AppTheme.primaryBlue : kc.textSecondary,
                   ),
                   title: Text(lang.label,
                       style: TextStyle(
                           color: kc.textPrimary,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.normal)),
                   contentPadding: EdgeInsets.zero,
                   dense: true,
                 );
@@ -826,7 +870,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Accessibility',
+              Text(AppLocalizations.of(context).acctAccessibility,
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -834,26 +878,30 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               const SizedBox(height: 16),
               SwitchListTile(
                 value: reducedMotion,
-                onChanged: (v) => ref.read(reducedMotionProvider.notifier).setEnabled(v),
-                title: Text('Reduce motion', style: TextStyle(color: kc.textPrimary)),
-                subtitle: Text('Minimize animations throughout the app.',
+                onChanged: (v) =>
+                    ref.read(reducedMotionProvider.notifier).setEnabled(v),
+                title: Text(AppLocalizations.of(context).acctReduceMotion,
+                    style: TextStyle(color: kc.textPrimary)),
+                subtitle: Text(
+                    AppLocalizations.of(context).acctReduceMotionBody,
                     style: TextStyle(fontSize: 12, color: kc.textSecondary)),
-                
                 contentPadding: EdgeInsets.zero,
               ),
               SwitchListTile(
                 value: highContrast,
-                onChanged: (v) => ref.read(highContrastProvider.notifier).setEnabled(v),
-                title: Text('High contrast', style: TextStyle(color: kc.textPrimary)),
-                subtitle: Text('Increase text and border contrast for better visibility.',
+                onChanged: (v) =>
+                    ref.read(highContrastProvider.notifier).setEnabled(v),
+                title: Text(AppLocalizations.of(context).acctHighContrast,
+                    style: TextStyle(color: kc.textPrimary)),
+                subtitle: Text(
+                    AppLocalizations.of(context).acctHighContrastBody,
                     style: TextStyle(fontSize: 12, color: kc.textSecondary)),
-                
                 contentPadding: EdgeInsets.zero,
               ),
               const SizedBox(height: 4),
-              Text(
-                  'Text size follows your device\'s own accessibility settings. Candidate/option selections on the ballot screen are already labeled for screen readers.',
-                  style: TextStyle(fontSize: 12, color: kc.textSecondary, height: 1.4)),
+              Text(AppLocalizations.of(context).acctTextSizeNote,
+                  style: TextStyle(
+                      fontSize: 12, color: kc.textSecondary, height: 1.4)),
             ],
           ),
         ),
@@ -904,7 +952,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
             Switch(
               value: prefs[key] ?? true,
-              
               onChanged: _isSavingPrefs
                   ? null
                   : (value) => _updateNotificationPreference(prefs, key, value),
@@ -937,25 +984,30 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Notifications',
+              Text(AppLocalizations.of(context).acctNotifications,
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: kc.textPrimary)),
               const SizedBox(height: 6),
-              Text(
-                  'Choose which notifications you want to receive. These apply to the notification bell and reminder emails.',
+              Text(AppLocalizations.of(context).acctNotificationsBody,
                   style: TextStyle(fontSize: 14, color: kc.textSecondary)),
               const SizedBox(height: 12),
               Divider(color: kc.border),
-              toggle('voteReminders', 'Vote reminders',
-                  'Get notified when an active election is about to close and you haven\'t voted.'),
+              toggle(
+                  'voteReminders',
+                  AppLocalizations.of(context).acctVoteReminders,
+                  AppLocalizations.of(context).acctVoteRemindersBody),
               Divider(color: kc.border, height: 1),
-              toggle('eventUpdates', 'Results published',
-                  'Get notified when results are published for an election you were eligible to vote in.'),
+              toggle(
+                  'eventUpdates',
+                  AppLocalizations.of(context).acctResultsPublished,
+                  AppLocalizations.of(context).acctResultsPublishedBody),
               Divider(color: kc.border, height: 1),
-              toggle('invitationAlerts', 'Organization invitations',
-                  'Show pending organization invitations in the notification bell.'),
+              toggle(
+                  'invitationAlerts',
+                  AppLocalizations.of(context).acctInvitationAlerts,
+                  AppLocalizations.of(context).acctInvitationAlertsBody),
             ],
           ),
         ),
@@ -966,7 +1018,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget _buildConnectedAccountsView(BuildContext context) {
     final kc = KivoraColors.of(context);
     final authUser = ref.watch(authServiceProvider).currentUser;
-    final providers = authUser?.providerData.map((p) => p.providerId).toSet() ?? {};
+    final providers =
+        authUser?.providerData.map((p) => p.providerId).toSet() ?? {};
     final hasPassword = providers.contains('password');
     final hasGoogle = providers.contains('google.com');
     final canUnlink = providers.length > 1;
@@ -976,7 +1029,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       try {
         await ref.read(authServiceProvider).linkGoogleAccount();
         if (mounted) {
-          setState(() => _successMessage = 'Google account connected.');
+          setState(() => _successMessage =
+              AppLocalizations.of(context).acctGoogleConnected);
           Future.delayed(const Duration(seconds: 3), () {
             if (mounted) setState(() => _successMessage = null);
           });
@@ -994,16 +1048,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       final confirm = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: Text('Disconnect $label?'),
-          content: Text(
-              'You will no longer be able to sign in to Kivora using $label.'),
+          title: Text(AppLocalizations.of(context).acctDisconnectTitle(label)),
+          content: Text(AppLocalizations.of(context).acctDisconnectBody(label)),
           actions: [
             TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
-                child: const Text('Cancel')),
+                child: Text(AppLocalizations.of(context).acctCancel)),
             TextButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: Text('Disconnect',
+              child: Text(AppLocalizations.of(context).acctDisconnect,
                   style: TextStyle(color: KivoraColors.of(context).errorText)),
             ),
           ],
@@ -1061,9 +1114,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     children: [
                       Text(title,
                           style: TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 15, color: kc.textPrimary)),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                              color: kc.textPrimary)),
                       const SizedBox(height: 2),
-                      Text(subtitle, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+                      Text(subtitle,
+                          style:
+                              TextStyle(fontSize: 14, color: kc.textSecondary)),
                     ],
                   ),
                 ),
@@ -1079,24 +1136,27 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 children: [
                   if (isConnected)
                     StatusBadge(
-                      label: 'CONNECTED',
-                      backgroundColor: kc.successText.withValues(alpha: kc.isDark ? 0.16 : 0.10),
+                      label: AppLocalizations.of(context).acctConnectedBadge,
+                      backgroundColor: kc.successText
+                          .withValues(alpha: kc.isDark ? 0.16 : 0.10),
                       textColor: kc.successText,
                       icon: Icons.check_circle_outline,
                     )
                   else if (onConnect != null)
                     KivoraButton(
                       type: KivoraButtonType.secondary,
-                      label: 'Connect',
+                      label: AppLocalizations.of(context).acctConnect,
                       isExpanded: false,
                       isLoading: _isLinkingAccount,
                       onPressed: _isLinkingAccount ? null : onConnect,
                     ),
                   if (isConnected && onDisconnect != null)
                     TextButton(
-                      style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                      style:
+                          TextButton.styleFrom(minimumSize: const Size(48, 48)),
                       onPressed: _isLinkingAccount ? null : onDisconnect,
-                      child: Text('Disconnect', style: TextStyle(color: kc.errorText)),
+                      child: Text(AppLocalizations.of(context).acctDisconnect,
+                          style: TextStyle(color: kc.errorText)),
                     ),
                 ],
               ),
@@ -1146,24 +1206,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Connected Accounts',
+              Text(AppLocalizations.of(context).acctConnectedTitle,
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: kc.textPrimary)),
               const SizedBox(height: 6),
-              Text(
-                  'Sign-in methods linked to your Kivora account. You must keep at least one connected.',
+              Text(AppLocalizations.of(context).acctConnectedBody,
                   style: TextStyle(fontSize: 14, color: kc.textSecondary)),
               const SizedBox(height: 8),
               Divider(color: kc.border),
               accountRow(
                 icon: KivoraIcons.mail,
-                title: 'Email & Password',
+                title: AppLocalizations.of(context).acctEmailPassword,
                 subtitle: authUser?.email ?? '',
                 isConnected: hasPassword,
                 onDisconnect: hasPassword && canUnlink
-                    ? () => unlink('password', 'Email & Password')
+                    ? () => unlink('password',
+                        AppLocalizations.of(context).acctEmailPassword)
                     : null,
               ),
               Divider(color: kc.border, height: 1),
@@ -1172,11 +1232,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 title: 'Google',
                 subtitle: hasGoogle
                     ? authUser?.email ?? ''
-                    : 'Sign in with your Google account.',
+                    : AppLocalizations.of(context).acctGoogleSignIn,
                 isConnected: hasGoogle,
                 onConnect: hasGoogle ? null : linkGoogle,
-                onDisconnect:
-                    hasGoogle && canUnlink ? () => unlink('google.com', 'Google') : null,
+                onDisconnect: hasGoogle && canUnlink
+                    ? () => unlink('google.com', 'Google')
+                    : null,
               ),
             ],
           ),

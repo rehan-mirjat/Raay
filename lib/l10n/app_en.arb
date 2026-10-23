@@ -1020,5 +1020,97 @@
   "roleMember": "MEMBER",
   "navJoiningCodes": "Joining codes",
   "navPlatformAccounts": "Accounts & access",
-  "navInvitations": "Invitations"
+  "navInvitations": "Invitations",
+  "acctTitle": "Account Settings",
+  "acctTabProfile": "Profile",
+  "acctTabSecurity": "Security & Settings",
+  "acctTabNotifications": "Notifications",
+  "acctTabPreferences": "Preferences",
+  "acctTabAccounts": "Connected Accounts",
+  "acctTabSecurityShort": "Security",
+  "acctTabNotificationsShort": "Alerts",
+  "acctTabPreferencesShort": "Prefs",
+  "acctTabAccountsShort": "Accounts",
+  "acctLoading": "Loading user profile...",
+  "acctLoadError": "We could not load your profile. Check your connection and try again.",
+  "acctNotFound": "User profile not found.",
+  "acctPhotoUpdated": "Profile photo updated successfully.",
+  "acctPhotoFailed": "Could not upload the photo. Please try again.",
+  "acctProfileUpdated": "Profile updated successfully.",
+  "acctVerified": "VERIFIED",
+  "acctUnverified": "UNVERIFIED",
+  "acctMemberSince": "Member since {date}",
+  "@acctMemberSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "acctPersonalInfo": "Personal Information",
+  "acctFirstName": "First Name",
+  "acctLastName": "Last Name",
+  "acctFirstNameField": "First name",
+  "acctLastNameField": "Last name",
+  "acctPhone": "Phone Number (Optional)",
+  "acctSaveChanges": "Save Changes",
+  "acctAuthMethod": "Authentication Method",
+  "acctGoogleNote": "Your account is connected to Google. Password changes are managed through your Google account.",
+  "acct2fa": "Two-Factor Authentication",
+  "acct2faBody": "Protect your account by requiring an additional authentication step.",
+  "acctSetupAuth": "Setup Authenticator App",
+  "acctSignOut": "Sign Out",
+  "acctAppearance": "Appearance",
+  "acctAppearanceBody": "Choose how Kivora looks on this device.",
+  "acctThemeLight": "Light",
+  "acctThemeDark": "Dark",
+  "acctThemeSystem": "System",
+  "acctLanguage": "Language",
+  "acctLanguageNote": "Urdu, Sindhi, and Arabic translations are machine-assisted and have not yet been reviewed by a native speaker - please report anything that reads incorrectly.",
+  "acctSystemDefault": "System default",
+  "acctAccessibility": "Accessibility",
+  "acctReduceMotion": "Reduce motion",
+  "acctReduceMotionBody": "Minimize animations throughout the app.",
+  "acctHighContrast": "High contrast",
+  "acctHighContrastBody": "Increase text and border contrast for better visibility.",
+  "acctTextSizeNote": "Text size follows your device's own accessibility settings. Candidate/option selections on the ballot screen are already labeled for screen readers.",
+  "acctNotifications": "Notifications",
+  "acctNotificationsBody": "Choose which notifications you want to receive. These apply to the notification bell and reminder emails.",
+  "acctVoteReminders": "Vote reminders",
+  "acctVoteRemindersBody": "Get notified when an active election is about to close and you haven't voted.",
+  "acctResultsPublished": "Results published",
+  "acctResultsPublishedBody": "Get notified when results are published for an election you were eligible to vote in.",
+  "acctInvitationAlerts": "Organization invitations",
+  "acctInvitationAlertsBody": "Show pending organization invitations in the notification bell.",
+  "acctConnectedTitle": "Connected Accounts",
+  "acctConnectedBody": "Sign-in methods linked to your Kivora account. You must keep at least one connected.",
+  "acctEmailPassword": "Email & Password",
+  "acctGoogleSignIn": "Sign in with your Google account.",
+  "acctConnectedBadge": "CONNECTED",
+  "acctConnect": "Connect",
+  "acctDisconnect": "Disconnect",
+  "acctDisconnectTitle": "Disconnect {name}?",
+  "@acctDisconnectTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "acctDisconnectBody": "You will no longer be able to sign in to Kivora using {name}.",
+  "@acctDisconnectBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "acctCancel": "Cancel",
+  "acctGoogleConnected": "Google account connected.",
+  "acctChangePassword": "Change Password",
+  "acctCurrentPassword": "CURRENT PASSWORD",
+  "acctNewPassword": "NEW PASSWORD",
+  "acctConfirmPassword": "CONFIRM NEW PASSWORD",
+  "acctUpdatePassword": "Update Password",
+  "acctPasswordUpdated": "Password updated successfully!"
 }

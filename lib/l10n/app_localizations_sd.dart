@@ -1996,4 +1996,234 @@ class AppLocalizationsSd extends AppLocalizations {
 
   @override
   String get navInvitations => 'Invitations';
+
+  @override
+  String get acctTitle => 'Account Settings';
+
+  @override
+  String get acctTabProfile => 'Profile';
+
+  @override
+  String get acctTabSecurity => 'Security & Settings';
+
+  @override
+  String get acctTabNotifications => 'Notifications';
+
+  @override
+  String get acctTabPreferences => 'Preferences';
+
+  @override
+  String get acctTabAccounts => 'Connected Accounts';
+
+  @override
+  String get acctTabSecurityShort => 'Security';
+
+  @override
+  String get acctTabNotificationsShort => 'Alerts';
+
+  @override
+  String get acctTabPreferencesShort => 'Prefs';
+
+  @override
+  String get acctTabAccountsShort => 'Accounts';
+
+  @override
+  String get acctLoading => 'Loading user profile...';
+
+  @override
+  String get acctLoadError =>
+      'We could not load your profile. Check your connection and try again.';
+
+  @override
+  String get acctNotFound => 'User profile not found.';
+
+  @override
+  String get acctPhotoUpdated => 'Profile photo updated successfully.';
+
+  @override
+  String get acctPhotoFailed => 'Could not upload the photo. Please try again.';
+
+  @override
+  String get acctProfileUpdated => 'Profile updated successfully.';
+
+  @override
+  String get acctVerified => 'VERIFIED';
+
+  @override
+  String get acctUnverified => 'UNVERIFIED';
+
+  @override
+  String acctMemberSince(String date) {
+    return 'Member since $date';
+  }
+
+  @override
+  String get acctPersonalInfo => 'Personal Information';
+
+  @override
+  String get acctFirstName => 'First Name';
+
+  @override
+  String get acctLastName => 'Last Name';
+
+  @override
+  String get acctFirstNameField => 'First name';
+
+  @override
+  String get acctLastNameField => 'Last name';
+
+  @override
+  String get acctPhone => 'Phone Number (Optional)';
+
+  @override
+  String get acctSaveChanges => 'Save Changes';
+
+  @override
+  String get acctAuthMethod => 'Authentication Method';
+
+  @override
+  String get acctGoogleNote =>
+      'Your account is connected to Google. Password changes are managed through your Google account.';
+
+  @override
+  String get acct2fa => 'Two-Factor Authentication';
+
+  @override
+  String get acct2faBody =>
+      'Protect your account by requiring an additional authentication step.';
+
+  @override
+  String get acctSetupAuth => 'Setup Authenticator App';
+
+  @override
+  String get acctSignOut => 'Sign Out';
+
+  @override
+  String get acctAppearance => 'Appearance';
+
+  @override
+  String get acctAppearanceBody => 'Choose how Kivora looks on this device.';
+
+  @override
+  String get acctThemeLight => 'Light';
+
+  @override
+  String get acctThemeDark => 'Dark';
+
+  @override
+  String get acctThemeSystem => 'System';
+
+  @override
+  String get acctLanguage => 'Language';
+
+  @override
+  String get acctLanguageNote =>
+      'Urdu, Sindhi, and Arabic translations are machine-assisted and have not yet been reviewed by a native speaker - please report anything that reads incorrectly.';
+
+  @override
+  String get acctSystemDefault => 'System default';
+
+  @override
+  String get acctAccessibility => 'Accessibility';
+
+  @override
+  String get acctReduceMotion => 'Reduce motion';
+
+  @override
+  String get acctReduceMotionBody => 'Minimize animations throughout the app.';
+
+  @override
+  String get acctHighContrast => 'High contrast';
+
+  @override
+  String get acctHighContrastBody =>
+      'Increase text and border contrast for better visibility.';
+
+  @override
+  String get acctTextSizeNote =>
+      'Text size follows your device\'s own accessibility settings. Candidate/option selections on the ballot screen are already labeled for screen readers.';
+
+  @override
+  String get acctNotifications => 'Notifications';
+
+  @override
+  String get acctNotificationsBody =>
+      'Choose which notifications you want to receive. These apply to the notification bell and reminder emails.';
+
+  @override
+  String get acctVoteReminders => 'Vote reminders';
+
+  @override
+  String get acctVoteRemindersBody =>
+      'Get notified when an active election is about to close and you haven\'t voted.';
+
+  @override
+  String get acctResultsPublished => 'Results published';
+
+  @override
+  String get acctResultsPublishedBody =>
+      'Get notified when results are published for an election you were eligible to vote in.';
+
+  @override
+  String get acctInvitationAlerts => 'Organization invitations';
+
+  @override
+  String get acctInvitationAlertsBody =>
+      'Show pending organization invitations in the notification bell.';
+
+  @override
+  String get acctConnectedTitle => 'Connected Accounts';
+
+  @override
+  String get acctConnectedBody =>
+      'Sign-in methods linked to your Kivora account. You must keep at least one connected.';
+
+  @override
+  String get acctEmailPassword => 'Email & Password';
+
+  @override
+  String get acctGoogleSignIn => 'Sign in with your Google account.';
+
+  @override
+  String get acctConnectedBadge => 'CONNECTED';
+
+  @override
+  String get acctConnect => 'Connect';
+
+  @override
+  String get acctDisconnect => 'Disconnect';
+
+  @override
+  String acctDisconnectTitle(String name) {
+    return 'Disconnect $name?';
+  }
+
+  @override
+  String acctDisconnectBody(String name) {
+    return 'You will no longer be able to sign in to Kivora using $name.';
+  }
+
+  @override
+  String get acctCancel => 'Cancel';
+
+  @override
+  String get acctGoogleConnected => 'Google account connected.';
+
+  @override
+  String get acctChangePassword => 'Change Password';
+
+  @override
+  String get acctCurrentPassword => 'CURRENT PASSWORD';
+
+  @override
+  String get acctNewPassword => 'NEW PASSWORD';
+
+  @override
+  String get acctConfirmPassword => 'CONFIRM NEW PASSWORD';
+
+  @override
+  String get acctUpdatePassword => 'Update Password';
+
+  @override
+  String get acctPasswordUpdated => 'Password updated successfully!';
 }

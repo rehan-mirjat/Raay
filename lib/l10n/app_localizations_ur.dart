@@ -2001,4 +2001,235 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get navInvitations => 'دعوت نامے';
+
+  @override
+  String get acctTitle => 'اکاؤنٹ کی ترتیبات';
+
+  @override
+  String get acctTabProfile => 'پروفائل';
+
+  @override
+  String get acctTabSecurity => 'سیکیورٹی اور ترتیبات';
+
+  @override
+  String get acctTabNotifications => 'اطلاعات';
+
+  @override
+  String get acctTabPreferences => 'ترجیحات';
+
+  @override
+  String get acctTabAccounts => 'منسلک اکاؤنٹس';
+
+  @override
+  String get acctTabSecurityShort => 'سیکیورٹی';
+
+  @override
+  String get acctTabNotificationsShort => 'الرٹس';
+
+  @override
+  String get acctTabPreferencesShort => 'ترجیحات';
+
+  @override
+  String get acctTabAccountsShort => 'اکاؤنٹس';
+
+  @override
+  String get acctLoading => 'پروفائل لوڈ ہو رہی ہے...';
+
+  @override
+  String get acctLoadError =>
+      'ہم آپ کی پروفائل لوڈ نہیں کر سکے۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔';
+
+  @override
+  String get acctNotFound => 'پروفائل نہیں ملی۔';
+
+  @override
+  String get acctPhotoUpdated => 'پروفائل کی تصویر کامیابی سے اپ ڈیٹ ہو گئی۔';
+
+  @override
+  String get acctPhotoFailed => 'تصویر اپ لوڈ نہیں ہو سکی۔ دوبارہ کوشش کریں۔';
+
+  @override
+  String get acctProfileUpdated => 'پروفائل کامیابی سے اپ ڈیٹ ہو گئی۔';
+
+  @override
+  String get acctVerified => 'تصدیق شدہ';
+
+  @override
+  String get acctUnverified => 'غیر تصدیق شدہ';
+
+  @override
+  String acctMemberSince(String date) {
+    return 'رکنیت کی تاریخ: $date';
+  }
+
+  @override
+  String get acctPersonalInfo => 'ذاتی معلومات';
+
+  @override
+  String get acctFirstName => 'پہلا نام';
+
+  @override
+  String get acctLastName => 'آخری نام';
+
+  @override
+  String get acctFirstNameField => 'پہلا نام';
+
+  @override
+  String get acctLastNameField => 'آخری نام';
+
+  @override
+  String get acctPhone => 'فون نمبر (اختیاری)';
+
+  @override
+  String get acctSaveChanges => 'تبدیلیاں محفوظ کریں';
+
+  @override
+  String get acctAuthMethod => 'تصدیق کا طریقہ';
+
+  @override
+  String get acctGoogleNote =>
+      'آپ کا اکاؤنٹ گوگل سے منسلک ہے۔ پاس ورڈ کی تبدیلی آپ کے گوگل اکاؤنٹ سے ہوتی ہے۔';
+
+  @override
+  String get acct2fa => 'دو مرحلہ تصدیق';
+
+  @override
+  String get acct2faBody =>
+      'ایک اضافی تصدیقی مرحلہ لگا کر اپنے اکاؤنٹ کو محفوظ رکھیں۔';
+
+  @override
+  String get acctSetupAuth => 'آتھنٹیکیٹر ایپ سیٹ اپ کریں';
+
+  @override
+  String get acctSignOut => 'سائن آؤٹ';
+
+  @override
+  String get acctAppearance => 'ظاہری شکل';
+
+  @override
+  String get acctAppearanceBody =>
+      'منتخب کریں کہ اس ڈیوائس پر Kivora کیسا دکھائی دے۔';
+
+  @override
+  String get acctThemeLight => 'روشن';
+
+  @override
+  String get acctThemeDark => 'گہرا';
+
+  @override
+  String get acctThemeSystem => 'سسٹم';
+
+  @override
+  String get acctLanguage => 'زبان';
+
+  @override
+  String get acctLanguageNote =>
+      'اردو، سندھی اور عربی ترجمے مشین کی مدد سے بنے ہیں اور ابھی کسی مقامی بولنے والے نے ان کا جائزہ نہیں لیا۔ جو بھی غلط لگے اس کی اطلاع دیں۔';
+
+  @override
+  String get acctSystemDefault => 'سسٹم ڈیفالٹ';
+
+  @override
+  String get acctAccessibility => 'رسائی';
+
+  @override
+  String get acctReduceMotion => 'حرکت کم کریں';
+
+  @override
+  String get acctReduceMotionBody => 'پوری ایپ میں اینیمیشنز کم کریں۔';
+
+  @override
+  String get acctHighContrast => 'زیادہ تضاد';
+
+  @override
+  String get acctHighContrastBody =>
+      'بہتر نظر آنے کے لیے متن اور کناروں کا تضاد بڑھائیں۔';
+
+  @override
+  String get acctTextSizeNote =>
+      'متن کا سائز آپ کے ڈیوائس کی رسائی کی ترتیبات کے مطابق ہے۔ بیلٹ اسکرین پر امیدوار/آپشن کے انتخاب پہلے ہی اسکرین ریڈر کے لیے لیبل شدہ ہیں۔';
+
+  @override
+  String get acctNotifications => 'اطلاعات';
+
+  @override
+  String get acctNotificationsBody =>
+      'منتخب کریں کہ آپ کون سی اطلاعات وصول کرنا چاہتے ہیں۔ یہ نوٹیفکیشن بیل اور یاد دہانی ای میلز پر لاگو ہوتی ہیں۔';
+
+  @override
+  String get acctVoteReminders => 'ووٹ کی یاد دہانی';
+
+  @override
+  String get acctVoteRemindersBody =>
+      'جب کوئی فعال انتخاب بند ہونے والا ہو اور آپ نے ووٹ نہ دیا ہو تو اطلاع پائیں۔';
+
+  @override
+  String get acctResultsPublished => 'نتائج شائع ہو گئے';
+
+  @override
+  String get acctResultsPublishedBody =>
+      'جس انتخاب میں آپ ووٹ دینے کے اہل تھے اس کے نتائج شائع ہونے پر اطلاع پائیں۔';
+
+  @override
+  String get acctInvitationAlerts => 'تنظیم کے دعوت نامے';
+
+  @override
+  String get acctInvitationAlertsBody =>
+      'زیر التوا تنظیمی دعوت نامے نوٹیفکیشن بیل میں دکھائیں۔';
+
+  @override
+  String get acctConnectedTitle => 'منسلک اکاؤنٹس';
+
+  @override
+  String get acctConnectedBody =>
+      'آپ کے Kivora اکاؤنٹ سے منسلک سائن اِن کے طریقے۔ کم از کم ایک منسلک رہنا لازمی ہے۔';
+
+  @override
+  String get acctEmailPassword => 'ای میل اور پاس ورڈ';
+
+  @override
+  String get acctGoogleSignIn => 'اپنے گوگل اکاؤنٹ سے سائن اِن کریں۔';
+
+  @override
+  String get acctConnectedBadge => 'منسلک';
+
+  @override
+  String get acctConnect => 'منسلک کریں';
+
+  @override
+  String get acctDisconnect => 'منقطع کریں';
+
+  @override
+  String acctDisconnectTitle(String name) {
+    return '$name کو منقطع کریں؟';
+  }
+
+  @override
+  String acctDisconnectBody(String name) {
+    return 'آپ $name کے ذریعے Kivora میں سائن اِن نہیں کر سکیں گے۔';
+  }
+
+  @override
+  String get acctCancel => 'منسوخ کریں';
+
+  @override
+  String get acctGoogleConnected => 'گوگل اکاؤنٹ منسلک ہو گیا۔';
+
+  @override
+  String get acctChangePassword => 'پاس ورڈ تبدیل کریں';
+
+  @override
+  String get acctCurrentPassword => 'موجودہ پاس ورڈ';
+
+  @override
+  String get acctNewPassword => 'نیا پاس ورڈ';
+
+  @override
+  String get acctConfirmPassword => 'نئے پاس ورڈ کی تصدیق کریں';
+
+  @override
+  String get acctUpdatePassword => 'پاس ورڈ اپ ڈیٹ کریں';
+
+  @override
+  String get acctPasswordUpdated => 'پاس ورڈ کامیابی سے اپ ڈیٹ ہو گیا!';
 }

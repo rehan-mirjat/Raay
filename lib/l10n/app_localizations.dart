@@ -3503,6 +3503,432 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invitations'**
   String get navInvitations;
+
+  /// No description provided for @acctTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Settings'**
+  String get acctTitle;
+
+  /// No description provided for @acctTabProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get acctTabProfile;
+
+  /// No description provided for @acctTabSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Security & Settings'**
+  String get acctTabSecurity;
+
+  /// No description provided for @acctTabNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get acctTabNotifications;
+
+  /// No description provided for @acctTabPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get acctTabPreferences;
+
+  /// No description provided for @acctTabAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected Accounts'**
+  String get acctTabAccounts;
+
+  /// No description provided for @acctTabSecurityShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Security'**
+  String get acctTabSecurityShort;
+
+  /// No description provided for @acctTabNotificationsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts'**
+  String get acctTabNotificationsShort;
+
+  /// No description provided for @acctTabPreferencesShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefs'**
+  String get acctTabPreferencesShort;
+
+  /// No description provided for @acctTabAccountsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get acctTabAccountsShort;
+
+  /// No description provided for @acctLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading user profile...'**
+  String get acctLoading;
+
+  /// No description provided for @acctLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load your profile. Check your connection and try again.'**
+  String get acctLoadError;
+
+  /// No description provided for @acctNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'User profile not found.'**
+  String get acctNotFound;
+
+  /// No description provided for @acctPhotoUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile photo updated successfully.'**
+  String get acctPhotoUpdated;
+
+  /// No description provided for @acctPhotoFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not upload the photo. Please try again.'**
+  String get acctPhotoFailed;
+
+  /// No description provided for @acctProfileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully.'**
+  String get acctProfileUpdated;
+
+  /// No description provided for @acctVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'VERIFIED'**
+  String get acctVerified;
+
+  /// No description provided for @acctUnverified.
+  ///
+  /// In en, this message translates to:
+  /// **'UNVERIFIED'**
+  String get acctUnverified;
+
+  /// No description provided for @acctMemberSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Member since {date}'**
+  String acctMemberSince(String date);
+
+  /// No description provided for @acctPersonalInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Information'**
+  String get acctPersonalInfo;
+
+  /// No description provided for @acctFirstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get acctFirstName;
+
+  /// No description provided for @acctLastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get acctLastName;
+
+  /// No description provided for @acctFirstNameField.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get acctFirstNameField;
+
+  /// No description provided for @acctLastNameField.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name'**
+  String get acctLastNameField;
+
+  /// No description provided for @acctPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number (Optional)'**
+  String get acctPhone;
+
+  /// No description provided for @acctSaveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get acctSaveChanges;
+
+  /// No description provided for @acctAuthMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication Method'**
+  String get acctAuthMethod;
+
+  /// No description provided for @acctGoogleNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is connected to Google. Password changes are managed through your Google account.'**
+  String get acctGoogleNote;
+
+  /// No description provided for @acct2fa.
+  ///
+  /// In en, this message translates to:
+  /// **'Two-Factor Authentication'**
+  String get acct2fa;
+
+  /// No description provided for @acct2faBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Protect your account by requiring an additional authentication step.'**
+  String get acct2faBody;
+
+  /// No description provided for @acctSetupAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup Authenticator App'**
+  String get acctSetupAuth;
+
+  /// No description provided for @acctSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out'**
+  String get acctSignOut;
+
+  /// No description provided for @acctAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get acctAppearance;
+
+  /// No description provided for @acctAppearanceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how Kivora looks on this device.'**
+  String get acctAppearanceBody;
+
+  /// No description provided for @acctThemeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get acctThemeLight;
+
+  /// No description provided for @acctThemeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get acctThemeDark;
+
+  /// No description provided for @acctThemeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get acctThemeSystem;
+
+  /// No description provided for @acctLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get acctLanguage;
+
+  /// No description provided for @acctLanguageNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Urdu, Sindhi, and Arabic translations are machine-assisted and have not yet been reviewed by a native speaker - please report anything that reads incorrectly.'**
+  String get acctLanguageNote;
+
+  /// No description provided for @acctSystemDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'System default'**
+  String get acctSystemDefault;
+
+  /// No description provided for @acctAccessibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Accessibility'**
+  String get acctAccessibility;
+
+  /// No description provided for @acctReduceMotion.
+  ///
+  /// In en, this message translates to:
+  /// **'Reduce motion'**
+  String get acctReduceMotion;
+
+  /// No description provided for @acctReduceMotionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimize animations throughout the app.'**
+  String get acctReduceMotionBody;
+
+  /// No description provided for @acctHighContrast.
+  ///
+  /// In en, this message translates to:
+  /// **'High contrast'**
+  String get acctHighContrast;
+
+  /// No description provided for @acctHighContrastBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase text and border contrast for better visibility.'**
+  String get acctHighContrastBody;
+
+  /// No description provided for @acctTextSizeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Text size follows your device\'s own accessibility settings. Candidate/option selections on the ballot screen are already labeled for screen readers.'**
+  String get acctTextSizeNote;
+
+  /// No description provided for @acctNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get acctNotifications;
+
+  /// No description provided for @acctNotificationsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which notifications you want to receive. These apply to the notification bell and reminder emails.'**
+  String get acctNotificationsBody;
+
+  /// No description provided for @acctVoteReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Vote reminders'**
+  String get acctVoteReminders;
+
+  /// No description provided for @acctVoteRemindersBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Get notified when an active election is about to close and you haven\'t voted.'**
+  String get acctVoteRemindersBody;
+
+  /// No description provided for @acctResultsPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Results published'**
+  String get acctResultsPublished;
+
+  /// No description provided for @acctResultsPublishedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Get notified when results are published for an election you were eligible to vote in.'**
+  String get acctResultsPublishedBody;
+
+  /// No description provided for @acctInvitationAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization invitations'**
+  String get acctInvitationAlerts;
+
+  /// No description provided for @acctInvitationAlertsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Show pending organization invitations in the notification bell.'**
+  String get acctInvitationAlertsBody;
+
+  /// No description provided for @acctConnectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected Accounts'**
+  String get acctConnectedTitle;
+
+  /// No description provided for @acctConnectedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in methods linked to your Kivora account. You must keep at least one connected.'**
+  String get acctConnectedBody;
+
+  /// No description provided for @acctEmailPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Email & Password'**
+  String get acctEmailPassword;
+
+  /// No description provided for @acctGoogleSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with your Google account.'**
+  String get acctGoogleSignIn;
+
+  /// No description provided for @acctConnectedBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'CONNECTED'**
+  String get acctConnectedBadge;
+
+  /// No description provided for @acctConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get acctConnect;
+
+  /// No description provided for @acctDisconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get acctDisconnect;
+
+  /// No description provided for @acctDisconnectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect {name}?'**
+  String acctDisconnectTitle(String name);
+
+  /// No description provided for @acctDisconnectBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You will no longer be able to sign in to Kivora using {name}.'**
+  String acctDisconnectBody(String name);
+
+  /// No description provided for @acctCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get acctCancel;
+
+  /// No description provided for @acctGoogleConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Google account connected.'**
+  String get acctGoogleConnected;
+
+  /// No description provided for @acctChangePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get acctChangePassword;
+
+  /// No description provided for @acctCurrentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'CURRENT PASSWORD'**
+  String get acctCurrentPassword;
+
+  /// No description provided for @acctNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'NEW PASSWORD'**
+  String get acctNewPassword;
+
+  /// No description provided for @acctConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'CONFIRM NEW PASSWORD'**
+  String get acctConfirmPassword;
+
+  /// No description provided for @acctUpdatePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Password'**
+  String get acctUpdatePassword;
+
+  /// No description provided for @acctPasswordUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated successfully!'**
+  String get acctPasswordUpdated;
 }
 
 class _AppLocalizationsDelegate
