@@ -407,7 +407,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navOrgSettings => 'إعدادات المؤسسة';
 
   @override
-  String get navAccount => 'الحساب';
+  String get navAccount => 'الملف الشخصي';
 
   @override
   String get navHelp => 'المساعدة';
@@ -1980,4 +1980,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get navPlatformAccounts => 'الحسابات والصلاحيات';
+
+  @override
+  String get navInvitations => 'الدعوات';
 }

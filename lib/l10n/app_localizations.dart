@@ -867,7 +867,7 @@ abstract class AppLocalizations {
   /// No description provided for @navAccount.
   ///
   /// In en, this message translates to:
-  /// **'Account'**
+  /// **'Profile'**
   String get navAccount;
 
   /// No description provided for @navHelp.
@@ -3497,6 +3497,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Accounts & access'**
   String get navPlatformAccounts;
+
+  /// No description provided for @navInvitations.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitations'**
+  String get navInvitations;
 }
 
 class _AppLocalizationsDelegate

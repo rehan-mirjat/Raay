@@ -127,7 +127,7 @@
   "navActivity": "سرگرمی",
   "navBilling": "بلنگ",
   "navOrgSettings": "تنظیم کی ترتیبات",
-  "navAccount": "اکاؤنٹ",
+  "navAccount": "پروفائل",
   "navHelp": "مدد",
   "navMore": "مزید",
   "navObserver": "مبصر",
@@ -565,5 +565,6 @@
   "roleAdmin": "منتظم",
   "roleMember": "رکن",
   "navJoiningCodes": "شمولیت کے کوڈ",
-  "navPlatformAccounts": "اکاؤنٹس اور رسائی"
+  "navPlatformAccounts": "اکاؤنٹس اور رسائی",
+  "navInvitations": "دعوت نامے"
 }

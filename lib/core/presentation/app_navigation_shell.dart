@@ -35,6 +35,7 @@ String _navLabel(AppLocalizations l10n, NavId id) => switch (id) {
       NavId.people => l10n.navPeople,
       NavId.departments => l10n.navDepartments,
       NavId.activity => l10n.navActivity,
+      NavId.invitations => l10n.navInvitations,
       NavId.organizations => l10n.navOrganizations,
       NavId.calendar => l10n.navCalendar,
       NavId.observer => l10n.navObserver,

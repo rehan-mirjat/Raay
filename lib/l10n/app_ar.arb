@@ -127,7 +127,7 @@
   "navActivity": "النشاط",
   "navBilling": "الفوترة",
   "navOrgSettings": "إعدادات المؤسسة",
-  "navAccount": "الحساب",
+  "navAccount": "الملف الشخصي",
   "navHelp": "المساعدة",
   "navMore": "المزيد",
   "navObserver": "مراقب",
@@ -565,5 +565,6 @@
   "roleAdmin": "مسؤول",
   "roleMember": "عضو",
   "navJoiningCodes": "رموز الانضمام",
-  "navPlatformAccounts": "الحسابات والصلاحيات"
+  "navPlatformAccounts": "الحسابات والصلاحيات",
+  "navInvitations": "الدعوات"
 }

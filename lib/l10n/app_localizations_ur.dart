@@ -409,7 +409,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get navOrgSettings => 'تنظیم کی ترتیبات';
 
   @override
-  String get navAccount => 'اکاؤنٹ';
+  String get navAccount => 'پروفائل';
 
   @override
   String get navHelp => 'مدد';
@@ -1998,4 +1998,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get navPlatformAccounts => 'اکاؤنٹس اور رسائی';
+
+  @override
+  String get navInvitations => 'دعوت نامے';
 }

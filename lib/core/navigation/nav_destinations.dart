@@ -9,6 +9,7 @@ enum NavId {
   people,
   departments,
   activity,
+  invitations,
   organizations,
   calendar,
   observer,
@@ -64,7 +65,7 @@ const _departments = NavDestination(NavId.departments, '/orgs/departments',
     Icons.apartment_outlined, Icons.apartment_rounded);
 const _activityAdmin = NavDestination(NavId.activity, '/orgs/audit',
     Icons.history_outlined, Icons.history_rounded);
-const _activityVoter = NavDestination(NavId.activity, '/orgs/invitations',
+const _invitations = NavDestination(NavId.invitations, '/orgs/invitations',
     Icons.notifications_none_rounded, Icons.notifications_rounded);
 const _organizations = NavDestination(NavId.organizations, '/orgs',
     Icons.business_outlined, Icons.business_rounded);
@@ -119,9 +120,11 @@ NavModel navModelFor({
     );
   }
   return NavModel(
-    primary: const [_myElections, _organizations, _activityVoter, _account],
+    // Same order as the design reference: elections, organizations, invitations
+    // and calendar in the bar; profile and help under More.
+    primary: const [_myElections, _organizations, _invitations, _calendar],
     secondary: [
-      _calendar,
+      _account,
       if (isObserver) _observer,
       _help,
     ],

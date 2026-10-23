@@ -408,7 +408,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navOrgSettings => 'Organization settings';
 
   @override
-  String get navAccount => 'Account';
+  String get navAccount => 'Profile';
 
   @override
   String get navHelp => 'Help';
@@ -1992,4 +1992,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navPlatformAccounts => 'Accounts & access';
+
+  @override
+  String get navInvitations => 'Invitations';
 }

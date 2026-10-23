@@ -158,7 +158,7 @@
   "navActivity": "Activity",
   "navBilling": "Billing",
   "navOrgSettings": "Organization settings",
-  "navAccount": "Account",
+  "navAccount": "Profile",
   "navHelp": "Help",
   "navMore": "More",
   "navObserver": "Observer",
@@ -1019,5 +1019,6 @@
   "roleAdmin": "ADMIN",
   "roleMember": "MEMBER",
   "navJoiningCodes": "Joining codes",
-  "navPlatformAccounts": "Accounts & access"
+  "navPlatformAccounts": "Accounts & access",
+  "navInvitations": "Invitations"
 }

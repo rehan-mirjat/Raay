@@ -10,6 +10,7 @@ import '../../../core/utils/date_utils.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
+import '../../../core/widgets/stat_tile.dart';
 import '../data/organization_repository.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/widgets/status_badge.dart';
@@ -67,7 +68,8 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
           var copied = false;
           return StatefulBuilder(
             builder: (context, setDialogState) => AlertDialog(
-              icon: Icon(Icons.key_rounded, color: KivoraColors.of(context).accentText),
+              icon: Icon(Icons.key_rounded,
+                  color: KivoraColors.of(context).accentText),
               title: const Text('Save this joining code'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -214,7 +216,8 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
         loading: () => const LoadingView(message: 'Loading organization…'),
         error: (error, _) => ErrorView(
           type: ErrorViewType.generic,
-          message: 'We could not load this organization. Check your connection and try again.',
+          message:
+              'We could not load this organization. Check your connection and try again.',
           onRetry: () => ref.invalidate(activeOrganizationContextProvider),
         ),
         data: (active) {
@@ -249,8 +252,23 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
                       style: Theme.of(context).textTheme.headlineSmall),
                   const SizedBox(height: 6),
                   const Text(
-                      'Create and revoke codes that let people request membership.'),
+                      'Create and revoke codes that let people join this organization. A valid code adds the person as a member straight away; it never grants admin or owner access.'),
                   const SizedBox(height: 20),
+                  codes.maybeWhen(
+                    data: (items) {
+                      final c = countJoiningCodes(items);
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: StatTileRow(columnsWide: 3, tiles: [
+                          StatTile(label: 'Active codes', value: c.active),
+                          StatTile(
+                              label: 'Expired or used up', value: c.expired),
+                          StatTile(label: 'Revoked', value: c.revoked),
+                        ]),
+                      );
+                    },
+                    orElse: () => const SizedBox.shrink(),
+                  ),
                   _buildCreateCard(compact, orgId),
                   const SizedBox(height: 20),
                   Text('Existing codes',
@@ -260,7 +278,8 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
                     loading: () => const LoadingView(),
                     error: (error, _) => ErrorView(
                       type: ErrorViewType.generic,
-                      message: 'We could not load joining codes. Check your connection and try again.',
+                      message:
+                          'We could not load joining codes. Check your connection and try again.',
                       onRetry: () => ref
                           .invalidate(organizationJoiningCodesProvider(orgId)),
                     ),
@@ -361,14 +380,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
     final expiry = parseFirestoreDate(code['expiresAt']);
     // The server status can lag behind reality, so derive what the code can
     // actually do right now.
-    var status = rawStatus;
-    if (rawStatus == 'active') {
-      if (expiry != null && expiry.isBefore(DateTime.now())) {
-        status = 'expired';
-      } else if (maxUses > 0 && uses >= maxUses) {
-        status = 'exhausted';
-      }
-    }
+    final status = effectiveJoiningCodeStatus(code);
     final expiryLabel = expiry == null
         ? 'Expiry unavailable'
         : 'Expires ${_dateFormat.format(expiry.toLocal())}';
@@ -398,27 +410,37 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: Text('Code • ${code['displayId'] ?? '••••••••'}',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: kc.textPrimary)),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: kc.textPrimary)),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          Wrap(spacing: 8, runSpacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: [
-            StatusBadge(
-              label: status.toUpperCase(),
-              backgroundColor: tone.withValues(alpha: kc.isDark ? 0.16 : 0.10),
-              textColor: tone,
-            ),
-            Text('$uses${maxUses == 0 ? '' : ' of $maxUses'} uses',
-                style: TextStyle(fontSize: 14, color: kc.textSecondary)),
-          ]),
+          Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                StatusBadge(
+                  label: status.toUpperCase(),
+                  backgroundColor:
+                      tone.withValues(alpha: kc.isDark ? 0.16 : 0.10),
+                  textColor: tone,
+                ),
+                Text('$uses${maxUses == 0 ? '' : ' of $maxUses'} uses',
+                    style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+              ]),
           const SizedBox(height: 6),
-          Text(expiryLabel, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+          Text(expiryLabel,
+              style: TextStyle(fontSize: 14, color: kc.textSecondary)),
           if (active) ...[
             const SizedBox(height: 8),
             TextButton(
               style: TextButton.styleFrom(
-                  minimumSize: const Size(48, 48), foregroundColor: kc.errorText),
+                  minimumSize: const Size(48, 48),
+                  foregroundColor: kc.errorText),
               onPressed: () => _revoke(orgId, code),
               child: const Text('Revoke code'),
             ),
@@ -427,4 +449,36 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
       ),
     );
   }
+}
+
+/// What a joining code can actually do right now. The stored status can lag
+/// behind reality (a code past its expiry or at its use limit is still
+/// "active" until something updates it).
+String effectiveJoiningCodeStatus(Map<String, dynamic> code, {DateTime? now}) {
+  final raw = code['status'] as String? ?? 'unknown';
+  if (raw != 'active') return raw;
+  final uses = (code['currentUses'] as num?)?.toInt() ?? 0;
+  final maxUses = (code['maxUses'] as num?)?.toInt() ?? 0;
+  final expiry = parseFirestoreDate(code['expiresAt']);
+  if (expiry != null && expiry.isBefore(now ?? DateTime.now()))
+    return 'expired';
+  if (maxUses > 0 && uses >= maxUses) return 'exhausted';
+  return 'active';
+}
+
+({int active, int expired, int revoked}) countJoiningCodes(
+    List<Map<String, dynamic>> codes,
+    {DateTime? now}) {
+  var active = 0, expired = 0, revoked = 0;
+  for (final c in codes) {
+    switch (effectiveJoiningCodeStatus(c, now: now)) {
+      case 'active':
+        active++;
+      case 'expired' || 'exhausted':
+        expired++;
+      case 'revoked':
+        revoked++;
+    }
+  }
+  return (active: active, expired: expired, revoked: revoked);
 }

@@ -8,6 +8,7 @@ import '../../../core/theme/kivora_icons.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
+import '../../../core/widgets/stat_tile.dart';
 import '../../../l10n/app_localizations.dart';
 import '../domain/election_card_state.dart';
 import '../domain/voting_event.dart';
@@ -15,7 +16,14 @@ import 'portal_grouping.dart';
 import 'providers/voter_portal_providers.dart';
 import 'voter_election_card.dart';
 
-enum _PortalFilter { all, ready, upcoming, participated, closed, resultsPublished }
+enum _PortalFilter {
+  all,
+  ready,
+  upcoming,
+  participated,
+  closed,
+  resultsPublished
+}
 
 const _pageSize = 12;
 
@@ -144,13 +152,15 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
     );
   }
 
-  Widget _buildList(BuildContext context, AppLocalizations l10n, List<VoterPortalEntry> entries) {
+  Widget _buildList(BuildContext context, AppLocalizations l10n,
+      List<VoterPortalEntry> entries) {
     final kc = KivoraColors.of(context);
     final participationAsync = ref.watch(participationStatusesProvider);
     final resultsAsync = ref.watch(resultsStatusesProvider);
     // Loading or failed lookups leave the map empty -> every event reads as
     // "unknown", never as "not voted" or "results pending".
-    final participation = participationAsync.valueOrNull ?? const <String, ParticipationStatus>{};
+    final participation =
+        participationAsync.valueOrNull ?? const <String, ParticipationStatus>{};
     final results = resultsAsync.valueOrNull ?? const <String, ResultsStatus>{};
     final hasUnknowns = participationAsync.hasError ||
         resultsAsync.hasError ||
@@ -158,12 +168,14 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
         results.values.contains(ResultsStatus.unknown);
 
     final filtered = _applyFilters(entries, participation, results);
-    final grouped = _filter == _PortalFilter.all && _searchController.text.trim().isEmpty;
+    final grouped =
+        _filter == _PortalFilter.all && _searchController.text.trim().isEmpty;
     final isDesktop = ResponsiveLayout.isWide(context);
 
     Widget cardFor(VoterPortalEntry e) => VoterElectionCard(
           entry: e,
-          participation: participation[e.event.id] ?? ParticipationStatus.unknown,
+          participation:
+              participation[e.event.id] ?? ParticipationStatus.unknown,
           results: results[e.event.id] ?? ResultsStatus.unknown,
         );
 
@@ -198,6 +210,21 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
           ),
         ],
       ),
+      const SizedBox(height: 16),
+      // Counts come from the same grouping the list below uses. While the
+      // participation lookup has not answered they show a dash, never a guess.
+      Builder(builder: (context) {
+        final groups = participationAsync.hasValue
+            ? groupPortalEntries(entries, participation)
+            : null;
+        int? n(PortalSection s) => groups?[s]!.length;
+        return StatTileRow(tiles: [
+          StatTile(label: l10n.voterSectionReady, value: n(PortalSection.ready)),
+          StatTile(label: l10n.voterSectionUpcoming, value: n(PortalSection.upcoming)),
+          StatTile(label: l10n.voterSectionParticipated, value: n(PortalSection.participated)),
+          StatTile(label: l10n.voterSectionOther, value: n(PortalSection.other)),
+        ]);
+      }),
       const SizedBox(height: 16),
       TextField(
         controller: _searchController,
@@ -234,7 +261,10 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
       ),
       if (hasUnknowns) ...[
         const SizedBox(height: 12),
-        _WarningBanner(message: l10n.voterStatusWarning, retryLabel: l10n.voterRetry, onRetry: _refresh),
+        _WarningBanner(
+            message: l10n.voterStatusWarning,
+            retryLabel: l10n.voterRetry,
+            onRetry: _refresh),
       ],
       const SizedBox(height: 16),
     ];
@@ -271,7 +301,8 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
       }
     } else {
       children
-        ..add(AdaptiveCardGrid(children: filtered.take(_visibleCount).map(cardFor).toList()))
+        ..add(AdaptiveCardGrid(
+            children: filtered.take(_visibleCount).map(cardFor).toList()))
         ..add(const SizedBox(height: 24));
     }
 
@@ -280,7 +311,8 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
         child: OutlinedButton(
           style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
           onPressed: () => setState(() => _visibleCount += _pageSize),
-          child: Text('${l10n.voterLoadMore} (${filtered.length - _visibleCount})'),
+          child: Text(
+              '${l10n.voterLoadMore} (${filtered.length - _visibleCount})'),
         ),
       ));
     }
@@ -290,8 +322,11 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
       padding: EdgeInsets.all(isDesktop ? 32 : 16),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: ResponsiveLayout.maxContentWidth),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
+          constraints:
+              const BoxConstraints(maxWidth: ResponsiveLayout.maxContentWidth),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: children),
         ),
       ),
     );
@@ -311,14 +346,18 @@ class _SectionHeader extends StatelessWidget {
       child: Semantics(
         header: true,
         child: Text('$title ($count)',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kc.textPrimary)),
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: kc.textPrimary)),
       ),
     );
   }
 }
 
 class _WarningBanner extends StatelessWidget {
-  const _WarningBanner({required this.message, required this.retryLabel, required this.onRetry});
+  const _WarningBanner(
+      {required this.message, required this.retryLabel, required this.onRetry});
   final String message;
   final String retryLabel;
   final VoidCallback onRetry;
@@ -337,7 +376,9 @@ class _WarningBanner extends StatelessWidget {
         children: [
           Icon(Icons.info_outline_rounded, color: kc.warningText),
           const SizedBox(width: 12),
-          Expanded(child: Text(message, style: TextStyle(fontSize: 14, color: kc.textPrimary))),
+          Expanded(
+              child: Text(message,
+                  style: TextStyle(fontSize: 14, color: kc.textPrimary))),
           TextButton(
             style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
             onPressed: onRetry,
@@ -353,7 +394,11 @@ class _WarningBanner extends StatelessWidget {
 /// widget actually receives (so the shell's sidebar/rail is accounted for).
 /// Card heights follow their content; there is no fixed aspect ratio.
 class AdaptiveCardGrid extends StatelessWidget {
-  const AdaptiveCardGrid({super.key, required this.children, this.minColumnWidth = 340, this.gap = 16});
+  const AdaptiveCardGrid(
+      {super.key,
+      required this.children,
+      this.minColumnWidth = 340,
+      this.gap = 16});
 
   final List<Widget> children;
   final double minColumnWidth;
@@ -368,7 +413,9 @@ class AdaptiveCardGrid extends StatelessWidget {
       return Wrap(
         spacing: gap,
         runSpacing: gap,
-        children: [for (final c in children) SizedBox(width: itemWidth, child: c)],
+        children: [
+          for (final c in children) SizedBox(width: itemWidth, child: c)
+        ],
       );
     });
   }
