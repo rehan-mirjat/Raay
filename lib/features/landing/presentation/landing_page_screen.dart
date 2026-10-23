@@ -187,6 +187,47 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
 
   // ---- navigation ------------------------------------------------------------
 
+  /// Surface-and-border style shared by the theme toggle, Sign in and Menu so
+  /// they read as one group next to the filled Get started. Hover and focus
+  /// change the button's own border and fill, never anything outside it.
+  ButtonStyle _outlinedAction(KivoraColors kc) {
+    return ButtonStyle(
+      minimumSize: const WidgetStatePropertyAll(Size(44, 44)),
+      // Keeps a 48px hit area around the 44px visual button.
+      tapTargetSize: MaterialTapTargetSize.padded,
+      padding:
+          const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 18)),
+      elevation: const WidgetStatePropertyAll(0),
+      foregroundColor: WidgetStatePropertyAll(kc.textPrimary),
+      backgroundColor: WidgetStatePropertyAll(
+          kc.surface.withValues(alpha: kc.isDark ? 0.55 : 0.75)),
+      overlayColor: WidgetStateProperty.resolveWith((s) {
+        if (s.contains(WidgetState.pressed)) {
+          return AppTheme.primaryBlue.withValues(alpha: 0.16);
+        }
+        if (s.contains(WidgetState.hovered) ||
+            s.contains(WidgetState.focused)) {
+          return AppTheme.primaryBlue.withValues(alpha: 0.09);
+        }
+        return null;
+      }),
+      side: WidgetStateProperty.resolveWith((s) {
+        if (s.contains(WidgetState.focused)) {
+          return BorderSide(color: kc.accentText, width: 2);
+        }
+        if (s.contains(WidgetState.hovered)) {
+          return BorderSide(
+              color: AppTheme.primaryBlue.withValues(alpha: 0.7), width: 1.2);
+        }
+        return BorderSide(color: kc.border, width: 1.2);
+      }),
+      shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+      textStyle: const WidgetStatePropertyAll(
+          TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+    );
+  }
+
   Widget _navBar(BuildContext context, bool inline) {
     final kc = KivoraColors.of(context);
     final dark = kc.isDark;
@@ -219,17 +260,22 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
         ),
       ),
     );
-    final theme = IconButton(
-      tooltip: dark ? 'Switch to light theme' : 'Switch to dark theme',
-      constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-      onPressed: _toggleTheme,
-      icon: Icon(dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-          color: kc.textPrimary),
+    final theme = Tooltip(
+      message: dark ? 'Switch to light theme' : 'Switch to dark theme',
+      child: OutlinedButton(
+        style: _outlinedAction(kc).copyWith(
+          fixedSize: const WidgetStatePropertyAll(Size(44, 44)),
+          padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+        ),
+        onPressed: _toggleTheme,
+        child: Icon(dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+            size: 20),
+      ),
     );
 
     return Padding(
       padding: const EdgeInsetsDirectional.only(
-          start: 16, end: 8, top: 4, bottom: 4),
+          start: 16, end: 16, top: 6, bottom: 6),
       child: Row(children: [
         if (inline)
           brand
@@ -253,7 +299,8 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                         selected: on,
                         child: TextButton(
                           style: TextButton.styleFrom(
-                            minimumSize: const Size(48, 48),
+                            minimumSize: const Size(48, 44),
+                            tapTargetSize: MaterialTapTargetSize.padded,
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             foregroundColor:
                                 on ? kc.accentText : kc.textSecondary,
@@ -275,30 +322,49 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
               ]),
             ),
           ),
+          const SizedBox(width: 12),
           theme,
-          TextButton(
-            style: TextButton.styleFrom(
-                minimumSize: const Size(48, 48),
-                foregroundColor: kc.textPrimary),
+          // The 44px toggle is padded to a 48px hit area (2px each side), so a
+          // 6px gap here is the same 8px of visible space as between the others.
+          const SizedBox(width: 6),
+          OutlinedButton(
+            style: _outlinedAction(kc),
             onPressed: () => _go('/login'),
-            child: const Text('Sign in',
-                style: TextStyle(fontWeight: FontWeight.w700)),
+            child: const Text('Sign in'),
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 8),
           FilledButton(
             style: FilledButton.styleFrom(
-                minimumSize: const Size(48, 48),
-                padding: const EdgeInsets.symmetric(horizontal: 20)),
+              minimumSize: const Size(48, 44),
+              tapTargetSize: MaterialTapTargetSize.padded,
+              padding: const EdgeInsets.symmetric(horizontal: 22),
+              textStyle:
+                  const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+            ).copyWith(
+              side: WidgetStateProperty.resolveWith((s) =>
+                  s.contains(WidgetState.focused)
+                      ? BorderSide(
+                          color: KivoraColors.of(context).textPrimary, width: 2)
+                      : BorderSide.none),
+            ),
             onPressed: () => _go('/register'),
             child: const Text('Get started'),
           ),
         ] else ...[
           theme,
-          IconButton(
-            tooltip: 'Menu',
-            constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-            onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
-            icon: Icon(Icons.menu_rounded, color: kc.textPrimary),
+          const SizedBox(width: 4),
+          Tooltip(
+            message: 'Menu',
+            child: OutlinedButton(
+              style: _outlinedAction(kc).copyWith(
+                fixedSize: const WidgetStatePropertyAll(Size(44, 44)),
+                padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+              ),
+              onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
+              child: const Icon(Icons.menu_rounded, size: 22),
+            ),
           ),
         ],
       ]),
@@ -930,24 +996,26 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
             const SizedBox(height: 28),
             Divider(color: kc.border),
             const SizedBox(height: 8),
-            Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              runSpacing: 4,
-              spacing: 16,
-              children: [
-                Text('© 2026 Sonryan Technologies. All rights reserved.',
-                    style: TextStyle(fontSize: 13, color: kc.textSecondary)),
-                TextButton.icon(
-                  style: TextButton.styleFrom(
-                      minimumSize: const Size(48, 48),
-                      foregroundColor: kc.textSecondary),
-                  onPressed: _top,
-                  icon: const Icon(Icons.arrow_upward_rounded, size: 16),
-                  label: const Text('Back to top'),
-                ),
-              ],
-            ),
+            // Copyright on the left, the real "Back to top" action on the right
+            // edge of the content; they stack on narrow screens.
+            LayoutBuilder(builder: (context, c) {
+              final copy = Text('© 2026 Sonryan. All rights reserved.',
+                  style: TextStyle(fontSize: 13, color: kc.textSecondary));
+              final top = TextButton.icon(
+                style: TextButton.styleFrom(
+                    minimumSize: const Size(48, 48),
+                    foregroundColor: kc.textSecondary),
+                onPressed: _top,
+                icon: const Icon(Icons.arrow_upward_rounded, size: 16),
+                label: const Text('Back to top'),
+              );
+              if (c.maxWidth < 520) {
+                return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [copy, const SizedBox(height: 4), top]);
+              }
+              return Row(children: [Expanded(child: copy), top]);
+            }),
           ]),
         ),
       ),
