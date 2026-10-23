@@ -1,5 +1,7 @@
 import 'dart:ui' show ImageFilter;
 
+import 'package:flutter/foundation.dart' show ValueListenable;
+import 'package:flutter/gestures.dart' show PointerHoverEvent;
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
@@ -86,17 +88,25 @@ class GlassBar extends StatelessWidget {
               offset: const Offset(0, 10)),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: radius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-          child: Container(
-            decoration: BoxDecoration(
-              color: kc.surface.withValues(alpha: kc.isDark ? 0.72 : 0.80),
-              borderRadius: radius,
-              border: Border.all(color: kc.border.withValues(alpha: 0.9)),
+      child: Container(
+        // 1px violet-to-teal rim light; the bar itself stays a calm frosted panel.
+        padding: const EdgeInsets.all(1),
+        decoration: BoxDecoration(
+          borderRadius: radius,
+          gradient: LinearGradient(colors: [
+            AppTheme.primaryBlue.withValues(alpha: kc.isDark ? 0.55 : 0.35),
+            kc.border,
+            AppTheme.accentTeal.withValues(alpha: kc.isDark ? 0.45 : 0.30),
+          ]),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(19),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+            child: Container(
+              color: kc.surface.withValues(alpha: kc.isDark ? 0.74 : 0.82),
+              child: child,
             ),
-            child: child,
           ),
         ),
       ),
@@ -468,5 +478,264 @@ class _FaqListState extends State<FaqList> {
           ),
         ),
     ]);
+  }
+}
+
+/// Thin bar along the top edge showing how far down the page the reader is.
+class ScrollProgressBar extends StatelessWidget {
+  const ScrollProgressBar({super.key, required this.progress});
+  final ValueListenable<double> progress;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExcludeSemantics(
+      child: SizedBox(
+        height: 3,
+        child: ValueListenableBuilder<double>(
+          valueListenable: progress,
+          builder: (_, v, __) => Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: FractionallySizedBox(
+              widthFactor: v.clamp(0.0, 1.0),
+              child: const DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: [AppTheme.primaryBlue, AppTheme.accentTeal]),
+                ),
+                child: SizedBox.expand(),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Tilts its child a few degrees toward a mouse pointer. Mouse only (touch
+/// never reports hover) and disabled when the user asked for reduced motion.
+class TiltCard extends StatefulWidget {
+  const TiltCard({super.key, required this.child});
+  final Widget child;
+
+  @override
+  State<TiltCard> createState() => _TiltCardState();
+}
+
+class _TiltCardState extends State<TiltCard> {
+  double _x = 0, _y = 0;
+
+  void _hover(PointerHoverEvent e) {
+    final box = context.findRenderObject();
+    if (box is! RenderBox || !box.hasSize) return;
+    final local = box.globalToLocal(e.position);
+    setState(() {
+      _x = (local.dx / box.size.width - 0.5).clamp(-0.5, 0.5);
+      _y = (local.dy / box.size.height - 0.5).clamp(-0.5, 0.5);
+    });
+  }
+
+  void _reset() => setState(() => _x = _y = 0);
+
+  @override
+  Widget build(BuildContext context) {
+    if (MediaQuery.disableAnimationsOf(context)) return widget.child;
+    return MouseRegion(
+      onHover: _hover,
+      onExit: (_) => _reset(),
+      child: TweenAnimationBuilder<Offset>(
+        tween: Tween(end: Offset(_x, _y)),
+        duration: const Duration(milliseconds: 140),
+        curve: Curves.easeOut,
+        builder: (_, t, child) => Transform(
+          alignment: Alignment.center,
+          transform: Matrix4.identity()
+            ..setEntry(3, 2, 0.0012)
+            ..rotateX(-t.dy * 0.07)
+            ..rotateY(t.dx * 0.09),
+          child: child,
+        ),
+        child: widget.child,
+      ),
+    );
+  }
+}
+
+/// The "how it works" steps. Steps light up as they scroll into view and a
+/// line fills along them (wide screens), so the reader sees how far along the
+/// path they are. Cards are always readable; this only adds emphasis.
+class StepsTimeline extends StatefulWidget {
+  const StepsTimeline({super.key, required this.steps});
+  final List<LandingStep> steps;
+
+  @override
+  State<StepsTimeline> createState() => _StepsTimelineState();
+}
+
+class _StepsTimelineState extends State<StepsTimeline> {
+  late final List<GlobalKey> _keys = [
+    for (final _ in widget.steps) GlobalKey()
+  ];
+  ScrollPosition? _position;
+  int _active = 0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _position?.removeListener(_update);
+    _position = Scrollable.maybeOf(context)?.position;
+    _position?.addListener(_update);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _update());
+  }
+
+  @override
+  void dispose() {
+    _position?.removeListener(_update);
+    super.dispose();
+  }
+
+  void _update() {
+    if (!mounted) return;
+    final h = MediaQuery.sizeOf(context).height;
+    var n = 0;
+    for (var i = 0; i < _keys.length; i++) {
+      final box = _keys[i].currentContext?.findRenderObject();
+      if (box is RenderBox &&
+          box.attached &&
+          box.hasSize &&
+          box.localToGlobal(Offset.zero).dy < h * 0.78) {
+        n = i + 1;
+      }
+    }
+    if (n != _active) setState(() => _active = n);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    final steps = widget.steps;
+    final fill = steps.length <= 1
+        ? 1.0
+        : ((_active - 1).clamp(0, steps.length - 1) / (steps.length - 1));
+    return LayoutBuilder(builder: (context, c) {
+      final wide = c.maxWidth >= 240.0 * 4 + 20.0 * 3;
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        if (wide) ...[
+          ExcludeSemantics(
+            child: Container(
+              height: 4,
+              decoration: BoxDecoration(
+                  color: kc.border, borderRadius: BorderRadius.circular(2)),
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: AnimatedFractionallySizedBox(
+                  duration: reduce
+                      ? Duration.zero
+                      : const Duration(milliseconds: 500),
+                  curve: Curves.easeOutCubic,
+                  widthFactor: _active == 0 ? 0 : fill.clamp(0.04, 1.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        gradient: const LinearGradient(colors: [
+                          AppTheme.primaryBlue,
+                          AppTheme.accentTeal
+                        ]),
+                        borderRadius: BorderRadius.circular(2)),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+        ],
+        ReflowGrid(maxColumns: 4, minColumnWidth: 240, children: [
+          for (var i = 0; i < steps.length; i++)
+            AnimatedContainer(
+              key: _keys[i],
+              duration:
+                  reduce ? Duration.zero : const Duration(milliseconds: 350),
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: kc.surface,
+                borderRadius: BorderRadius.circular(AppTheme.radiusCard + 4),
+                border: Border.all(
+                  color: i < _active
+                      ? AppTheme.primaryBlue.withValues(alpha: 0.6)
+                      : kc.border,
+                  width: i < _active ? 1.5 : 1,
+                ),
+              ),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('0${i + 1}',
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.5,
+                            color: i < _active
+                                ? kc.accentText
+                                : kc.textSecondary)),
+                    const SizedBox(height: 12),
+                    Text(steps[i].title,
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: kc.textPrimary)),
+                    const SizedBox(height: 8),
+                    Text(steps[i].body,
+                        style: TextStyle(
+                            fontSize: 15,
+                            height: 1.55,
+                            color: kc.textSecondary)),
+                  ]),
+            ),
+        ]),
+      ]);
+    });
+  }
+}
+
+/// The "Still need a hand?" card beside the FAQ.
+class HelpCard extends StatelessWidget {
+  const HelpCard({super.key, required this.onTransparency});
+  final VoidCallback onTransparency;
+
+  @override
+  Widget build(BuildContext context) {
+    final kc = KivoraColors.of(context);
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: kc.surfaceTint,
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard + 4),
+        border: Border.all(color: kc.border),
+      ),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const IconTile(Icons.support_agent_rounded),
+            const SizedBox(height: 16),
+            Text('Still need a hand?',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: kc.textPrimary)),
+            const SizedBox(height: 8),
+            Text(
+                'For access or eligibility questions, ask your organization administrator. To see how elections work end to end, read the Transparency Center.',
+                style: TextStyle(
+                    fontSize: 15, height: 1.55, color: kc.textSecondary)),
+            const SizedBox(height: 16),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+              onPressed: onTransparency,
+              child: const Text('Open the Transparency Center'),
+            ),
+          ]),
+    );
   }
 }

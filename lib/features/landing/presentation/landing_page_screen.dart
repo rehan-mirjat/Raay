@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -28,8 +29,49 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   final _securityKey = GlobalKey();
   final _faqKey = GlobalKey();
 
+  final _progress = ValueNotifier<double>(0);
+  final _active = ValueNotifier<int>(-1); // index into the section links
+  final _glow = ValueNotifier<Offset?>(null);
+
+  @override
+  void initState() {
+    super.initState();
+    _scroll.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (!_scroll.hasClients) return;
+    final max = _scroll.position.maxScrollExtent;
+    _progress.value = max > 0 ? (_scroll.offset / max).clamp(0.0, 1.0) : 0;
+
+    // Scroll-spy: the last section whose top has passed 35% of the viewport.
+    final line = MediaQuery.sizeOf(context).height * 0.35;
+    var current = -1;
+    final keys = [_featuresKey, _howKey, _orgsKey, _securityKey];
+    for (var i = 0; i < keys.length; i++) {
+      final box = keys[i].currentContext?.findRenderObject();
+      if (box is RenderBox &&
+          box.attached &&
+          box.localToGlobal(Offset.zero).dy <= line) {
+        current = i;
+      }
+    }
+    // Past the last linked section into the FAQ and footer: nothing is active.
+    final faq = _faqKey.currentContext?.findRenderObject();
+    if (faq is RenderBox &&
+        faq.attached &&
+        faq.localToGlobal(Offset.zero).dy <= line) {
+      current = -1;
+    }
+    _active.value = current;
+  }
+
   @override
   void dispose() {
+    _scroll.removeListener(_onScroll);
+    _progress.dispose();
+    _active.dispose();
+    _glow.dispose();
     _scroll.dispose();
     super.dispose();
   }
@@ -62,10 +104,11 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   }
 
   List<_NavItem> get _navItems => [
-        _NavItem('Features', () => _scrollTo(_featuresKey)),
-        _NavItem('How it works', () => _scrollTo(_howKey)),
-        _NavItem('Organizations', () => _scrollTo(_orgsKey)),
-        _NavItem('Security & privacy', () => _scrollTo(_securityKey)),
+        _NavItem('Features', () => _scrollTo(_featuresKey), section: 0),
+        _NavItem('How it works', () => _scrollTo(_howKey), section: 1),
+        _NavItem('Organizations', () => _scrollTo(_orgsKey), section: 2),
+        _NavItem('Security & privacy', () => _scrollTo(_securityKey),
+            section: 3),
         _NavItem('Transparency', () => _open('/transparency')),
       ];
 
@@ -83,47 +126,62 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
       key: _scaffoldKey,
       backgroundColor: Colors.transparent,
       endDrawer: inline ? null : _drawer(context),
-      body: Stack(children: [
-        const Positioned.fill(child: _AmbientGlow()),
-        SafeArea(
-          bottom: false,
-          child: SingleChildScrollView(
-            controller: _scroll,
-            child: Column(children: [
-              const SizedBox(height: 92),
-              _hero(context, width),
-              _trustStrip(context),
-              KeyedSubtree(key: _featuresKey, child: _features(context)),
-              KeyedSubtree(key: _howKey, child: _howItWorks(context)),
-              KeyedSubtree(key: _orgsKey, child: _organizations(context)),
-              KeyedSubtree(key: _securityKey, child: _security(context)),
-              _anonymous(context),
-              _receipt(context),
-              KeyedSubtree(key: _faqKey, child: _faq(context)),
-              _finalCta(context),
-              _footer(context),
-            ]),
-          ),
-        ),
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          child: SafeArea(
+      body: MouseRegion(
+        // Mouse only: touch never reports hover. Skipped for reduced motion.
+        onHover: MediaQuery.disableAnimationsOf(context)
+            ? null
+            : (e) => _glow.value = e.localPosition,
+        onExit: (_) => _glow.value = null,
+        child: Stack(children: [
+          const Positioned.fill(child: _AmbientGlow()),
+          Positioned.fill(child: _CursorGlow(position: _glow)),
+          SafeArea(
             bottom: false,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                  width < 640 ? 10 : 20, 12, width < 640 ? 10 : 20, 0),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: kLandingMaxWidth),
-                  child: GlassBar(child: _navBar(context, inline)),
+            child: SingleChildScrollView(
+              controller: _scroll,
+              child: Column(children: [
+                const SizedBox(height: 92),
+                _hero(context, width),
+                _trustStrip(context),
+                KeyedSubtree(key: _featuresKey, child: _features(context)),
+                KeyedSubtree(key: _howKey, child: _howItWorks(context)),
+                KeyedSubtree(key: _orgsKey, child: _organizations(context)),
+                KeyedSubtree(key: _securityKey, child: _security(context)),
+                _anonymous(context),
+                _receipt(context),
+                KeyedSubtree(key: _faqKey, child: _faq(context)),
+                _finalCta(context),
+                _footer(context),
+              ]),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                    width < 640 ? 10 : 20, 12, width < 640 ? 10 : 20, 0),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints:
+                        const BoxConstraints(maxWidth: kLandingMaxWidth),
+                    child: GlassBar(child: _navBar(context, inline)),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ]),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: ScrollProgressBar(progress: _progress),
+          ),
+        ]),
+      ),
     );
   }
 
@@ -187,16 +245,32 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
               fit: BoxFit.scaleDown,
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 for (final item in _navItems)
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      minimumSize: const Size(48, 48),
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      foregroundColor: kc.textSecondary,
-                      textStyle: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w600),
-                    ),
-                    onPressed: item.onTap,
-                    child: Text(item.label),
+                  ValueListenableBuilder<int>(
+                    valueListenable: _active,
+                    builder: (_, active, __) {
+                      final on = item.section != null && item.section == active;
+                      return Semantics(
+                        selected: on,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            minimumSize: const Size(48, 48),
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            foregroundColor:
+                                on ? kc.accentText : kc.textSecondary,
+                            backgroundColor: on
+                                ? AppTheme.primaryBlue
+                                    .withValues(alpha: kc.isDark ? 0.16 : 0.08)
+                                : Colors.transparent,
+                            textStyle: TextStyle(
+                                fontSize: 14,
+                                fontWeight:
+                                    on ? FontWeight.w800 : FontWeight.w600),
+                          ),
+                          onPressed: item.onTap,
+                          child: Text(item.label),
+                        ),
+                      );
+                    },
                   ),
               ]),
             ),
@@ -403,7 +477,9 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     Expanded(flex: 6, child: text),
                     const SizedBox(width: 48),
                     const Expanded(
-                        flex: 5, child: Center(child: IllustrativeBallot())),
+                        flex: 5,
+                        child: Center(
+                            child: TiltCard(child: IllustrativeBallot()))),
                   ])
                 : Column(children: [
                     text,
@@ -463,7 +539,6 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
       );
 
   Widget _howItWorks(BuildContext context) {
-    final kc = KivoraColors.of(context);
     return SectionShell(
       tinted: true,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -474,40 +549,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
               'Make participation straightforward for organizers and members alike.',
         ),
         const SizedBox(height: 40),
-        ReflowGrid(maxColumns: 4, minColumnWidth: 240, children: [
-          for (var i = 0; i < landingSteps.length; i++)
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: kc.surface,
-                borderRadius: BorderRadius.circular(AppTheme.radiusCard + 4),
-                border: Border.all(color: kc.border),
-              ),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('0${i + 1}',
-                        style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.w800,
-                            color: kc.accentText,
-                            letterSpacing: -0.5)),
-                    const SizedBox(height: 12),
-                    Text(landingSteps[i].title,
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: kc.textPrimary)),
-                    const SizedBox(height: 8),
-                    Text(landingSteps[i].body,
-                        style: TextStyle(
-                            fontSize: 15,
-                            height: 1.55,
-                            color: kc.textSecondary)),
-                  ]),
-            ),
-        ]),
+        const StepsTimeline(steps: landingSteps),
         const SizedBox(height: 32),
         FilledButton(
           style: FilledButton.styleFrom(
@@ -704,7 +746,6 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   }
 
   Widget _faq(BuildContext context) {
-    final kc = KivoraColors.of(context);
     return SectionShell(
       child: Column(children: [
         const SectionHeader(
@@ -713,14 +754,24 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           center: true,
         ),
         const SizedBox(height: 36),
-        ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 820),
-            child: const FaqList(items: landingFaqs)),
-        const SizedBox(height: 8),
-        Text(
-            'Need help with access or eligibility? Ask your organization administrator.',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+        LayoutBuilder(builder: (context, c) {
+          final help = HelpCard(onTransparency: () => _open('/transparency'));
+          if (c.maxWidth >= 960) {
+            return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Expanded(child: FaqList(items: landingFaqs)),
+              const SizedBox(width: 32),
+              SizedBox(width: 320, child: help),
+            ]);
+          }
+          return Column(children: [
+            ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 820),
+                child: const FaqList(items: landingFaqs)),
+            const SizedBox(height: 12),
+            ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 820), child: help),
+          ]);
+        }),
       ]),
     );
   }
@@ -905,9 +956,12 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
 }
 
 class _NavItem {
-  const _NavItem(this.label, this.onTap);
+  const _NavItem(this.label, this.onTap, {this.section});
   final String label;
   final VoidCallback onTap;
+
+  /// Index of the page section this link scrolls to, for the active highlight.
+  final int? section;
 }
 
 /// Soft violet and teal light behind the page. Decorative only.
@@ -936,6 +990,43 @@ class _AmbientGlow extends StatelessWidget {
           Positioned(
               top: 380, left: -200, child: orb(AppTheme.accentTeal, 460)),
         ]),
+      ),
+    );
+  }
+}
+
+/// A faint light that follows the mouse pointer. Decorative, mouse only.
+class _CursorGlow extends StatelessWidget {
+  const _CursorGlow({required this.position});
+  final ValueListenable<Offset?> position;
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = KivoraColors.of(context).isDark;
+    return IgnorePointer(
+      child: ExcludeSemantics(
+        child: ValueListenableBuilder<Offset?>(
+          valueListenable: position,
+          builder: (_, p, __) => Stack(children: [
+            if (p != null)
+              Positioned(
+                left: p.dx - 220,
+                top: p.dy - 220,
+                child: Container(
+                  width: 440,
+                  height: 440,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(colors: [
+                      AppTheme.primaryBlue
+                          .withValues(alpha: dark ? 0.16 : 0.09),
+                      AppTheme.primaryBlue.withValues(alpha: 0),
+                    ]),
+                  ),
+                ),
+              ),
+          ]),
+        ),
       ),
     );
   }
