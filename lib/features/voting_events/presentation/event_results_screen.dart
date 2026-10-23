@@ -13,6 +13,7 @@ import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../l10n/app_localizations.dart';
+import '../domain/voting_event.dart';
 import '../../../services/firebase_service.dart';
 import '../../organizations/presentation/providers/organization_providers.dart';
 import '../../voting/presentation/cast_vote_screen.dart';
@@ -177,12 +178,18 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
         },
         data: (data) {
           if (data == null) {
+            // Results can only be calculated after the election closes (the
+            // server refuses earlier), so do not offer the action before then.
+            final status = event?.status;
+            final closed = status == VotingEventStatus.closed || status == VotingEventStatus.archived;
+            final notClosed = event != null && !closed;
+            final offer = canManage && !notClosed;
             return shell(EmptyView(
               icon: Icons.query_stats_rounded,
               title: l10n.resNoneTitle,
-              message: l10n.resNoneBody,
-              actionLabel: canManage ? (_busy ? l10n.resWorking : l10n.resCalculate) : null,
-              onAction: canManage && !_busy ? () => _run('calculateResults') : null,
+              message: canManage && notClosed ? l10n.resNotClosedYet : l10n.resNoneBody,
+              actionLabel: offer ? (_busy ? l10n.resWorking : l10n.resCalculate) : null,
+              onAction: offer && !_busy ? () => _run('calculateResults') : null,
             ));
           }
           final results = parseElectionResults(data);

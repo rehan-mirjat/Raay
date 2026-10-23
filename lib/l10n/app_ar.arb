@@ -466,7 +466,7 @@
   "resClose": "إغلاق",
   "resActionFailed": "لم تنجح العملية. يُرجى المحاولة مرة أخرى.",
   "resPublishConfirmTitle": "نشر هذه النتائج؟",
-  "resPublishConfirmBody": "سيتمكن جميع الأعضاء المؤهلين من رؤية النتائج. يمكنك إعادة احتسابها لاحقًا.",
+  "resPublishConfirmBody": "سيتمكن جميع الأعضاء المؤهلين من رؤية النتائج، وسيتلقى إشعارًا من فعّلوا إشعارات النتائج. يمكنك إعادة احتسابها لاحقًا.",
   "resPublishConfirm": "نشر",
   "resCancel": "إلغاء",
   "resEventFallback": "الانتخاب",
@@ -641,5 +641,6 @@
   "navPlatformOverview": "نظرة عامة على المنصة",
   "navPlatformOrganizations": "جميع المؤسسات",
   "navPlatformReports": "بلاغات المستخدمين",
-  "navPlatformAudit": "سجل التدقيق"
+  "navPlatformAudit": "سجل التدقيق",
+  "resNotClosedYet": "يمكن احتساب النتائج بعد إغلاق الانتخاب."
 }

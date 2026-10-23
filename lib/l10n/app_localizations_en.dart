@@ -1628,7 +1628,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resPublishConfirmBody =>
-      'All eligible members will be able to see the results. You can still recalculate them afterwards.';
+      'All eligible members will be able to see the results, and those who have result notifications on will be notified. You can still recalculate them afterwards.';
 
   @override
   String get resPublishConfirm => 'Publish';
@@ -2237,4 +2237,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navPlatformAudit => 'Audit log';
+
+  @override
+  String get resNotClosedYet =>
+      'Results can be calculated once the election has closed.';
 }

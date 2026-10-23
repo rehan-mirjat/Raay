@@ -466,7 +466,7 @@
   "resClose": "بند کریں",
   "resActionFailed": "یہ کام نہیں ہوا۔ براہ کرم دوبارہ کوشش کریں۔",
   "resPublishConfirmTitle": "یہ نتائج شائع کریں؟",
-  "resPublishConfirmBody": "تمام اہل اراکین نتائج دیکھ سکیں گے۔ آپ بعد میں بھی انہیں دوبارہ شمار کر سکتے ہیں۔",
+  "resPublishConfirmBody": "تمام اہل اراکین نتائج دیکھ سکیں گے، اور جنہوں نے نتائج کی اطلاعات آن رکھی ہیں انہیں اطلاع بھی ملے گی۔ آپ بعد میں بھی انہیں دوبارہ شمار کر سکتے ہیں۔",
   "resPublishConfirm": "شائع کریں",
   "resCancel": "منسوخ کریں",
   "resEventFallback": "انتخاب",
@@ -641,5 +641,6 @@
   "navPlatformOverview": "نظرِ پلیٹ فارم",
   "navPlatformOrganizations": "تمام تنظیمیں",
   "navPlatformReports": "صارف رپورٹس",
-  "navPlatformAudit": "آڈٹ لاگ"
+  "navPlatformAudit": "آڈٹ لاگ",
+  "resNotClosedYet": "انتخاب بند ہونے کے بعد ہی نتائج شمار کیے جا سکتے ہیں۔"
 }

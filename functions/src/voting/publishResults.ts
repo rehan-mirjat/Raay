@@ -1,4 +1,5 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
+import { OPERATIONAL_ORG_STATUSES } from "../voting_events/votingCommon";
 import { getFirestore, FieldValue, Firestore, DocumentData } from "firebase-admin/firestore";
 import * as logger from "firebase-functions/logger";
 import { requireActiveMembership, requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
@@ -73,7 +74,7 @@ export const publishResults = onCall(async (request) => {
     requireActiveMembership(db, organizationId, uid, ["owner", "admin"]),
     db.collection("organizations").doc(organizationId).get(),
   ]);
-  if (!organization.exists || !["verified", "active"].includes(organization.data()?.status)) {
+  if (!organization.exists || !OPERATIONAL_ORG_STATUSES.includes(organization.data()?.status)) {
     throw new HttpsError("failed-precondition", "The organization is not currently authorized to manage voting events.");
   }
   try {

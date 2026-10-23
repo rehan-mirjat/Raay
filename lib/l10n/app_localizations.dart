@@ -2901,7 +2901,7 @@ abstract class AppLocalizations {
   /// No description provided for @resPublishConfirmBody.
   ///
   /// In en, this message translates to:
-  /// **'All eligible members will be able to see the results. You can still recalculate them afterwards.'**
+  /// **'All eligible members will be able to see the results, and those who have result notifications on will be notified. You can still recalculate them afterwards.'**
   String get resPublishConfirmBody;
 
   /// No description provided for @resPublishConfirm.
@@ -3953,6 +3953,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Audit log'**
   String get navPlatformAudit;
+
+  /// No description provided for @resNotClosedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Results can be calculated once the election has closed.'**
+  String get resNotClosedYet;
 }
 
 class _AppLocalizationsDelegate

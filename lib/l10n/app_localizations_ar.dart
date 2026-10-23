@@ -1617,7 +1617,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get resPublishConfirmBody =>
-      'سيتمكن جميع الأعضاء المؤهلين من رؤية النتائج. يمكنك إعادة احتسابها لاحقًا.';
+      'سيتمكن جميع الأعضاء المؤهلين من رؤية النتائج، وسيتلقى إشعارًا من فعّلوا إشعارات النتائج. يمكنك إعادة احتسابها لاحقًا.';
 
   @override
   String get resPublishConfirm => 'نشر';
@@ -2223,4 +2223,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get navPlatformAudit => 'سجل التدقيق';
+
+  @override
+  String get resNotClosedYet => 'يمكن احتساب النتائج بعد إغلاق الانتخاب.';
 }

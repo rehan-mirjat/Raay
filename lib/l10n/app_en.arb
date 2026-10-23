@@ -825,7 +825,7 @@
   "resClose": "Close",
   "resActionFailed": "That did not work. Please try again.",
   "resPublishConfirmTitle": "Publish these results?",
-  "resPublishConfirmBody": "All eligible members will be able to see the results. You can still recalculate them afterwards.",
+  "resPublishConfirmBody": "All eligible members will be able to see the results, and those who have result notifications on will be notified. You can still recalculate them afterwards.",
   "resPublishConfirm": "Publish",
   "resCancel": "Cancel",
   "resEventFallback": "Election",
@@ -1116,5 +1116,6 @@
   "navPlatformOverview": "Platform overview",
   "navPlatformOrganizations": "All organizations",
   "navPlatformReports": "User reports",
-  "navPlatformAudit": "Audit log"
+  "navPlatformAudit": "Audit log",
+  "resNotClosedYet": "Results can be calculated once the election has closed."
 }

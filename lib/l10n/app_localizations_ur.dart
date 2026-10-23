@@ -1633,7 +1633,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get resPublishConfirmBody =>
-      'تمام اہل اراکین نتائج دیکھ سکیں گے۔ آپ بعد میں بھی انہیں دوبارہ شمار کر سکتے ہیں۔';
+      'تمام اہل اراکین نتائج دیکھ سکیں گے، اور جنہوں نے نتائج کی اطلاعات آن رکھی ہیں انہیں اطلاع بھی ملے گی۔ آپ بعد میں بھی انہیں دوبارہ شمار کر سکتے ہیں۔';
 
   @override
   String get resPublishConfirm => 'شائع کریں';
@@ -2244,4 +2244,8 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get navPlatformAudit => 'آڈٹ لاگ';
+
+  @override
+  String get resNotClosedYet =>
+      'انتخاب بند ہونے کے بعد ہی نتائج شمار کیے جا سکتے ہیں۔';
 }
