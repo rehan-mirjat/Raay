@@ -2232,4 +2232,16 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get acctPasswordUpdated => 'پاس ورڈ کامیابی سے اپ ڈیٹ ہو گیا!';
+
+  @override
+  String get navPlatformOverview => 'نظرِ پلیٹ فارم';
+
+  @override
+  String get navPlatformOrganizations => 'تمام تنظیمیں';
+
+  @override
+  String get navPlatformReports => 'صارف رپورٹس';
+
+  @override
+  String get navPlatformAudit => 'آڈٹ لاگ';
 }

@@ -20,6 +20,9 @@ enum NavId {
   help,
   platform,
   platformAccounts,
+  platformOverview,
+  platformReports,
+  platformAudit,
 }
 
 class NavDestination {
@@ -83,6 +86,8 @@ const _help = NavDestination(
     NavId.help, '/help', Icons.help_outline_rounded, Icons.help_rounded);
 const _joiningCodes = NavDestination(NavId.joiningCodes, '/orgs/joining-codes',
     Icons.qr_code_2_outlined, Icons.qr_code_2_rounded);
+const _platformOverview = NavDestination(NavId.platformOverview, '/platform',
+    Icons.space_dashboard_outlined, Icons.space_dashboard_rounded);
 const _platform = NavDestination(NavId.platform, '/platform/organizations',
     Icons.domain_outlined, Icons.domain_rounded);
 const _platformAccounts = NavDestination(
@@ -90,6 +95,10 @@ const _platformAccounts = NavDestination(
     '/platform/admin',
     Icons.admin_panel_settings_outlined,
     Icons.admin_panel_settings_rounded);
+const _platformReports = NavDestination(NavId.platformReports, '/platform/reports',
+    Icons.flag_outlined, Icons.flag_rounded);
+const _platformAudit = NavDestination(NavId.platformAudit, '/platform/audit',
+    Icons.fact_check_outlined, Icons.fact_check_rounded);
 
 /// Role-based information architecture. Uses the membership role plus the
 /// existing observer capability; no new role enum.
@@ -100,7 +109,13 @@ NavModel navModelFor({
   bool isPlatformAdmin = false,
 }) {
   final platform = isPlatformAdmin
-      ? const [_platform, _platformAccounts]
+      ? const [
+          _platformOverview,
+          _platform,
+          _platformAccounts,
+          _platformReports,
+          _platformAudit,
+        ]
       : const <NavDestination>[];
   if (isManager) {
     return NavModel(

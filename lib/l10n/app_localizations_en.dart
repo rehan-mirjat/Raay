@@ -2225,4 +2225,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get acctPasswordUpdated => 'Password updated successfully!';
+
+  @override
+  String get navPlatformOverview => 'Platform overview';
+
+  @override
+  String get navPlatformOrganizations => 'All organizations';
+
+  @override
+  String get navPlatformReports => 'User reports';
+
+  @override
+  String get navPlatformAudit => 'Audit log';
 }

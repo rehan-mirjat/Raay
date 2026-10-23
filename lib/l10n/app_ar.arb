@@ -637,5 +637,9 @@
   "acctNewPassword": "كلمة المرور الجديدة",
   "acctConfirmPassword": "تأكيد كلمة المرور الجديدة",
   "acctUpdatePassword": "تحديث كلمة المرور",
-  "acctPasswordUpdated": "تم تحديث كلمة المرور بنجاح!"
+  "acctPasswordUpdated": "تم تحديث كلمة المرور بنجاح!",
+  "navPlatformOverview": "نظرة عامة على المنصة",
+  "navPlatformOrganizations": "جميع المؤسسات",
+  "navPlatformReports": "بلاغات المستخدمين",
+  "navPlatformAudit": "سجل التدقيق"
 }

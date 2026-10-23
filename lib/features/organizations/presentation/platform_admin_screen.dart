@@ -1,3 +1,5 @@
+import '../../platform/presentation/platform_scaffold.dart'
+    show PlatformHeaderBar;
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -140,11 +142,9 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancel')),
+              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           FilledButton(
-            onPressed: () =>
-                Navigator.pop(ctx, emailController.text.trim()),
+            onPressed: () => Navigator.pop(ctx, emailController.text.trim()),
             child: const Text('Grant access'),
           ),
         ],
@@ -195,8 +195,7 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
               onPressed: () => Navigator.pop(ctx, false),
               child: const Text('Cancel')),
           FilledButton(
-            style:
-                FilledButton.styleFrom(backgroundColor: AppTheme.error),
+            style: FilledButton.styleFrom(backgroundColor: AppTheme.error),
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text('Revoke'),
           ),
@@ -214,7 +213,8 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
           .functions
           .httpsCallable('removeAdmin')
           .call({'uid': uid});
-      messenger.showSnackBar(const SnackBar(content: Text('Admin access revoked.')));
+      messenger
+          .showSnackBar(const SnackBar(content: Text('Admin access revoked.')));
       if (mounted) await _load();
     } on FirebaseFunctionsException catch (error) {
       messenger.showSnackBar(SnackBar(
@@ -232,16 +232,8 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
     final admin = ref.watch(platformAdminProvider);
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        title: const Text('Platform administration'),
-        actions: [
-          IconButton(
-            onPressed: _loading ? null : _load,
-            tooltip: 'Refresh',
-            icon: const Icon(Icons.refresh_rounded),
-          ),
-        ],
-      ),
+      appBar: PlatformHeaderBar(
+          title: 'Accounts & access', onRefresh: _loading ? null : _load),
       body: admin.when(
         loading: () => const LoadingView(message: 'Checking platform access…'),
         error: (_, __) => const ErrorView(
@@ -275,35 +267,37 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-        if (_analytics != null) _buildAnalytics(_analytics!),
-        const SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Accounts', style: Theme.of(context).textTheme.titleMedium),
-            FilledButton.icon(
-              onPressed: _busyUid != null ? null : _grantAdmin,
-              icon: const Icon(Icons.admin_panel_settings_outlined, size: 18),
-              label: const Text('Grant admin access'),
+            if (_analytics != null) _buildAnalytics(_analytics!),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Accounts',
+                    style: Theme.of(context).textTheme.titleMedium),
+                FilledButton.icon(
+                  onPressed: _busyUid != null ? null : _grantAdmin,
+                  icon:
+                      const Icon(Icons.admin_panel_settings_outlined, size: 18),
+                  label: const Text('Grant admin access'),
+                ),
+              ],
             ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        for (final user in _users) _userCard(user),
-        if (_nextPageToken != null) ...[
-          const SizedBox(height: 12),
-          Center(
-            child: OutlinedButton(
-              onPressed: _loadingMore ? null : _loadMoreUsers,
-              child: _loadingMore
-                  ? const SizedBox(
-                      height: 16,
-                      width: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2))
-                  : const Text('Load more'),
-            ),
-          ),
-        ],
+            const SizedBox(height: 12),
+            for (final user in _users) _userCard(user),
+            if (_nextPageToken != null) ...[
+              const SizedBox(height: 12),
+              Center(
+                child: OutlinedButton(
+                  onPressed: _loadingMore ? null : _loadMoreUsers,
+                  child: _loadingMore
+                      ? const SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2))
+                      : const Text('Load more'),
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -327,7 +321,8 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
                   const SizedBox(height: 4),
                   Text(label,
                       style: TextStyle(
-                          fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
+                          fontSize: 12,
+                          color: KivoraColors.textSecondaryOf(context))),
                 ],
               ),
             ),
@@ -347,7 +342,6 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
         stat('Active members', a['activeMembers'] ?? 0),
         stat('Voting events', a['votingEvents'] ?? 0),
         stat('Active events', a['activeVotingEvents'] ?? 0),
-        stat('Pending reports', a['pendingReports'] ?? 0),
       ],
     );
   }
@@ -386,17 +380,24 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
                       style: const TextStyle(fontWeight: FontWeight.w600)),
                   Text(email,
                       style: TextStyle(
-                          fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
+                          fontSize: 12,
+                          color: KivoraColors.textSecondaryOf(context))),
                   const SizedBox(height: 4),
                   Wrap(
                     spacing: 6,
                     children: [
                       if (isPlatformAdmin)
-                        _Tag(label: 'Platform admin', color: KivoraColors.of(context).accentText),
+                        _Tag(
+                            label: 'Platform admin',
+                            color: KivoraColors.of(context).accentText),
                       if (!emailVerified)
-                        _Tag(label: 'Unverified', color: KivoraColors.textSecondaryOf(context)),
+                        _Tag(
+                            label: 'Unverified',
+                            color: KivoraColors.textSecondaryOf(context)),
                       if (disabled)
-                        _Tag(label: 'Disabled', color: KivoraColors.of(context).errorText),
+                        _Tag(
+                            label: 'Disabled',
+                            color: KivoraColors.of(context).errorText),
                     ],
                   ),
                 ],
@@ -405,7 +406,8 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
             if (isPlatformAdmin)
               OutlinedButton(
                 onPressed: busy ? null : () => _revokeAdmin(user),
-                style: OutlinedButton.styleFrom(foregroundColor: KivoraColors.of(context).errorText),
+                style: OutlinedButton.styleFrom(
+                    foregroundColor: KivoraColors.of(context).errorText),
                 child: busy
                     ? const SizedBox(
                         height: 14,

@@ -43,7 +43,10 @@ String _navLabel(AppLocalizations l10n, NavId id) => switch (id) {
       NavId.billing => l10n.navBilling,
       NavId.account => l10n.navAccount,
       NavId.help => l10n.navHelp,
-      NavId.platform => l10n.navPlatform,
+      NavId.platform => l10n.navPlatformOrganizations,
+      NavId.platformOverview => l10n.navPlatformOverview,
+      NavId.platformReports => l10n.navPlatformReports,
+      NavId.platformAudit => l10n.navPlatformAudit,
       NavId.joiningCodes => l10n.navJoiningCodes,
       NavId.platformAccounts => l10n.navPlatformAccounts,
     };

@@ -7,16 +7,20 @@ import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../services/auth_service.dart';
 import '../../../services/firebase_service.dart';
+import '../../platform/presentation/platform_scaffold.dart'
+    show PlatformHeaderBar;
 import '../domain/platform_organization_filter.dart';
 
 class PlatformOrganizationsScreen extends ConsumerStatefulWidget {
   const PlatformOrganizationsScreen({super.key});
 
   @override
-  ConsumerState<PlatformOrganizationsScreen> createState() => _PlatformOrganizationsScreenState();
+  ConsumerState<PlatformOrganizationsScreen> createState() =>
+      _PlatformOrganizationsScreenState();
 }
 
-class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizationsScreen> {
+class _PlatformOrganizationsScreenState
+    extends ConsumerState<PlatformOrganizationsScreen> {
   List<Map<String, dynamic>> _organizations = [];
   bool _loading = true;
   String? _error;
@@ -49,14 +53,21 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
   }
 
   Future<void> _load() async {
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     try {
-      final response = await FirebaseService().functions.httpsCallable('listOrganizationsForPlatformAdmin').call();
+      final response = await FirebaseService()
+          .functions
+          .httpsCallable('listOrganizationsForPlatformAdmin')
+          .call();
       final data = Map<String, dynamic>.from(response.data as Map);
       final rows = (data['organizations'] as List<dynamic>? ?? const []);
       if (!mounted) return;
       setState(() {
-        _organizations = rows.map((row) => Map<String, dynamic>.from(row as Map)).toList();
+        _organizations =
+            rows.map((row) => Map<String, dynamic>.from(row as Map)).toList();
         // First load: land on what needs a decision; otherwise show everything.
         _filter ??= countByFilter(_organizations)[OrgFilter.needsReview]! > 0
             ? OrgFilter.needsReview
@@ -64,9 +75,19 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
         _loading = false;
       });
     } on FirebaseFunctionsException catch (error) {
-      if (mounted) setState(() { _error = error.message ?? 'Could not load organizations.'; _loading = false; });
+      if (mounted) {
+        setState(() {
+          _error = error.message ?? 'Could not load organizations.';
+          _loading = false;
+        });
+      }
     } catch (_) {
-      if (mounted) setState(() { _error = 'Could not load organizations.'; _loading = false; });
+      if (mounted) {
+        setState(() {
+          _error = 'Could not load organizations.';
+          _loading = false;
+        });
+      }
     }
   }
 
@@ -83,11 +104,17 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text('$label organization?'),
-        content: Text('${organization['name'] ?? 'This organization'} will be marked as $resultingStatus.'),
+        content: Text(
+            '${organization['name'] ?? 'This organization'} will be marked as $resultingStatus.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel')),
           FilledButton(
-            style: destructive ? FilledButton.styleFrom(backgroundColor: Theme.of(ctx).colorScheme.error) : null,
+            style: destructive
+                ? FilledButton.styleFrom(
+                    backgroundColor: Theme.of(ctx).colorScheme.error)
+                : null,
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(label),
           ),
@@ -99,16 +126,22 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _busyId = organization['id'] as String?);
     try {
-      await FirebaseService().functions.httpsCallable('reviewOrganization').call({
+      await FirebaseService()
+          .functions
+          .httpsCallable('reviewOrganization')
+          .call({
         'organizationId': organization['id'],
         'action': action,
       });
-      messenger.showSnackBar(SnackBar(content: Text('Organization marked as $resultingStatus.')));
+      messenger.showSnackBar(
+          SnackBar(content: Text('Organization marked as $resultingStatus.')));
       if (mounted) await _load();
     } on FirebaseFunctionsException catch (error) {
-      messenger.showSnackBar(SnackBar(content: Text(error.message ?? 'Could not update organization.')));
+      messenger.showSnackBar(SnackBar(
+          content: Text(error.message ?? 'Could not update organization.')));
     } catch (_) {
-      messenger.showSnackBar(const SnackBar(content: Text('Could not update organization.')));
+      messenger.showSnackBar(
+          const SnackBar(content: Text('Could not update organization.')));
     } finally {
       if (mounted) setState(() => _busyId = null);
     }
@@ -119,28 +152,41 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
     final admin = ref.watch(platformAdminProvider);
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: AppBar(title: const Text('Platform organizations'), actions: [IconButton(onPressed: _loading ? null : _load, tooltip: 'Refresh', icon: const Icon(Icons.refresh_rounded))]),
+      appBar: PlatformHeaderBar(
+          title: 'All organizations', onRefresh: _loading ? null : _load),
       body: admin.when(
         loading: () => const LoadingView(message: 'Checking platform access…'),
-        error: (_, __) => const ErrorView(type: ErrorViewType.accessDenied, title: 'Access denied', message: 'Could not verify platform administrator access.'),
+        error: (_, __) => const ErrorView(
+            type: ErrorViewType.accessDenied,
+            title: 'Access denied',
+            message: 'Could not verify platform administrator access.'),
         data: (isAdmin) => !isAdmin
-            ? const ErrorView(type: ErrorViewType.accessDenied, title: 'Access denied', message: 'This area is available only to Platform Super Admins.')
+            ? const ErrorView(
+                type: ErrorViewType.accessDenied,
+                title: 'Access denied',
+                message:
+                    'This area is available only to Platform Super Admins.')
             : _loading
                 ? const LoadingView(message: 'Loading organizations…')
                 : _error != null
-                    ? ErrorView(type: ErrorViewType.generic, message: _error!, onRetry: _load)
+                    ? ErrorView(
+                        type: ErrorViewType.generic,
+                        message: _error!,
+                        onRetry: _load)
                     : _organizations.isEmpty
                         ? const EmptyView(
                             icon: Icons.domain_outlined,
                             title: 'No organizations yet',
-                            message: 'No organizations have been registered on the platform yet.',
+                            message:
+                                'No organizations have been registered on the platform yet.',
                           )
                         : _list(),
       ),
     );
   }
 
-  static const _tap = ButtonStyle(minimumSize: WidgetStatePropertyAll(Size(48, 48)));
+  static const _tap =
+      ButtonStyle(minimumSize: WidgetStatePropertyAll(Size(48, 48)));
 
   Widget _list() {
     final filter = _filter ?? OrgFilter.all;
@@ -204,17 +250,28 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
   Widget _organizationCard(Map<String, dynamic> organization) {
     final status = organization['status'] as String? ?? 'pending';
     final name = organization['name'] as String? ?? 'Organization';
-    final address = [organization['city'], organization['country']].whereType<String>().where((part) => part.isNotEmpty).join(', ');
+    final address = [organization['city'], organization['country']]
+        .whereType<String>()
+        .where((part) => part.isNotEmpty)
+        .join(', ');
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
         padding: const EdgeInsets.all(18),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [Expanded(child: Text(name, style: Theme.of(context).textTheme.titleMedium)), Chip(label: Text(status.toUpperCase()))]),
-          if ((organization['email'] as String? ?? '').isNotEmpty) Text(organization['email'] as String),
-          if (address.isNotEmpty) Text(address, style: Theme.of(context).textTheme.bodySmall),
+          Row(children: [
+            Expanded(
+                child:
+                    Text(name, style: Theme.of(context).textTheme.titleMedium)),
+            Chip(label: Text(status.toUpperCase()))
+          ]),
+          if ((organization['email'] as String? ?? '').isNotEmpty)
+            Text(organization['email'] as String),
+          if (address.isNotEmpty)
+            Text(address, style: Theme.of(context).textTheme.bodySmall),
           if (organization['createdAt'] is String)
-            Text('Registered ${(organization['createdAt'] as String).split('T').first}',
+            Text(
+                'Registered ${(organization['createdAt'] as String).split('T').first}',
                 style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 12),
           // Every status needs either an action or a reason there is none.
@@ -226,13 +283,33 @@ class _PlatformOrganizationsScreenState extends ConsumerState<PlatformOrganizati
                 style: Theme.of(context).textTheme.bodySmall),
           Wrap(spacing: 8, runSpacing: 8, children: [
             if (status == 'pending') ...[
-              FilledButton.tonal(style: _tap, onPressed: _busyId != null ? null : () => _review(organization, 'VERIFY'), child: const Text('Verify')),
-              OutlinedButton(style: _tap, onPressed: _busyId != null ? null : () => _review(organization, 'REJECT'), child: const Text('Reject')),
+              FilledButton.tonal(
+                  style: _tap,
+                  onPressed: _busyId != null
+                      ? null
+                      : () => _review(organization, 'VERIFY'),
+                  child: const Text('Verify')),
+              OutlinedButton(
+                  style: _tap,
+                  onPressed: _busyId != null
+                      ? null
+                      : () => _review(organization, 'REJECT'),
+                  child: const Text('Reject')),
             ],
             if (status == 'verified' || status == 'active')
-              OutlinedButton(style: _tap, onPressed: _busyId != null ? null : () => _review(organization, 'SUSPEND'), child: const Text('Suspend')),
+              OutlinedButton(
+                  style: _tap,
+                  onPressed: _busyId != null
+                      ? null
+                      : () => _review(organization, 'SUSPEND'),
+                  child: const Text('Suspend')),
             if (status == 'suspended')
-              FilledButton.tonal(style: _tap, onPressed: _busyId != null ? null : () => _review(organization, 'REACTIVATE'), child: const Text('Reactivate')),
+              FilledButton.tonal(
+                  style: _tap,
+                  onPressed: _busyId != null
+                      ? null
+                      : () => _review(organization, 'REACTIVATE'),
+                  child: const Text('Reactivate')),
           ]),
         ]),
       ),

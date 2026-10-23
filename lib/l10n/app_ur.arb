@@ -637,5 +637,9 @@
   "acctNewPassword": "نیا پاس ورڈ",
   "acctConfirmPassword": "نئے پاس ورڈ کی تصدیق کریں",
   "acctUpdatePassword": "پاس ورڈ اپ ڈیٹ کریں",
-  "acctPasswordUpdated": "پاس ورڈ کامیابی سے اپ ڈیٹ ہو گیا!"
+  "acctPasswordUpdated": "پاس ورڈ کامیابی سے اپ ڈیٹ ہو گیا!",
+  "navPlatformOverview": "نظرِ پلیٹ فارم",
+  "navPlatformOrganizations": "تمام تنظیمیں",
+  "navPlatformReports": "صارف رپورٹس",
+  "navPlatformAudit": "آڈٹ لاگ"
 }

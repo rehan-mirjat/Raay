@@ -19,6 +19,9 @@ import '../../features/organizations/presentation/organization_settings_screen.d
 import '../../features/organizations/presentation/organization_audit_screen.dart';
 import '../../features/organizations/presentation/platform_organizations_screen.dart';
 import '../../features/organizations/presentation/platform_admin_screen.dart';
+import '../../features/platform/presentation/platform_audit_screen.dart';
+import '../../features/platform/presentation/platform_overview_screen.dart';
+import '../../features/platform/presentation/platform_reports_screen.dart';
 import '../../features/organizations/presentation/membership_directory_screen.dart';
 import '../../features/departments/presentation/department_members_screen.dart';
 import '../../features/departments/presentation/departments_screen.dart';
@@ -76,6 +79,8 @@ class RouterNotifier extends ChangeNotifier {
   bool _isEmailVerified = false;
   bool _isOrgLoading = true;
   OrganizationRole? _activeRole;
+  bool _isPlatformLoading = true;
+  bool _isPlatformAdmin = false;
 
   RouterNotifier(this._ref) {
     _ref.listen(authStateChangesProvider, (_, next) {
@@ -103,6 +108,14 @@ class RouterNotifier extends ChangeNotifier {
       notifyListeners();
     });
 
+    // Platform-admin claim, for the central /platform guard. The screens and the
+    // backend check it again; this only keeps non-admins off the routes.
+    _ref.listen(platformAdminProvider, (_, next) {
+      _isPlatformLoading = next.isLoading;
+      _isPlatformAdmin = next.valueOrNull ?? false;
+      notifyListeners();
+    }, fireImmediately: true);
+
     _ref.listen(pendingInviteTokenProvider, (_, __) => notifyListeners());
   }
 
@@ -112,6 +125,8 @@ class RouterNotifier extends ChangeNotifier {
   bool get isOrgLoading => _isOrgLoading;
   bool get hasSeenIntro => _ref.read(hasSeenIntroProvider);
   OrganizationRole? get activeRole => _activeRole;
+  bool get isPlatformLoading => _isPlatformLoading;
+  bool get isPlatformAdmin => _isPlatformAdmin;
   bool get isAdmin =>
       _activeRole == OrganizationRole.owner ||
       _activeRole == OrganizationRole.admin;
@@ -193,6 +208,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         return '/home';
       }
 
+      if (location == '/platform' || location.startsWith('/platform/')) {
+        if (!notifier.isPlatformLoading && !notifier.isPlatformAdmin) {
+          return '/home';
+        }
+      }
+
       // Central role guard (see route_access.dart). While the organization is
       // still loading we cannot know the role yet, so wait instead of
       // redirecting; the notifier refreshes the router when it resolves.
@@ -263,14 +284,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: '/platform/organizations',
-        builder: (context, state) => const PlatformOrganizationsScreen(),
-      ),
-      GoRoute(
-        path: '/platform/admin',
-        builder: (context, state) => const PlatformAdminScreen(),
-      ),
-      GoRoute(
         path: '/invite',
         builder: (context, state) => AcceptInvitationLinkScreen(
           rawToken: state.uri.queryParameters['token'],
@@ -292,6 +305,32 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/plans',
                 builder: (context, state) => const PlansScreen(),
+              ),
+              // Platform area lives inside the shell so the sidebar stays
+              // visible. Access is checked here (redirect), on each screen
+              // and again by the backend on every call.
+              GoRoute(
+                path: '/platform',
+                builder: (context, state) => const PlatformOverviewScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'organizations',
+                    builder: (context, state) =>
+                        const PlatformOrganizationsScreen(),
+                  ),
+                  GoRoute(
+                    path: 'admin',
+                    builder: (context, state) => const PlatformAdminScreen(),
+                  ),
+                  GoRoute(
+                    path: 'reports',
+                    builder: (context, state) => const PlatformReportsScreen(),
+                  ),
+                  GoRoute(
+                    path: 'audit',
+                    builder: (context, state) => const PlatformAuditScreen(),
+                  ),
+                ],
               ),
               GoRoute(
                 path: '/calendar',

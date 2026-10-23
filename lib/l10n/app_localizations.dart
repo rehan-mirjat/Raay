@@ -3929,6 +3929,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password updated successfully!'**
   String get acctPasswordUpdated;
+
+  /// No description provided for @navPlatformOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform overview'**
+  String get navPlatformOverview;
+
+  /// No description provided for @navPlatformOrganizations.
+  ///
+  /// In en, this message translates to:
+  /// **'All organizations'**
+  String get navPlatformOrganizations;
+
+  /// No description provided for @navPlatformReports.
+  ///
+  /// In en, this message translates to:
+  /// **'User reports'**
+  String get navPlatformReports;
+
+  /// No description provided for @navPlatformAudit.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit log'**
+  String get navPlatformAudit;
 }
 
 class _AppLocalizationsDelegate

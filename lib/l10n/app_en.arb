@@ -1112,5 +1112,9 @@
   "acctNewPassword": "NEW PASSWORD",
   "acctConfirmPassword": "CONFIRM NEW PASSWORD",
   "acctUpdatePassword": "Update Password",
-  "acctPasswordUpdated": "Password updated successfully!"
+  "acctPasswordUpdated": "Password updated successfully!",
+  "navPlatformOverview": "Platform overview",
+  "navPlatformOrganizations": "All organizations",
+  "navPlatformReports": "User reports",
+  "navPlatformAudit": "Audit log"
 }

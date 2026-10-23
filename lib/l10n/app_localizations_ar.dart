@@ -2211,4 +2211,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get acctPasswordUpdated => 'تم تحديث كلمة المرور بنجاح!';
+
+  @override
+  String get navPlatformOverview => 'نظرة عامة على المنصة';
+
+  @override
+  String get navPlatformOrganizations => 'جميع المؤسسات';
+
+  @override
+  String get navPlatformReports => 'بلاغات المستخدمين';
+
+  @override
+  String get navPlatformAudit => 'سجل التدقيق';
 }
