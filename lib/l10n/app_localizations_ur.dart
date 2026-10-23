@@ -1992,4 +1992,10 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get roleMember => 'رکن';
+
+  @override
+  String get navJoiningCodes => 'شمولیت کے کوڈ';
+
+  @override
+  String get navPlatformAccounts => 'اکاؤنٹس اور رسائی';
 }

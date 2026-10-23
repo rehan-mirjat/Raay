@@ -3485,6 +3485,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'MEMBER'**
   String get roleMember;
+
+  /// No description provided for @navJoiningCodes.
+  ///
+  /// In en, this message translates to:
+  /// **'Joining codes'**
+  String get navJoiningCodes;
+
+  /// No description provided for @navPlatformAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts & access'**
+  String get navPlatformAccounts;
 }
 
 class _AppLocalizationsDelegate

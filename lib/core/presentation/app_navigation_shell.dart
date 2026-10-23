@@ -20,10 +20,10 @@ import '../theme/theme_provider.dart';
 import '../../features/onboarding/presentation/tour_keys.dart';
 import '../widgets/global_search_overlay.dart';
 
-
 /// Leaves the current screen only if it has no unsaved work (or the user
 /// confirmed). Every shell navigation goes through here.
-Future<void> _navigate(BuildContext context, WidgetRef ref, String route) async {
+Future<void> _navigate(
+    BuildContext context, WidgetRef ref, String route) async {
   final ok = await canLeaveCurrentScreen(ProviderScope.containerOf(context));
   if (ok && context.mounted) context.go(route);
 }
@@ -43,6 +43,8 @@ String _navLabel(AppLocalizations l10n, NavId id) => switch (id) {
       NavId.account => l10n.navAccount,
       NavId.help => l10n.navHelp,
       NavId.platform => l10n.navPlatform,
+      NavId.joiningCodes => l10n.navJoiningCodes,
+      NavId.platformAccounts => l10n.navPlatformAccounts,
     };
 
 Key? _tourKey(NavId id) => switch (id) {
@@ -72,7 +74,8 @@ class AppNavigationShell extends ConsumerWidget {
     final isOwner = memberRole == OrganizationRole.owner;
     final isManager = isOwner || memberRole == OrganizationRole.admin;
     final isObserver = activeOrgContext?.member.isObserver ?? false;
-    final isPlatformAdmin = ref.watch(platformAdminProvider).valueOrNull ?? false;
+    final isPlatformAdmin =
+        ref.watch(platformAdminProvider).valueOrNull ?? false;
 
     final model = navModelFor(
       isManager: isManager,
@@ -112,7 +115,8 @@ class AppNavigationShell extends ConsumerWidget {
                   padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
                   child: Align(
                     alignment: AlignmentDirectional.centerStart,
-                    child: SizedBox(width: 320, child: OrganizationContextSwitcher()),
+                    child: SizedBox(
+                        width: 320, child: OrganizationContextSwitcher()),
                   ),
                 ),
                 Expanded(child: navigationShell),
@@ -127,7 +131,8 @@ class AppNavigationShell extends ConsumerWidget {
           const _TopHeader(),
           const Padding(
             padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
-            child: SizedBox(width: double.infinity, child: OrganizationContextSwitcher()),
+            child: SizedBox(
+                width: double.infinity, child: OrganizationContextSwitcher()),
           ),
           Expanded(child: navigationShell),
         ],
@@ -148,7 +153,8 @@ class AppNavigationShell extends ConsumerWidget {
           body: SafeArea(bottom: false, child: content),
           bottomNavigationBar: isExpanded || isMedium || keyboardVisible
               ? null
-              : _CompactBottomBar(model: model, active: active, canCreate: isManager),
+              : _CompactBottomBar(
+                  model: model, active: active, canCreate: isManager),
         ),
       ),
     );
@@ -158,7 +164,8 @@ class AppNavigationShell extends ConsumerWidget {
 // ─── Expanded: 248px sidebar ─────────────────────────────────────────────────
 
 class _Sidebar extends ConsumerWidget {
-  const _Sidebar({required this.model, required this.active, required this.canCreate});
+  const _Sidebar(
+      {required this.model, required this.active, required this.canCreate});
   final NavModel model;
   final NavDestination? active;
   final bool canCreate;
@@ -195,22 +202,34 @@ class _Sidebar extends ConsumerWidget {
           Expanded(
             child: FocusTraversalGroup(
               child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 children: [
                   Semantics(
                     container: true,
                     label: l10n.navMainLabel,
                     child: Column(children: [
                       for (final d in model.primary)
-                        _SidebarTile(dest: d, selected: d == active, label: _navLabel(l10n, d.id)),
+                        _SidebarTile(
+                            dest: d,
+                            selected: d == active,
+                            label: _navLabel(l10n, d.id)),
                     ]),
                   ),
-                  if (model.secondary.isNotEmpty) sectionLabel(l10n.navMoreSectionLabel),
+                  if (model.secondary.isNotEmpty)
+                    sectionLabel(l10n.navMoreSectionLabel),
                   for (final d in model.secondary)
-                    _SidebarTile(dest: d, selected: d == active, label: _navLabel(l10n, d.id)),
-                  if (model.platform.isNotEmpty) sectionLabel(l10n.navPlatformSectionLabel),
+                    _SidebarTile(
+                        dest: d,
+                        selected: d == active,
+                        label: _navLabel(l10n, d.id)),
+                  if (model.platform.isNotEmpty)
+                    sectionLabel(l10n.navPlatformSectionLabel),
                   for (final d in model.platform)
-                    _SidebarTile(dest: d, selected: d == active, label: _navLabel(l10n, d.id)),
+                    _SidebarTile(
+                        dest: d,
+                        selected: d == active,
+                        label: _navLabel(l10n, d.id)),
                 ],
               ),
             ),
@@ -221,7 +240,8 @@ class _Sidebar extends ConsumerWidget {
               child: SizedBox(
                 width: double.infinity,
                 child: FilledButton.icon(
-                  style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                  style: FilledButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48)),
                   onPressed: () => _navigate(context, ref, '/admin/events/new'),
                   icon: const Icon(Icons.add_rounded, size: 20),
                   label: Text(l10n.navCreateElection),
@@ -235,7 +255,8 @@ class _Sidebar extends ConsumerWidget {
 }
 
 class _SidebarTile extends ConsumerWidget {
-  const _SidebarTile({required this.dest, required this.selected, required this.label});
+  const _SidebarTile(
+      {required this.dest, required this.selected, required this.label});
   final NavDestination dest;
   final bool selected;
   final String label;
@@ -265,10 +286,12 @@ class _SidebarTile extends ConsumerWidget {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(minHeight: 48),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: Row(
                     children: [
-                      Icon(selected ? dest.iconActive : dest.icon, size: 22, color: color),
+                      Icon(selected ? dest.iconActive : dest.icon,
+                          size: 22, color: color),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
@@ -277,7 +300,8 @@ class _SidebarTile extends ConsumerWidget {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 14,
-                            fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                            fontWeight:
+                                selected ? FontWeight.w700 : FontWeight.w500,
                             color: selected ? kc.accentText : kc.textPrimary,
                           ),
                         ),
@@ -297,7 +321,8 @@ class _SidebarTile extends ConsumerWidget {
 // ─── Medium: NavigationRail ──────────────────────────────────────────────────
 
 class _MediumRail extends ConsumerWidget {
-  const _MediumRail({required this.model, required this.active, required this.canCreate});
+  const _MediumRail(
+      {required this.model, required this.active, required this.canCreate});
   final NavModel model;
   final NavDestination? active;
   final bool canCreate;
@@ -325,14 +350,17 @@ class _MediumRail extends ConsumerWidget {
                 labelType: NavigationRailLabelType.all,
                 minWidth: 88,
                 selectedIndex: selectedIndex == -1 ? null : selectedIndex,
-                onDestinationSelected: (i) => _navigate(context, ref, items[i].route),
+                onDestinationSelected: (i) =>
+                    _navigate(context, ref, items[i].route),
                 trailing: canCreate
                     ? Padding(
                         padding: const EdgeInsets.only(top: 8),
                         child: IconButton.filled(
                           tooltip: l10n.navCreateElection,
-                          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-                          onPressed: () => _navigate(context, ref, '/admin/events/new'),
+                          constraints:
+                              const BoxConstraints(minWidth: 48, minHeight: 48),
+                          onPressed: () =>
+                              _navigate(context, ref, '/admin/events/new'),
                           icon: const Icon(Icons.add_rounded),
                         ),
                       )
@@ -358,7 +386,8 @@ class _MediumRail extends ConsumerWidget {
 // ─── Compact: 4 destinations + labeled More ──────────────────────────────────
 
 class _CompactBottomBar extends ConsumerWidget {
-  const _CompactBottomBar({required this.model, required this.active, required this.canCreate});
+  const _CompactBottomBar(
+      {required this.model, required this.active, required this.canCreate});
   final NavModel model;
   final NavDestination? active;
   final bool canCreate;
@@ -382,7 +411,8 @@ class _CompactBottomBar extends ConsumerWidget {
                   child: SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
-                      style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                      style: FilledButton.styleFrom(
+                          minimumSize: const Size.fromHeight(48)),
                       onPressed: () {
                         Navigator.pop(sheetContext);
                         _navigate(context, ref, '/admin/events/new');
@@ -435,7 +465,8 @@ class _CompactBottomBar extends ConsumerWidget {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(minHeight: 56),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -448,7 +479,8 @@ class _CompactBottomBar extends ConsumerWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 12,
-                          fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                          fontWeight:
+                              selected ? FontWeight.w700 : FontWeight.w500,
                           color: color,
                         ),
                       ),
@@ -491,7 +523,6 @@ class _CompactBottomBar extends ConsumerWidget {
   }
 }
 
-
 class _TopHeader extends ConsumerWidget {
   const _TopHeader();
 
@@ -502,7 +533,6 @@ class _TopHeader extends ConsumerWidget {
     final appUserAsync =
         user != null ? ref.watch(userProfileProvider(user.uid)) : null;
     final photoUrlToUse = appUserAsync?.valueOrNull?.photoUrl ?? user?.photoURL;
-
 
     return Container(
       color: Colors.transparent,
@@ -520,46 +550,46 @@ class _TopHeader extends ConsumerWidget {
               vertical: 6,
             ),
             child: SizedBox(
-            height: isDesktop ? 48 : 40,
-            child: Row(
-              children: [
-                _BrandLogoLink(compact: !isDesktop),
+              height: isDesktop ? 48 : 40,
+              child: Row(
+                children: [
+                  _BrandLogoLink(compact: !isDesktop),
 
-                const Spacer(),
+                  const Spacer(),
 
-                // Desktop-only: search, calendar, theme toggle
-                if (isDesktop) ...[
-                  _SearchButton(),
-                  const SizedBox(width: 8),
-                  if (user != null) ...[
-                    Tooltip(
-                      message: 'Election Calendar',
-                      child: IconButton(
-                        icon: const Icon(Icons.calendar_month_outlined),
-                        onPressed: () => context.go('/calendar'),
+                  // Desktop-only: search, calendar, theme toggle
+                  if (isDesktop) ...[
+                    _SearchButton(),
+                    const SizedBox(width: 8),
+                    if (user != null) ...[
+                      Tooltip(
+                        message: 'Election Calendar',
+                        child: IconButton(
+                          icon: const Icon(Icons.calendar_month_outlined),
+                          onPressed: () => context.go('/calendar'),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 4),
+                      const SizedBox(width: 4),
+                    ],
+                    _ThemeToggleButton(),
+                    const SizedBox(width: 8),
                   ],
-                  _ThemeToggleButton(),
-                  const SizedBox(width: 8),
-                ],
 
-                // Always show notification + profile (mobile & desktop)
-                if (user != null) ...[
-                  const _NotificationDropdown(),
-                  const SizedBox(width: 10),
+                  // Always show notification + profile (mobile & desktop)
+                  if (user != null) ...[
+                    const _NotificationDropdown(),
+                    const SizedBox(width: 10),
+                  ],
+                  if (user != null)
+                    _ProfileDropdown(
+                      key: TourKeys.profileKey,
+                      uid: user.uid,
+                      displayName: user.displayName ?? 'User',
+                      email: user.email ?? '',
+                      photoUrl: photoUrlToUse,
+                    ),
                 ],
-                if (user != null)
-                  _ProfileDropdown(
-                    key: TourKeys.profileKey,
-                    uid: user.uid,
-                    displayName: user.displayName ?? 'User',
-                    email: user.email ?? '',
-                    photoUrl: photoUrlToUse,
-                  ),
-              ],
-            ),
+              ),
             ),
           ),
         ),
@@ -743,7 +773,9 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
             true);
     final invitationsAsync = ref.watch(memberInvitationsProvider);
     final items = invitationAlertsEnabled
-        ? (invitationsAsync.valueOrNull ?? []).where((i) => !isInvitationExpired(i)).toList()
+        ? (invitationsAsync.valueOrNull ?? [])
+            .where((i) => !isInvitationExpired(i))
+            .toList()
         : const <Map<String, dynamic>>[];
     final reminders = ref.watch(unreadNotificationsProvider).valueOrNull ?? [];
     final unreadCount = items.length + reminders.length;
@@ -1203,7 +1235,12 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                 'Account settings'),
             _buildMenuItem(
                 context, isDark, 'help', Icons.help_outline, 'Help & support'),
-            if (ref.watch(activeOrganizationContextProvider).valueOrNull?.context?.member.role ==
+            if (ref
+                    .watch(activeOrganizationContextProvider)
+                    .valueOrNull
+                    ?.context
+                    ?.member
+                    .role ==
                 OrganizationRole.owner)
               _buildMenuItem(context, isDark, 'plans',
                   Icons.workspace_premium_outlined, 'Plans & Billing'),
@@ -1268,10 +1305,10 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
   }
 }
 
-
 /// Solid, bordered bar surface used by the header and bottom navigation.
 class _BarSurface extends StatelessWidget {
-  const _BarSurface({required this.borderRadius, required this.child, this.padding});
+  const _BarSurface(
+      {required this.borderRadius, required this.child, this.padding});
 
   final double borderRadius;
   final Widget child;

@@ -1987,4 +1987,10 @@ class AppLocalizationsSd extends AppLocalizations {
 
   @override
   String get roleMember => 'MEMBER';
+
+  @override
+  String get navJoiningCodes => 'Joining codes';
+
+  @override
+  String get navPlatformAccounts => 'Accounts & access';
 }

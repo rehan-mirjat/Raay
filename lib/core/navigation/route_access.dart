@@ -37,6 +37,7 @@ bool roleMayOpen(String location, OrganizationRole? role) {
   if (need == null) return true;
   return switch (need) {
     RouteNeed.ownerOnly => role == OrganizationRole.owner,
-    RouteNeed.manager => role == OrganizationRole.owner || role == OrganizationRole.admin,
+    RouteNeed.manager =>
+      role == OrganizationRole.owner || role == OrganizationRole.admin,
   };
 }

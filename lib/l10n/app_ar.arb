@@ -563,5 +563,7 @@
   "privacyIdentifiable": "معروفة الهوية",
   "roleOwner": "مالك",
   "roleAdmin": "مسؤول",
-  "roleMember": "عضو"
+  "roleMember": "عضو",
+  "navJoiningCodes": "رموز الانضمام",
+  "navPlatformAccounts": "الحسابات والصلاحيات"
 }

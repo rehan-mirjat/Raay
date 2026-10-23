@@ -1974,4 +1974,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get roleMember => 'عضو';
+
+  @override
+  String get navJoiningCodes => 'رموز الانضمام';
+
+  @override
+  String get navPlatformAccounts => 'الحسابات والصلاحيات';
 }

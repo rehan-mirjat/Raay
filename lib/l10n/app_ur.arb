@@ -563,5 +563,7 @@
   "privacyIdentifiable": "شناخت ظاہر",
   "roleOwner": "مالک",
   "roleAdmin": "منتظم",
-  "roleMember": "رکن"
+  "roleMember": "رکن",
+  "navJoiningCodes": "شمولیت کے کوڈ",
+  "navPlatformAccounts": "اکاؤنٹس اور رسائی"
 }

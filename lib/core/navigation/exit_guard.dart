@@ -20,8 +20,8 @@ class ExitGuardNotifier extends StateNotifier<ExitGuard?> {
   }
 }
 
-final exitGuardProvider =
-    StateNotifierProvider<ExitGuardNotifier, ExitGuard?>((ref) => ExitGuardNotifier());
+final exitGuardProvider = StateNotifierProvider<ExitGuardNotifier, ExitGuard?>(
+    (ref) => ExitGuardNotifier());
 
 /// Navigation entry points call this before leaving a guarded screen.
 Future<bool> canLeaveCurrentScreen(ProviderContainer container) async {
