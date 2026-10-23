@@ -16,13 +16,9 @@ import '../../../services/auth_service.dart';
 import 'widgets/auth_split_layout.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
-  const RegisterScreen(
-      {super.key, this.onBackToLoginTap, this.onAuthenticated});
+  const RegisterScreen({super.key, this.onBackToLoginTap});
 
   final VoidCallback? onBackToLoginTap;
-
-  /// Called after a successful Google sign-in / sign-up (user is already signed in).
-  final VoidCallback? onAuthenticated;
 
   @override
   ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
@@ -77,39 +73,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           _isLoading = false;
         });
       }
-    } on FirebaseAuthException catch (e) {
-      if (mounted) {
-        setState(() {
-          _error = mapFirebaseAuthError(e);
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _error = AppLocalizations.of(context).authUnexpectedError;
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _googleSignIn() async {
-    if (_isLoading) return;
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final authService = ref.read(authServiceProvider);
-      final cred = await authService.signInWithGoogle();
-
-      if (!mounted) return;
-      setState(() => _isLoading = false);
-      // The user is now signed in, so send them onward, NOT back to login.
-      // cred == null means the user cancelled: stay on the screen silently.
-      if (cred != null) widget.onAuthenticated?.call();
     } on FirebaseAuthException catch (e) {
       if (mounted) {
         setState(() {
@@ -193,9 +156,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               color: isMobile ? Colors.transparent : null,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-                side: isMobile
-                    ? BorderSide.none
-                    : BorderSide(color: kc.border),
+                side: isMobile ? BorderSide.none : BorderSide(color: kc.border),
               ),
               child: Padding(
                 padding: EdgeInsets.all(isMobile ? 16 : 36),
@@ -246,7 +207,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                   label: 'First name',
                                   controller: _firstNameController,
                                   textInputAction: TextInputAction.next,
-                                  autofillHints: const [AutofillHints.givenName],
+                                  autofillHints: const [
+                                    AutofillHints.givenName
+                                  ],
                                   hint: 'First',
                                   prefixIcon: KivoraIcons.user,
                                   validator: (v) =>
@@ -256,7 +219,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                   label: 'Last name',
                                   controller: _lastNameController,
                                   textInputAction: TextInputAction.next,
-                                  autofillHints: const [AutofillHints.familyName],
+                                  autofillHints: const [
+                                    AutofillHints.familyName
+                                  ],
                                   hint: 'Last',
                                   prefixIcon: KivoraIcons.user,
                                   validator: (v) =>
@@ -303,10 +268,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                         : KivoraIcons.eye,
                                     size: 20),
                                 tooltip: _obscurePassword
-                                    ? AppLocalizations.of(context).authShowPassword
-                                    : AppLocalizations.of(context).authHidePassword,
-                                onPressed: () => setState(() =>
-                                    _obscurePassword = !_obscurePassword),
+                                    ? AppLocalizations.of(context)
+                                        .authShowPassword
+                                    : AppLocalizations.of(context)
+                                        .authHidePassword,
+                                onPressed: () => setState(
+                                    () => _obscurePassword = !_obscurePassword),
                               ),
                               validator: Validators.password,
                             ),
@@ -327,8 +294,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                         : KivoraIcons.eye,
                                     size: 20),
                                 tooltip: _obscureConfirmPassword
-                                    ? AppLocalizations.of(context).authShowPassword
-                                    : AppLocalizations.of(context).authHidePassword,
+                                    ? AppLocalizations.of(context)
+                                        .authShowPassword
+                                    : AppLocalizations.of(context)
+                                        .authHidePassword,
                                 onPressed: () => setState(() =>
                                     _obscureConfirmPassword =
                                         !_obscureConfirmPassword),
@@ -350,28 +319,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         icon: KivoraIcons.userPlus,
                         label: l10n.authCreateAccount,
                       ),
-                      SizedBox(height: isMobile ? 16 : 20),
-                      Row(
-                        children: [
-                          const Expanded(child: Divider()),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Text('OR',
-                                style: TextStyle(
-                                    color: kc.textSecondary,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                          const Expanded(child: Divider()),
-                        ],
-                      ),
-                      SizedBox(height: isMobile ? 16 : 20),
-                      KivoraButton(
-                        type: KivoraButtonType.secondary,
-                        onPressed: _isLoading ? null : _googleSignIn,
-                        icon: null,
-                        label: 'Continue with Google',
-                      ),
                       SizedBox(height: isMobile ? 20 : 28),
                       Center(
                         child: Wrap(
@@ -379,12 +326,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
                             Text(l10n.authHaveAccount,
-                                style: TextStyle(color: kc.textSecondary, fontSize: 14)),
+                                style: TextStyle(
+                                    color: kc.textSecondary, fontSize: 14)),
                             TextButton(
-                              style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                              style: TextButton.styleFrom(
+                                  minimumSize: const Size(48, 48)),
                               onPressed: widget.onBackToLoginTap,
                               child: Text(l10n.authSignIn,
-                                  style: const TextStyle(fontWeight: FontWeight.bold)),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold)),
                             ),
                           ],
                         ),
