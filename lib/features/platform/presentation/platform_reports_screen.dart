@@ -1,6 +1,7 @@
+import '../../../core/utils/date_text.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/widgets/empty_view.dart';
@@ -28,34 +29,35 @@ class _PlatformReportsScreenState extends ConsumerState<PlatformReportsScreen> {
   @override
   Widget build(BuildContext context) {
     return PlatformPage(
-      title: 'User reports',
-      subtitle: 'Feedback and issues submitted from Help & support.',
+      title: AppLocalizations.of(context).plReportsTitle,
+      subtitle: AppLocalizations.of(context).plReportsSubtitle,
       actions: [
         OutlinedButton.icon(
           style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
           onPressed: () => ref.invalidate(platformReportsProvider(_limit)),
           icon: const Icon(Icons.refresh_rounded, size: 18),
-          label: const Text('Refresh'),
+          label: Text(AppLocalizations.of(context).plRefresh),
         ),
       ],
       builder: (context) {
         final kc = KivoraColors.of(context);
         final reports = ref.watch(platformReportsProvider(_limit));
         return reports.when(
-          loading: () => const Padding(
-              padding: EdgeInsets.all(32),
-              child: LoadingView(message: 'Loading reports…')),
+          loading: () => Padding(
+              padding: const EdgeInsets.all(32),
+              child: LoadingView(
+                  message: AppLocalizations.of(context).plReportsLoading)),
           error: (e, _) => ErrorView(
             type: ErrorViewType.generic,
-            message: 'The reports could not be loaded.',
+            message: AppLocalizations.of(context).plReportsFailed,
             onRetry: () => ref.invalidate(platformReportsProvider(_limit)),
           ),
           data: (all) {
             if (all.isEmpty) {
-              return const EmptyView(
+              return EmptyView(
                 icon: Icons.flag_outlined,
-                title: 'No reports',
-                message: 'Nobody has submitted a report yet.',
+                title: AppLocalizations.of(context).plReportsEmptyTitle,
+                message: AppLocalizations.of(context).plReportsEmptyBody,
               );
             }
             final categories = {for (final r in all) r.category}.toList()
@@ -69,19 +71,19 @@ class _PlatformReportsScreenState extends ConsumerState<PlatformReportsScreen> {
             return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                      'Read-only for now: the platform does not yet support assigning or resolving reports, so every report stays open. There is no flagged-organization feed either.',
+                  Text(AppLocalizations.of(context).plReportsReadOnly,
                       style: TextStyle(fontSize: 13, color: kc.textSecondary)),
                   const SizedBox(height: 12),
                   Wrap(spacing: 8, runSpacing: 8, children: [
                     ChoiceChip(
-                        label: Text('All (${all.length})'),
+                        label: Text(AppLocalizations.of(context)
+                            .plAllCount('${all.length}')),
                         selected: _category == null,
                         onSelected: (_) => setState(() => _category = null)),
                     for (final c in categories)
                       ChoiceChip(
                           label: Text(
-                              '$c (${all.where((r) => r.category == c).length})'),
+                              '${reportCategoryText(AppLocalizations.of(context), c)} (${all.where((r) => r.category == c).length})'),
                           selected: _category == c,
                           onSelected: (_) => setState(() => _category = c)),
                   ]),
@@ -97,7 +99,8 @@ class _PlatformReportsScreenState extends ConsumerState<PlatformReportsScreen> {
                             minimumSize: const Size(48, 48)),
                         onPressed: () =>
                             setState(() => _limit += kPlatformPageSize),
-                        child: const Text('Load older reports'),
+                        child: Text(
+                            AppLocalizations.of(context).plLoadOlderReports),
                       ),
                     ),
                 ]);
@@ -123,19 +126,23 @@ class _ReportCardState extends State<_ReportCard> {
   Widget build(BuildContext context) {
     final kc = KivoraColors.of(context);
     final r = widget.report;
-    final when = r.time == null
-        ? ''
-        : DateFormat('MMM d, yyyy · HH:mm').format(r.time!.toLocal());
+    final when = r.time == null ? '' : formatDateTimeText(context, r.time!);
     final long = r.message.length > 160 || r.message.contains('\n');
     return PlatformPanel(
-      title: r.subject.isEmpty ? '(No subject)' : r.subject,
+      title: r.subject.isEmpty
+          ? AppLocalizations.of(context).plNoSubject
+          : r.subject,
       trailing: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
           border: Border.all(color: kc.border),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Text(r.status.toUpperCase(),
+        child: Text(
+            (r.status == 'open'
+                    ? AppLocalizations.of(context).plStatusOpen
+                    : r.status)
+                .toUpperCase(),
             style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w800,
@@ -144,7 +151,7 @@ class _ReportCardState extends State<_ReportCard> {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
             [
-              r.category,
+              reportCategoryText(AppLocalizations.of(context), r.category),
               if (r.userEmail.isNotEmpty) r.userEmail,
               if (when.isNotEmpty) when
             ].join(' · '),
@@ -152,7 +159,8 @@ class _ReportCardState extends State<_ReportCard> {
         if (r.receiptReference != null)
           Padding(
             padding: const EdgeInsets.only(top: 4),
-            child: SelectableText('Receipt reference: ${r.receiptReference}',
+            child: SelectableText(
+                AppLocalizations.of(context).plReceiptRef(r.receiptReference!),
                 style: TextStyle(fontSize: 13, color: kc.textSecondary)),
           ),
         const SizedBox(height: 10),
@@ -165,7 +173,9 @@ class _ReportCardState extends State<_ReportCard> {
             style: TextButton.styleFrom(
                 minimumSize: const Size(48, 48), padding: EdgeInsets.zero),
             onPressed: () => setState(() => _open = !_open),
-            child: Text(_open ? 'Show less' : 'Show full message'),
+            child: Text(_open
+                ? AppLocalizations.of(context).plShowLess
+                : AppLocalizations.of(context).plShowFull),
           ),
       ]),
     );

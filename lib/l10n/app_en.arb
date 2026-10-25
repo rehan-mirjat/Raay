@@ -1588,5 +1588,254 @@
   "evRequestAccess": "Request access",
   "evSignIn": "Sign in",
   "evTryAgain": "Try again",
-  "errRetry": "Retry"
+  "errRetry": "Retry",
+  "osPending": "pending",
+  "osVerified": "verified",
+  "osActive": "active",
+  "osSuspended": "suspended",
+  "osRejected": "rejected",
+  "osArchived": "archived",
+  "porVerify": "Verify",
+  "porReject": "Reject",
+  "porSuspend": "Suspend",
+  "porReactivate": "Reactivate",
+  "porReviewTitle": "{a} organization?",
+  "@porReviewTitle": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "porThisOrg": "This organization",
+  "porReviewBody": "{a} will be marked as {b}.",
+  "@porReviewBody": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "porMarked": "Organization marked as {a}.",
+  "@porMarked": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "porUpdateFailed": "Could not update organization.",
+  "porLoadFailed": "Could not load organizations.",
+  "porTitle": "All organizations",
+  "porCheckingAccess": "Checking platform access…",
+  "porDeniedTitle": "Access denied",
+  "porVerifyAccessFailed": "Could not verify platform administrator access.",
+  "porSuperAdminsOnly": "This area is available only to Platform Super Admins.",
+  "porLoading": "Loading organizations…",
+  "porEmptyTitle": "No organizations yet",
+  "porEmptyBody": "No organizations have been registered on the platform yet.",
+  "porSearch": "Search by name, email or city",
+  "porClearSearch": "Clear search",
+  "porShowing100": "Showing the 100 most recent organizations.",
+  "porNoMatch": "No organization matches \"{a}\" in this view.",
+  "@porNoMatch": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "porNothingIn": "Nothing in \"{a}\".",
+  "@porNothingIn": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "porRegistered": "Registered {a}",
+  "@porRegistered": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "porArchivedNote": "Deleted by its owner. No moderation actions are available.",
+  "porRejectedNote": "Rejected. No further actions are available.",
+  "porCancel": "Cancel",
+  "pfNeedsReview": "Needs review",
+  "pfVerified": "Verified",
+  "pfSuspended": "Suspended",
+  "pfClosed": "Archived / rejected",
+  "pfAll": "All",
+  "paLoadFailed": "Could not load platform data.",
+  "paLoadMoreFailed": "Could not load more users.",
+  "paGrantTitle": "Grant platform admin access",
+  "paEmailLabel": "Account email address",
+  "paEmailHint": "name@example.com",
+  "paCancel": "Cancel",
+  "paGrant": "Grant access",
+  "paGranted": "Platform admin access granted to {a}.",
+  "@paGranted": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "paGrantFailed": "Could not grant admin access.",
+  "paThisAccount": "this account",
+  "paRevokeTitle": "Revoke platform admin access?",
+  "paRevokeBody": "{a} will lose Platform Super Admin privileges.",
+  "@paRevokeBody": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "paRevoke": "Revoke",
+  "paRevoked": "Admin access revoked.",
+  "paRevokeFailed": "Could not revoke admin access.",
+  "paTitle": "Accounts & access",
+  "paChecking": "Checking platform access…",
+  "paDenied": "Access denied",
+  "paVerifyFailed": "Could not verify platform administrator access.",
+  "paOnlySuper": "This area is available only to Platform Super Admins.",
+  "paLoading": "Loading platform data…",
+  "paAccounts": "Accounts",
+  "paGrantButton": "Grant admin access",
+  "paLoadMore": "Load more",
+  "paStatUsers": "Users",
+  "paStatOrgs": "Organizations",
+  "paStatPending": "Pending orgs",
+  "paStatActive": "Active orgs",
+  "paStatSuspended": "Suspended orgs",
+  "paStatMembers": "Members",
+  "paStatActiveMembers": "Active members",
+  "paStatEvents": "Voting events",
+  "paStatActiveEvents": "Active events",
+  "paNoEmail": "(no email)",
+  "paTagAdmin": "Platform admin",
+  "paTagUnverified": "Unverified",
+  "paTagDisabled": "Disabled",
+  "plOverviewTitle": "Platform overview",
+  "plOverviewSubtitle": "Organizations, reviews and recent administrator activity across Kivora.",
+  "plRefresh": "Refresh",
+  "plPendingOne": "1 organization is waiting for review.",
+  "plPendingMany": "{a} organizations are waiting for review.",
+  "@plPendingMany": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "plReviewOrgs": "Review organizations",
+  "plReportsOne": "1 open user report.",
+  "plReportsMany": "{a} open user reports.",
+  "@plReportsMany": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "plOpenReports": "Open reports",
+  "plTotalsFailed": "Platform totals could not be loaded.",
+  "plStatOrgs": "Organizations",
+  "plStatWaiting": "Waiting for review",
+  "plStatActive": "Active or verified",
+  "plStatSuspended": "Suspended",
+  "plStatAccounts": "Accounts",
+  "plStatMemberships": "Active memberships",
+  "plStatElections": "Elections and polls",
+  "plStatOpenNow": "Voting open now",
+  "plNeedsAttention": "Needs attention",
+  "plChecksIncomplete": "Some checks could not run, so this list may be incomplete.",
+  "plNothingAttention": "Nothing needs attention right now.",
+  "plRecentActivity": "Recent administrator activity",
+  "plViewAll": "View all",
+  "plUnavailable": "Unavailable",
+  "plTryAgain": "Try again",
+  "plActivityFailed": "The activity log could not be loaded.",
+  "plNoActivity": "No administrator actions have been recorded yet.",
+  "plTimeUnknown": "Time unavailable",
+  "plTarget": "Target: {a}",
+  "@plTarget": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "plBy": "By {a}",
+  "@plBy": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "plAuditTitle": "Audit log",
+  "plAuditSubtitle": "Actions taken by platform administrators, newest first.",
+  "plAuditLoading": "Loading audit log…",
+  "plAuditFailed": "The audit log could not be loaded.",
+  "plAuditEmptyTitle": "No entries yet",
+  "plAuditEmptyBody": "Platform administrator actions will appear here once they happen.",
+  "plAuditNote": "Only actions that completed are recorded here; failed attempts leave no entry.",
+  "plAuditSearch": "Search by action, person or organization",
+  "plClearSearch": "Clear search",
+  "plAllActions": "All actions",
+  "plEntryOne": "1 entry",
+  "plEntryMany": "{a} entries",
+  "@plEntryMany": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "plNoEntryMatch": "No entry matches the current filters.",
+  "plLoadOlder": "Load older entries",
+  "plReportsTitle": "User reports",
+  "plReportsSubtitle": "Feedback and issues submitted from Help & support.",
+  "plReportsLoading": "Loading reports…",
+  "plReportsFailed": "The reports could not be loaded.",
+  "plReportsEmptyTitle": "No reports",
+  "plReportsEmptyBody": "Nobody has submitted a report yet.",
+  "plReportsReadOnly": "Read-only for now: the platform does not yet support assigning or resolving reports, so every report stays open. There is no flagged-organization feed either.",
+  "plAllCount": "All ({a})",
+  "@plAllCount": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "plLoadOlderReports": "Load older reports",
+  "plNoSubject": "(No subject)",
+  "plReceiptRef": "Receipt reference: {a}",
+  "@plReceiptRef": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "plShowLess": "Show less",
+  "plShowFull": "Show full message",
+  "plCatGeneral": "General feedback",
+  "plCatElection": "Election issue",
+  "plCatTechnical": "Technical problem",
+  "plCatAccount": "Account issue",
+  "plStatusOpen": "open",
+  "plCheckingAccess": "Checking platform access…",
+  "plDeniedTitle": "Access denied",
+  "plVerifyFailed": "Could not verify platform administrator access.",
+  "plOnlySuper": "This area is available only to Platform Super Admins."
 }

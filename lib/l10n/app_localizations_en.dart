@@ -3132,4 +3132,472 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errRetry => 'Retry';
+
+  @override
+  String get osPending => 'pending';
+
+  @override
+  String get osVerified => 'verified';
+
+  @override
+  String get osActive => 'active';
+
+  @override
+  String get osSuspended => 'suspended';
+
+  @override
+  String get osRejected => 'rejected';
+
+  @override
+  String get osArchived => 'archived';
+
+  @override
+  String get porVerify => 'Verify';
+
+  @override
+  String get porReject => 'Reject';
+
+  @override
+  String get porSuspend => 'Suspend';
+
+  @override
+  String get porReactivate => 'Reactivate';
+
+  @override
+  String porReviewTitle(String a) {
+    return '$a organization?';
+  }
+
+  @override
+  String get porThisOrg => 'This organization';
+
+  @override
+  String porReviewBody(String a, String b) {
+    return '$a will be marked as $b.';
+  }
+
+  @override
+  String porMarked(String a) {
+    return 'Organization marked as $a.';
+  }
+
+  @override
+  String get porUpdateFailed => 'Could not update organization.';
+
+  @override
+  String get porLoadFailed => 'Could not load organizations.';
+
+  @override
+  String get porTitle => 'All organizations';
+
+  @override
+  String get porCheckingAccess => 'Checking platform access…';
+
+  @override
+  String get porDeniedTitle => 'Access denied';
+
+  @override
+  String get porVerifyAccessFailed =>
+      'Could not verify platform administrator access.';
+
+  @override
+  String get porSuperAdminsOnly =>
+      'This area is available only to Platform Super Admins.';
+
+  @override
+  String get porLoading => 'Loading organizations…';
+
+  @override
+  String get porEmptyTitle => 'No organizations yet';
+
+  @override
+  String get porEmptyBody =>
+      'No organizations have been registered on the platform yet.';
+
+  @override
+  String get porSearch => 'Search by name, email or city';
+
+  @override
+  String get porClearSearch => 'Clear search';
+
+  @override
+  String get porShowing100 => 'Showing the 100 most recent organizations.';
+
+  @override
+  String porNoMatch(String a) {
+    return 'No organization matches \"$a\" in this view.';
+  }
+
+  @override
+  String porNothingIn(String a) {
+    return 'Nothing in \"$a\".';
+  }
+
+  @override
+  String porRegistered(String a) {
+    return 'Registered $a';
+  }
+
+  @override
+  String get porArchivedNote =>
+      'Deleted by its owner. No moderation actions are available.';
+
+  @override
+  String get porRejectedNote => 'Rejected. No further actions are available.';
+
+  @override
+  String get porCancel => 'Cancel';
+
+  @override
+  String get pfNeedsReview => 'Needs review';
+
+  @override
+  String get pfVerified => 'Verified';
+
+  @override
+  String get pfSuspended => 'Suspended';
+
+  @override
+  String get pfClosed => 'Archived / rejected';
+
+  @override
+  String get pfAll => 'All';
+
+  @override
+  String get paLoadFailed => 'Could not load platform data.';
+
+  @override
+  String get paLoadMoreFailed => 'Could not load more users.';
+
+  @override
+  String get paGrantTitle => 'Grant platform admin access';
+
+  @override
+  String get paEmailLabel => 'Account email address';
+
+  @override
+  String get paEmailHint => 'name@example.com';
+
+  @override
+  String get paCancel => 'Cancel';
+
+  @override
+  String get paGrant => 'Grant access';
+
+  @override
+  String paGranted(String a) {
+    return 'Platform admin access granted to $a.';
+  }
+
+  @override
+  String get paGrantFailed => 'Could not grant admin access.';
+
+  @override
+  String get paThisAccount => 'this account';
+
+  @override
+  String get paRevokeTitle => 'Revoke platform admin access?';
+
+  @override
+  String paRevokeBody(String a) {
+    return '$a will lose Platform Super Admin privileges.';
+  }
+
+  @override
+  String get paRevoke => 'Revoke';
+
+  @override
+  String get paRevoked => 'Admin access revoked.';
+
+  @override
+  String get paRevokeFailed => 'Could not revoke admin access.';
+
+  @override
+  String get paTitle => 'Accounts & access';
+
+  @override
+  String get paChecking => 'Checking platform access…';
+
+  @override
+  String get paDenied => 'Access denied';
+
+  @override
+  String get paVerifyFailed =>
+      'Could not verify platform administrator access.';
+
+  @override
+  String get paOnlySuper =>
+      'This area is available only to Platform Super Admins.';
+
+  @override
+  String get paLoading => 'Loading platform data…';
+
+  @override
+  String get paAccounts => 'Accounts';
+
+  @override
+  String get paGrantButton => 'Grant admin access';
+
+  @override
+  String get paLoadMore => 'Load more';
+
+  @override
+  String get paStatUsers => 'Users';
+
+  @override
+  String get paStatOrgs => 'Organizations';
+
+  @override
+  String get paStatPending => 'Pending orgs';
+
+  @override
+  String get paStatActive => 'Active orgs';
+
+  @override
+  String get paStatSuspended => 'Suspended orgs';
+
+  @override
+  String get paStatMembers => 'Members';
+
+  @override
+  String get paStatActiveMembers => 'Active members';
+
+  @override
+  String get paStatEvents => 'Voting events';
+
+  @override
+  String get paStatActiveEvents => 'Active events';
+
+  @override
+  String get paNoEmail => '(no email)';
+
+  @override
+  String get paTagAdmin => 'Platform admin';
+
+  @override
+  String get paTagUnverified => 'Unverified';
+
+  @override
+  String get paTagDisabled => 'Disabled';
+
+  @override
+  String get plOverviewTitle => 'Platform overview';
+
+  @override
+  String get plOverviewSubtitle =>
+      'Organizations, reviews and recent administrator activity across Kivora.';
+
+  @override
+  String get plRefresh => 'Refresh';
+
+  @override
+  String get plPendingOne => '1 organization is waiting for review.';
+
+  @override
+  String plPendingMany(String a) {
+    return '$a organizations are waiting for review.';
+  }
+
+  @override
+  String get plReviewOrgs => 'Review organizations';
+
+  @override
+  String get plReportsOne => '1 open user report.';
+
+  @override
+  String plReportsMany(String a) {
+    return '$a open user reports.';
+  }
+
+  @override
+  String get plOpenReports => 'Open reports';
+
+  @override
+  String get plTotalsFailed => 'Platform totals could not be loaded.';
+
+  @override
+  String get plStatOrgs => 'Organizations';
+
+  @override
+  String get plStatWaiting => 'Waiting for review';
+
+  @override
+  String get plStatActive => 'Active or verified';
+
+  @override
+  String get plStatSuspended => 'Suspended';
+
+  @override
+  String get plStatAccounts => 'Accounts';
+
+  @override
+  String get plStatMemberships => 'Active memberships';
+
+  @override
+  String get plStatElections => 'Elections and polls';
+
+  @override
+  String get plStatOpenNow => 'Voting open now';
+
+  @override
+  String get plNeedsAttention => 'Needs attention';
+
+  @override
+  String get plChecksIncomplete =>
+      'Some checks could not run, so this list may be incomplete.';
+
+  @override
+  String get plNothingAttention => 'Nothing needs attention right now.';
+
+  @override
+  String get plRecentActivity => 'Recent administrator activity';
+
+  @override
+  String get plViewAll => 'View all';
+
+  @override
+  String get plUnavailable => 'Unavailable';
+
+  @override
+  String get plTryAgain => 'Try again';
+
+  @override
+  String get plActivityFailed => 'The activity log could not be loaded.';
+
+  @override
+  String get plNoActivity => 'No administrator actions have been recorded yet.';
+
+  @override
+  String get plTimeUnknown => 'Time unavailable';
+
+  @override
+  String plTarget(String a) {
+    return 'Target: $a';
+  }
+
+  @override
+  String plBy(String a) {
+    return 'By $a';
+  }
+
+  @override
+  String get plAuditTitle => 'Audit log';
+
+  @override
+  String get plAuditSubtitle =>
+      'Actions taken by platform administrators, newest first.';
+
+  @override
+  String get plAuditLoading => 'Loading audit log…';
+
+  @override
+  String get plAuditFailed => 'The audit log could not be loaded.';
+
+  @override
+  String get plAuditEmptyTitle => 'No entries yet';
+
+  @override
+  String get plAuditEmptyBody =>
+      'Platform administrator actions will appear here once they happen.';
+
+  @override
+  String get plAuditNote =>
+      'Only actions that completed are recorded here; failed attempts leave no entry.';
+
+  @override
+  String get plAuditSearch => 'Search by action, person or organization';
+
+  @override
+  String get plClearSearch => 'Clear search';
+
+  @override
+  String get plAllActions => 'All actions';
+
+  @override
+  String get plEntryOne => '1 entry';
+
+  @override
+  String plEntryMany(String a) {
+    return '$a entries';
+  }
+
+  @override
+  String get plNoEntryMatch => 'No entry matches the current filters.';
+
+  @override
+  String get plLoadOlder => 'Load older entries';
+
+  @override
+  String get plReportsTitle => 'User reports';
+
+  @override
+  String get plReportsSubtitle =>
+      'Feedback and issues submitted from Help & support.';
+
+  @override
+  String get plReportsLoading => 'Loading reports…';
+
+  @override
+  String get plReportsFailed => 'The reports could not be loaded.';
+
+  @override
+  String get plReportsEmptyTitle => 'No reports';
+
+  @override
+  String get plReportsEmptyBody => 'Nobody has submitted a report yet.';
+
+  @override
+  String get plReportsReadOnly =>
+      'Read-only for now: the platform does not yet support assigning or resolving reports, so every report stays open. There is no flagged-organization feed either.';
+
+  @override
+  String plAllCount(String a) {
+    return 'All ($a)';
+  }
+
+  @override
+  String get plLoadOlderReports => 'Load older reports';
+
+  @override
+  String get plNoSubject => '(No subject)';
+
+  @override
+  String plReceiptRef(String a) {
+    return 'Receipt reference: $a';
+  }
+
+  @override
+  String get plShowLess => 'Show less';
+
+  @override
+  String get plShowFull => 'Show full message';
+
+  @override
+  String get plCatGeneral => 'General feedback';
+
+  @override
+  String get plCatElection => 'Election issue';
+
+  @override
+  String get plCatTechnical => 'Technical problem';
+
+  @override
+  String get plCatAccount => 'Account issue';
+
+  @override
+  String get plStatusOpen => 'open';
+
+  @override
+  String get plCheckingAccess => 'Checking platform access…';
+
+  @override
+  String get plDeniedTitle => 'Access denied';
+
+  @override
+  String get plVerifyFailed =>
+      'Could not verify platform administrator access.';
+
+  @override
+  String get plOnlySuper =>
+      'This area is available only to Platform Super Admins.';
 }

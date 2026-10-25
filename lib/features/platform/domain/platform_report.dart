@@ -1,4 +1,5 @@
 import '../../../core/utils/date_utils.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// One record from `userReports` (filed from Help & support). Platform admins
 /// can read these, but nothing in the backend changes their status, so a
@@ -39,3 +40,13 @@ class PlatformReport {
     );
   }
 }
+
+/// Localized name for the four report categories the Help screen offers; any
+/// other value is shown as stored.
+String reportCategoryText(AppLocalizations l, String category) => switch (category) {
+      'General feedback' => l.plCatGeneral,
+      'Election issue' => l.plCatElection,
+      'Technical problem' => l.plCatTechnical,
+      'Account issue' => l.plCatAccount,
+      _ => category,
+    };

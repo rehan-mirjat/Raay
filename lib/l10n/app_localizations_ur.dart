@@ -3136,4 +3136,465 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get errRetry => 'دوبارہ کوشش';
+
+  @override
+  String get osPending => 'زیر جائزہ';
+
+  @override
+  String get osVerified => 'تصدیق شدہ';
+
+  @override
+  String get osActive => 'فعال';
+
+  @override
+  String get osSuspended => 'معطل';
+
+  @override
+  String get osRejected => 'مسترد';
+
+  @override
+  String get osArchived => 'آرکائیو شدہ';
+
+  @override
+  String get porVerify => 'تصدیق کریں';
+
+  @override
+  String get porReject => 'مسترد کریں';
+
+  @override
+  String get porSuspend => 'معطل کریں';
+
+  @override
+  String get porReactivate => 'دوبارہ فعال کریں';
+
+  @override
+  String porReviewTitle(String a) {
+    return 'تنظیم کو $a کریں؟';
+  }
+
+  @override
+  String get porThisOrg => 'یہ تنظیم';
+
+  @override
+  String porReviewBody(String a, String b) {
+    return '$a کو $b نشان زد کیا جائے گا۔';
+  }
+
+  @override
+  String porMarked(String a) {
+    return 'تنظیم کو $a نشان زد کر دیا گیا۔';
+  }
+
+  @override
+  String get porUpdateFailed => 'تنظیم اپ ڈیٹ نہیں ہو سکی۔';
+
+  @override
+  String get porLoadFailed => 'تنظیمیں لوڈ نہیں ہو سکیں۔';
+
+  @override
+  String get porTitle => 'تمام تنظیمیں';
+
+  @override
+  String get porCheckingAccess => 'پلیٹ فارم کی رسائی چیک ہو رہی ہے…';
+
+  @override
+  String get porDeniedTitle => 'رسائی نہیں دی گئی';
+
+  @override
+  String get porVerifyAccessFailed =>
+      'پلیٹ فارم منتظم کی رسائی کی تصدیق نہیں ہو سکی۔';
+
+  @override
+  String get porSuperAdminsOnly => 'یہ حصہ صرف پلیٹ فارم سپر ایڈمنز کے لیے ہے۔';
+
+  @override
+  String get porLoading => 'تنظیمیں لوڈ ہو رہی ہیں…';
+
+  @override
+  String get porEmptyTitle => 'ابھی کوئی تنظیم نہیں';
+
+  @override
+  String get porEmptyBody => 'پلیٹ فارم پر ابھی کوئی تنظیم رجسٹر نہیں ہوئی۔';
+
+  @override
+  String get porSearch => 'نام، ای میل یا شہر سے تلاش کریں';
+
+  @override
+  String get porClearSearch => 'تلاش صاف کریں';
+
+  @override
+  String get porShowing100 => '100 تازہ ترین تنظیمیں دکھائی جا رہی ہیں۔';
+
+  @override
+  String porNoMatch(String a) {
+    return 'اس منظر میں \"$a\" سے کوئی تنظیم نہیں ملی۔';
+  }
+
+  @override
+  String porNothingIn(String a) {
+    return '\"$a\" میں کچھ نہیں۔';
+  }
+
+  @override
+  String porRegistered(String a) {
+    return 'رجسٹریشن: $a';
+  }
+
+  @override
+  String get porArchivedNote =>
+      'اس کے مالک نے حذف کر دی۔ کوئی نگرانی کی کارروائی دستیاب نہیں۔';
+
+  @override
+  String get porRejectedNote => 'مسترد۔ مزید کوئی کارروائی دستیاب نہیں۔';
+
+  @override
+  String get porCancel => 'منسوخ کریں';
+
+  @override
+  String get pfNeedsReview => 'جائزہ درکار';
+
+  @override
+  String get pfVerified => 'تصدیق شدہ';
+
+  @override
+  String get pfSuspended => 'معطل';
+
+  @override
+  String get pfClosed => 'آرکائیو / مسترد';
+
+  @override
+  String get pfAll => 'سب';
+
+  @override
+  String get paLoadFailed => 'پلیٹ فارم کا ڈیٹا لوڈ نہیں ہو سکا۔';
+
+  @override
+  String get paLoadMoreFailed => 'مزید صارفین لوڈ نہیں ہو سکے۔';
+
+  @override
+  String get paGrantTitle => 'پلیٹ فارم ایڈمن کی رسائی دیں';
+
+  @override
+  String get paEmailLabel => 'اکاؤنٹ کا ای میل ایڈریس';
+
+  @override
+  String get paEmailHint => 'name@example.com';
+
+  @override
+  String get paCancel => 'منسوخ کریں';
+
+  @override
+  String get paGrant => 'رسائی دیں';
+
+  @override
+  String paGranted(String a) {
+    return '$a کو پلیٹ فارم ایڈمن کی رسائی دے دی گئی۔';
+  }
+
+  @override
+  String get paGrantFailed => 'ایڈمن کی رسائی نہیں دی جا سکی۔';
+
+  @override
+  String get paThisAccount => 'یہ اکاؤنٹ';
+
+  @override
+  String get paRevokeTitle => 'پلیٹ فارم ایڈمن کی رسائی واپس لیں؟';
+
+  @override
+  String paRevokeBody(String a) {
+    return '$a سے پلیٹ فارم سپر ایڈمن کے اختیارات ختم ہو جائیں گے۔';
+  }
+
+  @override
+  String get paRevoke => 'واپس لیں';
+
+  @override
+  String get paRevoked => 'ایڈمن کی رسائی واپس لے لی گئی۔';
+
+  @override
+  String get paRevokeFailed => 'ایڈمن کی رسائی واپس نہیں لی جا سکی۔';
+
+  @override
+  String get paTitle => 'اکاؤنٹس اور رسائی';
+
+  @override
+  String get paChecking => 'پلیٹ فارم کی رسائی چیک ہو رہی ہے…';
+
+  @override
+  String get paDenied => 'رسائی نہیں دی گئی';
+
+  @override
+  String get paVerifyFailed => 'پلیٹ فارم منتظم کی رسائی کی تصدیق نہیں ہو سکی۔';
+
+  @override
+  String get paOnlySuper => 'یہ حصہ صرف پلیٹ فارم سپر ایڈمنز کے لیے ہے۔';
+
+  @override
+  String get paLoading => 'پلیٹ فارم کا ڈیٹا لوڈ ہو رہا ہے…';
+
+  @override
+  String get paAccounts => 'اکاؤنٹس';
+
+  @override
+  String get paGrantButton => 'ایڈمن کی رسائی دیں';
+
+  @override
+  String get paLoadMore => 'مزید لوڈ کریں';
+
+  @override
+  String get paStatUsers => 'صارفین';
+
+  @override
+  String get paStatOrgs => 'تنظیمیں';
+
+  @override
+  String get paStatPending => 'زیر جائزہ تنظیمیں';
+
+  @override
+  String get paStatActive => 'فعال تنظیمیں';
+
+  @override
+  String get paStatSuspended => 'معطل تنظیمیں';
+
+  @override
+  String get paStatMembers => 'اراکین';
+
+  @override
+  String get paStatActiveMembers => 'فعال اراکین';
+
+  @override
+  String get paStatEvents => 'انتخابات';
+
+  @override
+  String get paStatActiveEvents => 'فعال انتخابات';
+
+  @override
+  String get paNoEmail => '(ای میل نہیں)';
+
+  @override
+  String get paTagAdmin => 'پلیٹ فارم ایڈمن';
+
+  @override
+  String get paTagUnverified => 'غیر تصدیق شدہ';
+
+  @override
+  String get paTagDisabled => 'غیر فعال';
+
+  @override
+  String get plOverviewTitle => 'پلیٹ فارم کا جائزہ';
+
+  @override
+  String get plOverviewSubtitle =>
+      'Kivora بھر کی تنظیمیں، جائزے اور منتظمین کی حالیہ سرگرمی۔';
+
+  @override
+  String get plRefresh => 'تازہ کریں';
+
+  @override
+  String get plPendingOne => '1 تنظیم جائزے کی منتظر ہے۔';
+
+  @override
+  String plPendingMany(String a) {
+    return '$a تنظیمیں جائزے کی منتظر ہیں۔';
+  }
+
+  @override
+  String get plReviewOrgs => 'تنظیموں کا جائزہ لیں';
+
+  @override
+  String get plReportsOne => '1 کھلی صارف رپورٹ۔';
+
+  @override
+  String plReportsMany(String a) {
+    return '$a کھلی صارف رپورٹیں۔';
+  }
+
+  @override
+  String get plOpenReports => 'رپورٹس کھولیں';
+
+  @override
+  String get plTotalsFailed => 'پلیٹ فارم کے مجموعے لوڈ نہیں ہو سکے۔';
+
+  @override
+  String get plStatOrgs => 'تنظیمیں';
+
+  @override
+  String get plStatWaiting => 'جائزے کی منتظر';
+
+  @override
+  String get plStatActive => 'فعال یا تصدیق شدہ';
+
+  @override
+  String get plStatSuspended => 'معطل';
+
+  @override
+  String get plStatAccounts => 'اکاؤنٹس';
+
+  @override
+  String get plStatMemberships => 'فعال رکنیتیں';
+
+  @override
+  String get plStatElections => 'انتخابات اور رائے شماریاں';
+
+  @override
+  String get plStatOpenNow => 'ووٹنگ ابھی کھلی ہے';
+
+  @override
+  String get plNeedsAttention => 'توجہ درکار';
+
+  @override
+  String get plChecksIncomplete =>
+      'کچھ جانچ نہیں ہو سکی، اس لیے یہ فہرست نامکمل ہو سکتی ہے۔';
+
+  @override
+  String get plNothingAttention => 'اس وقت کسی چیز پر توجہ درکار نہیں۔';
+
+  @override
+  String get plRecentActivity => 'منتظمین کی حالیہ سرگرمی';
+
+  @override
+  String get plViewAll => 'سب دیکھیں';
+
+  @override
+  String get plUnavailable => 'دستیاب نہیں';
+
+  @override
+  String get plTryAgain => 'دوبارہ کوشش کریں';
+
+  @override
+  String get plActivityFailed => 'سرگرمی کا لاگ لوڈ نہیں ہو سکا۔';
+
+  @override
+  String get plNoActivity =>
+      'ابھی تک منتظمین کی کوئی کارروائی ریکارڈ نہیں ہوئی۔';
+
+  @override
+  String get plTimeUnknown => 'وقت دستیاب نہیں';
+
+  @override
+  String plTarget(String a) {
+    return 'ہدف: $a';
+  }
+
+  @override
+  String plBy(String a) {
+    return 'بذریعہ $a';
+  }
+
+  @override
+  String get plAuditTitle => 'آڈٹ لاگ';
+
+  @override
+  String get plAuditSubtitle => 'پلیٹ فارم منتظمین کی کارروائیاں، نئی پہلے۔';
+
+  @override
+  String get plAuditLoading => 'آڈٹ لاگ لوڈ ہو رہا ہے…';
+
+  @override
+  String get plAuditFailed => 'آڈٹ لاگ لوڈ نہیں ہو سکا۔';
+
+  @override
+  String get plAuditEmptyTitle => 'ابھی کوئی اندراج نہیں';
+
+  @override
+  String get plAuditEmptyBody =>
+      'پلیٹ فارم منتظمین کی کارروائیاں ہوتے ہی یہاں دکھائی دیں گی۔';
+
+  @override
+  String get plAuditNote =>
+      'یہاں صرف مکمل ہونے والی کارروائیاں ریکارڈ ہوتی ہیں؛ ناکام کوششوں کا کوئی اندراج نہیں بنتا۔';
+
+  @override
+  String get plAuditSearch => 'کارروائی، شخص یا تنظیم سے تلاش کریں';
+
+  @override
+  String get plClearSearch => 'تلاش صاف کریں';
+
+  @override
+  String get plAllActions => 'تمام کارروائیاں';
+
+  @override
+  String get plEntryOne => '1 اندراج';
+
+  @override
+  String plEntryMany(String a) {
+    return '$a اندراجات';
+  }
+
+  @override
+  String get plNoEntryMatch => 'موجودہ فلٹرز سے کوئی اندراج نہیں ملا۔';
+
+  @override
+  String get plLoadOlder => 'پرانے اندراجات لوڈ کریں';
+
+  @override
+  String get plReportsTitle => 'صارف رپورٹس';
+
+  @override
+  String get plReportsSubtitle => 'مدد اور معاونت سے بھیجی گئی آراء اور مسائل۔';
+
+  @override
+  String get plReportsLoading => 'رپورٹس لوڈ ہو رہی ہیں…';
+
+  @override
+  String get plReportsFailed => 'رپورٹس لوڈ نہیں ہو سکیں۔';
+
+  @override
+  String get plReportsEmptyTitle => 'کوئی رپورٹ نہیں';
+
+  @override
+  String get plReportsEmptyBody => 'ابھی کسی نے رپورٹ نہیں بھیجی۔';
+
+  @override
+  String get plReportsReadOnly =>
+      'فی الحال صرف پڑھنے کے لیے: پلیٹ فارم ابھی رپورٹس تفویض یا حل کرنے کی سہولت نہیں دیتا، اس لیے ہر رپورٹ کھلی رہتی ہے۔ نشان زد تنظیموں کی کوئی فہرست بھی نہیں۔';
+
+  @override
+  String plAllCount(String a) {
+    return 'تمام ($a)';
+  }
+
+  @override
+  String get plLoadOlderReports => 'پرانی رپورٹس لوڈ کریں';
+
+  @override
+  String get plNoSubject => '(کوئی موضوع نہیں)';
+
+  @override
+  String plReceiptRef(String a) {
+    return 'رسید کا حوالہ: $a';
+  }
+
+  @override
+  String get plShowLess => 'کم دکھائیں';
+
+  @override
+  String get plShowFull => 'پورا پیغام دکھائیں';
+
+  @override
+  String get plCatGeneral => 'عمومی رائے';
+
+  @override
+  String get plCatElection => 'انتخاب کا مسئلہ';
+
+  @override
+  String get plCatTechnical => 'تکنیکی مسئلہ';
+
+  @override
+  String get plCatAccount => 'اکاؤنٹ کا مسئلہ';
+
+  @override
+  String get plStatusOpen => 'کھلی';
+
+  @override
+  String get plCheckingAccess => 'پلیٹ فارم کی رسائی چیک ہو رہی ہے…';
+
+  @override
+  String get plDeniedTitle => 'رسائی نہیں دی گئی';
+
+  @override
+  String get plVerifyFailed => 'پلیٹ فارم منتظم کی رسائی کی تصدیق نہیں ہو سکی۔';
+
+  @override
+  String get plOnlySuper => 'یہ حصہ صرف پلیٹ فارم سپر ایڈمنز کے لیے ہے۔';
 }

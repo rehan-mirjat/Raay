@@ -1,7 +1,10 @@
+import '../../../core/utils/status_text.dart';
+import '../../../core/utils/date_text.dart';
+import '../../../core/utils/audit_action_label.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/widgets/stat_tile.dart';
@@ -20,9 +23,8 @@ class PlatformOverviewScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return PlatformPage(
-      title: 'Platform overview',
-      subtitle:
-          'Organizations, reviews and recent administrator activity across Kivora.',
+      title: AppLocalizations.of(context).plOverviewTitle,
+      subtitle: AppLocalizations.of(context).plOverviewSubtitle,
       actions: [
         OutlinedButton.icon(
           style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
@@ -32,7 +34,7 @@ class PlatformOverviewScreen extends ConsumerWidget {
             ref.invalidate(platformAuditProvider(5));
           },
           icon: const Icon(Icons.refresh_rounded, size: 18),
-          label: const Text('Refresh'),
+          label: Text(AppLocalizations.of(context).plRefresh),
         ),
       ],
       builder: (context) {
@@ -47,17 +49,19 @@ class PlatformOverviewScreen extends ConsumerWidget {
           if ((pending ?? 0) > 0)
             _Alert(
               icon: Icons.pending_actions_rounded,
-              text:
-                  '$pending ${pending == 1 ? 'organization is' : 'organizations are'} waiting for review.',
-              action: 'Review organizations',
+              text: pending == 1
+                  ? AppLocalizations.of(context).plPendingOne
+                  : AppLocalizations.of(context).plPendingMany('$pending'),
+              action: AppLocalizations.of(context).plReviewOrgs,
               onTap: () => context.go('/platform/organizations'),
             ),
           if ((openReports ?? 0) > 0)
             _Alert(
               icon: Icons.flag_outlined,
-              text:
-                  '$openReports open user ${openReports == 1 ? 'report' : 'reports'}.',
-              action: 'Open reports',
+              text: openReports == 1
+                  ? AppLocalizations.of(context).plReportsOne
+                  : AppLocalizations.of(context).plReportsMany('$openReports'),
+              action: AppLocalizations.of(context).plOpenReports,
               onTap: () => context.go('/platform/reports'),
             ),
         ];
@@ -67,39 +71,44 @@ class PlatformOverviewScreen extends ConsumerWidget {
             children: [
               if (analytics.hasError)
                 _SectionError(
-                  message: 'Platform totals could not be loaded.',
+                  message: AppLocalizations.of(context).plTotalsFailed,
                   onRetry: () => ref.invalidate(platformAnalyticsProvider),
                 )
               else ...[
                 StatTileRow(tiles: [
                   StatTile(
-                      label: 'Organizations', value: _n(m, 'organizations')),
-                  StatTile(label: 'Waiting for review', value: pending),
+                      label: AppLocalizations.of(context).plStatOrgs,
+                      value: _n(m, 'organizations')),
                   StatTile(
-                      label: 'Active or verified',
+                      label: AppLocalizations.of(context).plStatWaiting,
+                      value: pending),
+                  StatTile(
+                      label: AppLocalizations.of(context).plStatActive,
                       value: _n(m, 'activeOrganizations')),
                   StatTile(
-                      label: 'Suspended',
+                      label: AppLocalizations.of(context).plStatSuspended,
                       value: _n(m, 'suspendedOrganizations')),
                 ]),
                 const SizedBox(height: 12),
                 StatTileRow(tiles: [
-                  StatTile(label: 'Accounts', value: _n(m, 'users')),
                   StatTile(
-                      label: 'Active memberships',
+                      label: AppLocalizations.of(context).plStatAccounts,
+                      value: _n(m, 'users')),
+                  StatTile(
+                      label: AppLocalizations.of(context).plStatMemberships,
                       value: _n(m, 'activeMembers')),
                   StatTile(
-                      label: 'Elections and polls',
+                      label: AppLocalizations.of(context).plStatElections,
                       value: _n(m, 'votingEvents')),
                   StatTile(
-                      label: 'Voting open now',
+                      label: AppLocalizations.of(context).plStatOpenNow,
                       value: _n(m, 'activeVotingEvents')),
                 ]),
               ],
               const SizedBox(height: 20),
               LayoutBuilder(builder: (context, c) {
                 final needs = PlatformPanel(
-                  title: 'Needs attention',
+                  title: AppLocalizations.of(context).plNeedsAttention,
                   child: analytics.isLoading && !analytics.hasValue
                       ? const Padding(
                           padding: EdgeInsets.all(12),
@@ -107,18 +116,20 @@ class PlatformOverviewScreen extends ConsumerWidget {
                       : alerts.isEmpty
                           ? Text(
                               analytics.hasError || reports.hasError
-                                  ? 'Some checks could not run, so this list may be incomplete.'
-                                  : 'Nothing needs attention right now.',
+                                  ? AppLocalizations.of(context)
+                                      .plChecksIncomplete
+                                  : AppLocalizations.of(context)
+                                      .plNothingAttention,
                               style: TextStyle(color: kc.textSecondary))
                           : Column(children: alerts),
                 );
                 final activity = PlatformPanel(
-                  title: 'Recent administrator activity',
+                  title: AppLocalizations.of(context).plRecentActivity,
                   trailing: TextButton(
                     style:
                         TextButton.styleFrom(minimumSize: const Size(48, 48)),
                     onPressed: () => context.go('/platform/audit'),
-                    child: const Text('View all'),
+                    child: Text(AppLocalizations.of(context).plViewAll),
                   ),
                   child: const _RecentActivity(),
                 );
@@ -187,13 +198,13 @@ class _SectionError extends StatelessWidget {
   Widget build(BuildContext context) {
     final kc = KivoraColors.of(context);
     return PlatformPanel(
-      title: 'Unavailable',
+      title: AppLocalizations.of(context).plUnavailable,
       child: Row(children: [
         Expanded(child: Text(message, style: TextStyle(color: kc.errorText))),
         TextButton(
             style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
             onPressed: onRetry,
-            child: const Text('Try again')),
+            child: Text(AppLocalizations.of(context).plTryAgain)),
       ]),
     );
   }
@@ -211,10 +222,10 @@ class _RecentActivity extends ConsumerWidget {
     return entries.when(
       loading: () => const Padding(
           padding: EdgeInsets.all(12), child: LinearProgressIndicator()),
-      error: (e, _) => Text('The activity log could not be loaded.',
+      error: (e, _) => Text(AppLocalizations.of(context).plActivityFailed,
           style: TextStyle(color: kc.errorText)),
       data: (list) => list.isEmpty
-          ? Text('No administrator actions have been recorded yet.',
+          ? Text(AppLocalizations.of(context).plNoActivity,
               style: TextStyle(color: kc.textSecondary))
           : Column(children: [
               for (final e in list) AuditEntryRow(entry: e, directory: dir)
@@ -239,11 +250,11 @@ class AuditEntryRow extends StatelessWidget {
             ? directory.user(entry.targetUid!)
             : null;
     final change = entry.previousStatus != null && entry.newStatus != null
-        ? '${entry.previousStatus} → ${entry.newStatus}'
+        ? '${orgStatusText(AppLocalizations.of(context), entry.previousStatus!)} → ${orgStatusText(AppLocalizations.of(context), entry.newStatus!)}'
         : null;
     final when = entry.time == null
-        ? 'Time unavailable'
-        : DateFormat('MMM d, yyyy · HH:mm').format(entry.time!.toLocal());
+        ? AppLocalizations.of(context).plTimeUnknown
+        : formatDateTimeText(context, entry.time!);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -252,15 +263,17 @@ class AuditEntryRow extends StatelessWidget {
         Expanded(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(entry.actionLabel,
+            Text(auditActionText(AppLocalizations.of(context), entry.action),
                 style: TextStyle(
                     fontWeight: FontWeight.w700, color: kc.textPrimary)),
             const SizedBox(height: 2),
             Text(
               [
-                if (target != null) 'Target: $target',
+                if (target != null)
+                  AppLocalizations.of(context).plTarget(target),
                 if (change != null) change,
-                'By ${directory.user(entry.actorUid)}'
+                AppLocalizations.of(context)
+                    .plBy(directory.user(entry.actorUid))
               ].join(' · '),
               style: TextStyle(fontSize: 13, color: kc.textSecondary),
             ),

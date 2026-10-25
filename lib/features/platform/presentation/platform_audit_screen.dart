@@ -1,3 +1,5 @@
+import '../../../core/utils/audit_action_label.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -34,8 +36,8 @@ class _PlatformAuditScreenState extends ConsumerState<PlatformAuditScreen> {
   @override
   Widget build(BuildContext context) {
     return PlatformPage(
-      title: 'Audit log',
-      subtitle: 'Actions taken by platform administrators, newest first.',
+      title: AppLocalizations.of(context).plAuditTitle,
+      subtitle: AppLocalizations.of(context).plAuditSubtitle,
       actions: [
         OutlinedButton.icon(
           style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
@@ -44,7 +46,7 @@ class _PlatformAuditScreenState extends ConsumerState<PlatformAuditScreen> {
             ref.invalidate(platformDirectoryProvider);
           },
           icon: const Icon(Icons.refresh_rounded, size: 18),
-          label: const Text('Refresh'),
+          label: Text(AppLocalizations.of(context).plRefresh),
         ),
       ],
       builder: (context) {
@@ -53,21 +55,21 @@ class _PlatformAuditScreenState extends ConsumerState<PlatformAuditScreen> {
         final dir = ref.watch(platformDirectoryProvider).valueOrNull ??
             const PlatformDirectory();
         return logs.when(
-          loading: () => const Padding(
-              padding: EdgeInsets.all(32),
-              child: LoadingView(message: 'Loading audit log…')),
+          loading: () => Padding(
+              padding: const EdgeInsets.all(32),
+              child: LoadingView(
+                  message: AppLocalizations.of(context).plAuditLoading)),
           error: (e, _) => ErrorView(
             type: ErrorViewType.generic,
-            message: 'The audit log could not be loaded.',
+            message: AppLocalizations.of(context).plAuditFailed,
             onRetry: () => ref.invalidate(platformAuditProvider(_limit)),
           ),
           data: (entries) {
             if (entries.isEmpty) {
-              return const EmptyView(
+              return EmptyView(
                 icon: Icons.history_rounded,
-                title: 'No entries yet',
-                message:
-                    'Platform administrator actions will appear here once they happen.',
+                title: AppLocalizations.of(context).plAuditEmptyTitle,
+                message: AppLocalizations.of(context).plAuditEmptyBody,
               );
             }
             final actions = {for (final e in entries) e.action}.toList()
@@ -83,20 +85,20 @@ class _PlatformAuditScreenState extends ConsumerState<PlatformAuditScreen> {
             return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                      'Only actions that completed are recorded here; failed attempts leave no entry.',
+                  Text(AppLocalizations.of(context).plAuditNote,
                       style: TextStyle(fontSize: 13, color: kc.textSecondary)),
                   const SizedBox(height: 12),
                   TextField(
                     controller: _search,
                     onChanged: (_) => setState(() {}),
                     decoration: InputDecoration(
-                      labelText: 'Search by action, person or organization',
+                      labelText: AppLocalizations.of(context).plAuditSearch,
                       prefixIcon: const Icon(Icons.search_rounded),
                       suffixIcon: _search.text.isEmpty
                           ? null
                           : IconButton(
-                              tooltip: 'Clear search',
+                              tooltip:
+                                  AppLocalizations.of(context).plClearSearch,
                               icon: const Icon(Icons.close_rounded),
                               onPressed: () => setState(_search.clear)),
                     ),
@@ -104,21 +106,24 @@ class _PlatformAuditScreenState extends ConsumerState<PlatformAuditScreen> {
                   const SizedBox(height: 12),
                   Wrap(spacing: 8, runSpacing: 8, children: [
                     ChoiceChip(
-                        label: const Text('All actions'),
+                        label: Text(AppLocalizations.of(context).plAllActions),
                         selected: _action == null,
                         onSelected: (_) => setState(() => _action = null)),
                     for (final a in actions)
                       ChoiceChip(
-                          label: Text(auditActionLabel(a)),
+                          label: Text(
+                              auditActionText(AppLocalizations.of(context), a)),
                           selected: _action == a,
                           onSelected: (_) => setState(() => _action = a)),
                   ]),
                   const SizedBox(height: 16),
                   PlatformPanel(
-                    title:
-                        '${shown.length} ${shown.length == 1 ? 'entry' : 'entries'}',
+                    title: shown.length == 1
+                        ? AppLocalizations.of(context).plEntryOne
+                        : AppLocalizations.of(context)
+                            .plEntryMany('${shown.length}'),
                     child: shown.isEmpty
-                        ? Text('No entry matches the current filters.',
+                        ? Text(AppLocalizations.of(context).plNoEntryMatch,
                             style: TextStyle(color: kc.textSecondary))
                         : Column(children: [
                             for (var i = 0; i < shown.length; i++) ...[
@@ -136,7 +141,7 @@ class _PlatformAuditScreenState extends ConsumerState<PlatformAuditScreen> {
                               minimumSize: const Size(48, 48)),
                           onPressed: () =>
                               setState(() => _limit += kPlatformPageSize),
-                          child: const Text('Load older entries'),
+                          child: Text(AppLocalizations.of(context).plLoadOlder),
                         ),
                       ),
                     ),

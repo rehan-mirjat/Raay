@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,18 +31,18 @@ class PlatformPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: admin.when(
-        loading: () => const LoadingView(message: 'Checking platform access…'),
-        error: (_, __) => const ErrorView(
+        loading: () =>
+            LoadingView(message: AppLocalizations.of(context).plCheckingAccess),
+        error: (_, __) => ErrorView(
             type: ErrorViewType.accessDenied,
-            title: 'Access denied',
-            message: 'Could not verify platform administrator access.'),
+            title: AppLocalizations.of(context).plDeniedTitle,
+            message: AppLocalizations.of(context).plVerifyFailed),
         data: (isAdmin) {
           if (!isAdmin) {
-            return const ErrorView(
+            return ErrorView(
                 type: ErrorViewType.accessDenied,
-                title: 'Access denied',
-                message:
-                    'This area is available only to Platform Super Admins.');
+                title: AppLocalizations.of(context).plDeniedTitle,
+                message: AppLocalizations.of(context).plOnlySuper);
           }
           final kc = KivoraColors.of(context);
           final wide = ResponsiveLayout.isWide(context);
@@ -163,7 +164,7 @@ class PlatformHeaderBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
               IconButton(
-                tooltip: 'Refresh',
+                tooltip: AppLocalizations.of(context).plRefresh,
                 constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                 onPressed: onRefresh,
                 icon: const Icon(Icons.refresh_rounded),

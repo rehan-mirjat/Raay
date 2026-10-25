@@ -1,3 +1,5 @@
+import '../../../l10n/app_localizations.dart';
+
 /// Filtering for the platform moderation list. Pure so it can be tested
 /// without Firebase.
 enum OrgFilter { needsReview, running, suspended, closed, all }
@@ -9,6 +11,14 @@ extension OrgFilterLabel on OrgFilter {
         OrgFilter.suspended => 'Suspended',
         OrgFilter.closed => 'Archived / rejected',
         OrgFilter.all => 'All',
+      };
+
+  String localized(AppLocalizations l) => switch (this) {
+        OrgFilter.needsReview => l.pfNeedsReview,
+        OrgFilter.running => l.pfVerified,
+        OrgFilter.suspended => l.pfSuspended,
+        OrgFilter.closed => l.pfClosed,
+        OrgFilter.all => l.pfAll,
       };
 
   bool matches(String status) => switch (this) {

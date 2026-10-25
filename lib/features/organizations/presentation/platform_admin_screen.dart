@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import '../../platform/presentation/platform_scaffold.dart'
     show PlatformHeaderBar;
 import 'package:cloud_functions/cloud_functions.dart';
@@ -73,14 +74,14 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
     } on FirebaseFunctionsException catch (error) {
       if (mounted) {
         setState(() {
-          _error = error.message ?? 'Could not load platform data.';
+          _error = error.message ?? AppLocalizations.of(context).paLoadFailed;
           _loading = false;
         });
       }
     } catch (_) {
       if (mounted) {
         setState(() {
-          _error = 'Could not load platform data.';
+          _error = AppLocalizations.of(context).paLoadFailed;
           _loading = false;
         });
       }
@@ -108,7 +109,8 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
     } on FirebaseFunctionsException catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(error.message ?? 'Could not load more users.')));
+            content: Text(error.message ??
+                AppLocalizations.of(context).paLoadMoreFailed)));
         setState(() => _loadingMore = false);
       }
     } catch (_) {
@@ -126,26 +128,27 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
       builder: (ctx) => AlertDialog(
         insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         scrollable: true,
-        title: const Text('Grant platform admin access'),
+        title: Text(AppLocalizations.of(context).paGrantTitle),
         content: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 360),
           child: TextField(
             controller: emailController,
             autofocus: true,
             keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              labelText: 'Account email address',
-              hintText: 'name@example.com',
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).paEmailLabel,
+              hintText: AppLocalizations.of(context).paEmailHint,
             ),
             onSubmitted: (v) => Navigator.pop(ctx, v.trim()),
           ),
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(AppLocalizations.of(context).paCancel)),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, emailController.text.trim()),
-            child: const Text('Grant access'),
+            child: Text(AppLocalizations.of(context).paGrant),
           ),
         ],
       ),
@@ -156,20 +159,20 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
     }
 
     final messenger = ScaffoldMessenger.of(context);
+    final l10nAsync_ = AppLocalizations.of(context);
     try {
       await FirebaseService()
           .functions
           .httpsCallable('createAdmin')
           .call({'email': email});
       messenger.showSnackBar(
-          SnackBar(content: Text('Platform admin access granted to $email.')));
+          SnackBar(content: Text(l10nAsync_.paGranted(email.toString()))));
       if (mounted) await _load();
     } on FirebaseFunctionsException catch (error) {
-      messenger.showSnackBar(SnackBar(
-          content: Text(error.message ?? 'Could not grant admin access.')));
-    } catch (_) {
       messenger.showSnackBar(
-          const SnackBar(content: Text('Could not grant admin access.')));
+          SnackBar(content: Text(error.message ?? l10nAsync_.paGrantFailed)));
+    } catch (_) {
+      messenger.showSnackBar(SnackBar(content: Text(l10nAsync_.paGrantFailed)));
     } finally {
       if (mounted) setState(() => _busyUid = null);
     }
@@ -178,26 +181,28 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
   Future<void> _revokeAdmin(Map<String, dynamic> user) async {
     if (_busyUid != null) return;
     final uid = user['uid'] as String;
-    final email = user['email'] as String? ?? 'this account';
+    final email =
+        user['email'] as String? ?? AppLocalizations.of(context).paThisAccount;
     setState(() => _busyUid = uid);
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-        title: const Text('Revoke platform admin access?'),
+        title: Text(AppLocalizations.of(context).paRevokeTitle),
         content: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 360),
-          child: Text('$email will lose Platform Super Admin privileges.'),
+          child:
+              Text(AppLocalizations.of(context).paRevokeBody(email.toString())),
         ),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel')),
+              child: Text(AppLocalizations.of(context).paCancel)),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: AppTheme.error),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Revoke'),
+            child: Text(AppLocalizations.of(context).paRevoke),
           ),
         ],
       ),
@@ -208,20 +213,20 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
     }
 
     final messenger = ScaffoldMessenger.of(context);
+    final l10nAsync_ = AppLocalizations.of(context);
     try {
       await FirebaseService()
           .functions
           .httpsCallable('removeAdmin')
           .call({'uid': uid});
-      messenger
-          .showSnackBar(const SnackBar(content: Text('Admin access revoked.')));
+      messenger.showSnackBar(SnackBar(content: Text(l10nAsync_.paRevoked)));
       if (mounted) await _load();
     } on FirebaseFunctionsException catch (error) {
-      messenger.showSnackBar(SnackBar(
-          content: Text(error.message ?? 'Could not revoke admin access.')));
-    } catch (_) {
       messenger.showSnackBar(
-          const SnackBar(content: Text('Could not revoke admin access.')));
+          SnackBar(content: Text(error.message ?? l10nAsync_.paRevokeFailed)));
+    } catch (_) {
+      messenger
+          .showSnackBar(SnackBar(content: Text(l10nAsync_.paRevokeFailed)));
     } finally {
       if (mounted) setState(() => _busyUid = null);
     }
@@ -233,23 +238,24 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: PlatformHeaderBar(
-          title: 'Accounts & access', onRefresh: _loading ? null : _load),
+          title: AppLocalizations.of(context).paTitle,
+          onRefresh: _loading ? null : _load),
       body: admin.when(
-        loading: () => const LoadingView(message: 'Checking platform access…'),
-        error: (_, __) => const ErrorView(
+        loading: () =>
+            LoadingView(message: AppLocalizations.of(context).paChecking),
+        error: (_, __) => ErrorView(
           type: ErrorViewType.accessDenied,
-          title: 'Access denied',
-          message: 'Could not verify platform administrator access.',
+          title: AppLocalizations.of(context).paDenied,
+          message: AppLocalizations.of(context).paVerifyFailed,
         ),
         data: (isAdmin) => !isAdmin
-            ? const ErrorView(
+            ? ErrorView(
                 type: ErrorViewType.accessDenied,
-                title: 'Access denied',
-                message:
-                    'This area is available only to Platform Super Admins.',
+                title: AppLocalizations.of(context).paDenied,
+                message: AppLocalizations.of(context).paOnlySuper,
               )
             : _loading
-                ? const LoadingView(message: 'Loading platform data…')
+                ? LoadingView(message: AppLocalizations.of(context).paLoading)
                 : _error != null
                     ? ErrorView(
                         type: ErrorViewType.generic,
@@ -272,13 +278,13 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Accounts',
+                Text(AppLocalizations.of(context).paAccounts,
                     style: Theme.of(context).textTheme.titleMedium),
                 FilledButton.icon(
                   onPressed: _busyUid != null ? null : _grantAdmin,
                   icon:
                       const Icon(Icons.admin_panel_settings_outlined, size: 18),
-                  label: const Text('Grant admin access'),
+                  label: Text(AppLocalizations.of(context).paGrantButton),
                 ),
               ],
             ),
@@ -294,7 +300,7 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
                           height: 16,
                           width: 16,
                           child: CircularProgressIndicator(strokeWidth: 2))
-                      : const Text('Load more'),
+                      : Text(AppLocalizations.of(context).paLoadMore),
                 ),
               ),
             ],
@@ -333,22 +339,28 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
       spacing: 12,
       runSpacing: 12,
       children: [
-        stat('Users', a['users'] ?? 0),
-        stat('Organizations', a['organizations'] ?? 0),
-        stat('Pending orgs', a['pendingOrganizations'] ?? 0),
-        stat('Active orgs', a['activeOrganizations'] ?? 0),
-        stat('Suspended orgs', a['suspendedOrganizations'] ?? 0),
-        stat('Members', a['members'] ?? 0),
-        stat('Active members', a['activeMembers'] ?? 0),
-        stat('Voting events', a['votingEvents'] ?? 0),
-        stat('Active events', a['activeVotingEvents'] ?? 0),
+        stat(AppLocalizations.of(context).paStatUsers, a['users'] ?? 0),
+        stat(AppLocalizations.of(context).paStatOrgs, a['organizations'] ?? 0),
+        stat(AppLocalizations.of(context).paStatPending,
+            a['pendingOrganizations'] ?? 0),
+        stat(AppLocalizations.of(context).paStatActive,
+            a['activeOrganizations'] ?? 0),
+        stat(AppLocalizations.of(context).paStatSuspended,
+            a['suspendedOrganizations'] ?? 0),
+        stat(AppLocalizations.of(context).paStatMembers, a['members'] ?? 0),
+        stat(AppLocalizations.of(context).paStatActiveMembers,
+            a['activeMembers'] ?? 0),
+        stat(AppLocalizations.of(context).paStatEvents, a['votingEvents'] ?? 0),
+        stat(AppLocalizations.of(context).paStatActiveEvents,
+            a['activeVotingEvents'] ?? 0),
       ],
     );
   }
 
   Widget _userCard(Map<String, dynamic> user) {
     final uid = user['uid'] as String;
-    final email = user['email'] as String? ?? '(no email)';
+    final email =
+        user['email'] as String? ?? AppLocalizations.of(context).paNoEmail;
     final displayName = user['displayName'] as String? ?? '';
     final isPlatformAdmin = user['platformAdmin'] == true;
     final disabled = user['disabled'] == true;
@@ -388,15 +400,15 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
                     children: [
                       if (isPlatformAdmin)
                         _Tag(
-                            label: 'Platform admin',
+                            label: AppLocalizations.of(context).paTagAdmin,
                             color: KivoraColors.of(context).accentText),
                       if (!emailVerified)
                         _Tag(
-                            label: 'Unverified',
+                            label: AppLocalizations.of(context).paTagUnverified,
                             color: KivoraColors.textSecondaryOf(context)),
                       if (disabled)
                         _Tag(
-                            label: 'Disabled',
+                            label: AppLocalizations.of(context).paTagDisabled,
                             color: KivoraColors.of(context).errorText),
                     ],
                   ),
@@ -413,7 +425,7 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
                         height: 14,
                         width: 14,
                         child: CircularProgressIndicator(strokeWidth: 2))
-                    : const Text('Revoke'),
+                    : Text(AppLocalizations.of(context).paRevoke),
               ),
           ],
         ),

@@ -9,6 +9,8 @@ import '../../../services/auth_service.dart';
 import '../../../services/firebase_service.dart';
 import '../../platform/presentation/platform_scaffold.dart'
     show PlatformHeaderBar;
+import '../../../l10n/app_localizations.dart';
+import '../../../core/utils/status_text.dart';
 import '../domain/platform_organization_filter.dart';
 
 class PlatformOrganizationsScreen extends ConsumerStatefulWidget {
@@ -77,14 +79,14 @@ class _PlatformOrganizationsScreenState
     } on FirebaseFunctionsException catch (error) {
       if (mounted) {
         setState(() {
-          _error = error.message ?? 'Could not load organizations.';
+          _error = error.message ?? AppLocalizations.of(context).porLoadFailed;
           _loading = false;
         });
       }
     } catch (_) {
       if (mounted) {
         setState(() {
-          _error = 'Could not load organizations.';
+          _error = AppLocalizations.of(context).porLoadFailed;
           _loading = false;
         });
       }
@@ -93,23 +95,25 @@ class _PlatformOrganizationsScreenState
 
   Future<void> _review(Map<String, dynamic> organization, String action) async {
     if (_busyId != null) return;
+    final l = AppLocalizations.of(context);
     final (label, resultingStatus, destructive) = switch (action) {
-      'VERIFY' => ('Verify', 'verified', false),
-      'REJECT' => ('Reject', 'rejected', true),
-      'SUSPEND' => ('Suspend', 'suspended', true),
-      'REACTIVATE' => ('Reactivate', 'active', false),
+      'VERIFY' => (l.porVerify, orgStatusText(l, 'verified'), false),
+      'REJECT' => (l.porReject, orgStatusText(l, 'rejected'), true),
+      'SUSPEND' => (l.porSuspend, orgStatusText(l, 'suspended'), true),
+      'REACTIVATE' => (l.porReactivate, orgStatusText(l, 'active'), false),
       _ => (action, action.toLowerCase(), false),
     };
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('$label organization?'),
-        content: Text(
-            '${organization['name'] ?? 'This organization'} will be marked as $resultingStatus.'),
+        title: Text(l.porReviewTitle(label)),
+        content: Text(l.porReviewBody(
+            (organization['name'] as String?) ?? l.porThisOrg,
+            resultingStatus)),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel')),
+              child: Text(l.porCancel)),
           FilledButton(
             style: destructive
                 ? FilledButton.styleFrom(
@@ -133,15 +137,14 @@ class _PlatformOrganizationsScreenState
         'organizationId': organization['id'],
         'action': action,
       });
-      messenger.showSnackBar(
-          SnackBar(content: Text('Organization marked as $resultingStatus.')));
+      messenger
+          .showSnackBar(SnackBar(content: Text(l.porMarked(resultingStatus))));
       if (mounted) await _load();
     } on FirebaseFunctionsException catch (error) {
-      messenger.showSnackBar(SnackBar(
-          content: Text(error.message ?? 'Could not update organization.')));
-    } catch (_) {
       messenger.showSnackBar(
-          const SnackBar(content: Text('Could not update organization.')));
+          SnackBar(content: Text(error.message ?? l.porUpdateFailed)));
+    } catch (_) {
+      messenger.showSnackBar(SnackBar(content: Text(l.porUpdateFailed)));
     } finally {
       if (mounted) setState(() => _busyId = null);
     }
@@ -153,32 +156,32 @@ class _PlatformOrganizationsScreenState
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: PlatformHeaderBar(
-          title: 'All organizations', onRefresh: _loading ? null : _load),
+          title: AppLocalizations.of(context).porTitle,
+          onRefresh: _loading ? null : _load),
       body: admin.when(
-        loading: () => const LoadingView(message: 'Checking platform access…'),
-        error: (_, __) => const ErrorView(
+        loading: () => LoadingView(
+            message: AppLocalizations.of(context).porCheckingAccess),
+        error: (_, __) => ErrorView(
             type: ErrorViewType.accessDenied,
-            title: 'Access denied',
-            message: 'Could not verify platform administrator access.'),
+            title: AppLocalizations.of(context).porDeniedTitle,
+            message: AppLocalizations.of(context).porVerifyAccessFailed),
         data: (isAdmin) => !isAdmin
-            ? const ErrorView(
+            ? ErrorView(
                 type: ErrorViewType.accessDenied,
-                title: 'Access denied',
-                message:
-                    'This area is available only to Platform Super Admins.')
+                title: AppLocalizations.of(context).porDeniedTitle,
+                message: AppLocalizations.of(context).porSuperAdminsOnly)
             : _loading
-                ? const LoadingView(message: 'Loading organizations…')
+                ? LoadingView(message: AppLocalizations.of(context).porLoading)
                 : _error != null
                     ? ErrorView(
                         type: ErrorViewType.generic,
                         message: _error!,
                         onRetry: _load)
                     : _organizations.isEmpty
-                        ? const EmptyView(
+                        ? EmptyView(
                             icon: Icons.domain_outlined,
-                            title: 'No organizations yet',
-                            message:
-                                'No organizations have been registered on the platform yet.',
+                            title: AppLocalizations.of(context).porEmptyTitle,
+                            message: AppLocalizations.of(context).porEmptyBody,
                           )
                         : _list(),
       ),
@@ -202,12 +205,12 @@ class _PlatformOrganizationsScreenState
               controller: _search,
               onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
-                labelText: 'Search by name, email or city',
+                labelText: AppLocalizations.of(context).porSearch,
                 prefixIcon: const Icon(Icons.search_rounded),
                 suffixIcon: _search.text.isEmpty
                     ? null
                     : IconButton(
-                        tooltip: 'Clear search',
+                        tooltip: AppLocalizations.of(context).porClearSearch,
                         icon: const Icon(Icons.close_rounded),
                         onPressed: () => setState(_search.clear),
                       ),
@@ -217,7 +220,8 @@ class _PlatformOrganizationsScreenState
             Wrap(spacing: 8, runSpacing: 8, children: [
               for (final f in OrgFilter.values)
                 ChoiceChip(
-                  label: Text('${f.label} (${counts[f]})'),
+                  label: Text(
+                      '${f.localized(AppLocalizations.of(context))} (${counts[f]})'),
                   selected: f == filter,
                   onSelected: (_) => setState(() => _filter = f),
                 ),
@@ -225,7 +229,7 @@ class _PlatformOrganizationsScreenState
             if (_organizations.length >= 100)
               Padding(
                 padding: const EdgeInsets.only(top: 8),
-                child: Text('Showing the 100 most recent organizations.',
+                child: Text(AppLocalizations.of(context).porShowing100,
                     style: Theme.of(context).textTheme.bodySmall),
               ),
             const SizedBox(height: 12),
@@ -234,8 +238,10 @@ class _PlatformOrganizationsScreenState
                 padding: const EdgeInsets.symmetric(vertical: 32),
                 child: Text(
                   _search.text.trim().isNotEmpty
-                      ? 'No organization matches "${_search.text.trim()}" in this view.'
-                      : 'Nothing in "${filter.label}".',
+                      ? AppLocalizations.of(context)
+                          .porNoMatch(_search.text.trim())
+                      : AppLocalizations.of(context).porNothingIn(
+                          filter.localized(AppLocalizations.of(context))),
                   textAlign: TextAlign.center,
                 ),
               )
@@ -263,7 +269,9 @@ class _PlatformOrganizationsScreenState
             Expanded(
                 child:
                     Text(name, style: Theme.of(context).textTheme.titleMedium)),
-            Chip(label: Text(status.toUpperCase()))
+            Chip(
+                label: Text(orgStatusText(AppLocalizations.of(context), status)
+                    .toUpperCase()))
           ]),
           if ((organization['email'] as String? ?? '').isNotEmpty)
             Text(organization['email'] as String),
@@ -271,15 +279,16 @@ class _PlatformOrganizationsScreenState
             Text(address, style: Theme.of(context).textTheme.bodySmall),
           if (organization['createdAt'] is String)
             Text(
-                'Registered ${(organization['createdAt'] as String).split('T').first}',
+                AppLocalizations.of(context).porRegistered(
+                    (organization['createdAt'] as String).split('T').first),
                 style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 12),
           // Every status needs either an action or a reason there is none.
           if (status == 'archived')
-            Text('Deleted by its owner. No moderation actions are available.',
+            Text(AppLocalizations.of(context).porArchivedNote,
                 style: Theme.of(context).textTheme.bodySmall),
           if (status == 'rejected')
-            Text('Rejected. No further actions are available.',
+            Text(AppLocalizations.of(context).porRejectedNote,
                 style: Theme.of(context).textTheme.bodySmall),
           Wrap(spacing: 8, runSpacing: 8, children: [
             if (status == 'pending') ...[
@@ -288,13 +297,13 @@ class _PlatformOrganizationsScreenState
                   onPressed: _busyId != null
                       ? null
                       : () => _review(organization, 'VERIFY'),
-                  child: const Text('Verify')),
+                  child: Text(AppLocalizations.of(context).porVerify)),
               OutlinedButton(
                   style: _tap,
                   onPressed: _busyId != null
                       ? null
                       : () => _review(organization, 'REJECT'),
-                  child: const Text('Reject')),
+                  child: Text(AppLocalizations.of(context).porReject)),
             ],
             if (status == 'verified' || status == 'active')
               OutlinedButton(
@@ -302,14 +311,14 @@ class _PlatformOrganizationsScreenState
                   onPressed: _busyId != null
                       ? null
                       : () => _review(organization, 'SUSPEND'),
-                  child: const Text('Suspend')),
+                  child: Text(AppLocalizations.of(context).porSuspend)),
             if (status == 'suspended')
               FilledButton.tonal(
                   style: _tap,
                   onPressed: _busyId != null
                       ? null
                       : () => _review(organization, 'REACTIVATE'),
-                  child: const Text('Reactivate')),
+                  child: Text(AppLocalizations.of(context).porReactivate)),
           ]),
         ]),
       ),

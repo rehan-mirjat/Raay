@@ -5555,6 +5555,852 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get errRetry;
+
+  /// No description provided for @osPending.
+  ///
+  /// In en, this message translates to:
+  /// **'pending'**
+  String get osPending;
+
+  /// No description provided for @osVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'verified'**
+  String get osVerified;
+
+  /// No description provided for @osActive.
+  ///
+  /// In en, this message translates to:
+  /// **'active'**
+  String get osActive;
+
+  /// No description provided for @osSuspended.
+  ///
+  /// In en, this message translates to:
+  /// **'suspended'**
+  String get osSuspended;
+
+  /// No description provided for @osRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'rejected'**
+  String get osRejected;
+
+  /// No description provided for @osArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'archived'**
+  String get osArchived;
+
+  /// No description provided for @porVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get porVerify;
+
+  /// No description provided for @porReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get porReject;
+
+  /// No description provided for @porSuspend.
+  ///
+  /// In en, this message translates to:
+  /// **'Suspend'**
+  String get porSuspend;
+
+  /// No description provided for @porReactivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Reactivate'**
+  String get porReactivate;
+
+  /// No description provided for @porReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} organization?'**
+  String porReviewTitle(String a);
+
+  /// No description provided for @porThisOrg.
+  ///
+  /// In en, this message translates to:
+  /// **'This organization'**
+  String get porThisOrg;
+
+  /// No description provided for @porReviewBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} will be marked as {b}.'**
+  String porReviewBody(String a, String b);
+
+  /// No description provided for @porMarked.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization marked as {a}.'**
+  String porMarked(String a);
+
+  /// No description provided for @porUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update organization.'**
+  String get porUpdateFailed;
+
+  /// No description provided for @porLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load organizations.'**
+  String get porLoadFailed;
+
+  /// No description provided for @porTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All organizations'**
+  String get porTitle;
+
+  /// No description provided for @porCheckingAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking platform access…'**
+  String get porCheckingAccess;
+
+  /// No description provided for @porDeniedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Access denied'**
+  String get porDeniedTitle;
+
+  /// No description provided for @porVerifyAccessFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not verify platform administrator access.'**
+  String get porVerifyAccessFailed;
+
+  /// No description provided for @porSuperAdminsOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'This area is available only to Platform Super Admins.'**
+  String get porSuperAdminsOnly;
+
+  /// No description provided for @porLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading organizations…'**
+  String get porLoading;
+
+  /// No description provided for @porEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No organizations yet'**
+  String get porEmptyTitle;
+
+  /// No description provided for @porEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'No organizations have been registered on the platform yet.'**
+  String get porEmptyBody;
+
+  /// No description provided for @porSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, email or city'**
+  String get porSearch;
+
+  /// No description provided for @porClearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get porClearSearch;
+
+  /// No description provided for @porShowing100.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing the 100 most recent organizations.'**
+  String get porShowing100;
+
+  /// No description provided for @porNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No organization matches \"{a}\" in this view.'**
+  String porNoMatch(String a);
+
+  /// No description provided for @porNothingIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in \"{a}\".'**
+  String porNothingIn(String a);
+
+  /// No description provided for @porRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered {a}'**
+  String porRegistered(String a);
+
+  /// No description provided for @porArchivedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted by its owner. No moderation actions are available.'**
+  String get porArchivedNote;
+
+  /// No description provided for @porRejectedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected. No further actions are available.'**
+  String get porRejectedNote;
+
+  /// No description provided for @porCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get porCancel;
+
+  /// No description provided for @pfNeedsReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs review'**
+  String get pfNeedsReview;
+
+  /// No description provided for @pfVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get pfVerified;
+
+  /// No description provided for @pfSuspended.
+  ///
+  /// In en, this message translates to:
+  /// **'Suspended'**
+  String get pfSuspended;
+
+  /// No description provided for @pfClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived / rejected'**
+  String get pfClosed;
+
+  /// No description provided for @pfAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get pfAll;
+
+  /// No description provided for @paLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load platform data.'**
+  String get paLoadFailed;
+
+  /// No description provided for @paLoadMoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load more users.'**
+  String get paLoadMoreFailed;
+
+  /// No description provided for @paGrantTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Grant platform admin access'**
+  String get paGrantTitle;
+
+  /// No description provided for @paEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Account email address'**
+  String get paEmailLabel;
+
+  /// No description provided for @paEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'name@example.com'**
+  String get paEmailHint;
+
+  /// No description provided for @paCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get paCancel;
+
+  /// No description provided for @paGrant.
+  ///
+  /// In en, this message translates to:
+  /// **'Grant access'**
+  String get paGrant;
+
+  /// No description provided for @paGranted.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform admin access granted to {a}.'**
+  String paGranted(String a);
+
+  /// No description provided for @paGrantFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not grant admin access.'**
+  String get paGrantFailed;
+
+  /// No description provided for @paThisAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'this account'**
+  String get paThisAccount;
+
+  /// No description provided for @paRevokeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke platform admin access?'**
+  String get paRevokeTitle;
+
+  /// No description provided for @paRevokeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} will lose Platform Super Admin privileges.'**
+  String paRevokeBody(String a);
+
+  /// No description provided for @paRevoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke'**
+  String get paRevoke;
+
+  /// No description provided for @paRevoked.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin access revoked.'**
+  String get paRevoked;
+
+  /// No description provided for @paRevokeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not revoke admin access.'**
+  String get paRevokeFailed;
+
+  /// No description provided for @paTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts & access'**
+  String get paTitle;
+
+  /// No description provided for @paChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking platform access…'**
+  String get paChecking;
+
+  /// No description provided for @paDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Access denied'**
+  String get paDenied;
+
+  /// No description provided for @paVerifyFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not verify platform administrator access.'**
+  String get paVerifyFailed;
+
+  /// No description provided for @paOnlySuper.
+  ///
+  /// In en, this message translates to:
+  /// **'This area is available only to Platform Super Admins.'**
+  String get paOnlySuper;
+
+  /// No description provided for @paLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading platform data…'**
+  String get paLoading;
+
+  /// No description provided for @paAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get paAccounts;
+
+  /// No description provided for @paGrantButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Grant admin access'**
+  String get paGrantButton;
+
+  /// No description provided for @paLoadMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Load more'**
+  String get paLoadMore;
+
+  /// No description provided for @paStatUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Users'**
+  String get paStatUsers;
+
+  /// No description provided for @paStatOrgs.
+  ///
+  /// In en, this message translates to:
+  /// **'Organizations'**
+  String get paStatOrgs;
+
+  /// No description provided for @paStatPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending orgs'**
+  String get paStatPending;
+
+  /// No description provided for @paStatActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active orgs'**
+  String get paStatActive;
+
+  /// No description provided for @paStatSuspended.
+  ///
+  /// In en, this message translates to:
+  /// **'Suspended orgs'**
+  String get paStatSuspended;
+
+  /// No description provided for @paStatMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Members'**
+  String get paStatMembers;
+
+  /// No description provided for @paStatActiveMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Active members'**
+  String get paStatActiveMembers;
+
+  /// No description provided for @paStatEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Voting events'**
+  String get paStatEvents;
+
+  /// No description provided for @paStatActiveEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Active events'**
+  String get paStatActiveEvents;
+
+  /// No description provided for @paNoEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'(no email)'**
+  String get paNoEmail;
+
+  /// No description provided for @paTagAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform admin'**
+  String get paTagAdmin;
+
+  /// No description provided for @paTagUnverified.
+  ///
+  /// In en, this message translates to:
+  /// **'Unverified'**
+  String get paTagUnverified;
+
+  /// No description provided for @paTagDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get paTagDisabled;
+
+  /// No description provided for @plOverviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform overview'**
+  String get plOverviewTitle;
+
+  /// No description provided for @plOverviewSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Organizations, reviews and recent administrator activity across Kivora.'**
+  String get plOverviewSubtitle;
+
+  /// No description provided for @plRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get plRefresh;
+
+  /// No description provided for @plPendingOne.
+  ///
+  /// In en, this message translates to:
+  /// **'1 organization is waiting for review.'**
+  String get plPendingOne;
+
+  /// No description provided for @plPendingMany.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} organizations are waiting for review.'**
+  String plPendingMany(String a);
+
+  /// No description provided for @plReviewOrgs.
+  ///
+  /// In en, this message translates to:
+  /// **'Review organizations'**
+  String get plReviewOrgs;
+
+  /// No description provided for @plReportsOne.
+  ///
+  /// In en, this message translates to:
+  /// **'1 open user report.'**
+  String get plReportsOne;
+
+  /// No description provided for @plReportsMany.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} open user reports.'**
+  String plReportsMany(String a);
+
+  /// No description provided for @plOpenReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Open reports'**
+  String get plOpenReports;
+
+  /// No description provided for @plTotalsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform totals could not be loaded.'**
+  String get plTotalsFailed;
+
+  /// No description provided for @plStatOrgs.
+  ///
+  /// In en, this message translates to:
+  /// **'Organizations'**
+  String get plStatOrgs;
+
+  /// No description provided for @plStatWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for review'**
+  String get plStatWaiting;
+
+  /// No description provided for @plStatActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active or verified'**
+  String get plStatActive;
+
+  /// No description provided for @plStatSuspended.
+  ///
+  /// In en, this message translates to:
+  /// **'Suspended'**
+  String get plStatSuspended;
+
+  /// No description provided for @plStatAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get plStatAccounts;
+
+  /// No description provided for @plStatMemberships.
+  ///
+  /// In en, this message translates to:
+  /// **'Active memberships'**
+  String get plStatMemberships;
+
+  /// No description provided for @plStatElections.
+  ///
+  /// In en, this message translates to:
+  /// **'Elections and polls'**
+  String get plStatElections;
+
+  /// No description provided for @plStatOpenNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Voting open now'**
+  String get plStatOpenNow;
+
+  /// No description provided for @plNeedsAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs attention'**
+  String get plNeedsAttention;
+
+  /// No description provided for @plChecksIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Some checks could not run, so this list may be incomplete.'**
+  String get plChecksIncomplete;
+
+  /// No description provided for @plNothingAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing needs attention right now.'**
+  String get plNothingAttention;
+
+  /// No description provided for @plRecentActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent administrator activity'**
+  String get plRecentActivity;
+
+  /// No description provided for @plViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get plViewAll;
+
+  /// No description provided for @plUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get plUnavailable;
+
+  /// No description provided for @plTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get plTryAgain;
+
+  /// No description provided for @plActivityFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The activity log could not be loaded.'**
+  String get plActivityFailed;
+
+  /// No description provided for @plNoActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'No administrator actions have been recorded yet.'**
+  String get plNoActivity;
+
+  /// No description provided for @plTimeUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Time unavailable'**
+  String get plTimeUnknown;
+
+  /// No description provided for @plTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Target: {a}'**
+  String plTarget(String a);
+
+  /// No description provided for @plBy.
+  ///
+  /// In en, this message translates to:
+  /// **'By {a}'**
+  String plBy(String a);
+
+  /// No description provided for @plAuditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit log'**
+  String get plAuditTitle;
+
+  /// No description provided for @plAuditSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions taken by platform administrators, newest first.'**
+  String get plAuditSubtitle;
+
+  /// No description provided for @plAuditLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading audit log…'**
+  String get plAuditLoading;
+
+  /// No description provided for @plAuditFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The audit log could not be loaded.'**
+  String get plAuditFailed;
+
+  /// No description provided for @plAuditEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries yet'**
+  String get plAuditEmptyTitle;
+
+  /// No description provided for @plAuditEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform administrator actions will appear here once they happen.'**
+  String get plAuditEmptyBody;
+
+  /// No description provided for @plAuditNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Only actions that completed are recorded here; failed attempts leave no entry.'**
+  String get plAuditNote;
+
+  /// No description provided for @plAuditSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by action, person or organization'**
+  String get plAuditSearch;
+
+  /// No description provided for @plClearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get plClearSearch;
+
+  /// No description provided for @plAllActions.
+  ///
+  /// In en, this message translates to:
+  /// **'All actions'**
+  String get plAllActions;
+
+  /// No description provided for @plEntryOne.
+  ///
+  /// In en, this message translates to:
+  /// **'1 entry'**
+  String get plEntryOne;
+
+  /// No description provided for @plEntryMany.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} entries'**
+  String plEntryMany(String a);
+
+  /// No description provided for @plNoEntryMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No entry matches the current filters.'**
+  String get plNoEntryMatch;
+
+  /// No description provided for @plLoadOlder.
+  ///
+  /// In en, this message translates to:
+  /// **'Load older entries'**
+  String get plLoadOlder;
+
+  /// No description provided for @plReportsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'User reports'**
+  String get plReportsTitle;
+
+  /// No description provided for @plReportsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback and issues submitted from Help & support.'**
+  String get plReportsSubtitle;
+
+  /// No description provided for @plReportsLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading reports…'**
+  String get plReportsLoading;
+
+  /// No description provided for @plReportsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The reports could not be loaded.'**
+  String get plReportsFailed;
+
+  /// No description provided for @plReportsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No reports'**
+  String get plReportsEmptyTitle;
+
+  /// No description provided for @plReportsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody has submitted a report yet.'**
+  String get plReportsEmptyBody;
+
+  /// No description provided for @plReportsReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Read-only for now: the platform does not yet support assigning or resolving reports, so every report stays open. There is no flagged-organization feed either.'**
+  String get plReportsReadOnly;
+
+  /// No description provided for @plAllCount.
+  ///
+  /// In en, this message translates to:
+  /// **'All ({a})'**
+  String plAllCount(String a);
+
+  /// No description provided for @plLoadOlderReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Load older reports'**
+  String get plLoadOlderReports;
+
+  /// No description provided for @plNoSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'(No subject)'**
+  String get plNoSubject;
+
+  /// No description provided for @plReceiptRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt reference: {a}'**
+  String plReceiptRef(String a);
+
+  /// No description provided for @plShowLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Show less'**
+  String get plShowLess;
+
+  /// No description provided for @plShowFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Show full message'**
+  String get plShowFull;
+
+  /// No description provided for @plCatGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General feedback'**
+  String get plCatGeneral;
+
+  /// No description provided for @plCatElection.
+  ///
+  /// In en, this message translates to:
+  /// **'Election issue'**
+  String get plCatElection;
+
+  /// No description provided for @plCatTechnical.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical problem'**
+  String get plCatTechnical;
+
+  /// No description provided for @plCatAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account issue'**
+  String get plCatAccount;
+
+  /// No description provided for @plStatusOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'open'**
+  String get plStatusOpen;
+
+  /// No description provided for @plCheckingAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking platform access…'**
+  String get plCheckingAccess;
+
+  /// No description provided for @plDeniedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Access denied'**
+  String get plDeniedTitle;
+
+  /// No description provided for @plVerifyFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not verify platform administrator access.'**
+  String get plVerifyFailed;
+
+  /// No description provided for @plOnlySuper.
+  ///
+  /// In en, this message translates to:
+  /// **'This area is available only to Platform Super Admins.'**
+  String get plOnlySuper;
 }
 
 class _AppLocalizationsDelegate

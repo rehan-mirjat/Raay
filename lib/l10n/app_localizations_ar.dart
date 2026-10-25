@@ -3104,4 +3104,464 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errRetry => 'إعادة المحاولة';
+
+  @override
+  String get osPending => 'قيد المراجعة';
+
+  @override
+  String get osVerified => 'موثّقة';
+
+  @override
+  String get osActive => 'نشطة';
+
+  @override
+  String get osSuspended => 'معلّقة';
+
+  @override
+  String get osRejected => 'مرفوضة';
+
+  @override
+  String get osArchived => 'مؤرشفة';
+
+  @override
+  String get porVerify => 'توثيق';
+
+  @override
+  String get porReject => 'رفض';
+
+  @override
+  String get porSuspend => 'تعليق';
+
+  @override
+  String get porReactivate => 'إعادة تفعيل';
+
+  @override
+  String porReviewTitle(String a) {
+    return '$a المؤسسة؟';
+  }
+
+  @override
+  String get porThisOrg => 'هذه المؤسسة';
+
+  @override
+  String porReviewBody(String a, String b) {
+    return 'سيتم تعليم $a على أنها $b.';
+  }
+
+  @override
+  String porMarked(String a) {
+    return 'تم تعليم المؤسسة على أنها $a.';
+  }
+
+  @override
+  String get porUpdateFailed => 'تعذّر تحديث المؤسسة.';
+
+  @override
+  String get porLoadFailed => 'تعذّر تحميل المؤسسات.';
+
+  @override
+  String get porTitle => 'جميع المؤسسات';
+
+  @override
+  String get porCheckingAccess => 'جارٍ التحقق من صلاحية المنصة…';
+
+  @override
+  String get porDeniedTitle => 'تم رفض الوصول';
+
+  @override
+  String get porVerifyAccessFailed => 'تعذّر التحقق من صلاحية مسؤول المنصة.';
+
+  @override
+  String get porSuperAdminsOnly =>
+      'هذا القسم متاح لمسؤولي المنصة الرئيسيين فقط.';
+
+  @override
+  String get porLoading => 'جارٍ تحميل المؤسسات…';
+
+  @override
+  String get porEmptyTitle => 'لا توجد مؤسسات بعد';
+
+  @override
+  String get porEmptyBody => 'لم تُسجَّل أي مؤسسة على المنصة بعد.';
+
+  @override
+  String get porSearch => 'ابحث بالاسم أو البريد أو المدينة';
+
+  @override
+  String get porClearSearch => 'مسح البحث';
+
+  @override
+  String get porShowing100 => 'عرض أحدث 100 مؤسسة.';
+
+  @override
+  String porNoMatch(String a) {
+    return 'لا توجد مؤسسة تطابق \"$a\" في هذا العرض.';
+  }
+
+  @override
+  String porNothingIn(String a) {
+    return 'لا شيء في \"$a\".';
+  }
+
+  @override
+  String porRegistered(String a) {
+    return 'تاريخ التسجيل: $a';
+  }
+
+  @override
+  String get porArchivedNote => 'حذفها مالكها. لا توجد إجراءات إشراف متاحة.';
+
+  @override
+  String get porRejectedNote => 'مرفوضة. لا توجد إجراءات أخرى متاحة.';
+
+  @override
+  String get porCancel => 'إلغاء';
+
+  @override
+  String get pfNeedsReview => 'تحتاج مراجعة';
+
+  @override
+  String get pfVerified => 'موثّقة';
+
+  @override
+  String get pfSuspended => 'معلّقة';
+
+  @override
+  String get pfClosed => 'مؤرشفة / مرفوضة';
+
+  @override
+  String get pfAll => 'الكل';
+
+  @override
+  String get paLoadFailed => 'تعذّر تحميل بيانات المنصة.';
+
+  @override
+  String get paLoadMoreFailed => 'تعذّر تحميل المزيد من المستخدمين.';
+
+  @override
+  String get paGrantTitle => 'منح صلاحية مسؤول المنصة';
+
+  @override
+  String get paEmailLabel => 'عنوان البريد الإلكتروني للحساب';
+
+  @override
+  String get paEmailHint => 'name@example.com';
+
+  @override
+  String get paCancel => 'إلغاء';
+
+  @override
+  String get paGrant => 'منح الصلاحية';
+
+  @override
+  String paGranted(String a) {
+    return 'تم منح $a صلاحية مسؤول المنصة.';
+  }
+
+  @override
+  String get paGrantFailed => 'تعذّر منح صلاحية المسؤول.';
+
+  @override
+  String get paThisAccount => 'هذا الحساب';
+
+  @override
+  String get paRevokeTitle => 'سحب صلاحية مسؤول المنصة؟';
+
+  @override
+  String paRevokeBody(String a) {
+    return 'ستفقد $a صلاحيات مسؤول المنصة الرئيسي.';
+  }
+
+  @override
+  String get paRevoke => 'سحب';
+
+  @override
+  String get paRevoked => 'تم سحب صلاحية المسؤول.';
+
+  @override
+  String get paRevokeFailed => 'تعذّر سحب صلاحية المسؤول.';
+
+  @override
+  String get paTitle => 'الحسابات والصلاحيات';
+
+  @override
+  String get paChecking => 'جارٍ التحقق من صلاحية المنصة…';
+
+  @override
+  String get paDenied => 'تم رفض الوصول';
+
+  @override
+  String get paVerifyFailed => 'تعذّر التحقق من صلاحية مسؤول المنصة.';
+
+  @override
+  String get paOnlySuper => 'هذا القسم متاح لمسؤولي المنصة الرئيسيين فقط.';
+
+  @override
+  String get paLoading => 'جارٍ تحميل بيانات المنصة…';
+
+  @override
+  String get paAccounts => 'الحسابات';
+
+  @override
+  String get paGrantButton => 'منح صلاحية المسؤول';
+
+  @override
+  String get paLoadMore => 'تحميل المزيد';
+
+  @override
+  String get paStatUsers => 'المستخدمون';
+
+  @override
+  String get paStatOrgs => 'المؤسسات';
+
+  @override
+  String get paStatPending => 'مؤسسات قيد المراجعة';
+
+  @override
+  String get paStatActive => 'مؤسسات نشطة';
+
+  @override
+  String get paStatSuspended => 'مؤسسات معلّقة';
+
+  @override
+  String get paStatMembers => 'الأعضاء';
+
+  @override
+  String get paStatActiveMembers => 'أعضاء نشطون';
+
+  @override
+  String get paStatEvents => 'انتخابات';
+
+  @override
+  String get paStatActiveEvents => 'انتخابات نشطة';
+
+  @override
+  String get paNoEmail => '(لا بريد إلكتروني)';
+
+  @override
+  String get paTagAdmin => 'مسؤول المنصة';
+
+  @override
+  String get paTagUnverified => 'غير موثّق';
+
+  @override
+  String get paTagDisabled => 'معطّل';
+
+  @override
+  String get plOverviewTitle => 'نظرة عامة على المنصة';
+
+  @override
+  String get plOverviewSubtitle =>
+      'المؤسسات والمراجعات ونشاط المسؤولين الأخير عبر Kivora.';
+
+  @override
+  String get plRefresh => 'تحديث';
+
+  @override
+  String get plPendingOne => 'مؤسسة واحدة بانتظار المراجعة.';
+
+  @override
+  String plPendingMany(String a) {
+    return '$a مؤسسات بانتظار المراجعة.';
+  }
+
+  @override
+  String get plReviewOrgs => 'مراجعة المؤسسات';
+
+  @override
+  String get plReportsOne => 'بلاغ مستخدم مفتوح واحد.';
+
+  @override
+  String plReportsMany(String a) {
+    return '$a بلاغات مستخدمين مفتوحة.';
+  }
+
+  @override
+  String get plOpenReports => 'فتح البلاغات';
+
+  @override
+  String get plTotalsFailed => 'تعذّر تحميل إجماليات المنصة.';
+
+  @override
+  String get plStatOrgs => 'المؤسسات';
+
+  @override
+  String get plStatWaiting => 'بانتظار المراجعة';
+
+  @override
+  String get plStatActive => 'نشطة أو موثّقة';
+
+  @override
+  String get plStatSuspended => 'معلّقة';
+
+  @override
+  String get plStatAccounts => 'الحسابات';
+
+  @override
+  String get plStatMemberships => 'العضويات النشطة';
+
+  @override
+  String get plStatElections => 'الانتخابات والاستطلاعات';
+
+  @override
+  String get plStatOpenNow => 'التصويت مفتوح الآن';
+
+  @override
+  String get plNeedsAttention => 'تحتاج انتباهًا';
+
+  @override
+  String get plChecksIncomplete =>
+      'تعذّر تشغيل بعض الفحوصات، فقد تكون هذه القائمة ناقصة.';
+
+  @override
+  String get plNothingAttention => 'لا شيء يحتاج انتباهًا الآن.';
+
+  @override
+  String get plRecentActivity => 'نشاط المسؤولين الأخير';
+
+  @override
+  String get plViewAll => 'عرض الكل';
+
+  @override
+  String get plUnavailable => 'غير متاح';
+
+  @override
+  String get plTryAgain => 'حاول مرة أخرى';
+
+  @override
+  String get plActivityFailed => 'تعذّر تحميل سجل النشاط.';
+
+  @override
+  String get plNoActivity => 'لم تُسجَّل أي إجراءات للمسؤولين بعد.';
+
+  @override
+  String get plTimeUnknown => 'الوقت غير متاح';
+
+  @override
+  String plTarget(String a) {
+    return 'الهدف: $a';
+  }
+
+  @override
+  String plBy(String a) {
+    return 'بواسطة $a';
+  }
+
+  @override
+  String get plAuditTitle => 'سجل التدقيق';
+
+  @override
+  String get plAuditSubtitle => 'إجراءات مسؤولي المنصة، الأحدث أولًا.';
+
+  @override
+  String get plAuditLoading => 'جارٍ تحميل سجل التدقيق…';
+
+  @override
+  String get plAuditFailed => 'تعذّر تحميل سجل التدقيق.';
+
+  @override
+  String get plAuditEmptyTitle => 'لا توجد إدخالات بعد';
+
+  @override
+  String get plAuditEmptyBody =>
+      'ستظهر إجراءات مسؤولي المنصة هنا بمجرد حدوثها.';
+
+  @override
+  String get plAuditNote =>
+      'تُسجَّل هنا الإجراءات المكتملة فقط؛ المحاولات الفاشلة لا تترك سجلًا.';
+
+  @override
+  String get plAuditSearch => 'ابحث بالإجراء أو الشخص أو المؤسسة';
+
+  @override
+  String get plClearSearch => 'مسح البحث';
+
+  @override
+  String get plAllActions => 'جميع الإجراءات';
+
+  @override
+  String get plEntryOne => 'إدخال واحد';
+
+  @override
+  String plEntryMany(String a) {
+    return '$a إدخالات';
+  }
+
+  @override
+  String get plNoEntryMatch => 'لا يوجد إدخال يطابق عوامل التصفية الحالية.';
+
+  @override
+  String get plLoadOlder => 'تحميل إدخالات أقدم';
+
+  @override
+  String get plReportsTitle => 'بلاغات المستخدمين';
+
+  @override
+  String get plReportsSubtitle =>
+      'الملاحظات والمشكلات المرسلة من المساعدة والدعم.';
+
+  @override
+  String get plReportsLoading => 'جارٍ تحميل البلاغات…';
+
+  @override
+  String get plReportsFailed => 'تعذّر تحميل البلاغات.';
+
+  @override
+  String get plReportsEmptyTitle => 'لا توجد بلاغات';
+
+  @override
+  String get plReportsEmptyBody => 'لم يرسل أحد بلاغًا بعد.';
+
+  @override
+  String get plReportsReadOnly =>
+      'للقراءة فقط حاليًا: لا تدعم المنصة بعد تعيين البلاغات أو حلّها، لذا يبقى كل بلاغ مفتوحًا. ولا توجد قائمة بالمؤسسات المُبلَّغ عنها.';
+
+  @override
+  String plAllCount(String a) {
+    return 'الكل ($a)';
+  }
+
+  @override
+  String get plLoadOlderReports => 'تحميل بلاغات أقدم';
+
+  @override
+  String get plNoSubject => '(بلا موضوع)';
+
+  @override
+  String plReceiptRef(String a) {
+    return 'مرجع الإيصال: $a';
+  }
+
+  @override
+  String get plShowLess => 'عرض أقل';
+
+  @override
+  String get plShowFull => 'عرض الرسالة كاملة';
+
+  @override
+  String get plCatGeneral => 'ملاحظات عامة';
+
+  @override
+  String get plCatElection => 'مشكلة في الانتخاب';
+
+  @override
+  String get plCatTechnical => 'مشكلة تقنية';
+
+  @override
+  String get plCatAccount => 'مشكلة في الحساب';
+
+  @override
+  String get plStatusOpen => 'مفتوح';
+
+  @override
+  String get plCheckingAccess => 'جارٍ التحقق من صلاحية المنصة…';
+
+  @override
+  String get plDeniedTitle => 'تم رفض الوصول';
+
+  @override
+  String get plVerifyFailed => 'تعذّر التحقق من صلاحية مسؤول المنصة.';
+
+  @override
+  String get plOnlySuper => 'هذا القسم متاح لمسؤولي المنصة الرئيسيين فقط.';
 }
