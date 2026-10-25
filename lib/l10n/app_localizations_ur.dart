@@ -2764,4 +2764,376 @@ class AppLocalizationsUr extends AppLocalizations {
   String dmSelectedCount(String a) {
     return '$a منتخب';
   }
+
+  @override
+  String get auditActAcceptInvitation => 'دعوت قبول کی گئی';
+
+  @override
+  String get auditActActivateVotingEvent => 'انتخاب فعال کیا گیا';
+
+  @override
+  String get auditActAddMember => 'رکن شامل کیا گیا';
+
+  @override
+  String get auditActAssignDepartment => 'شعبہ تفویض کیا گیا';
+
+  @override
+  String get auditActCalculateResults => 'نتائج شمار کیے گئے';
+
+  @override
+  String get auditActCancelVotingEvent => 'انتخاب منسوخ کیا گیا';
+
+  @override
+  String get auditActCloseVotingEvent => 'انتخاب بند کیا گیا';
+
+  @override
+  String get auditActCreateCandidate => 'امیدوار شامل کیا گیا';
+
+  @override
+  String get auditActCreateDepartment => 'شعبہ بنایا گیا';
+
+  @override
+  String get auditActCreateJoiningCode => 'شمولیت کا کوڈ بنایا گیا';
+
+  @override
+  String get auditActCreateOrganization => 'تنظیم بنائی گئی';
+
+  @override
+  String get auditActCreatePollOption => 'رائے شماری کا آپشن شامل کیا گیا';
+
+  @override
+  String get auditActCreateVotingEvent => 'انتخاب بنایا گیا';
+
+  @override
+  String get auditActDeclineInvitation => 'دعوت مسترد کی گئی';
+
+  @override
+  String get auditActDeleteCandidate => 'امیدوار ہٹایا گیا';
+
+  @override
+  String get auditActDeleteCandidatePhoto => 'امیدوار کی تصویر ہٹائی گئی';
+
+  @override
+  String get auditActDeleteDepartment => 'شعبہ حذف کیا گیا';
+
+  @override
+  String get auditActDeleteOrganization => 'تنظیم حذف کی گئی';
+
+  @override
+  String get auditActDeletePollOption => 'رائے شماری کا آپشن ہٹایا گیا';
+
+  @override
+  String get auditActDeleteVotingEvent => 'انتخاب حذف کیا گیا';
+
+  @override
+  String get auditActFinalizeCandidatePhoto => 'امیدوار کی تصویر محفوظ ہوئی';
+
+  @override
+  String get auditActGrantObserverStatus => 'مبصر کی رسائی دی گئی';
+
+  @override
+  String get auditActInviteMember => 'رکن کو مدعو کیا گیا';
+
+  @override
+  String get auditActJoinOrganizationWithCode => 'کوڈ کے ذریعے شمولیت';
+
+  @override
+  String get auditActLeaveOrganization => 'تنظیم چھوڑ دی گئی';
+
+  @override
+  String get auditActPlanChanged => 'پلان بدلا گیا';
+
+  @override
+  String get auditActPlatformAdminAccessGranted =>
+      'پلیٹ فارم ایڈمن کی رسائی دی گئی';
+
+  @override
+  String get auditActPlatformAdminAccessRemoved =>
+      'پلیٹ فارم ایڈمن کی رسائی ہٹائی گئی';
+
+  @override
+  String get auditActPublishResults => 'نتائج شائع کیے گئے';
+
+  @override
+  String get auditActPublishVotingEvent => 'انتخاب شائع کیا گیا';
+
+  @override
+  String get auditActRemindNonVoters =>
+      'ووٹ نہ دینے والوں کو یاد دہانی بھیجی گئی';
+
+  @override
+  String get auditActRemoveDepartment => 'رکن کو شعبے سے ہٹایا گیا';
+
+  @override
+  String get auditActRemoveMember => 'رکن کو ہٹایا گیا';
+
+  @override
+  String get auditActRevokeInvitation => 'دعوت منسوخ کی گئی';
+
+  @override
+  String get auditActRevokeJoiningCode => 'شمولیت کا کوڈ منسوخ کیا گیا';
+
+  @override
+  String get auditActRevokeObserverStatus => 'مبصر کی رسائی ہٹائی گئی';
+
+  @override
+  String get auditActUpdateCandidate => 'امیدوار اپ ڈیٹ کیا گیا';
+
+  @override
+  String get auditActUpdateDepartment => 'شعبہ اپ ڈیٹ کیا گیا';
+
+  @override
+  String get auditActUpdateMemberRole => 'رکن کا کردار بدلا گیا';
+
+  @override
+  String get auditActUpdateMemberStatus => 'رکن کی حیثیت بدلی گئی';
+
+  @override
+  String get auditActUpdateOrganizationMetadata =>
+      'تنظیم کی تفصیلات اپ ڈیٹ ہوئیں';
+
+  @override
+  String get auditActUpdatePollOption => 'رائے شماری کا آپشن اپ ڈیٹ ہوا';
+
+  @override
+  String get auditActUpdateVotingEvent => 'انتخاب اپ ڈیٹ کیا گیا';
+
+  @override
+  String get auditActOrganizationVerify => 'تنظیم کی تصدیق ہو گئی';
+
+  @override
+  String get auditActOrganizationReject => 'تنظیم مسترد کی گئی';
+
+  @override
+  String get auditActOrganizationSuspend => 'تنظیم معطل کی گئی';
+
+  @override
+  String get auditActOrganizationReactivate => 'تنظیم دوبارہ فعال کی گئی';
+
+  @override
+  String get auditActUnknown => 'منتظم کی کارروائی';
+
+  @override
+  String get auditSystem => 'سسٹم';
+
+  @override
+  String get auLoading => 'تنظیم کی سرگرمی لوڈ ہو رہی ہے…';
+
+  @override
+  String get auOrgLoadError =>
+      'ہم تنظیم لوڈ نہیں کر سکے۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔';
+
+  @override
+  String get auNoOrgTitle => 'تنظیم منتخب کریں';
+
+  @override
+  String get auNoOrgBody => 'اس کی سرگرمی دیکھنے کے لیے ایک تنظیم منتخب کریں۔';
+
+  @override
+  String get auDeniedTitle => 'رسائی نہیں دی گئی';
+
+  @override
+  String get auDeniedBody =>
+      'صرف اس تنظیم کا مالک اور منتظمین اس کی آڈٹ ہسٹری دیکھ سکتے ہیں۔';
+
+  @override
+  String get auCrumbOrg => 'تنظیم';
+
+  @override
+  String get auCrumbActivity => 'سرگرمی';
+
+  @override
+  String get auTitle => 'تنظیم کی سرگرمی';
+
+  @override
+  String get auSubtitle =>
+      'اپنی تنظیم میں رکنیت اور دعوتوں کی تبدیلیاں دیکھیں۔';
+
+  @override
+  String get auLoadingHistory => 'آڈٹ ہسٹری لوڈ ہو رہی ہے…';
+
+  @override
+  String get auLoadError =>
+      'ہم تنظیم کی سرگرمی لوڈ نہیں کر سکے۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔';
+
+  @override
+  String get auSearchLong =>
+      'سرگرمی، اکاؤنٹ آئی ڈی یا ریکارڈ کی قسم سے تلاش کریں';
+
+  @override
+  String get auSearchShort => 'سرگرمی تلاش کریں...';
+
+  @override
+  String get auReset => 'ری سیٹ';
+
+  @override
+  String get auAllTypes => 'ریکارڈ کی تمام اقسام';
+
+  @override
+  String get auFilterType => 'ریکارڈ کی قسم سے فلٹر کریں';
+
+  @override
+  String get auAllAccounts => 'تمام اکاؤنٹس';
+
+  @override
+  String auAccount(String a) {
+    return 'اکاؤنٹ $a';
+  }
+
+  @override
+  String get auFilterAccount => 'اکاؤنٹ سے فلٹر کریں';
+
+  @override
+  String get auDateRange => 'تاریخ کی حد';
+
+  @override
+  String get auFilterDate => 'تاریخ کی حد سے فلٹر کریں';
+
+  @override
+  String get auAllTime => 'تمام وقت';
+
+  @override
+  String get auToday => 'آج';
+
+  @override
+  String get auLast7 => 'پچھلے 7 دن';
+
+  @override
+  String get auLast30 => 'پچھلے 30 دن';
+
+  @override
+  String get auCustomRange => 'اپنی تاریخ کی حد...';
+
+  @override
+  String get auDateUnknown => 'تاریخ دستیاب نہیں';
+
+  @override
+  String get auAllRecords => 'تمام ریکارڈ';
+
+  @override
+  String get auMembers => 'اراکین';
+
+  @override
+  String get auInvitations => 'دعوت نامے';
+
+  @override
+  String get auNewest => 'نئے پہلے';
+
+  @override
+  String get auOldest => 'پرانے پہلے';
+
+  @override
+  String get auColActivity => 'سرگرمی';
+
+  @override
+  String get auColType => 'ریکارڈ کی قسم';
+
+  @override
+  String get auColAccount => 'اکاؤنٹ آئی ڈی';
+
+  @override
+  String get auColTime => 'وقت';
+
+  @override
+  String get auNoMatch => 'آپ کے معیار سے کوئی سرگرمی کا ریکارڈ نہیں ملا۔';
+
+  @override
+  String get auRecordOne => '1 ریکارڈ';
+
+  @override
+  String auRecordMany(String a) {
+    return '$a ریکارڈ';
+  }
+
+  @override
+  String auShown(String a) {
+    return '$a ریکارڈ دکھائے گئے · دہرائے گئے ریکارڈ بھی محفوظ ہیں';
+  }
+
+  @override
+  String get auTimesNote => 'تاریخیں اور اوقات جیسے ریکارڈ ہوئے';
+
+  @override
+  String get auUnavailable => 'دستیاب نہیں';
+
+  @override
+  String get auTimeUnknown => 'وقت دستیاب نہیں';
+
+  @override
+  String get auViewDetails => 'تفصیل دیکھیں ';
+
+  @override
+  String auActorBullet(String a) {
+    return '• $a';
+  }
+
+  @override
+  String get auRecordedAt => 'ریکارڈ کا وقت';
+
+  @override
+  String get auRecordType => 'ریکارڈ کی قسم';
+
+  @override
+  String get auAccountId => 'اکاؤنٹ آئی ڈی';
+
+  @override
+  String get auNoActorDetail =>
+      'اس ریکارڈ میں کارروائی کرنے والے کی شناخت اور تبدیلی کی تفصیل شامل نہیں۔';
+
+  @override
+  String get evGenericTitle => 'ایک خرابی پیش آئی';
+
+  @override
+  String get evGenericStatus => 'خرابی';
+
+  @override
+  String get evOrgTitle => 'کوئی فعال تنظیم نہیں';
+
+  @override
+  String get evOrgStatus => 'تنظیم درکار ہے';
+
+  @override
+  String get evConnTitle => 'کنکشن منقطع ہو گیا';
+
+  @override
+  String get evConnStatus => 'کنکشن میں رکاوٹ';
+
+  @override
+  String get evDeniedTitle => 'رسائی نہیں دی گئی';
+
+  @override
+  String get evDeniedStatus => 'اجازت درکار ہے';
+
+  @override
+  String get evSessionTitle => 'سیشن ختم ہو گیا';
+
+  @override
+  String get evSessionStatus => 'سائن اِن ضروری ہے';
+
+  @override
+  String get evSaveTitle => 'تبدیلیاں محفوظ نہیں ہو سکیں';
+
+  @override
+  String get evSaveStatus => 'محفوظ کرنا ناکام';
+
+  @override
+  String get evServiceTitle => 'سروس دستیاب نہیں';
+
+  @override
+  String get evServiceStatus => 'سروس میں خلل';
+
+  @override
+  String get evSelectOrg => 'تنظیم منتخب کریں';
+
+  @override
+  String get evRequestAccess => 'رسائی کی درخواست کریں';
+
+  @override
+  String get evSignIn => 'سائن اِن کریں';
+
+  @override
+  String get evTryAgain => 'دوبارہ کوشش کریں';
+
+  @override
+  String get errRetry => 'دوبارہ کوشش';
 }

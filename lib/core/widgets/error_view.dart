@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../theme/app_theme.dart';
 import '../../core/theme/kivora_colors.dart';
 
@@ -36,45 +37,47 @@ class ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String effectiveTitle = title ?? 'An Error Occurred';
-    String statusLabel = 'Error';
+    // Falls back to English where no localizations are mounted (plain test apps).
+    final l = Localizations.of<AppLocalizations>(context, AppLocalizations);
+    String effectiveTitle = title ?? l?.evGenericTitle ?? 'An error occurred';
+    String statusLabel = l?.evGenericStatus ?? 'Error';
     IconData statusIcon = Icons.error_outline_rounded;
     Color statusColor = AppTheme.error;
 
     switch (type) {
       case ErrorViewType.organizationRequired:
-        effectiveTitle = title ?? 'No active organization';
-        statusLabel = 'Organization required';
+        effectiveTitle = title ?? (l?.evOrgTitle ?? 'No active organization');
+        statusLabel = (l?.evOrgStatus ?? 'Organization required');
         statusIcon = Icons.domain_outlined;
         statusColor = AppTheme.primaryBlue;
         break;
       case ErrorViewType.connectionLost:
-        effectiveTitle = title ?? 'Connection lost';
-        statusLabel = 'Connection interrupted';
+        effectiveTitle = title ?? (l?.evConnTitle ?? 'Connection lost');
+        statusLabel = (l?.evConnStatus ?? 'Connection interrupted');
         statusIcon = Icons.wifi_off_rounded;
         statusColor = AppTheme.accentGold;
         break;
       case ErrorViewType.accessDenied:
-        effectiveTitle = title ?? 'Access denied';
-        statusLabel = 'Permission required';
+        effectiveTitle = title ?? (l?.evDeniedTitle ?? 'Access denied');
+        statusLabel = (l?.evDeniedStatus ?? 'Permission required');
         statusIcon = Icons.lock_outline_rounded;
         statusColor = AppTheme.accentGold;
         break;
       case ErrorViewType.sessionExpired:
-        effectiveTitle = title ?? 'Session expired';
-        statusLabel = 'Sign-in required';
+        effectiveTitle = title ?? (l?.evSessionTitle ?? 'Session expired');
+        statusLabel = (l?.evSessionStatus ?? 'Sign-in required');
         statusIcon = Icons.schedule_rounded;
         statusColor = AppTheme.accentGold;
         break;
       case ErrorViewType.saveUnsuccessful:
-        effectiveTitle = title ?? 'Unable to save changes';
-        statusLabel = 'Save unsuccessful';
+        effectiveTitle = title ?? (l?.evSaveTitle ?? 'Unable to save changes');
+        statusLabel = (l?.evSaveStatus ?? 'Save unsuccessful');
         statusIcon = Icons.error_outline_rounded;
         statusColor = AppTheme.error;
         break;
       case ErrorViewType.serviceUnavailable:
-        effectiveTitle = title ?? 'Service unavailable';
-        statusLabel = 'Service interruption';
+        effectiveTitle = title ?? (l?.evServiceTitle ?? 'Service unavailable');
+        statusLabel = (l?.evServiceStatus ?? 'Service interruption');
         statusIcon = Icons.cloud_off_rounded;
         statusColor = AppTheme.error;
         break;
@@ -83,13 +86,14 @@ class ErrorView extends StatelessWidget {
     }
 
     final String defaultPrimaryLabel = switch (type) {
-      ErrorViewType.organizationRequired => 'Select organization',
-      ErrorViewType.connectionLost => 'Retry',
-      ErrorViewType.accessDenied => 'Request access',
-      ErrorViewType.sessionExpired => 'Sign in',
-      ErrorViewType.saveUnsuccessful => 'Retry',
-      ErrorViewType.serviceUnavailable => 'Try again',
-      ErrorViewType.generic => 'Try Again',
+      ErrorViewType.organizationRequired =>
+        (l?.evSelectOrg ?? 'Select organization'),
+      ErrorViewType.connectionLost => (l?.errRetry ?? 'Retry'),
+      ErrorViewType.accessDenied => (l?.evRequestAccess ?? 'Request access'),
+      ErrorViewType.sessionExpired => (l?.evSignIn ?? 'Sign in'),
+      ErrorViewType.saveUnsuccessful => (l?.errRetry ?? 'Retry'),
+      ErrorViewType.serviceUnavailable => (l?.evTryAgain ?? 'Try again'),
+      ErrorViewType.generic => (l?.evTryAgain ?? 'Try again'),
     };
 
     final IconData defaultPrimaryIcon = switch (type) {
@@ -175,32 +179,40 @@ class ErrorView extends StatelessWidget {
                 if (onRetry != null || onSecondaryAction != null) ...[
                   Divider(height: 1, color: KivoraColors.borderOf(context)),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 16),
                     decoration: BoxDecoration(
                       color: KivoraColors.surfaceOf(context),
-                      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
+                      borderRadius: const BorderRadius.vertical(
+                          bottom: Radius.circular(16)),
                     ),
                     child: Wrap(
                       alignment: WrapAlignment.end,
                       spacing: 12,
                       runSpacing: 12,
                       children: [
-                        if (onSecondaryAction != null && secondaryActionLabel != null)
+                        if (onSecondaryAction != null &&
+                            secondaryActionLabel != null)
                           OutlinedButton(
                             onPressed: onSecondaryAction,
                             style: OutlinedButton.styleFrom(
                               minimumSize: const Size(48, 48),
-                              foregroundColor: KivoraColors.textSecondaryOf(context),
-                              side: BorderSide(color: KivoraColors.borderOf(context)),
+                              foregroundColor:
+                                  KivoraColors.textSecondaryOf(context),
+                              side: BorderSide(
+                                  color: KivoraColors.borderOf(context)),
                             ),
                             child: Text(secondaryActionLabel!),
                           ),
                         if (onRetry != null)
                           FilledButton.icon(
                             onPressed: onRetry,
-                            icon: Icon(primaryActionIcon ?? defaultPrimaryIcon, size: 18),
-                            label: Text(primaryActionLabel ?? defaultPrimaryLabel),
-                            style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+                            icon: Icon(primaryActionIcon ?? defaultPrimaryIcon,
+                                size: 18),
+                            label:
+                                Text(primaryActionLabel ?? defaultPrimaryLabel),
+                            style: FilledButton.styleFrom(
+                                minimumSize: const Size(48, 48)),
                           ),
                       ],
                     ),

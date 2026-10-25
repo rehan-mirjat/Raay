@@ -4847,6 +4847,714 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{a} selected'**
   String dmSelectedCount(String a);
+
+  /// No description provided for @auditActAcceptInvitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation accepted'**
+  String get auditActAcceptInvitation;
+
+  /// No description provided for @auditActActivateVotingEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Election activated'**
+  String get auditActActivateVotingEvent;
+
+  /// No description provided for @auditActAddMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Member added'**
+  String get auditActAddMember;
+
+  /// No description provided for @auditActAssignDepartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Department assigned'**
+  String get auditActAssignDepartment;
+
+  /// No description provided for @auditActCalculateResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Results calculated'**
+  String get auditActCalculateResults;
+
+  /// No description provided for @auditActCancelVotingEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Election cancelled'**
+  String get auditActCancelVotingEvent;
+
+  /// No description provided for @auditActCloseVotingEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Election closed'**
+  String get auditActCloseVotingEvent;
+
+  /// No description provided for @auditActCreateCandidate.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate added'**
+  String get auditActCreateCandidate;
+
+  /// No description provided for @auditActCreateDepartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Department created'**
+  String get auditActCreateDepartment;
+
+  /// No description provided for @auditActCreateJoiningCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Joining code created'**
+  String get auditActCreateJoiningCode;
+
+  /// No description provided for @auditActCreateOrganization.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization created'**
+  String get auditActCreateOrganization;
+
+  /// No description provided for @auditActCreatePollOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Poll option added'**
+  String get auditActCreatePollOption;
+
+  /// No description provided for @auditActCreateVotingEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Election created'**
+  String get auditActCreateVotingEvent;
+
+  /// No description provided for @auditActDeclineInvitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation declined'**
+  String get auditActDeclineInvitation;
+
+  /// No description provided for @auditActDeleteCandidate.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate removed'**
+  String get auditActDeleteCandidate;
+
+  /// No description provided for @auditActDeleteCandidatePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate photo removed'**
+  String get auditActDeleteCandidatePhoto;
+
+  /// No description provided for @auditActDeleteDepartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Department deleted'**
+  String get auditActDeleteDepartment;
+
+  /// No description provided for @auditActDeleteOrganization.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization deleted'**
+  String get auditActDeleteOrganization;
+
+  /// No description provided for @auditActDeletePollOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Poll option removed'**
+  String get auditActDeletePollOption;
+
+  /// No description provided for @auditActDeleteVotingEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Election deleted'**
+  String get auditActDeleteVotingEvent;
+
+  /// No description provided for @auditActFinalizeCandidatePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate photo saved'**
+  String get auditActFinalizeCandidatePhoto;
+
+  /// No description provided for @auditActGrantObserverStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Observer access granted'**
+  String get auditActGrantObserverStatus;
+
+  /// No description provided for @auditActInviteMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Member invited'**
+  String get auditActInviteMember;
+
+  /// No description provided for @auditActJoinOrganizationWithCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined with a code'**
+  String get auditActJoinOrganizationWithCode;
+
+  /// No description provided for @auditActLeaveOrganization.
+  ///
+  /// In en, this message translates to:
+  /// **'Left the organization'**
+  String get auditActLeaveOrganization;
+
+  /// No description provided for @auditActPlanChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan changed'**
+  String get auditActPlanChanged;
+
+  /// No description provided for @auditActPlatformAdminAccessGranted.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform admin access granted'**
+  String get auditActPlatformAdminAccessGranted;
+
+  /// No description provided for @auditActPlatformAdminAccessRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform admin access removed'**
+  String get auditActPlatformAdminAccessRemoved;
+
+  /// No description provided for @auditActPublishResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Results published'**
+  String get auditActPublishResults;
+
+  /// No description provided for @auditActPublishVotingEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Election published'**
+  String get auditActPublishVotingEvent;
+
+  /// No description provided for @auditActRemindNonVoters.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder sent to non-voters'**
+  String get auditActRemindNonVoters;
+
+  /// No description provided for @auditActRemoveDepartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Member removed from department'**
+  String get auditActRemoveDepartment;
+
+  /// No description provided for @auditActRemoveMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Member removed'**
+  String get auditActRemoveMember;
+
+  /// No description provided for @auditActRevokeInvitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation revoked'**
+  String get auditActRevokeInvitation;
+
+  /// No description provided for @auditActRevokeJoiningCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Joining code revoked'**
+  String get auditActRevokeJoiningCode;
+
+  /// No description provided for @auditActRevokeObserverStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Observer access removed'**
+  String get auditActRevokeObserverStatus;
+
+  /// No description provided for @auditActUpdateCandidate.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate updated'**
+  String get auditActUpdateCandidate;
+
+  /// No description provided for @auditActUpdateDepartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Department updated'**
+  String get auditActUpdateDepartment;
+
+  /// No description provided for @auditActUpdateMemberRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Member role changed'**
+  String get auditActUpdateMemberRole;
+
+  /// No description provided for @auditActUpdateMemberStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Member status changed'**
+  String get auditActUpdateMemberStatus;
+
+  /// No description provided for @auditActUpdateOrganizationMetadata.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization details updated'**
+  String get auditActUpdateOrganizationMetadata;
+
+  /// No description provided for @auditActUpdatePollOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Poll option updated'**
+  String get auditActUpdatePollOption;
+
+  /// No description provided for @auditActUpdateVotingEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Election updated'**
+  String get auditActUpdateVotingEvent;
+
+  /// No description provided for @auditActOrganizationVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization verified'**
+  String get auditActOrganizationVerify;
+
+  /// No description provided for @auditActOrganizationReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization rejected'**
+  String get auditActOrganizationReject;
+
+  /// No description provided for @auditActOrganizationSuspend.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization suspended'**
+  String get auditActOrganizationSuspend;
+
+  /// No description provided for @auditActOrganizationReactivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization reactivated'**
+  String get auditActOrganizationReactivate;
+
+  /// No description provided for @auditActUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin action'**
+  String get auditActUnknown;
+
+  /// No description provided for @auditSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get auditSystem;
+
+  /// No description provided for @auLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading organization activity…'**
+  String get auLoading;
+
+  /// No description provided for @auOrgLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the organization. Check your connection and try again.'**
+  String get auOrgLoadError;
+
+  /// No description provided for @auNoOrgTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an organization'**
+  String get auNoOrgTitle;
+
+  /// No description provided for @auNoOrgBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an organization to view its activity.'**
+  String get auNoOrgBody;
+
+  /// No description provided for @auDeniedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Access denied'**
+  String get auDeniedTitle;
+
+  /// No description provided for @auDeniedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Only this organization’s Owner and Admins can view its audit history.'**
+  String get auDeniedBody;
+
+  /// No description provided for @auCrumbOrg.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization'**
+  String get auCrumbOrg;
+
+  /// No description provided for @auCrumbActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get auCrumbActivity;
+
+  /// No description provided for @auTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization activity'**
+  String get auTitle;
+
+  /// No description provided for @auSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review membership and invitation changes across your organization.'**
+  String get auSubtitle;
+
+  /// No description provided for @auLoadingHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading audit history…'**
+  String get auLoadingHistory;
+
+  /// No description provided for @auLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load organization activity. Check your connection and try again.'**
+  String get auLoadError;
+
+  /// No description provided for @auSearchLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by activity, account ID or record type'**
+  String get auSearchLong;
+
+  /// No description provided for @auSearchShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Search activity...'**
+  String get auSearchShort;
+
+  /// No description provided for @auReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get auReset;
+
+  /// No description provided for @auAllTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'All record types'**
+  String get auAllTypes;
+
+  /// No description provided for @auFilterType.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by record type'**
+  String get auFilterType;
+
+  /// No description provided for @auAllAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'All accounts'**
+  String get auAllAccounts;
+
+  /// No description provided for @auAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account {a}'**
+  String auAccount(String a);
+
+  /// No description provided for @auFilterAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by account'**
+  String get auFilterAccount;
+
+  /// No description provided for @auDateRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Date range'**
+  String get auDateRange;
+
+  /// No description provided for @auFilterDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by date range'**
+  String get auFilterDate;
+
+  /// No description provided for @auAllTime.
+  ///
+  /// In en, this message translates to:
+  /// **'All time'**
+  String get auAllTime;
+
+  /// No description provided for @auToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get auToday;
+
+  /// No description provided for @auLast7.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 7 days'**
+  String get auLast7;
+
+  /// No description provided for @auLast30.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 30 days'**
+  String get auLast30;
+
+  /// No description provided for @auCustomRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom date range...'**
+  String get auCustomRange;
+
+  /// No description provided for @auDateUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Date unavailable'**
+  String get auDateUnknown;
+
+  /// No description provided for @auAllRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'All records'**
+  String get auAllRecords;
+
+  /// No description provided for @auMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Members'**
+  String get auMembers;
+
+  /// No description provided for @auInvitations.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitations'**
+  String get auInvitations;
+
+  /// No description provided for @auNewest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest first'**
+  String get auNewest;
+
+  /// No description provided for @auOldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest first'**
+  String get auOldest;
+
+  /// No description provided for @auColActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'ACTIVITY'**
+  String get auColActivity;
+
+  /// No description provided for @auColType.
+  ///
+  /// In en, this message translates to:
+  /// **'RECORD TYPE'**
+  String get auColType;
+
+  /// No description provided for @auColAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'ACCOUNT ID'**
+  String get auColAccount;
+
+  /// No description provided for @auColTime.
+  ///
+  /// In en, this message translates to:
+  /// **'TIME'**
+  String get auColTime;
+
+  /// No description provided for @auNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No activity records match your criteria.'**
+  String get auNoMatch;
+
+  /// No description provided for @auRecordOne.
+  ///
+  /// In en, this message translates to:
+  /// **'1 record'**
+  String get auRecordOne;
+
+  /// No description provided for @auRecordMany.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} records'**
+  String auRecordMany(String a);
+
+  /// No description provided for @auShown.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} records shown · Repeated records retained'**
+  String auShown(String a);
+
+  /// No description provided for @auTimesNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Dates and times as recorded'**
+  String get auTimesNote;
+
+  /// No description provided for @auUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get auUnavailable;
+
+  /// No description provided for @auTimeUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Time unavailable'**
+  String get auTimeUnknown;
+
+  /// No description provided for @auViewDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View details '**
+  String get auViewDetails;
+
+  /// No description provided for @auActorBullet.
+  ///
+  /// In en, this message translates to:
+  /// **'• {a}'**
+  String auActorBullet(String a);
+
+  /// No description provided for @auRecordedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded at'**
+  String get auRecordedAt;
+
+  /// No description provided for @auRecordType.
+  ///
+  /// In en, this message translates to:
+  /// **'Record type'**
+  String get auRecordType;
+
+  /// No description provided for @auAccountId.
+  ///
+  /// In en, this message translates to:
+  /// **'Account ID'**
+  String get auAccountId;
+
+  /// No description provided for @auNoActorDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Actor identity and change details are not provided in this record.'**
+  String get auNoActorDetail;
+
+  /// No description provided for @evGenericTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred'**
+  String get evGenericTitle;
+
+  /// No description provided for @evGenericStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get evGenericStatus;
+
+  /// No description provided for @evOrgTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No active organization'**
+  String get evOrgTitle;
+
+  /// No description provided for @evOrgStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization required'**
+  String get evOrgStatus;
+
+  /// No description provided for @evConnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection lost'**
+  String get evConnTitle;
+
+  /// No description provided for @evConnStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection interrupted'**
+  String get evConnStatus;
+
+  /// No description provided for @evDeniedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Access denied'**
+  String get evDeniedTitle;
+
+  /// No description provided for @evDeniedStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission required'**
+  String get evDeniedStatus;
+
+  /// No description provided for @evSessionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session expired'**
+  String get evSessionTitle;
+
+  /// No description provided for @evSessionStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in required'**
+  String get evSessionStatus;
+
+  /// No description provided for @evSaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to save changes'**
+  String get evSaveTitle;
+
+  /// No description provided for @evSaveStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Save unsuccessful'**
+  String get evSaveStatus;
+
+  /// No description provided for @evServiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Service unavailable'**
+  String get evServiceTitle;
+
+  /// No description provided for @evServiceStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Service interruption'**
+  String get evServiceStatus;
+
+  /// No description provided for @evSelectOrg.
+  ///
+  /// In en, this message translates to:
+  /// **'Select organization'**
+  String get evSelectOrg;
+
+  /// No description provided for @evRequestAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Request access'**
+  String get evRequestAccess;
+
+  /// No description provided for @evSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get evSignIn;
+
+  /// No description provided for @evTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get evTryAgain;
+
+  /// No description provided for @errRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get errRetry;
 }
 
 class _AppLocalizationsDelegate

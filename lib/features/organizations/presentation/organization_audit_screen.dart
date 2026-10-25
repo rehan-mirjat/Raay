@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/audit_action_label.dart';
 import '../../../core/theme/kivora_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/empty_view.dart';
@@ -65,14 +67,10 @@ class _OrganizationAuditScreenState
     super.dispose();
   }
 
-  String _formatActionTitle(String raw) {
-    final text = raw.replaceAll('_', ' ').trim().toLowerCase();
-    if (text.isEmpty) return 'Admin action';
-    return '${text[0].toUpperCase()}${text.substring(1)}';
-  }
-
   String _truncateAccountId(String raw) {
-    if (raw.isEmpty || raw == 'System') return 'System';
+    if (raw.isEmpty || raw == 'System') {
+      return AppLocalizations.of(context).auditSystem;
+    }
     if (raw.length <= 8) return raw;
     return '${raw.substring(0, 4)}...${raw.substring(raw.length - 4)}';
   }
@@ -130,14 +128,14 @@ class _OrganizationAuditScreenState
     final isDesktop = ResponsiveLayout.isWide(context);
 
     if (state.isLoading && !state.hasValue) {
-      return const Scaffold(
-          body: LoadingView(message: 'Loading organization activity…'));
+      return Scaffold(
+          body: LoadingView(message: AppLocalizations.of(context).auLoading));
     }
     if (state.hasError && !state.hasValue) {
       return Scaffold(
         body: ErrorView(
           type: ErrorViewType.generic,
-          message: 'Could not load active organization: ${state.error}',
+          message: AppLocalizations.of(context).auOrgLoadError,
           onRetry: () => ref.invalidate(activeOrganizationContextProvider),
         ),
       );
@@ -145,21 +143,20 @@ class _OrganizationAuditScreenState
 
     final orgContext = state.valueOrNull?.context;
     if (orgContext == null) {
-      return const Scaffold(
+      return Scaffold(
         body: EmptyView(
           icon: Icons.business_outlined,
-          title: 'Select an organization',
-          message: 'Choose an organization to view its activity.',
+          title: AppLocalizations.of(context).auNoOrgTitle,
+          message: AppLocalizations.of(context).auNoOrgBody,
         ),
       );
     }
     if (!orgContext.member.isAdmin) {
-      return const Scaffold(
+      return Scaffold(
         body: ErrorView(
           type: ErrorViewType.accessDenied,
-          title: 'Access denied',
-          message:
-              'Only this organization’s Owner and Admins can view its audit history.',
+          title: AppLocalizations.of(context).auDeniedTitle,
+          message: AppLocalizations.of(context).auDeniedBody,
         ),
       );
     }
@@ -187,7 +184,7 @@ class _OrganizationAuditScreenState
                     InkWell(
                       onTap: () => context.go('/orgs'),
                       borderRadius: BorderRadius.circular(4),
-                      child: Text('Organization',
+                      child: Text(AppLocalizations.of(context).auCrumbOrg,
                           style: TextStyle(
                               fontSize: 13,
                               color: KivoraColors.textSecondaryOf(context),
@@ -197,7 +194,7 @@ class _OrganizationAuditScreenState
                     Icon(Icons.chevron_right_rounded,
                         size: 16, color: KivoraColors.textSecondaryOf(context)),
                     const SizedBox(width: 6),
-                    Text('Activity',
+                    Text(AppLocalizations.of(context).auCrumbActivity,
                         style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
@@ -208,7 +205,7 @@ class _OrganizationAuditScreenState
 
                 // 2. Page Title & Subtitle
                 Text(
-                  'Organization activity',
+                  AppLocalizations.of(context).auTitle,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: KivoraColors.textPrimaryOf(context),
@@ -216,18 +213,20 @@ class _OrganizationAuditScreenState
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Review membership and invitation changes across your organization.',
-                  style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14),
+                  AppLocalizations.of(context).auSubtitle,
+                  style: TextStyle(
+                      color: KivoraColors.textSecondaryOf(context),
+                      fontSize: 14),
                 ),
                 const SizedBox(height: 24),
 
                 // 3. Search & Filter Bar & Table Content
                 logsAsync.when(
-                  loading: () =>
-                      const LoadingView(message: 'Loading audit history…'),
+                  loading: () => LoadingView(
+                      message: AppLocalizations.of(context).auLoadingHistory),
                   error: (error, _) => ErrorView(
                     type: ErrorViewType.generic,
-                    message: 'We could not load organization activity. Check your connection and try again.',
+                    message: AppLocalizations.of(context).auLoadError,
                     onRetry: () => ref.invalidate(organizationAuditLogsProvider(
                         orgContext.organization.id)),
                   ),
@@ -274,7 +273,7 @@ class _OrganizationAuditScreenState
                 child: TextField(
                   controller: _searchCtrl,
                   decoration: InputDecoration(
-                    hintText: 'Search by activity, account ID or record type',
+                    hintText: AppLocalizations.of(context).auSearchLong,
                     prefixIcon: Icon(Icons.search_rounded,
                         color: KivoraColors.textSecondaryOf(context), size: 20),
                     contentPadding: const EdgeInsets.symmetric(
@@ -311,7 +310,7 @@ class _OrganizationAuditScreenState
                       _selectedCategory = 'all';
                     });
                   },
-                  child: Text('Reset',
+                  child: Text(AppLocalizations.of(context).auReset,
                       style: TextStyle(
                           color: KivoraColors.of(context).errorText,
                           fontWeight: FontWeight.bold,
@@ -327,7 +326,7 @@ class _OrganizationAuditScreenState
               TextField(
                 controller: _searchCtrl,
                 decoration: InputDecoration(
-                  hintText: 'Search activity...',
+                  hintText: AppLocalizations.of(context).auSearchShort,
                   prefixIcon: Icon(Icons.search_rounded,
                       color: KivoraColors.textSecondaryOf(context), size: 20),
                   contentPadding:
@@ -356,7 +355,7 @@ class _OrganizationAuditScreenState
                           _selectedCategory = 'all';
                         });
                       },
-                      child: Text('Reset',
+                      child: Text(AppLocalizations.of(context).auReset,
                           style: TextStyle(
                               color: KivoraColors.of(context).errorText,
                               fontWeight: FontWeight.bold,
@@ -378,11 +377,12 @@ class _OrganizationAuditScreenState
       if (t != null && t.isNotEmpty) types.add(t);
     }
 
-    final currentLabel =
-        _selectedRecordType == 'all' ? 'All record types' : _selectedRecordType;
+    final currentLabel = _selectedRecordType == 'all'
+        ? AppLocalizations.of(context).auAllTypes
+        : _selectedRecordType;
 
     return PopupMenuButton<String>(
-      tooltip: 'Filter by record type',
+      tooltip: AppLocalizations.of(context).auFilterType,
       offset: const Offset(0, 42),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -395,7 +395,7 @@ class _OrganizationAuditScreenState
         });
       },
       itemBuilder: (ctx) => types.map((t) {
-        final label = t == 'all' ? 'All record types' : t;
+        final label = t == 'all' ? AppLocalizations.of(context).auAllTypes : t;
         final isSelected = _selectedRecordType == t;
         return PopupMenuItem<String>(
           value: t,
@@ -435,11 +435,12 @@ class _OrganizationAuditScreenState
     }
 
     final currentLabel = _selectedActorUid == 'all'
-        ? 'All accounts'
-        : 'Account ${_truncateAccountId(_selectedActorUid)}';
+        ? AppLocalizations.of(context).auAllAccounts
+        : AppLocalizations.of(context)
+            .auAccount((_truncateAccountId(_selectedActorUid)).toString());
 
     return PopupMenuButton<String>(
-      tooltip: 'Filter by account',
+      tooltip: AppLocalizations.of(context).auFilterAccount,
       offset: const Offset(0, 42),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -452,8 +453,10 @@ class _OrganizationAuditScreenState
         });
       },
       itemBuilder: (ctx) => accounts.map((a) {
-        final label =
-            a == 'all' ? 'All accounts' : 'Account ${_truncateAccountId(a)}';
+        final label = a == 'all'
+            ? AppLocalizations.of(context).auAllAccounts
+            : AppLocalizations.of(context)
+                .auAccount((_truncateAccountId(a)).toString());
         final isSelected = _selectedActorUid == a;
         return PopupMenuItem<String>(
           value: a,
@@ -487,7 +490,7 @@ class _OrganizationAuditScreenState
   Widget _buildDateRangeButton(BuildContext context) {
     final String currentLabel;
     if (_selectedDateRange == null) {
-      currentLabel = 'Date range';
+      currentLabel = AppLocalizations.of(context).auDateRange;
     } else {
       final startStr = DateFormat('MMM d').format(_selectedDateRange!.start);
       final endStr = DateFormat('MMM d').format(_selectedDateRange!.end);
@@ -495,7 +498,7 @@ class _OrganizationAuditScreenState
     }
 
     return PopupMenuButton<String>(
-      tooltip: 'Filter by date range',
+      tooltip: AppLocalizations.of(context).auFilterDate,
       offset: const Offset(0, 42),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -569,7 +572,7 @@ class _OrganizationAuditScreenState
                 const SizedBox(width: 16),
               const SizedBox(width: 8),
               Text(
-                'All time',
+                AppLocalizations.of(context).auAllTime,
                 style: TextStyle(
                   fontWeight: _selectedDateRange == null
                       ? FontWeight.bold
@@ -588,9 +591,10 @@ class _OrganizationAuditScreenState
           child: Row(
             children: [
               const SizedBox(width: 24),
-              Text('Today',
-                  style:
-                      TextStyle(fontSize: 13, color: KivoraColors.textPrimaryOf(context))),
+              Text(AppLocalizations.of(context).auToday,
+                  style: TextStyle(
+                      fontSize: 13,
+                      color: KivoraColors.textPrimaryOf(context))),
             ],
           ),
         ),
@@ -599,9 +603,10 @@ class _OrganizationAuditScreenState
           child: Row(
             children: [
               const SizedBox(width: 24),
-              Text('Last 7 days',
-                  style:
-                      TextStyle(fontSize: 13, color: KivoraColors.textPrimaryOf(context))),
+              Text(AppLocalizations.of(context).auLast7,
+                  style: TextStyle(
+                      fontSize: 13,
+                      color: KivoraColors.textPrimaryOf(context))),
             ],
           ),
         ),
@@ -610,9 +615,10 @@ class _OrganizationAuditScreenState
           child: Row(
             children: [
               const SizedBox(width: 24),
-              Text('Last 30 days',
-                  style:
-                      TextStyle(fontSize: 13, color: KivoraColors.textPrimaryOf(context))),
+              Text(AppLocalizations.of(context).auLast30,
+                  style: TextStyle(
+                      fontSize: 13,
+                      color: KivoraColors.textPrimaryOf(context))),
             ],
           ),
         ),
@@ -624,7 +630,7 @@ class _OrganizationAuditScreenState
               Icon(Icons.date_range_rounded,
                   size: 16, color: KivoraColors.of(context).accentText),
               const SizedBox(width: 8),
-              Text('Custom date range...',
+              Text(AppLocalizations.of(context).auCustomRange,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: KivoraColors.of(context).accentText,
@@ -642,10 +648,13 @@ class _OrganizationAuditScreenState
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: isActive ? AppTheme.primaryBlue.withValues(alpha: 0.12) : KivoraColors.surfaceOf(context),
+        color: isActive
+            ? AppTheme.primaryBlue.withValues(alpha: 0.12)
+            : KivoraColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: isActive ? AppTheme.primaryBlue : KivoraColors.borderOf(context),
+          color:
+              isActive ? AppTheme.primaryBlue : KivoraColors.borderOf(context),
           width: isActive ? 1.5 : 1.0,
         ),
       ),
@@ -654,20 +663,26 @@ class _OrganizationAuditScreenState
         children: [
           Icon(icon,
               size: 16,
-              color: isActive ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context)),
+              color: isActive
+                  ? AppTheme.primaryBlue
+                  : KivoraColors.textSecondaryOf(context)),
           const SizedBox(width: 8),
           Text(
             label,
             style: TextStyle(
               fontSize: 13,
               fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-              color: isActive ? AppTheme.primaryBlue : KivoraColors.textPrimaryOf(context),
+              color: isActive
+                  ? AppTheme.primaryBlue
+                  : KivoraColors.textPrimaryOf(context),
             ),
           ),
           const SizedBox(width: 6),
           Icon(Icons.keyboard_arrow_down_rounded,
               size: 16,
-              color: isActive ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context)),
+              color: isActive
+                  ? AppTheme.primaryBlue
+                  : KivoraColors.textSecondaryOf(context)),
         ],
       ),
     );
@@ -773,7 +788,7 @@ class _OrganizationAuditScreenState
       final stamp = data['timestamp'];
       final dateStr = stamp is Timestamp
           ? _dayFormat.format(stamp.toDate().toLocal())
-          : 'Date unavailable';
+          : AppLocalizations.of(context).auDateUnknown;
       groupedDocs.putIfAbsent(dateStr, () => []).add(doc);
     }
 
@@ -792,10 +807,14 @@ class _OrganizationAuditScreenState
               spacing: 8,
               runSpacing: 8,
               children: [
-                _buildCategoryTab('all', 'All records', allCount),
-                _buildCategoryTab('members', 'Members', membersCount),
                 _buildCategoryTab(
-                    'invitations', 'Invitations', invitationsCount),
+                    'all', AppLocalizations.of(context).auAllRecords, allCount),
+                _buildCategoryTab('members',
+                    AppLocalizations.of(context).auMembers, membersCount),
+                _buildCategoryTab(
+                    'invitations',
+                    AppLocalizations.of(context).auInvitations,
+                    invitationsCount),
               ],
             ),
             InkWell(
@@ -813,7 +832,9 @@ class _OrganizationAuditScreenState
                         size: 16, color: KivoraColors.textSecondaryOf(context)),
                     const SizedBox(width: 6),
                     Text(
-                      _newestFirst ? 'Newest first' : 'Oldest first',
+                      _newestFirst
+                          ? AppLocalizations.of(context).auNewest
+                          : AppLocalizations.of(context).auOldest,
                       style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
@@ -849,14 +870,16 @@ class _OrganizationAuditScreenState
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                   decoration: BoxDecoration(
-                    border:
-                        Border(bottom: BorderSide(color: KivoraColors.borderOf(context))),
+                    border: Border(
+                        bottom:
+                            BorderSide(color: KivoraColors.borderOf(context))),
                   ),
                   child: Row(
                     children: [
                       Expanded(
                           flex: 5,
-                          child: Text('ACTIVITY',
+                          child: Text(
+                              AppLocalizations.of(context).auColActivity,
                               style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
@@ -864,7 +887,7 @@ class _OrganizationAuditScreenState
                                   letterSpacing: 0.8))),
                       Expanded(
                           flex: 3,
-                          child: Text('RECORD TYPE',
+                          child: Text(AppLocalizations.of(context).auColType,
                               style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
@@ -872,7 +895,7 @@ class _OrganizationAuditScreenState
                                   letterSpacing: 0.8))),
                       Expanded(
                           flex: 3,
-                          child: Text('ACCOUNT ID',
+                          child: Text(AppLocalizations.of(context).auColAccount,
                               style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
@@ -880,7 +903,7 @@ class _OrganizationAuditScreenState
                                   letterSpacing: 0.8))),
                       SizedBox(
                           width: 90,
-                          child: Text('TIME',
+                          child: Text(AppLocalizations.of(context).auColTime,
                               style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
@@ -895,9 +918,10 @@ class _OrganizationAuditScreenState
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 48),
                   child: Center(
-                    child: Text('No activity records match your criteria.',
+                    child: Text(AppLocalizations.of(context).auNoMatch,
                         style: TextStyle(
-                            color: KivoraColors.textSecondaryOf(context), fontSize: 14)),
+                            color: KivoraColors.textSecondaryOf(context),
+                            fontSize: 14)),
                   ),
                 )
               else
@@ -924,9 +948,13 @@ class _OrganizationAuditScreenState
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              '${dayDocs.length} ${dayDocs.length == 1 ? 'record' : 'records'}',
+                              (dayDocs.length == 1
+                                  ? AppLocalizations.of(context).auRecordOne
+                                  : AppLocalizations.of(context)
+                                      .auRecordMany(dayDocs.length.toString())),
                               style: TextStyle(
-                                  fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
+                                  fontSize: 12,
+                                  color: KivoraColors.textSecondaryOf(context)),
                             ),
                           ],
                         ),
@@ -949,13 +977,15 @@ class _OrganizationAuditScreenState
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '${filteredDocs.length} records shown · Repeated records retained',
-              style:
-                  TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
+              AppLocalizations.of(context)
+                  .auShown(filteredDocs.length.toString()),
+              style: TextStyle(
+                  fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
             ),
             Text(
-              'Dates and times as recorded',
-              style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
+              AppLocalizations.of(context).auTimesNote,
+              style: TextStyle(
+                  fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
             ),
           ],
         ),
@@ -976,7 +1006,9 @@ class _OrganizationAuditScreenState
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? AppTheme.primaryBlue.withValues(alpha: 0.12) : Colors.transparent,
+          color: isSelected
+              ? AppTheme.primaryBlue.withValues(alpha: 0.12)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
           border: isSelected
               ? Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.3))
@@ -989,8 +1021,9 @@ class _OrganizationAuditScreenState
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                color:
-                    isSelected ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context),
+                color: isSelected
+                    ? AppTheme.primaryBlue
+                    : KivoraColors.textSecondaryOf(context),
               ),
             ),
             const SizedBox(width: 6),
@@ -999,8 +1032,9 @@ class _OrganizationAuditScreenState
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color:
-                    isSelected ? AppTheme.primaryBlue : KivoraColors.textSecondaryOf(context),
+                color: isSelected
+                    ? AppTheme.primaryBlue
+                    : KivoraColors.textSecondaryOf(context),
               ),
             ),
           ],
@@ -1017,7 +1051,8 @@ class _OrganizationAuditScreenState
     final docId = doc.id;
     final data = doc.data();
     final rawAction = data['action'] as String? ?? 'ADMIN_ACTION';
-    final actionTitle = _formatActionTitle(rawAction);
+    final actionTitle =
+        auditActionText(AppLocalizations.of(context), rawAction);
     final recordType = data['resourceType'] as String? ?? 'record';
     final rawActor = data['actorUid'] as String? ?? 'System';
     final accountIdTruncated = _truncateAccountId(rawActor);
@@ -1025,10 +1060,10 @@ class _OrganizationAuditScreenState
     final stamp = data['timestamp'];
     final timeStr = stamp is Timestamp
         ? _timeFormat.format(stamp.toDate().toLocal())
-        : 'Unavailable';
+        : AppLocalizations.of(context).auUnavailable;
     final fullDateStr = stamp is Timestamp
         ? _fullFormat.format(stamp.toDate().toLocal())
-        : 'Time unavailable';
+        : AppLocalizations.of(context).auTimeUnknown;
 
     final (iconData, iconColor, iconBg) =
         _getActionVisuals(rawAction, recordType);
@@ -1051,7 +1086,9 @@ class _OrganizationAuditScreenState
               color: isExpanded
                   ? AppTheme.primaryBlue.withValues(alpha: 0.1)
                   : (isHovered
-                      ? AppTheme.primaryBlue.withValues(alpha: 0.12).withValues(alpha: 0.5)
+                      ? AppTheme.primaryBlue
+                          .withValues(alpha: 0.12)
+                          .withValues(alpha: 0.5)
                       : KivoraColors.surfaceOf(context)),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: isDesktop
@@ -1079,7 +1116,8 @@ class _OrganizationAuditScreenState
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
-                                      color: KivoraColors.textPrimaryOf(context)),
+                                      color:
+                                          KivoraColors.textPrimaryOf(context)),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -1120,7 +1158,8 @@ class _OrganizationAuditScreenState
                           child: Text(
                             timeStr,
                             style: TextStyle(
-                                fontSize: 13, color: KivoraColors.textSecondaryOf(context)),
+                                fontSize: 13,
+                                color: KivoraColors.textSecondaryOf(context)),
                           ),
                         ),
 
@@ -1129,10 +1168,11 @@ class _OrganizationAuditScreenState
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             if (isHovered && !isExpanded)
-                              Text('View details ',
+                              Text(AppLocalizations.of(context).auViewDetails,
                                   style: TextStyle(
                                       fontSize: 11,
-                                      color: KivoraColors.of(context).accentText,
+                                      color:
+                                          KivoraColors.of(context).accentText,
                                       fontWeight: FontWeight.bold)),
                             Icon(
                               isExpanded
@@ -1174,7 +1214,8 @@ class _OrganizationAuditScreenState
                             Text(timeStr,
                                 style: TextStyle(
                                     fontSize: 12,
-                                    color: KivoraColors.textSecondaryOf(context))),
+                                    color:
+                                        KivoraColors.textSecondaryOf(context))),
                             const SizedBox(width: 4),
                             Icon(
                               isExpanded
@@ -1192,9 +1233,12 @@ class _OrganizationAuditScreenState
                                 style: TextStyle(
                                     fontSize: 11,
                                     fontFamily: 'monospace',
-                                    color: KivoraColors.textSecondaryOf(context))),
+                                    color:
+                                        KivoraColors.textSecondaryOf(context))),
                             const SizedBox(width: 8),
-                            Text('• $accountIdTruncated',
+                            Text(
+                                AppLocalizations.of(context).auActorBullet(
+                                    accountIdTruncated.toString()),
                                 style: TextStyle(
                                     fontSize: 11,
                                     fontFamily: 'monospace',
@@ -1220,21 +1264,28 @@ class _OrganizationAuditScreenState
                     spacing: 32,
                     runSpacing: 12,
                     children: [
-                      _detailField('Recorded at', fullDateStr),
-                      _detailField('Record type', recordType, isCode: true),
-                      _detailField('Account ID', rawActor, isCode: true),
+                      _detailField(AppLocalizations.of(context).auRecordedAt,
+                          fullDateStr),
+                      _detailField(
+                          AppLocalizations.of(context).auRecordType, recordType,
+                          isCode: true),
+                      _detailField(
+                          AppLocalizations.of(context).auAccountId, rawActor,
+                          isCode: true),
                     ],
                   ),
                   const SizedBox(height: 12),
                   Row(
                     children: [
                       Icon(Icons.info_outline_rounded,
-                          size: 14, color: KivoraColors.textSecondaryOf(context)),
+                          size: 14,
+                          color: KivoraColors.textSecondaryOf(context)),
                       const SizedBox(width: 6),
                       Text(
-                        'Actor identity and change details are not provided in this record.',
+                        AppLocalizations.of(context).auNoActorDetail,
                         style: TextStyle(
-                            fontSize: 11, color: KivoraColors.textSecondaryOf(context)),
+                            fontSize: 11,
+                            color: KivoraColors.textSecondaryOf(context)),
                       ),
                     ],
                   ),
@@ -1253,8 +1304,8 @@ class _OrganizationAuditScreenState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label,
-            style:
-                TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
+            style: TextStyle(
+                fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
         const SizedBox(height: 2),
         Text(
           value,

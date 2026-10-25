@@ -2738,4 +2738,370 @@ class AppLocalizationsAr extends AppLocalizations {
   String dmSelectedCount(String a) {
     return '$a محدد';
   }
+
+  @override
+  String get auditActAcceptInvitation => 'تم قبول الدعوة';
+
+  @override
+  String get auditActActivateVotingEvent => 'تم تفعيل الانتخاب';
+
+  @override
+  String get auditActAddMember => 'تمت إضافة عضو';
+
+  @override
+  String get auditActAssignDepartment => 'تم تعيين قسم';
+
+  @override
+  String get auditActCalculateResults => 'تم احتساب النتائج';
+
+  @override
+  String get auditActCancelVotingEvent => 'تم إلغاء الانتخاب';
+
+  @override
+  String get auditActCloseVotingEvent => 'تم إغلاق الانتخاب';
+
+  @override
+  String get auditActCreateCandidate => 'تمت إضافة مرشح';
+
+  @override
+  String get auditActCreateDepartment => 'تم إنشاء قسم';
+
+  @override
+  String get auditActCreateJoiningCode => 'تم إنشاء رمز انضمام';
+
+  @override
+  String get auditActCreateOrganization => 'تم إنشاء المؤسسة';
+
+  @override
+  String get auditActCreatePollOption => 'تمت إضافة خيار استطلاع';
+
+  @override
+  String get auditActCreateVotingEvent => 'تم إنشاء انتخاب';
+
+  @override
+  String get auditActDeclineInvitation => 'تم رفض الدعوة';
+
+  @override
+  String get auditActDeleteCandidate => 'تمت إزالة مرشح';
+
+  @override
+  String get auditActDeleteCandidatePhoto => 'تمت إزالة صورة مرشح';
+
+  @override
+  String get auditActDeleteDepartment => 'تم حذف قسم';
+
+  @override
+  String get auditActDeleteOrganization => 'تم حذف المؤسسة';
+
+  @override
+  String get auditActDeletePollOption => 'تمت إزالة خيار استطلاع';
+
+  @override
+  String get auditActDeleteVotingEvent => 'تم حذف الانتخاب';
+
+  @override
+  String get auditActFinalizeCandidatePhoto => 'تم حفظ صورة المرشح';
+
+  @override
+  String get auditActGrantObserverStatus => 'تم منح صلاحية مراقب';
+
+  @override
+  String get auditActInviteMember => 'تمت دعوة عضو';
+
+  @override
+  String get auditActJoinOrganizationWithCode => 'انضمام برمز';
+
+  @override
+  String get auditActLeaveOrganization => 'تمت مغادرة المؤسسة';
+
+  @override
+  String get auditActPlanChanged => 'تم تغيير الخطة';
+
+  @override
+  String get auditActPlatformAdminAccessGranted => 'تم منح صلاحية مسؤول المنصة';
+
+  @override
+  String get auditActPlatformAdminAccessRemoved => 'تم سحب صلاحية مسؤول المنصة';
+
+  @override
+  String get auditActPublishResults => 'تم نشر النتائج';
+
+  @override
+  String get auditActPublishVotingEvent => 'تم نشر الانتخاب';
+
+  @override
+  String get auditActRemindNonVoters => 'تم إرسال تذكير لمن لم يصوّتوا';
+
+  @override
+  String get auditActRemoveDepartment => 'تمت إزالة عضو من قسم';
+
+  @override
+  String get auditActRemoveMember => 'تمت إزالة عضو';
+
+  @override
+  String get auditActRevokeInvitation => 'تم إلغاء الدعوة';
+
+  @override
+  String get auditActRevokeJoiningCode => 'تم إلغاء رمز الانضمام';
+
+  @override
+  String get auditActRevokeObserverStatus => 'تم سحب صلاحية مراقب';
+
+  @override
+  String get auditActUpdateCandidate => 'تم تحديث مرشح';
+
+  @override
+  String get auditActUpdateDepartment => 'تم تحديث قسم';
+
+  @override
+  String get auditActUpdateMemberRole => 'تم تغيير دور عضو';
+
+  @override
+  String get auditActUpdateMemberStatus => 'تم تغيير حالة عضو';
+
+  @override
+  String get auditActUpdateOrganizationMetadata => 'تم تحديث بيانات المؤسسة';
+
+  @override
+  String get auditActUpdatePollOption => 'تم تحديث خيار استطلاع';
+
+  @override
+  String get auditActUpdateVotingEvent => 'تم تحديث الانتخاب';
+
+  @override
+  String get auditActOrganizationVerify => 'تم التحقق من المؤسسة';
+
+  @override
+  String get auditActOrganizationReject => 'تم رفض المؤسسة';
+
+  @override
+  String get auditActOrganizationSuspend => 'تم تعليق المؤسسة';
+
+  @override
+  String get auditActOrganizationReactivate => 'تمت إعادة تفعيل المؤسسة';
+
+  @override
+  String get auditActUnknown => 'إجراء إداري';
+
+  @override
+  String get auditSystem => 'النظام';
+
+  @override
+  String get auLoading => 'جارٍ تحميل نشاط المؤسسة…';
+
+  @override
+  String get auOrgLoadError =>
+      'تعذّر تحميل المؤسسة. تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get auNoOrgTitle => 'اختر مؤسسة';
+
+  @override
+  String get auNoOrgBody => 'اختر مؤسسة لعرض نشاطها.';
+
+  @override
+  String get auDeniedTitle => 'تم رفض الوصول';
+
+  @override
+  String get auDeniedBody =>
+      'يمكن لمالك هذه المؤسسة ومسؤوليها فقط عرض سجل التدقيق.';
+
+  @override
+  String get auCrumbOrg => 'المؤسسة';
+
+  @override
+  String get auCrumbActivity => 'النشاط';
+
+  @override
+  String get auTitle => 'نشاط المؤسسة';
+
+  @override
+  String get auSubtitle => 'راجع تغييرات العضوية والدعوات في مؤسستك.';
+
+  @override
+  String get auLoadingHistory => 'جارٍ تحميل سجل التدقيق…';
+
+  @override
+  String get auLoadError =>
+      'تعذّر تحميل نشاط المؤسسة. تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get auSearchLong => 'ابحث بالنشاط أو معرّف الحساب أو نوع السجل';
+
+  @override
+  String get auSearchShort => 'ابحث في النشاط...';
+
+  @override
+  String get auReset => 'إعادة ضبط';
+
+  @override
+  String get auAllTypes => 'جميع أنواع السجلات';
+
+  @override
+  String get auFilterType => 'تصفية حسب نوع السجل';
+
+  @override
+  String get auAllAccounts => 'جميع الحسابات';
+
+  @override
+  String auAccount(String a) {
+    return 'الحساب $a';
+  }
+
+  @override
+  String get auFilterAccount => 'تصفية حسب الحساب';
+
+  @override
+  String get auDateRange => 'نطاق التاريخ';
+
+  @override
+  String get auFilterDate => 'تصفية حسب نطاق التاريخ';
+
+  @override
+  String get auAllTime => 'كل الأوقات';
+
+  @override
+  String get auToday => 'اليوم';
+
+  @override
+  String get auLast7 => 'آخر 7 أيام';
+
+  @override
+  String get auLast30 => 'آخر 30 يومًا';
+
+  @override
+  String get auCustomRange => 'نطاق تاريخ مخصص...';
+
+  @override
+  String get auDateUnknown => 'التاريخ غير متاح';
+
+  @override
+  String get auAllRecords => 'جميع السجلات';
+
+  @override
+  String get auMembers => 'الأعضاء';
+
+  @override
+  String get auInvitations => 'الدعوات';
+
+  @override
+  String get auNewest => 'الأحدث أولًا';
+
+  @override
+  String get auOldest => 'الأقدم أولًا';
+
+  @override
+  String get auColActivity => 'النشاط';
+
+  @override
+  String get auColType => 'نوع السجل';
+
+  @override
+  String get auColAccount => 'معرّف الحساب';
+
+  @override
+  String get auColTime => 'الوقت';
+
+  @override
+  String get auNoMatch => 'لا توجد سجلات نشاط تطابق معاييرك.';
+
+  @override
+  String get auRecordOne => 'سجل واحد';
+
+  @override
+  String auRecordMany(String a) {
+    return '$a سجلات';
+  }
+
+  @override
+  String auShown(String a) {
+    return '$a سجلات معروضة · السجلات المكررة محفوظة';
+  }
+
+  @override
+  String get auTimesNote => 'التواريخ والأوقات كما سُجّلت';
+
+  @override
+  String get auUnavailable => 'غير متاح';
+
+  @override
+  String get auTimeUnknown => 'الوقت غير متاح';
+
+  @override
+  String get auViewDetails => 'عرض التفاصيل ';
+
+  @override
+  String auActorBullet(String a) {
+    return '• $a';
+  }
+
+  @override
+  String get auRecordedAt => 'وقت التسجيل';
+
+  @override
+  String get auRecordType => 'نوع السجل';
+
+  @override
+  String get auAccountId => 'معرّف الحساب';
+
+  @override
+  String get auNoActorDetail =>
+      'لا يتضمن هذا السجل هوية المنفّذ ولا تفاصيل التغيير.';
+
+  @override
+  String get evGenericTitle => 'حدث خطأ';
+
+  @override
+  String get evGenericStatus => 'خطأ';
+
+  @override
+  String get evOrgTitle => 'لا توجد مؤسسة نشطة';
+
+  @override
+  String get evOrgStatus => 'المؤسسة مطلوبة';
+
+  @override
+  String get evConnTitle => 'انقطع الاتصال';
+
+  @override
+  String get evConnStatus => 'الاتصال متقطع';
+
+  @override
+  String get evDeniedTitle => 'تم رفض الوصول';
+
+  @override
+  String get evDeniedStatus => 'الصلاحية مطلوبة';
+
+  @override
+  String get evSessionTitle => 'انتهت الجلسة';
+
+  @override
+  String get evSessionStatus => 'تسجيل الدخول مطلوب';
+
+  @override
+  String get evSaveTitle => 'تعذّر حفظ التغييرات';
+
+  @override
+  String get evSaveStatus => 'فشل الحفظ';
+
+  @override
+  String get evServiceTitle => 'الخدمة غير متاحة';
+
+  @override
+  String get evServiceStatus => 'انقطاع في الخدمة';
+
+  @override
+  String get evSelectOrg => 'اختر مؤسسة';
+
+  @override
+  String get evRequestAccess => 'طلب الوصول';
+
+  @override
+  String get evSignIn => 'تسجيل الدخول';
+
+  @override
+  String get evTryAgain => 'حاول مرة أخرى';
+
+  @override
+  String get errRetry => 'إعادة المحاولة';
 }

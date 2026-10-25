@@ -31,6 +31,7 @@ for e in batch["entries"]:
         return "{"+LETTERS[len(args)-1]+"}"
     en=unescape(interp.sub(sub,e["src"]))
     key=e["key"]
+    # existing key (git HEAD or earlier batch) with different text would overwrite a translation
     if key in arb["en"] and arb["en"][key]!=en:
         raise SystemExit(f"key clash with different text: {key}")
     arb["en"][key]=en; arb["ur"][key]=e["ur"]; arb["ar"][key]=e["ar"]

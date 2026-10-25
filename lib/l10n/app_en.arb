@@ -1442,5 +1442,151 @@
         "type": "String"
       }
     }
-  }
+  },
+  "auditActAcceptInvitation": "Invitation accepted",
+  "auditActActivateVotingEvent": "Election activated",
+  "auditActAddMember": "Member added",
+  "auditActAssignDepartment": "Department assigned",
+  "auditActCalculateResults": "Results calculated",
+  "auditActCancelVotingEvent": "Election cancelled",
+  "auditActCloseVotingEvent": "Election closed",
+  "auditActCreateCandidate": "Candidate added",
+  "auditActCreateDepartment": "Department created",
+  "auditActCreateJoiningCode": "Joining code created",
+  "auditActCreateOrganization": "Organization created",
+  "auditActCreatePollOption": "Poll option added",
+  "auditActCreateVotingEvent": "Election created",
+  "auditActDeclineInvitation": "Invitation declined",
+  "auditActDeleteCandidate": "Candidate removed",
+  "auditActDeleteCandidatePhoto": "Candidate photo removed",
+  "auditActDeleteDepartment": "Department deleted",
+  "auditActDeleteOrganization": "Organization deleted",
+  "auditActDeletePollOption": "Poll option removed",
+  "auditActDeleteVotingEvent": "Election deleted",
+  "auditActFinalizeCandidatePhoto": "Candidate photo saved",
+  "auditActGrantObserverStatus": "Observer access granted",
+  "auditActInviteMember": "Member invited",
+  "auditActJoinOrganizationWithCode": "Joined with a code",
+  "auditActLeaveOrganization": "Left the organization",
+  "auditActPlanChanged": "Plan changed",
+  "auditActPlatformAdminAccessGranted": "Platform admin access granted",
+  "auditActPlatformAdminAccessRemoved": "Platform admin access removed",
+  "auditActPublishResults": "Results published",
+  "auditActPublishVotingEvent": "Election published",
+  "auditActRemindNonVoters": "Reminder sent to non-voters",
+  "auditActRemoveDepartment": "Member removed from department",
+  "auditActRemoveMember": "Member removed",
+  "auditActRevokeInvitation": "Invitation revoked",
+  "auditActRevokeJoiningCode": "Joining code revoked",
+  "auditActRevokeObserverStatus": "Observer access removed",
+  "auditActUpdateCandidate": "Candidate updated",
+  "auditActUpdateDepartment": "Department updated",
+  "auditActUpdateMemberRole": "Member role changed",
+  "auditActUpdateMemberStatus": "Member status changed",
+  "auditActUpdateOrganizationMetadata": "Organization details updated",
+  "auditActUpdatePollOption": "Poll option updated",
+  "auditActUpdateVotingEvent": "Election updated",
+  "auditActOrganizationVerify": "Organization verified",
+  "auditActOrganizationReject": "Organization rejected",
+  "auditActOrganizationSuspend": "Organization suspended",
+  "auditActOrganizationReactivate": "Organization reactivated",
+  "auditActUnknown": "Admin action",
+  "auditSystem": "System",
+  "auLoading": "Loading organization activity…",
+  "auOrgLoadError": "We could not load the organization. Check your connection and try again.",
+  "auNoOrgTitle": "Select an organization",
+  "auNoOrgBody": "Choose an organization to view its activity.",
+  "auDeniedTitle": "Access denied",
+  "auDeniedBody": "Only this organization’s Owner and Admins can view its audit history.",
+  "auCrumbOrg": "Organization",
+  "auCrumbActivity": "Activity",
+  "auTitle": "Organization activity",
+  "auSubtitle": "Review membership and invitation changes across your organization.",
+  "auLoadingHistory": "Loading audit history…",
+  "auLoadError": "We could not load organization activity. Check your connection and try again.",
+  "auSearchLong": "Search by activity, account ID or record type",
+  "auSearchShort": "Search activity...",
+  "auReset": "Reset",
+  "auAllTypes": "All record types",
+  "auFilterType": "Filter by record type",
+  "auAllAccounts": "All accounts",
+  "auAccount": "Account {a}",
+  "@auAccount": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "auFilterAccount": "Filter by account",
+  "auDateRange": "Date range",
+  "auFilterDate": "Filter by date range",
+  "auAllTime": "All time",
+  "auToday": "Today",
+  "auLast7": "Last 7 days",
+  "auLast30": "Last 30 days",
+  "auCustomRange": "Custom date range...",
+  "auDateUnknown": "Date unavailable",
+  "auAllRecords": "All records",
+  "auMembers": "Members",
+  "auInvitations": "Invitations",
+  "auNewest": "Newest first",
+  "auOldest": "Oldest first",
+  "auColActivity": "ACTIVITY",
+  "auColType": "RECORD TYPE",
+  "auColAccount": "ACCOUNT ID",
+  "auColTime": "TIME",
+  "auNoMatch": "No activity records match your criteria.",
+  "auRecordOne": "1 record",
+  "auRecordMany": "{a} records",
+  "@auRecordMany": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "auShown": "{a} records shown · Repeated records retained",
+  "@auShown": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "auTimesNote": "Dates and times as recorded",
+  "auUnavailable": "Unavailable",
+  "auTimeUnknown": "Time unavailable",
+  "auViewDetails": "View details ",
+  "auActorBullet": "• {a}",
+  "@auActorBullet": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "auRecordedAt": "Recorded at",
+  "auRecordType": "Record type",
+  "auAccountId": "Account ID",
+  "auNoActorDetail": "Actor identity and change details are not provided in this record.",
+  "evGenericTitle": "An error occurred",
+  "evGenericStatus": "Error",
+  "evOrgTitle": "No active organization",
+  "evOrgStatus": "Organization required",
+  "evConnTitle": "Connection lost",
+  "evConnStatus": "Connection interrupted",
+  "evDeniedTitle": "Access denied",
+  "evDeniedStatus": "Permission required",
+  "evSessionTitle": "Session expired",
+  "evSessionStatus": "Sign-in required",
+  "evSaveTitle": "Unable to save changes",
+  "evSaveStatus": "Save unsuccessful",
+  "evServiceTitle": "Service unavailable",
+  "evServiceStatus": "Service interruption",
+  "evSelectOrg": "Select organization",
+  "evRequestAccess": "Request access",
+  "evSignIn": "Sign in",
+  "evTryAgain": "Try again",
+  "errRetry": "Retry"
 }

@@ -2763,4 +2763,374 @@ class AppLocalizationsSd extends AppLocalizations {
   String dmSelectedCount(String a) {
     return '$a selected';
   }
+
+  @override
+  String get auditActAcceptInvitation => 'Invitation accepted';
+
+  @override
+  String get auditActActivateVotingEvent => 'Election activated';
+
+  @override
+  String get auditActAddMember => 'Member added';
+
+  @override
+  String get auditActAssignDepartment => 'Department assigned';
+
+  @override
+  String get auditActCalculateResults => 'Results calculated';
+
+  @override
+  String get auditActCancelVotingEvent => 'Election cancelled';
+
+  @override
+  String get auditActCloseVotingEvent => 'Election closed';
+
+  @override
+  String get auditActCreateCandidate => 'Candidate added';
+
+  @override
+  String get auditActCreateDepartment => 'Department created';
+
+  @override
+  String get auditActCreateJoiningCode => 'Joining code created';
+
+  @override
+  String get auditActCreateOrganization => 'Organization created';
+
+  @override
+  String get auditActCreatePollOption => 'Poll option added';
+
+  @override
+  String get auditActCreateVotingEvent => 'Election created';
+
+  @override
+  String get auditActDeclineInvitation => 'Invitation declined';
+
+  @override
+  String get auditActDeleteCandidate => 'Candidate removed';
+
+  @override
+  String get auditActDeleteCandidatePhoto => 'Candidate photo removed';
+
+  @override
+  String get auditActDeleteDepartment => 'Department deleted';
+
+  @override
+  String get auditActDeleteOrganization => 'Organization deleted';
+
+  @override
+  String get auditActDeletePollOption => 'Poll option removed';
+
+  @override
+  String get auditActDeleteVotingEvent => 'Election deleted';
+
+  @override
+  String get auditActFinalizeCandidatePhoto => 'Candidate photo saved';
+
+  @override
+  String get auditActGrantObserverStatus => 'Observer access granted';
+
+  @override
+  String get auditActInviteMember => 'Member invited';
+
+  @override
+  String get auditActJoinOrganizationWithCode => 'Joined with a code';
+
+  @override
+  String get auditActLeaveOrganization => 'Left the organization';
+
+  @override
+  String get auditActPlanChanged => 'Plan changed';
+
+  @override
+  String get auditActPlatformAdminAccessGranted =>
+      'Platform admin access granted';
+
+  @override
+  String get auditActPlatformAdminAccessRemoved =>
+      'Platform admin access removed';
+
+  @override
+  String get auditActPublishResults => 'Results published';
+
+  @override
+  String get auditActPublishVotingEvent => 'Election published';
+
+  @override
+  String get auditActRemindNonVoters => 'Reminder sent to non-voters';
+
+  @override
+  String get auditActRemoveDepartment => 'Member removed from department';
+
+  @override
+  String get auditActRemoveMember => 'Member removed';
+
+  @override
+  String get auditActRevokeInvitation => 'Invitation revoked';
+
+  @override
+  String get auditActRevokeJoiningCode => 'Joining code revoked';
+
+  @override
+  String get auditActRevokeObserverStatus => 'Observer access removed';
+
+  @override
+  String get auditActUpdateCandidate => 'Candidate updated';
+
+  @override
+  String get auditActUpdateDepartment => 'Department updated';
+
+  @override
+  String get auditActUpdateMemberRole => 'Member role changed';
+
+  @override
+  String get auditActUpdateMemberStatus => 'Member status changed';
+
+  @override
+  String get auditActUpdateOrganizationMetadata =>
+      'Organization details updated';
+
+  @override
+  String get auditActUpdatePollOption => 'Poll option updated';
+
+  @override
+  String get auditActUpdateVotingEvent => 'Election updated';
+
+  @override
+  String get auditActOrganizationVerify => 'Organization verified';
+
+  @override
+  String get auditActOrganizationReject => 'Organization rejected';
+
+  @override
+  String get auditActOrganizationSuspend => 'Organization suspended';
+
+  @override
+  String get auditActOrganizationReactivate => 'Organization reactivated';
+
+  @override
+  String get auditActUnknown => 'Admin action';
+
+  @override
+  String get auditSystem => 'System';
+
+  @override
+  String get auLoading => 'Loading organization activity…';
+
+  @override
+  String get auOrgLoadError =>
+      'We could not load the organization. Check your connection and try again.';
+
+  @override
+  String get auNoOrgTitle => 'Select an organization';
+
+  @override
+  String get auNoOrgBody => 'Choose an organization to view its activity.';
+
+  @override
+  String get auDeniedTitle => 'Access denied';
+
+  @override
+  String get auDeniedBody =>
+      'Only this organization’s Owner and Admins can view its audit history.';
+
+  @override
+  String get auCrumbOrg => 'Organization';
+
+  @override
+  String get auCrumbActivity => 'Activity';
+
+  @override
+  String get auTitle => 'Organization activity';
+
+  @override
+  String get auSubtitle =>
+      'Review membership and invitation changes across your organization.';
+
+  @override
+  String get auLoadingHistory => 'Loading audit history…';
+
+  @override
+  String get auLoadError =>
+      'We could not load organization activity. Check your connection and try again.';
+
+  @override
+  String get auSearchLong => 'Search by activity, account ID or record type';
+
+  @override
+  String get auSearchShort => 'Search activity...';
+
+  @override
+  String get auReset => 'Reset';
+
+  @override
+  String get auAllTypes => 'All record types';
+
+  @override
+  String get auFilterType => 'Filter by record type';
+
+  @override
+  String get auAllAccounts => 'All accounts';
+
+  @override
+  String auAccount(String a) {
+    return 'Account $a';
+  }
+
+  @override
+  String get auFilterAccount => 'Filter by account';
+
+  @override
+  String get auDateRange => 'Date range';
+
+  @override
+  String get auFilterDate => 'Filter by date range';
+
+  @override
+  String get auAllTime => 'All time';
+
+  @override
+  String get auToday => 'Today';
+
+  @override
+  String get auLast7 => 'Last 7 days';
+
+  @override
+  String get auLast30 => 'Last 30 days';
+
+  @override
+  String get auCustomRange => 'Custom date range...';
+
+  @override
+  String get auDateUnknown => 'Date unavailable';
+
+  @override
+  String get auAllRecords => 'All records';
+
+  @override
+  String get auMembers => 'Members';
+
+  @override
+  String get auInvitations => 'Invitations';
+
+  @override
+  String get auNewest => 'Newest first';
+
+  @override
+  String get auOldest => 'Oldest first';
+
+  @override
+  String get auColActivity => 'ACTIVITY';
+
+  @override
+  String get auColType => 'RECORD TYPE';
+
+  @override
+  String get auColAccount => 'ACCOUNT ID';
+
+  @override
+  String get auColTime => 'TIME';
+
+  @override
+  String get auNoMatch => 'No activity records match your criteria.';
+
+  @override
+  String get auRecordOne => '1 record';
+
+  @override
+  String auRecordMany(String a) {
+    return '$a records';
+  }
+
+  @override
+  String auShown(String a) {
+    return '$a records shown · Repeated records retained';
+  }
+
+  @override
+  String get auTimesNote => 'Dates and times as recorded';
+
+  @override
+  String get auUnavailable => 'Unavailable';
+
+  @override
+  String get auTimeUnknown => 'Time unavailable';
+
+  @override
+  String get auViewDetails => 'View details ';
+
+  @override
+  String auActorBullet(String a) {
+    return '• $a';
+  }
+
+  @override
+  String get auRecordedAt => 'Recorded at';
+
+  @override
+  String get auRecordType => 'Record type';
+
+  @override
+  String get auAccountId => 'Account ID';
+
+  @override
+  String get auNoActorDetail =>
+      'Actor identity and change details are not provided in this record.';
+
+  @override
+  String get evGenericTitle => 'An error occurred';
+
+  @override
+  String get evGenericStatus => 'Error';
+
+  @override
+  String get evOrgTitle => 'No active organization';
+
+  @override
+  String get evOrgStatus => 'Organization required';
+
+  @override
+  String get evConnTitle => 'Connection lost';
+
+  @override
+  String get evConnStatus => 'Connection interrupted';
+
+  @override
+  String get evDeniedTitle => 'Access denied';
+
+  @override
+  String get evDeniedStatus => 'Permission required';
+
+  @override
+  String get evSessionTitle => 'Session expired';
+
+  @override
+  String get evSessionStatus => 'Sign-in required';
+
+  @override
+  String get evSaveTitle => 'Unable to save changes';
+
+  @override
+  String get evSaveStatus => 'Save unsuccessful';
+
+  @override
+  String get evServiceTitle => 'Service unavailable';
+
+  @override
+  String get evServiceStatus => 'Service interruption';
+
+  @override
+  String get evSelectOrg => 'Select organization';
+
+  @override
+  String get evRequestAccess => 'Request access';
+
+  @override
+  String get evSignIn => 'Sign in';
+
+  @override
+  String get evTryAgain => 'Try again';
+
+  @override
+  String get errRetry => 'Retry';
 }
