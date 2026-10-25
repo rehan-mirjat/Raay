@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../core/utils/friendly_error.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,7 +28,8 @@ class JoinOrganizationScreen extends ConsumerStatefulWidget {
   final String? initialCode;
 
   @override
-  ConsumerState<JoinOrganizationScreen> createState() => _JoinOrganizationScreenState();
+  ConsumerState<JoinOrganizationScreen> createState() =>
+      _JoinOrganizationScreenState();
 }
 
 class _OrgPreview {
@@ -43,7 +45,8 @@ class _OrgPreview {
   final bool verified;
 }
 
-class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen> {
+class _JoinOrganizationScreenState
+    extends ConsumerState<JoinOrganizationScreen> {
   final _formKey = GlobalKey<FormState>();
   final _codeController = TextEditingController();
 
@@ -135,7 +138,8 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Successfully joined ${result.organizationName}!'),
+            content: Text(AppLocalizations.of(context)
+                .joJoined(result.organizationName.toString())),
             backgroundColor: AppTheme.success,
           ),
         );
@@ -176,33 +180,33 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
         if (!didPop) _backToCodeEntry();
       },
       child: Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 520),
-            child: Container(
-              decoration: BoxDecoration(
-                color: KivoraColors.surfaceOf(context),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: KivoraColors.borderOf(context)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.04),
-                    blurRadius: 16,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+        backgroundColor: Colors.transparent,
+        body: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 520),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: KivoraColors.surfaceOf(context),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: KivoraColors.borderOf(context)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.04),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(28),
+                child: _preview == null
+                    ? _buildCodeEntryForm()
+                    : _buildConfirmationCard(_preview!),
               ),
-              padding: const EdgeInsets.all(28),
-              child: _preview == null
-                  ? _buildCodeEntryForm()
-                  : _buildConfirmationCard(_preview!),
             ),
           ),
         ),
-      ),
       ),
     );
   }
@@ -233,8 +237,9 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.close_rounded, color: KivoraColors.textSecondaryOf(context)),
-                tooltip: 'Close',
+                icon: Icon(Icons.close_rounded,
+                    color: KivoraColors.textSecondaryOf(context)),
+                tooltip: AppLocalizations.of(context).joClose,
                 onPressed: _handleCancel,
               ),
             ],
@@ -242,7 +247,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
           const SizedBox(height: 20),
 
           Text(
-            'Join organization with code',
+            AppLocalizations.of(context).joTitle,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: KivoraColors.textPrimaryOf(context),
@@ -250,13 +255,16 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
           ),
           const SizedBox(height: 8),
           Text(
-            'Enter the joining code shared by your organization\'s owner to find your workspace.',
-            style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14, height: 1.4),
+            AppLocalizations.of(context).joSubtitle,
+            style: TextStyle(
+                color: KivoraColors.textSecondaryOf(context),
+                fontSize: 14,
+                height: 1.4),
           ),
           const SizedBox(height: 24),
 
           Text(
-            'JOINING CODE',
+            AppLocalizations.of(context).joCodeLabel,
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.bold,
@@ -272,21 +280,23 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
             enableSuggestions: false,
             textInputAction: TextInputAction.done,
             onFieldSubmitted: (_) => _findOrganization(),
-            decoration: const InputDecoration(
-              hintText: 'Enter your joining code',
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context).joCodeHint,
             ),
-            validator: (v) => Validators.required(v, 'Joining Code'),
+            validator: (v) => Validators.required(
+                v, AppLocalizations.of(context).joCodeField),
           ),
           const SizedBox(height: 6),
           Text(
-            'Paste the complete code exactly as it was shared with you.',
-            style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
+            AppLocalizations.of(context).joCodeHelp,
+            style: TextStyle(
+                fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
           ),
           const SizedBox(height: 12),
           TextButton.icon(
             onPressed: () => context.go('/orgs/join/scan'),
             icon: const Icon(KivoraIcons.qrCode, size: 18),
-            label: const Text('Scan QR code instead'),
+            label: Text(AppLocalizations.of(context).joScan),
             style: TextButton.styleFrom(padding: EdgeInsets.zero),
           ),
           const SizedBox(height: 8),
@@ -301,20 +311,27 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.info_outline_rounded, color: KivoraColors.of(context).accentText, size: 18),
+                Icon(Icons.info_outline_rounded,
+                    color: KivoraColors.of(context).accentText, size: 18),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Don\'t have a code?',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: KivoraColors.textPrimaryOf(context)),
+                        AppLocalizations.of(context).joNoCode,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            color: KivoraColors.textPrimaryOf(context)),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'Ask your organization\'s owner for one. If a code is invalid or expired, request a new code.',
-                        style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.4),
+                        AppLocalizations.of(context).joNoCodeBody,
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: KivoraColors.textSecondaryOf(context),
+                            height: 1.4),
                       ),
                     ],
                   ),
@@ -325,8 +342,9 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
           const SizedBox(height: 16),
 
           Text(
-            'You\'ll review the organization before confirming that you want to join.',
-            style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
+            AppLocalizations.of(context).joReviewNote,
+            style: TextStyle(
+                fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
           ),
 
           if (_error != null) ...[
@@ -343,8 +361,9 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
             children: [
               OutlinedButton(
                 onPressed: _handleCancel,
-                style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
-                child: const Text('Cancel'),
+                style:
+                    OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+                child: Text(AppLocalizations.of(context).joCancel),
               ),
               FilledButton(
                 onPressed: canSubmit ? _findOrganization : null,
@@ -355,7 +374,7 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                         width: 16,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Text('Find organization'),
+                    : Text(AppLocalizations.of(context).joFind),
               ),
             ],
           ),
@@ -386,15 +405,16 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
               ),
             ),
             IconButton(
-              icon: Icon(Icons.close_rounded, color: KivoraColors.textSecondaryOf(context)),
-              tooltip: 'Close',
+              icon: Icon(Icons.close_rounded,
+                  color: KivoraColors.textSecondaryOf(context)),
+              tooltip: AppLocalizations.of(context).joClose,
               onPressed: _handleCancel,
             ),
           ],
         ),
         const SizedBox(height: 20),
         Text(
-          'Is this your organization?',
+          AppLocalizations.of(context).joConfirmTitle,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: KivoraColors.textPrimaryOf(context),
@@ -402,8 +422,11 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
         ),
         const SizedBox(height: 8),
         Text(
-          'Confirm this is the workspace you want to join before continuing.',
-          style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14, height: 1.4),
+          AppLocalizations.of(context).joConfirmBody,
+          style: TextStyle(
+              color: KivoraColors.textSecondaryOf(context),
+              fontSize: 14,
+              height: 1.4),
         ),
         const SizedBox(height: 24),
         Container(
@@ -452,7 +475,9 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          preview.verified ? 'Verified' : 'Pending verification',
+                          preview.verified
+                              ? AppLocalizations.of(context).joVerified
+                              : AppLocalizations.of(context).joPending,
                           style: TextStyle(
                               fontSize: 12,
                               color: preview.verified
@@ -467,23 +492,21 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
             ],
           ),
         ),
-
         if (_error != null) ...[
           const SizedBox(height: 16),
           InlineErrorBanner(message: _error!),
         ],
-
         const SizedBox(height: 28),
-
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             OutlinedButton(
               onPressed: _isLoading ? null : _backToCodeEntry,
               style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
-              child: const Text('Use a different code'),
+              child: Text(AppLocalizations.of(context).joDifferent),
             ),
             const SizedBox(width: 12),
             FilledButton(
@@ -496,7 +519,8 @@ class _JoinOrganizationScreenState extends ConsumerState<JoinOrganizationScreen>
                       child: CircularProgressIndicator(
                           color: Colors.white, strokeWidth: 2),
                     )
-                  : Text('Join ${preview.organizationName}'),
+                  : Text(AppLocalizations.of(context)
+                      .joJoin(preview.organizationName.toString())),
             ),
           ],
         ),

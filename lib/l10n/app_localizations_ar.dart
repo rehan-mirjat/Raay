@@ -3564,4 +3564,362 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get plOnlySuper => 'هذا القسم متاح لمسؤولي المنصة الرئيسيين فقط.';
+
+  @override
+  String get msActive => 'نشط';
+
+  @override
+  String get msInactive => 'غير نشط';
+
+  @override
+  String get msPending => 'معلّق';
+
+  @override
+  String get msSuspended => 'موقوف';
+
+  @override
+  String get msRemoved => 'مُزال';
+
+  @override
+  String get coTypeAcademic => 'مؤسسة أكاديمية';
+
+  @override
+  String get coTypeCorporate => 'مؤسسة تجارية';
+
+  @override
+  String get coTypeNonProfit => 'منظمة غير ربحية';
+
+  @override
+  String get coTypeClub => 'نادٍ / جمعية طلابية';
+
+  @override
+  String get coTypeCommunity => 'جمعية مجتمعية';
+
+  @override
+  String get coTypeOther => 'أخرى';
+
+  @override
+  String get coCreated => 'تم إنشاء المؤسسة والتحقق منها!';
+
+  @override
+  String get coClose => 'إغلاق';
+
+  @override
+  String get coTitle => 'إنشاء مؤسسة';
+
+  @override
+  String get coSubtitle => 'امنح مجتمعك مساحة مشتركة للأشخاص والأقسام والنشاط.';
+
+  @override
+  String get coNameLabel => 'اسم المؤسسة *';
+
+  @override
+  String get coNameHint => 'مثلاً مجتمعك أو شركتك';
+
+  @override
+  String get coNameField => 'اسم المؤسسة';
+
+  @override
+  String get coNameShort => 'يجب ألا يقل الاسم عن حرفين';
+
+  @override
+  String get coNameLong => 'لا يمكن أن يتجاوز الاسم 80 حرفًا';
+
+  @override
+  String get coNameHelp =>
+      'استخدم اسمًا يتعرّف عليه أعضاؤك. من 2 إلى 80 حرفًا.';
+
+  @override
+  String get coTypeLabel => 'نوع المؤسسة *';
+
+  @override
+  String get coTypeHint => 'اختر نوعًا';
+
+  @override
+  String get coCityLabel => 'المدينة (اختياري)';
+
+  @override
+  String get coCityHint => 'أدخل المدينة';
+
+  @override
+  String get coCountryLabel => 'الدولة (اختياري)';
+
+  @override
+  String get coCountryHint => 'اختر الدولة';
+
+  @override
+  String get coVerifiedTitle => 'توثيق فورية، وستكون المالك';
+
+  @override
+  String get coVerifiedBody =>
+      'بما أن بريد حسابك موثّق، تُنشأ مؤسستك موثّقة مسبقًا - دون حاجة لمراجعة يدوية. أعدّ مساحة عملك وعلامتك التجارية ورموز الانضمام مباشرة بعد ذلك.';
+
+  @override
+  String get coRequired => '* أكمل الحقول المطلوبة لإنشاء مؤسستك.';
+
+  @override
+  String get coCancel => 'إلغاء';
+
+  @override
+  String get coCreate => 'إنشاء المؤسسة';
+
+  @override
+  String joJoined(String a) {
+    return 'تم الانضمام إلى $a بنجاح!';
+  }
+
+  @override
+  String get joClose => 'إغلاق';
+
+  @override
+  String get joTitle => 'الانضمام إلى مؤسسة برمز';
+
+  @override
+  String get joSubtitle =>
+      'أدخل رمز الانضمام الذي شاركه مالك مؤسستك للعثور على مساحة عملك.';
+
+  @override
+  String get joCodeLabel => 'رمز الانضمام';
+
+  @override
+  String get joCodeHint => 'أدخل رمز الانضمام';
+
+  @override
+  String get joCodeField => 'رمز الانضمام';
+
+  @override
+  String get joCodeHelp => 'الصق الرمز كاملًا تمامًا كما وصلك.';
+
+  @override
+  String get joScan => 'امسح رمز QR بدلًا من ذلك';
+
+  @override
+  String get joNoCode => 'ليس لديك رمز؟';
+
+  @override
+  String get joNoCodeBody =>
+      'اطلب رمزًا من مالك مؤسستك. إذا كان الرمز غير صالح أو منتهيًا فاطلب رمزًا جديدًا.';
+
+  @override
+  String get joReviewNote => 'ستراجع المؤسسة قبل تأكيد رغبتك في الانضمام.';
+
+  @override
+  String get joCancel => 'إلغاء';
+
+  @override
+  String get joFind => 'البحث عن المؤسسة';
+
+  @override
+  String get joConfirmTitle => 'هل هذه مؤسستك؟';
+
+  @override
+  String get joConfirmBody =>
+      'أكّد أن هذه هي مساحة العمل التي تريد الانضمام إليها قبل المتابعة.';
+
+  @override
+  String get joVerified => 'موثّقة';
+
+  @override
+  String get joPending => 'التحقق معلّق';
+
+  @override
+  String get joDifferent => 'استخدم رمزًا آخر';
+
+  @override
+  String joJoin(String a) {
+    return 'الانضمام إلى $a';
+  }
+
+  @override
+  String get imCreatedTitle => 'تم إنشاء الدعوة';
+
+  @override
+  String imCreatedBody(String a) {
+    return 'تم إنشاء دعوة لـ $a.';
+  }
+
+  @override
+  String get imCreatedNote =>
+      'سيراها المدعو في إشعارات Kivora بعد تسجيل الدخول، وله القبول أو الرفض من هناك.';
+
+  @override
+  String get imShareLink => 'شارك هذا الرابط المباشر مع المدعو:';
+
+  @override
+  String get imDone => 'تم';
+
+  @override
+  String get imTitle => 'دعوة عضو';
+
+  @override
+  String get imClose => 'إغلاق';
+
+  @override
+  String get imSubtitle => 'ادعُ شخصًا للانضمام إلى مساحة عملك.';
+
+  @override
+  String get imEmailLabel => 'عنوان البريد الإلكتروني للمدعو *';
+
+  @override
+  String get imEmailHint => 'voter@organization.com';
+
+  @override
+  String imOrg(String a) {
+    return 'المؤسسة: $a';
+  }
+
+  @override
+  String get imRole => 'صلاحية الدور';
+
+  @override
+  String get imRoleMember => 'عضو';
+
+  @override
+  String get imRoleAdmin => 'مسؤول';
+
+  @override
+  String get imCancel => 'إلغاء';
+
+  @override
+  String get imSend => 'إرسال الدعوة';
+
+  @override
+  String get aeTitle => 'إضافة عضو موجود';
+
+  @override
+  String get aeClose => 'إغلاق';
+
+  @override
+  String get aeSubtitle => 'أضف حساب Kivora موثّقًا مباشرة إلى هذه المؤسسة.';
+
+  @override
+  String get aeEmailLabel => 'عنوان البريد الإلكتروني للعضو *';
+
+  @override
+  String get aeEmailHint => 'user@example.com';
+
+  @override
+  String get aeEmailInvalid => 'أدخل عنوان بريد إلكتروني صالحًا.';
+
+  @override
+  String get aeCancel => 'إلغاء';
+
+  @override
+  String get aeAdd => 'إضافة عضو';
+
+  @override
+  String get adAssigned => 'تم تعيين العضو بنجاح.';
+
+  @override
+  String adFailed(String a) {
+    return 'تعذّر تعيين العضو: $a';
+  }
+
+  @override
+  String get adTitle => 'إضافة عضو إلى القسم';
+
+  @override
+  String get adClose => 'إغلاق';
+
+  @override
+  String get adSearchLabel => 'ابحث في الأعضاء النشطين';
+
+  @override
+  String get adSearchHint => 'اكتب اسمًا أو بريدًا إلكترونيًا...';
+
+  @override
+  String get adNone => 'لم يُعثر على أعضاء نشطين مؤهلين.';
+
+  @override
+  String get adUnknown => 'مستخدم غير معروف';
+
+  @override
+  String adCurrentlyIn(String a, String b) {
+    return '$a • حاليًا في $b';
+  }
+
+  @override
+  String adAddTo(String a) {
+    return 'إضافة $a إلى هذا القسم';
+  }
+
+  @override
+  String get mpCancel => 'إلغاء';
+
+  @override
+  String get mpUser => 'مستخدم';
+
+  @override
+  String get mpNone => 'لا شيء';
+
+  @override
+  String get mpRole => 'الدور';
+
+  @override
+  String get mpStatus => 'الحالة';
+
+  @override
+  String get mpDepartment => 'القسم';
+
+  @override
+  String get mpObserver => 'صلاحية المراقب';
+
+  @override
+  String get mpGranted => 'ممنوحة';
+
+  @override
+  String get mpPromote => 'ترقية إلى مسؤول';
+
+  @override
+  String get mpPromoted => 'تمت الترقية إلى مسؤول بنجاح.';
+
+  @override
+  String get mpDemote => 'خفض إلى عضو';
+
+  @override
+  String get mpDemoted => 'تم الخفض إلى عضو بنجاح.';
+
+  @override
+  String get mpGrantObserver => 'منح صلاحية المراقب';
+
+  @override
+  String get mpGrantedDone => 'تم منح صلاحية المراقب.';
+
+  @override
+  String get mpRevokeObserver => 'سحب صلاحية المراقب';
+
+  @override
+  String get mpRevokedDone => 'تم سحب صلاحية المراقب.';
+
+  @override
+  String get mpDeactivate => 'تعطيل العضو';
+
+  @override
+  String get mpDeactivated => 'تم تعطيل العضو بنجاح.';
+
+  @override
+  String get mpReactivate => 'إعادة تفعيل العضو';
+
+  @override
+  String get mpReactivated => 'تمت إعادة تفعيل العضو بنجاح.';
+
+  @override
+  String get mpRemove => 'إزالة العضو';
+
+  @override
+  String mpRemoveTitle(String a) {
+    return 'إزالة $a؟';
+  }
+
+  @override
+  String get mpRemoveBody => 'سيفقدون الوصول إلى هذه المؤسسة فورًا.';
+
+  @override
+  String get mpRemoved => 'تمت إزالة العضو من المؤسسة.';
+
+  @override
+  String get mpClose => 'إغلاق';
+
+  @override
+  String get imOrgLabel => 'المؤسسة';
 }

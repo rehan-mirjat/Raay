@@ -3601,4 +3601,368 @@ class AppLocalizationsSd extends AppLocalizations {
   @override
   String get plOnlySuper =>
       'This area is available only to Platform Super Admins.';
+
+  @override
+  String get msActive => 'active';
+
+  @override
+  String get msInactive => 'inactive';
+
+  @override
+  String get msPending => 'pending';
+
+  @override
+  String get msSuspended => 'suspended';
+
+  @override
+  String get msRemoved => 'removed';
+
+  @override
+  String get coTypeAcademic => 'Academic Institution';
+
+  @override
+  String get coTypeCorporate => 'Corporate Enterprise';
+
+  @override
+  String get coTypeNonProfit => 'Non-Profit Organization';
+
+  @override
+  String get coTypeClub => 'Club / Student Society';
+
+  @override
+  String get coTypeCommunity => 'Community Association';
+
+  @override
+  String get coTypeOther => 'Other';
+
+  @override
+  String get coCreated => 'Organization created and verified!';
+
+  @override
+  String get coClose => 'Close';
+
+  @override
+  String get coTitle => 'Create an organization';
+
+  @override
+  String get coSubtitle =>
+      'Give your community a shared space for people, departments and activity.';
+
+  @override
+  String get coNameLabel => 'ORGANIZATION NAME *';
+
+  @override
+  String get coNameHint => 'e.g. Your community or company';
+
+  @override
+  String get coNameField => 'Organization Name';
+
+  @override
+  String get coNameShort => 'Name must be at least 2 characters';
+
+  @override
+  String get coNameLong => 'Name cannot exceed 80 characters';
+
+  @override
+  String get coNameHelp =>
+      'Use a name your members will recognize. 2–80 characters.';
+
+  @override
+  String get coTypeLabel => 'ORGANIZATION TYPE *';
+
+  @override
+  String get coTypeHint => 'Select a type';
+
+  @override
+  String get coCityLabel => 'CITY (OPTIONAL)';
+
+  @override
+  String get coCityHint => 'Enter city';
+
+  @override
+  String get coCountryLabel => 'COUNTRY (OPTIONAL)';
+
+  @override
+  String get coCountryHint => 'Select country';
+
+  @override
+  String get coVerifiedTitle => 'Verified instantly, you\'ll be the owner';
+
+  @override
+  String get coVerifiedBody =>
+      'Since your account email is verified, your organization is created already verified - no manual review needed. Set up your workspace, branding and joining codes right after.';
+
+  @override
+  String get coRequired =>
+      '* Complete the required fields to create your organization.';
+
+  @override
+  String get coCancel => 'Cancel';
+
+  @override
+  String get coCreate => 'Create organization';
+
+  @override
+  String joJoined(String a) {
+    return 'Successfully joined $a!';
+  }
+
+  @override
+  String get joClose => 'Close';
+
+  @override
+  String get joTitle => 'Join organization with code';
+
+  @override
+  String get joSubtitle =>
+      'Enter the joining code shared by your organization\'s owner to find your workspace.';
+
+  @override
+  String get joCodeLabel => 'JOINING CODE';
+
+  @override
+  String get joCodeHint => 'Enter your joining code';
+
+  @override
+  String get joCodeField => 'Joining Code';
+
+  @override
+  String get joCodeHelp =>
+      'Paste the complete code exactly as it was shared with you.';
+
+  @override
+  String get joScan => 'Scan QR code instead';
+
+  @override
+  String get joNoCode => 'Don\'t have a code?';
+
+  @override
+  String get joNoCodeBody =>
+      'Ask your organization\'s owner for one. If a code is invalid or expired, request a new code.';
+
+  @override
+  String get joReviewNote =>
+      'You\'ll review the organization before confirming that you want to join.';
+
+  @override
+  String get joCancel => 'Cancel';
+
+  @override
+  String get joFind => 'Find organization';
+
+  @override
+  String get joConfirmTitle => 'Is this your organization?';
+
+  @override
+  String get joConfirmBody =>
+      'Confirm this is the workspace you want to join before continuing.';
+
+  @override
+  String get joVerified => 'Verified';
+
+  @override
+  String get joPending => 'Pending verification';
+
+  @override
+  String get joDifferent => 'Use a different code';
+
+  @override
+  String joJoin(String a) {
+    return 'Join $a';
+  }
+
+  @override
+  String get imCreatedTitle => 'Invitation Created';
+
+  @override
+  String imCreatedBody(String a) {
+    return 'An invitation was created for $a.';
+  }
+
+  @override
+  String get imCreatedNote =>
+      'The invitee will see it in Kivora Notifications after logging in. They can accept or decline there.';
+
+  @override
+  String get imShareLink => 'Share this direct link with the invitee:';
+
+  @override
+  String get imDone => 'Done';
+
+  @override
+  String get imTitle => 'Invite Member';
+
+  @override
+  String get imClose => 'Close';
+
+  @override
+  String get imSubtitle => 'Invite someone to join your workspace.';
+
+  @override
+  String get imEmailLabel => 'Recipient Email Address *';
+
+  @override
+  String get imEmailHint => 'voter@organization.com';
+
+  @override
+  String imOrg(String a) {
+    return 'Organization: $a';
+  }
+
+  @override
+  String get imRole => 'Role Permission';
+
+  @override
+  String get imRoleMember => 'Member';
+
+  @override
+  String get imRoleAdmin => 'Admin';
+
+  @override
+  String get imCancel => 'Cancel';
+
+  @override
+  String get imSend => 'Send invitation';
+
+  @override
+  String get aeTitle => 'Add existing member';
+
+  @override
+  String get aeClose => 'Close';
+
+  @override
+  String get aeSubtitle =>
+      'Add a verified Kivora account directly to this organization.';
+
+  @override
+  String get aeEmailLabel => 'Member Email Address *';
+
+  @override
+  String get aeEmailHint => 'user@example.com';
+
+  @override
+  String get aeEmailInvalid => 'Enter a valid email address.';
+
+  @override
+  String get aeCancel => 'Cancel';
+
+  @override
+  String get aeAdd => 'Add member';
+
+  @override
+  String get adAssigned => 'Member assigned successfully.';
+
+  @override
+  String adFailed(String a) {
+    return 'Failed to assign member: $a';
+  }
+
+  @override
+  String get adTitle => 'Add Member to Department';
+
+  @override
+  String get adClose => 'Close';
+
+  @override
+  String get adSearchLabel => 'Search Active Members';
+
+  @override
+  String get adSearchHint => 'Type a name or email...';
+
+  @override
+  String get adNone => 'No eligible active members found.';
+
+  @override
+  String get adUnknown => 'Unknown User';
+
+  @override
+  String adCurrentlyIn(String a, String b) {
+    return '$a • currently in $b';
+  }
+
+  @override
+  String adAddTo(String a) {
+    return 'Add $a to this department';
+  }
+
+  @override
+  String get mpCancel => 'Cancel';
+
+  @override
+  String get mpUser => 'User';
+
+  @override
+  String get mpNone => 'None';
+
+  @override
+  String get mpRole => 'Role';
+
+  @override
+  String get mpStatus => 'Status';
+
+  @override
+  String get mpDepartment => 'Department';
+
+  @override
+  String get mpObserver => 'Observer Access';
+
+  @override
+  String get mpGranted => 'Granted';
+
+  @override
+  String get mpPromote => 'Promote to Admin';
+
+  @override
+  String get mpPromoted => 'Promoted to Admin successfully.';
+
+  @override
+  String get mpDemote => 'Demote to Member';
+
+  @override
+  String get mpDemoted => 'Demoted to Member successfully.';
+
+  @override
+  String get mpGrantObserver => 'Grant Observer Access';
+
+  @override
+  String get mpGrantedDone => 'Granted observer access.';
+
+  @override
+  String get mpRevokeObserver => 'Revoke Observer Access';
+
+  @override
+  String get mpRevokedDone => 'Revoked observer access.';
+
+  @override
+  String get mpDeactivate => 'Deactivate Member';
+
+  @override
+  String get mpDeactivated => 'Deactivated member successfully.';
+
+  @override
+  String get mpReactivate => 'Reactivate Member';
+
+  @override
+  String get mpReactivated => 'Reactivated member successfully.';
+
+  @override
+  String get mpRemove => 'Remove Member';
+
+  @override
+  String mpRemoveTitle(String a) {
+    return 'Remove $a?';
+  }
+
+  @override
+  String get mpRemoveBody =>
+      'They will lose access to this organization immediately.';
+
+  @override
+  String get mpRemoved => 'Member removed from organization.';
+
+  @override
+  String get mpClose => 'Close';
+
+  @override
+  String get imOrgLabel => 'Organization';
 }

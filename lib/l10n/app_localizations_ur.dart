@@ -3597,4 +3597,366 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get plOnlySuper => 'یہ حصہ صرف پلیٹ فارم سپر ایڈمنز کے لیے ہے۔';
+
+  @override
+  String get msActive => 'فعال';
+
+  @override
+  String get msInactive => 'غیر فعال';
+
+  @override
+  String get msPending => 'زیر التوا';
+
+  @override
+  String get msSuspended => 'معطل';
+
+  @override
+  String get msRemoved => 'ہٹایا گیا';
+
+  @override
+  String get coTypeAcademic => 'تعلیمی ادارہ';
+
+  @override
+  String get coTypeCorporate => 'کارپوریٹ ادارہ';
+
+  @override
+  String get coTypeNonProfit => 'غیر منافع بخش تنظیم';
+
+  @override
+  String get coTypeClub => 'کلب / طلبہ سوسائٹی';
+
+  @override
+  String get coTypeCommunity => 'کمیونٹی ایسوسی ایشن';
+
+  @override
+  String get coTypeOther => 'دیگر';
+
+  @override
+  String get coCreated => 'تنظیم بن گئی اور تصدیق ہو گئی!';
+
+  @override
+  String get coClose => 'بند کریں';
+
+  @override
+  String get coTitle => 'تنظیم بنائیں';
+
+  @override
+  String get coSubtitle =>
+      'اپنی کمیونٹی کو لوگوں، شعبوں اور سرگرمیوں کے لیے مشترکہ جگہ دیں۔';
+
+  @override
+  String get coNameLabel => 'تنظیم کا نام *';
+
+  @override
+  String get coNameHint => 'مثلاً آپ کی کمیونٹی یا کمپنی';
+
+  @override
+  String get coNameField => 'تنظیم کا نام';
+
+  @override
+  String get coNameShort => 'نام کم از کم 2 حروف کا ہونا چاہیے';
+
+  @override
+  String get coNameLong => 'نام 80 حروف سے زیادہ نہیں ہو سکتا';
+
+  @override
+  String get coNameHelp =>
+      'ایسا نام رکھیں جسے آپ کے اراکین پہچانیں۔ 2 سے 80 حروف۔';
+
+  @override
+  String get coTypeLabel => 'تنظیم کی قسم *';
+
+  @override
+  String get coTypeHint => 'قسم منتخب کریں';
+
+  @override
+  String get coCityLabel => 'شہر (اختیاری)';
+
+  @override
+  String get coCityHint => 'شہر درج کریں';
+
+  @override
+  String get coCountryLabel => 'ملک (اختیاری)';
+
+  @override
+  String get coCountryHint => 'ملک منتخب کریں';
+
+  @override
+  String get coVerifiedTitle => 'فوراً تصدیق، آپ مالک ہوں گے';
+
+  @override
+  String get coVerifiedBody =>
+      'چونکہ آپ کے اکاؤنٹ کا ای میل تصدیق شدہ ہے، آپ کی تنظیم پہلے سے تصدیق شدہ بنتی ہے - دستی جائزے کی ضرورت نہیں۔ اس کے فوراً بعد اپنی ورک اسپیس، برانڈنگ اور شمولیت کے کوڈ ترتیب دیں۔';
+
+  @override
+  String get coRequired => '* تنظیم بنانے کے لیے ضروری خانے مکمل کریں۔';
+
+  @override
+  String get coCancel => 'منسوخ کریں';
+
+  @override
+  String get coCreate => 'تنظیم بنائیں';
+
+  @override
+  String joJoined(String a) {
+    return '$a میں کامیابی سے شامل ہو گئے!';
+  }
+
+  @override
+  String get joClose => 'بند کریں';
+
+  @override
+  String get joTitle => 'کوڈ سے تنظیم میں شامل ہوں';
+
+  @override
+  String get joSubtitle =>
+      'اپنی ورک اسپیس تلاش کرنے کے لیے تنظیم کے مالک کا دیا ہوا شمولیت کا کوڈ درج کریں۔';
+
+  @override
+  String get joCodeLabel => 'شمولیت کا کوڈ';
+
+  @override
+  String get joCodeHint => 'اپنا شمولیت کا کوڈ درج کریں';
+
+  @override
+  String get joCodeField => 'شمولیت کا کوڈ';
+
+  @override
+  String get joCodeHelp =>
+      'پورا کوڈ بالکل ویسے ہی چسپاں کریں جیسے آپ کو دیا گیا۔';
+
+  @override
+  String get joScan => 'اس کی جگہ QR کوڈ اسکین کریں';
+
+  @override
+  String get joNoCode => 'کوڈ نہیں ہے؟';
+
+  @override
+  String get joNoCodeBody =>
+      'اپنی تنظیم کے مالک سے مانگیں۔ اگر کوڈ غلط یا ختم ہو چکا ہو تو نیا کوڈ مانگیں۔';
+
+  @override
+  String get joReviewNote =>
+      'شمولیت کی تصدیق سے پہلے آپ تنظیم کا جائزہ لیں گے۔';
+
+  @override
+  String get joCancel => 'منسوخ کریں';
+
+  @override
+  String get joFind => 'تنظیم تلاش کریں';
+
+  @override
+  String get joConfirmTitle => 'کیا یہ آپ کی تنظیم ہے؟';
+
+  @override
+  String get joConfirmBody =>
+      'جاری رکھنے سے پہلے تصدیق کریں کہ یہی وہ ورک اسپیس ہے جس میں آپ شامل ہونا چاہتے ہیں۔';
+
+  @override
+  String get joVerified => 'تصدیق شدہ';
+
+  @override
+  String get joPending => 'تصدیق زیر التوا';
+
+  @override
+  String get joDifferent => 'دوسرا کوڈ استعمال کریں';
+
+  @override
+  String joJoin(String a) {
+    return '$a میں شامل ہوں';
+  }
+
+  @override
+  String get imCreatedTitle => 'دعوت بن گئی';
+
+  @override
+  String imCreatedBody(String a) {
+    return '$a کے لیے دعوت بنائی گئی۔';
+  }
+
+  @override
+  String get imCreatedNote =>
+      'مدعو شخص لاگ اِن کے بعد Kivora کی اطلاعات میں اسے دیکھے گا۔ وہیں سے قبول یا مسترد کر سکتا ہے۔';
+
+  @override
+  String get imShareLink => 'یہ براہِ راست لنک مدعو شخص کو بھیجیں:';
+
+  @override
+  String get imDone => 'مکمل';
+
+  @override
+  String get imTitle => 'رکن کو مدعو کریں';
+
+  @override
+  String get imClose => 'بند کریں';
+
+  @override
+  String get imSubtitle => 'کسی کو اپنی ورک اسپیس میں شامل ہونے کی دعوت دیں۔';
+
+  @override
+  String get imEmailLabel => 'وصول کنندہ کا ای میل ایڈریس *';
+
+  @override
+  String get imEmailHint => 'voter@organization.com';
+
+  @override
+  String imOrg(String a) {
+    return 'تنظیم: $a';
+  }
+
+  @override
+  String get imRole => 'کردار کی اجازت';
+
+  @override
+  String get imRoleMember => 'رکن';
+
+  @override
+  String get imRoleAdmin => 'منتظم';
+
+  @override
+  String get imCancel => 'منسوخ کریں';
+
+  @override
+  String get imSend => 'دعوت بھیجیں';
+
+  @override
+  String get aeTitle => 'موجودہ رکن شامل کریں';
+
+  @override
+  String get aeClose => 'بند کریں';
+
+  @override
+  String get aeSubtitle =>
+      'ایک تصدیق شدہ Kivora اکاؤنٹ کو براہِ راست اس تنظیم میں شامل کریں۔';
+
+  @override
+  String get aeEmailLabel => 'رکن کا ای میل ایڈریس *';
+
+  @override
+  String get aeEmailHint => 'user@example.com';
+
+  @override
+  String get aeEmailInvalid => 'درست ای میل ایڈریس درج کریں۔';
+
+  @override
+  String get aeCancel => 'منسوخ کریں';
+
+  @override
+  String get aeAdd => 'رکن شامل کریں';
+
+  @override
+  String get adAssigned => 'رکن کامیابی سے شامل ہو گیا۔';
+
+  @override
+  String adFailed(String a) {
+    return 'رکن کو شامل نہیں کیا جا سکا: $a';
+  }
+
+  @override
+  String get adTitle => 'شعبے میں رکن شامل کریں';
+
+  @override
+  String get adClose => 'بند کریں';
+
+  @override
+  String get adSearchLabel => 'فعال اراکین تلاش کریں';
+
+  @override
+  String get adSearchHint => 'نام یا ای میل لکھیں...';
+
+  @override
+  String get adNone => 'کوئی اہل فعال رکن نہیں ملا۔';
+
+  @override
+  String get adUnknown => 'نامعلوم صارف';
+
+  @override
+  String adCurrentlyIn(String a, String b) {
+    return '$a • اس وقت $b میں';
+  }
+
+  @override
+  String adAddTo(String a) {
+    return '$a کو اس شعبے میں شامل کریں';
+  }
+
+  @override
+  String get mpCancel => 'منسوخ کریں';
+
+  @override
+  String get mpUser => 'صارف';
+
+  @override
+  String get mpNone => 'کوئی نہیں';
+
+  @override
+  String get mpRole => 'کردار';
+
+  @override
+  String get mpStatus => 'حیثیت';
+
+  @override
+  String get mpDepartment => 'شعبہ';
+
+  @override
+  String get mpObserver => 'مبصر کی رسائی';
+
+  @override
+  String get mpGranted => 'دی گئی';
+
+  @override
+  String get mpPromote => 'منتظم بنائیں';
+
+  @override
+  String get mpPromoted => 'کامیابی سے منتظم بنا دیا گیا۔';
+
+  @override
+  String get mpDemote => 'رکن کے درجے پر لائیں';
+
+  @override
+  String get mpDemoted => 'کامیابی سے رکن کے درجے پر لایا گیا۔';
+
+  @override
+  String get mpGrantObserver => 'مبصر کی رسائی دیں';
+
+  @override
+  String get mpGrantedDone => 'مبصر کی رسائی دے دی گئی۔';
+
+  @override
+  String get mpRevokeObserver => 'مبصر کی رسائی واپس لیں';
+
+  @override
+  String get mpRevokedDone => 'مبصر کی رسائی واپس لے لی گئی۔';
+
+  @override
+  String get mpDeactivate => 'رکن کو غیر فعال کریں';
+
+  @override
+  String get mpDeactivated => 'رکن کامیابی سے غیر فعال ہو گیا۔';
+
+  @override
+  String get mpReactivate => 'رکن کو دوبارہ فعال کریں';
+
+  @override
+  String get mpReactivated => 'رکن دوبارہ فعال ہو گیا۔';
+
+  @override
+  String get mpRemove => 'رکن کو ہٹائیں';
+
+  @override
+  String mpRemoveTitle(String a) {
+    return '$a کو ہٹائیں؟';
+  }
+
+  @override
+  String get mpRemoveBody => 'وہ اس تنظیم تک رسائی فوراً کھو دیں گے۔';
+
+  @override
+  String get mpRemoved => 'رکن کو تنظیم سے ہٹا دیا گیا۔';
+
+  @override
+  String get mpClose => 'بند کریں';
+
+  @override
+  String get imOrgLabel => 'تنظیم';
 }

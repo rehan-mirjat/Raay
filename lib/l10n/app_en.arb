@@ -1837,5 +1837,176 @@
   "plCheckingAccess": "Checking platform access…",
   "plDeniedTitle": "Access denied",
   "plVerifyFailed": "Could not verify platform administrator access.",
-  "plOnlySuper": "This area is available only to Platform Super Admins."
+  "plOnlySuper": "This area is available only to Platform Super Admins.",
+  "msActive": "active",
+  "msInactive": "inactive",
+  "msPending": "pending",
+  "msSuspended": "suspended",
+  "msRemoved": "removed",
+  "coTypeAcademic": "Academic Institution",
+  "coTypeCorporate": "Corporate Enterprise",
+  "coTypeNonProfit": "Non-Profit Organization",
+  "coTypeClub": "Club / Student Society",
+  "coTypeCommunity": "Community Association",
+  "coTypeOther": "Other",
+  "coCreated": "Organization created and verified!",
+  "coClose": "Close",
+  "coTitle": "Create an organization",
+  "coSubtitle": "Give your community a shared space for people, departments and activity.",
+  "coNameLabel": "ORGANIZATION NAME *",
+  "coNameHint": "e.g. Your community or company",
+  "coNameField": "Organization Name",
+  "coNameShort": "Name must be at least 2 characters",
+  "coNameLong": "Name cannot exceed 80 characters",
+  "coNameHelp": "Use a name your members will recognize. 2–80 characters.",
+  "coTypeLabel": "ORGANIZATION TYPE *",
+  "coTypeHint": "Select a type",
+  "coCityLabel": "CITY (OPTIONAL)",
+  "coCityHint": "Enter city",
+  "coCountryLabel": "COUNTRY (OPTIONAL)",
+  "coCountryHint": "Select country",
+  "coVerifiedTitle": "Verified instantly, you'll be the owner",
+  "coVerifiedBody": "Since your account email is verified, your organization is created already verified - no manual review needed. Set up your workspace, branding and joining codes right after.",
+  "coRequired": "* Complete the required fields to create your organization.",
+  "coCancel": "Cancel",
+  "coCreate": "Create organization",
+  "joJoined": "Successfully joined {a}!",
+  "@joJoined": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "joClose": "Close",
+  "joTitle": "Join organization with code",
+  "joSubtitle": "Enter the joining code shared by your organization's owner to find your workspace.",
+  "joCodeLabel": "JOINING CODE",
+  "joCodeHint": "Enter your joining code",
+  "joCodeField": "Joining Code",
+  "joCodeHelp": "Paste the complete code exactly as it was shared with you.",
+  "joScan": "Scan QR code instead",
+  "joNoCode": "Don't have a code?",
+  "joNoCodeBody": "Ask your organization's owner for one. If a code is invalid or expired, request a new code.",
+  "joReviewNote": "You'll review the organization before confirming that you want to join.",
+  "joCancel": "Cancel",
+  "joFind": "Find organization",
+  "joConfirmTitle": "Is this your organization?",
+  "joConfirmBody": "Confirm this is the workspace you want to join before continuing.",
+  "joVerified": "Verified",
+  "joPending": "Pending verification",
+  "joDifferent": "Use a different code",
+  "joJoin": "Join {a}",
+  "@joJoin": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "imCreatedTitle": "Invitation Created",
+  "imCreatedBody": "An invitation was created for {a}.",
+  "@imCreatedBody": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "imCreatedNote": "The invitee will see it in Kivora Notifications after logging in. They can accept or decline there.",
+  "imShareLink": "Share this direct link with the invitee:",
+  "imDone": "Done",
+  "imTitle": "Invite Member",
+  "imClose": "Close",
+  "imSubtitle": "Invite someone to join your workspace.",
+  "imEmailLabel": "Recipient Email Address *",
+  "imEmailHint": "voter@organization.com",
+  "imOrg": "Organization: {a}",
+  "@imOrg": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "imRole": "Role Permission",
+  "imRoleMember": "Member",
+  "imRoleAdmin": "Admin",
+  "imCancel": "Cancel",
+  "imSend": "Send invitation",
+  "aeTitle": "Add existing member",
+  "aeClose": "Close",
+  "aeSubtitle": "Add a verified Kivora account directly to this organization.",
+  "aeEmailLabel": "Member Email Address *",
+  "aeEmailHint": "user@example.com",
+  "aeEmailInvalid": "Enter a valid email address.",
+  "aeCancel": "Cancel",
+  "aeAdd": "Add member",
+  "adAssigned": "Member assigned successfully.",
+  "adFailed": "Failed to assign member: {a}",
+  "@adFailed": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "adTitle": "Add Member to Department",
+  "adClose": "Close",
+  "adSearchLabel": "Search Active Members",
+  "adSearchHint": "Type a name or email...",
+  "adNone": "No eligible active members found.",
+  "adUnknown": "Unknown User",
+  "adCurrentlyIn": "{a} • currently in {b}",
+  "@adCurrentlyIn": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "adAddTo": "Add {a} to this department",
+  "@adAddTo": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "mpCancel": "Cancel",
+  "mpUser": "User",
+  "mpNone": "None",
+  "mpRole": "Role",
+  "mpStatus": "Status",
+  "mpDepartment": "Department",
+  "mpObserver": "Observer Access",
+  "mpGranted": "Granted",
+  "mpPromote": "Promote to Admin",
+  "mpPromoted": "Promoted to Admin successfully.",
+  "mpDemote": "Demote to Member",
+  "mpDemoted": "Demoted to Member successfully.",
+  "mpGrantObserver": "Grant Observer Access",
+  "mpGrantedDone": "Granted observer access.",
+  "mpRevokeObserver": "Revoke Observer Access",
+  "mpRevokedDone": "Revoked observer access.",
+  "mpDeactivate": "Deactivate Member",
+  "mpDeactivated": "Deactivated member successfully.",
+  "mpReactivate": "Reactivate Member",
+  "mpReactivated": "Reactivated member successfully.",
+  "mpRemove": "Remove Member",
+  "mpRemoveTitle": "Remove {a}?",
+  "@mpRemoveTitle": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "mpRemoveBody": "They will lose access to this organization immediately.",
+  "mpRemoved": "Member removed from organization.",
+  "mpClose": "Close",
+  "imOrgLabel": "Organization"
 }

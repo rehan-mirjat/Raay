@@ -6401,6 +6401,678 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This area is available only to Platform Super Admins.'**
   String get plOnlySuper;
+
+  /// No description provided for @msActive.
+  ///
+  /// In en, this message translates to:
+  /// **'active'**
+  String get msActive;
+
+  /// No description provided for @msInactive.
+  ///
+  /// In en, this message translates to:
+  /// **'inactive'**
+  String get msInactive;
+
+  /// No description provided for @msPending.
+  ///
+  /// In en, this message translates to:
+  /// **'pending'**
+  String get msPending;
+
+  /// No description provided for @msSuspended.
+  ///
+  /// In en, this message translates to:
+  /// **'suspended'**
+  String get msSuspended;
+
+  /// No description provided for @msRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'removed'**
+  String get msRemoved;
+
+  /// No description provided for @coTypeAcademic.
+  ///
+  /// In en, this message translates to:
+  /// **'Academic Institution'**
+  String get coTypeAcademic;
+
+  /// No description provided for @coTypeCorporate.
+  ///
+  /// In en, this message translates to:
+  /// **'Corporate Enterprise'**
+  String get coTypeCorporate;
+
+  /// No description provided for @coTypeNonProfit.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-Profit Organization'**
+  String get coTypeNonProfit;
+
+  /// No description provided for @coTypeClub.
+  ///
+  /// In en, this message translates to:
+  /// **'Club / Student Society'**
+  String get coTypeClub;
+
+  /// No description provided for @coTypeCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Community Association'**
+  String get coTypeCommunity;
+
+  /// No description provided for @coTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get coTypeOther;
+
+  /// No description provided for @coCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization created and verified!'**
+  String get coCreated;
+
+  /// No description provided for @coClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get coClose;
+
+  /// No description provided for @coTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an organization'**
+  String get coTitle;
+
+  /// No description provided for @coSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Give your community a shared space for people, departments and activity.'**
+  String get coSubtitle;
+
+  /// No description provided for @coNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ORGANIZATION NAME *'**
+  String get coNameLabel;
+
+  /// No description provided for @coNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Your community or company'**
+  String get coNameHint;
+
+  /// No description provided for @coNameField.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization Name'**
+  String get coNameField;
+
+  /// No description provided for @coNameShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Name must be at least 2 characters'**
+  String get coNameShort;
+
+  /// No description provided for @coNameLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Name cannot exceed 80 characters'**
+  String get coNameLong;
+
+  /// No description provided for @coNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a name your members will recognize. 2–80 characters.'**
+  String get coNameHelp;
+
+  /// No description provided for @coTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ORGANIZATION TYPE *'**
+  String get coTypeLabel;
+
+  /// No description provided for @coTypeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a type'**
+  String get coTypeHint;
+
+  /// No description provided for @coCityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'CITY (OPTIONAL)'**
+  String get coCityLabel;
+
+  /// No description provided for @coCityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter city'**
+  String get coCityHint;
+
+  /// No description provided for @coCountryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'COUNTRY (OPTIONAL)'**
+  String get coCountryLabel;
+
+  /// No description provided for @coCountryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select country'**
+  String get coCountryHint;
+
+  /// No description provided for @coVerifiedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified instantly, you\'ll be the owner'**
+  String get coVerifiedTitle;
+
+  /// No description provided for @coVerifiedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Since your account email is verified, your organization is created already verified - no manual review needed. Set up your workspace, branding and joining codes right after.'**
+  String get coVerifiedBody;
+
+  /// No description provided for @coRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'* Complete the required fields to create your organization.'**
+  String get coRequired;
+
+  /// No description provided for @coCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get coCancel;
+
+  /// No description provided for @coCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create organization'**
+  String get coCreate;
+
+  /// No description provided for @joJoined.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully joined {a}!'**
+  String joJoined(String a);
+
+  /// No description provided for @joClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get joClose;
+
+  /// No description provided for @joTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Join organization with code'**
+  String get joTitle;
+
+  /// No description provided for @joSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the joining code shared by your organization\'s owner to find your workspace.'**
+  String get joSubtitle;
+
+  /// No description provided for @joCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'JOINING CODE'**
+  String get joCodeLabel;
+
+  /// No description provided for @joCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your joining code'**
+  String get joCodeHint;
+
+  /// No description provided for @joCodeField.
+  ///
+  /// In en, this message translates to:
+  /// **'Joining Code'**
+  String get joCodeField;
+
+  /// No description provided for @joCodeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the complete code exactly as it was shared with you.'**
+  String get joCodeHelp;
+
+  /// No description provided for @joScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR code instead'**
+  String get joScan;
+
+  /// No description provided for @joNoCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have a code?'**
+  String get joNoCode;
+
+  /// No description provided for @joNoCodeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask your organization\'s owner for one. If a code is invalid or expired, request a new code.'**
+  String get joNoCodeBody;
+
+  /// No description provided for @joReviewNote.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll review the organization before confirming that you want to join.'**
+  String get joReviewNote;
+
+  /// No description provided for @joCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get joCancel;
+
+  /// No description provided for @joFind.
+  ///
+  /// In en, this message translates to:
+  /// **'Find organization'**
+  String get joFind;
+
+  /// No description provided for @joConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Is this your organization?'**
+  String get joConfirmTitle;
+
+  /// No description provided for @joConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm this is the workspace you want to join before continuing.'**
+  String get joConfirmBody;
+
+  /// No description provided for @joVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get joVerified;
+
+  /// No description provided for @joPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending verification'**
+  String get joPending;
+
+  /// No description provided for @joDifferent.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a different code'**
+  String get joDifferent;
+
+  /// No description provided for @joJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Join {a}'**
+  String joJoin(String a);
+
+  /// No description provided for @imCreatedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation Created'**
+  String get imCreatedTitle;
+
+  /// No description provided for @imCreatedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'An invitation was created for {a}.'**
+  String imCreatedBody(String a);
+
+  /// No description provided for @imCreatedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The invitee will see it in Kivora Notifications after logging in. They can accept or decline there.'**
+  String get imCreatedNote;
+
+  /// No description provided for @imShareLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Share this direct link with the invitee:'**
+  String get imShareLink;
+
+  /// No description provided for @imDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get imDone;
+
+  /// No description provided for @imTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite Member'**
+  String get imTitle;
+
+  /// No description provided for @imClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get imClose;
+
+  /// No description provided for @imSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite someone to join your workspace.'**
+  String get imSubtitle;
+
+  /// No description provided for @imEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipient Email Address *'**
+  String get imEmailLabel;
+
+  /// No description provided for @imEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'voter@organization.com'**
+  String get imEmailHint;
+
+  /// No description provided for @imOrg.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization: {a}'**
+  String imOrg(String a);
+
+  /// No description provided for @imRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Role Permission'**
+  String get imRole;
+
+  /// No description provided for @imRoleMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Member'**
+  String get imRoleMember;
+
+  /// No description provided for @imRoleAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get imRoleAdmin;
+
+  /// No description provided for @imCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get imCancel;
+
+  /// No description provided for @imSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send invitation'**
+  String get imSend;
+
+  /// No description provided for @aeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add existing member'**
+  String get aeTitle;
+
+  /// No description provided for @aeClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get aeClose;
+
+  /// No description provided for @aeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a verified Kivora account directly to this organization.'**
+  String get aeSubtitle;
+
+  /// No description provided for @aeEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Member Email Address *'**
+  String get aeEmailLabel;
+
+  /// No description provided for @aeEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'user@example.com'**
+  String get aeEmailHint;
+
+  /// No description provided for @aeEmailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address.'**
+  String get aeEmailInvalid;
+
+  /// No description provided for @aeCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get aeCancel;
+
+  /// No description provided for @aeAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add member'**
+  String get aeAdd;
+
+  /// No description provided for @adAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Member assigned successfully.'**
+  String get adAssigned;
+
+  /// No description provided for @adFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to assign member: {a}'**
+  String adFailed(String a);
+
+  /// No description provided for @adTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Member to Department'**
+  String get adTitle;
+
+  /// No description provided for @adClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get adClose;
+
+  /// No description provided for @adSearchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Active Members'**
+  String get adSearchLabel;
+
+  /// No description provided for @adSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a name or email...'**
+  String get adSearchHint;
+
+  /// No description provided for @adNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No eligible active members found.'**
+  String get adNone;
+
+  /// No description provided for @adUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown User'**
+  String get adUnknown;
+
+  /// No description provided for @adCurrentlyIn.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} • currently in {b}'**
+  String adCurrentlyIn(String a, String b);
+
+  /// No description provided for @adAddTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Add {a} to this department'**
+  String adAddTo(String a);
+
+  /// No description provided for @mpCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get mpCancel;
+
+  /// No description provided for @mpUser.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get mpUser;
+
+  /// No description provided for @mpNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get mpNone;
+
+  /// No description provided for @mpRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get mpRole;
+
+  /// No description provided for @mpStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get mpStatus;
+
+  /// No description provided for @mpDepartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Department'**
+  String get mpDepartment;
+
+  /// No description provided for @mpObserver.
+  ///
+  /// In en, this message translates to:
+  /// **'Observer Access'**
+  String get mpObserver;
+
+  /// No description provided for @mpGranted.
+  ///
+  /// In en, this message translates to:
+  /// **'Granted'**
+  String get mpGranted;
+
+  /// No description provided for @mpPromote.
+  ///
+  /// In en, this message translates to:
+  /// **'Promote to Admin'**
+  String get mpPromote;
+
+  /// No description provided for @mpPromoted.
+  ///
+  /// In en, this message translates to:
+  /// **'Promoted to Admin successfully.'**
+  String get mpPromoted;
+
+  /// No description provided for @mpDemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Demote to Member'**
+  String get mpDemote;
+
+  /// No description provided for @mpDemoted.
+  ///
+  /// In en, this message translates to:
+  /// **'Demoted to Member successfully.'**
+  String get mpDemoted;
+
+  /// No description provided for @mpGrantObserver.
+  ///
+  /// In en, this message translates to:
+  /// **'Grant Observer Access'**
+  String get mpGrantObserver;
+
+  /// No description provided for @mpGrantedDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Granted observer access.'**
+  String get mpGrantedDone;
+
+  /// No description provided for @mpRevokeObserver.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke Observer Access'**
+  String get mpRevokeObserver;
+
+  /// No description provided for @mpRevokedDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoked observer access.'**
+  String get mpRevokedDone;
+
+  /// No description provided for @mpDeactivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate Member'**
+  String get mpDeactivate;
+
+  /// No description provided for @mpDeactivated.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivated member successfully.'**
+  String get mpDeactivated;
+
+  /// No description provided for @mpReactivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Reactivate Member'**
+  String get mpReactivate;
+
+  /// No description provided for @mpReactivated.
+  ///
+  /// In en, this message translates to:
+  /// **'Reactivated member successfully.'**
+  String get mpReactivated;
+
+  /// No description provided for @mpRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Member'**
+  String get mpRemove;
+
+  /// No description provided for @mpRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {a}?'**
+  String mpRemoveTitle(String a);
+
+  /// No description provided for @mpRemoveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They will lose access to this organization immediately.'**
+  String get mpRemoveBody;
+
+  /// No description provided for @mpRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Member removed from organization.'**
+  String get mpRemoved;
+
+  /// No description provided for @mpClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get mpClose;
+
+  /// No description provided for @imOrgLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization'**
+  String get imOrgLabel;
 }
 
 class _AppLocalizationsDelegate

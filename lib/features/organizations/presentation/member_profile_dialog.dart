@@ -1,4 +1,6 @@
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import '../../../core/utils/status_text.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kivora/core/theme/kivora_icons.dart';
 import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
@@ -69,11 +71,12 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel')),
+              child: Text(AppLocalizations.of(context).mpCancel)),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(confirmLabel, style: const TextStyle(color: Colors.white)),
+            child:
+                Text(confirmLabel, style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -87,11 +90,13 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
     final screenWidth = MediaQuery.sizeOf(context).width;
 
     final targetUid = widget.memberData['userId'] as String? ?? '';
-    final displayName = widget.memberData['displayName'] as String? ?? 'User';
+    final displayName = widget.memberData['displayName'] as String? ??
+        AppLocalizations.of(context).mpUser;
     final email = widget.memberData['email'] as String? ?? '';
     final roleStr = widget.memberData['role'] as String? ?? 'member';
     final statusStr = widget.memberData['status'] as String? ?? 'active';
-    final deptName = widget.memberData['departmentName'] as String? ?? 'None';
+    final deptName = widget.memberData['departmentName'] as String? ??
+        AppLocalizations.of(context).mpNone;
     final isTargetObserver = widget.memberData['isObserver'] as bool? ?? false;
 
     final isTargetOwner = roleStr.toLowerCase() == 'owner';
@@ -107,7 +112,8 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
         (isCallerOwner && !isTargetOwner) || (isCallerAdmin && isTargetMember);
     final canRemove =
         (isCallerOwner && !isTargetOwner) || (isCallerAdmin && isTargetMember);
-    final canManageObserver = (isCallerOwner || isCallerAdmin) && !isTargetOwner;
+    final canManageObserver =
+        (isCallerOwner || isCallerAdmin) && !isTargetOwner;
 
     final repo = ref.read(organizationRepositoryProvider);
 
@@ -129,8 +135,13 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                       radius: 24,
                       backgroundColor: AppTheme.primaryBlue,
                       child: Text(
-                        displayName.isNotEmpty ? displayName[0].toUpperCase() : 'U',
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+                        displayName.isNotEmpty
+                            ? displayName[0].toUpperCase()
+                            : 'U',
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18),
                       ),
                     ),
                     const SizedBox(width: 14),
@@ -153,7 +164,8 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                             email,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 13, color: kc.textSecondary),
+                            style: TextStyle(
+                                fontSize: 13, color: kc.textSecondary),
                           ),
                         ],
                       ),
@@ -167,10 +179,24 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                 const SizedBox(height: 20),
                 const Divider(height: 1),
                 const SizedBox(height: 16),
-                _infoRow(context, 'Role', roleStr.toUpperCase()),
-                _infoRow(context, 'Status', statusStr.toUpperCase()),
-                _infoRow(context, 'Department', deptName),
-                _infoRow(context, 'Observer Access', isTargetObserver ? 'Granted' : 'None'),
+                _infoRow(
+                    context,
+                    AppLocalizations.of(context).mpRole,
+                    memberRoleText(AppLocalizations.of(context), roleStr)
+                        .toUpperCase()),
+                _infoRow(
+                    context,
+                    AppLocalizations.of(context).mpStatus,
+                    memberStatusText(AppLocalizations.of(context), statusStr)
+                        .toUpperCase()),
+                _infoRow(context, AppLocalizations.of(context).mpDepartment,
+                    deptName),
+                _infoRow(
+                    context,
+                    AppLocalizations.of(context).mpObserver,
+                    isTargetObserver
+                        ? AppLocalizations.of(context).mpGranted
+                        : AppLocalizations.of(context).mpNone),
                 if (_isLoading) ...[
                   const SizedBox(height: 16),
                   const LoadingView(),
@@ -181,13 +207,13 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     KivoraButton(
                       type: KivoraButtonType.secondary,
                       icon: KivoraIcons.shieldCheck,
-                      label: 'Promote to Admin',
+                      label: AppLocalizations.of(context).mpPromote,
                       onPressed: () => _performAction(
                         () => repo.updateMemberRole(
                             organizationId: widget.organizationId,
                             targetUid: targetUid,
                             newRole: 'admin'),
-                        'Promoted to Admin successfully.',
+                        AppLocalizations.of(context).mpPromoted,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -196,13 +222,13 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     KivoraButton(
                       type: KivoraButtonType.secondary,
                       icon: KivoraIcons.user,
-                      label: 'Demote to Member',
+                      label: AppLocalizations.of(context).mpDemote,
                       onPressed: () => _performAction(
                         () => repo.updateMemberRole(
                             organizationId: widget.organizationId,
                             targetUid: targetUid,
                             newRole: 'member'),
-                        'Demoted to Member successfully.',
+                        AppLocalizations.of(context).mpDemoted,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -211,13 +237,13 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     KivoraButton(
                       type: KivoraButtonType.secondary,
                       icon: KivoraIcons.eye,
-                      label: 'Grant Observer Access',
+                      label: AppLocalizations.of(context).mpGrantObserver,
                       onPressed: () => _performAction(
                         () => repo.setObserverStatus(
                             organizationId: widget.organizationId,
                             targetUid: targetUid,
                             isObserver: true),
-                        'Granted observer access.',
+                        AppLocalizations.of(context).mpGrantedDone,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -226,13 +252,13 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     KivoraButton(
                       type: KivoraButtonType.secondary,
                       icon: KivoraIcons.eyeOff,
-                      label: 'Revoke Observer Access',
+                      label: AppLocalizations.of(context).mpRevokeObserver,
                       onPressed: () => _performAction(
                         () => repo.setObserverStatus(
                             organizationId: widget.organizationId,
                             targetUid: targetUid,
                             isObserver: false),
-                        'Revoked observer access.',
+                        AppLocalizations.of(context).mpRevokedDone,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -241,13 +267,13 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     KivoraButton(
                       type: KivoraButtonType.secondary,
                       icon: KivoraIcons.userX,
-                      label: 'Deactivate Member',
+                      label: AppLocalizations.of(context).mpDeactivate,
                       onPressed: () => _performAction(
                         () => repo.updateMemberStatus(
                             organizationId: widget.organizationId,
                             targetUid: targetUid,
                             newStatus: 'inactive'),
-                        'Deactivated member successfully.',
+                        AppLocalizations.of(context).mpDeactivated,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -256,13 +282,13 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     KivoraButton(
                       type: KivoraButtonType.secondary,
                       icon: KivoraIcons.userCheck,
-                      label: 'Reactivate Member',
+                      label: AppLocalizations.of(context).mpReactivate,
                       onPressed: () => _performAction(
                         () => repo.updateMemberStatus(
                             organizationId: widget.organizationId,
                             targetUid: targetUid,
                             newStatus: 'active'),
-                        'Reactivated member successfully.',
+                        AppLocalizations.of(context).mpReactivated,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -271,20 +297,20 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     KivoraButton(
                       type: KivoraButtonType.destructive,
                       icon: KivoraIcons.trash2,
-                      label: 'Remove Member',
+                      label: AppLocalizations.of(context).mpRemove,
                       onPressed: () async {
+                        final l = AppLocalizations.of(context);
                         final confirmed = await _confirm(
-                          title: 'Remove $displayName?',
-                          message:
-                              'They will lose access to this organization immediately.',
-                          confirmLabel: 'Remove Member',
+                          title: l.mpRemoveTitle(displayName.toString()),
+                          message: l.mpRemoveBody,
+                          confirmLabel: l.mpRemove,
                         );
                         if (confirmed) {
                           await _performAction(
                             () => repo.removeMember(
                                 organizationId: widget.organizationId,
                                 targetUid: targetUid),
-                            'Member removed from organization.',
+                            l.mpRemoved,
                           );
                         }
                       },
@@ -294,7 +320,7 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                 ],
                 KivoraButton(
                   type: KivoraButtonType.ghost,
-                  label: 'Close',
+                  label: AppLocalizations.of(context).mpClose,
                   onPressed: () => Navigator.pop(context),
                 ),
               ],

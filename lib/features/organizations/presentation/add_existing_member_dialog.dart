@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kivora/core/theme/app_theme.dart';
@@ -86,14 +87,15 @@ class _AddExistingMemberDialogState
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Icon(KivoraIcons.userPlus,
-                            color: KivoraColors.of(context).accentText, size: 20),
+                            color: KivoraColors.of(context).accentText,
+                            size: 20),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Semantics(
                           header: true,
                           child: Text(
-                            'Add existing member',
+                            AppLocalizations.of(context).aeTitle,
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -103,31 +105,34 @@ class _AddExistingMemberDialogState
                         ),
                       ),
                       IconButton(
-                        tooltip: 'Close',
-                        constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                        tooltip: AppLocalizations.of(context).aeClose,
+                        constraints:
+                            const BoxConstraints(minWidth: 48, minHeight: 48),
                         icon: const Icon(KivoraIcons.x, size: 20),
-                        onPressed: _isSubmitting ? null : () => Navigator.pop(context),
+                        onPressed:
+                            _isSubmitting ? null : () => Navigator.pop(context),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Add a verified Kivora account directly to this organization.',
+                    AppLocalizations.of(context).aeSubtitle,
                     style: TextStyle(fontSize: 13, color: kc.textSecondary),
                   ),
                   const SizedBox(height: 20),
                   KivoraTextField(
                     controller: _emailController,
-                    label: 'Member Email Address *',
-                    hint: 'user@example.com',
+                    label: AppLocalizations.of(context).aeEmailLabel,
+                    hint: AppLocalizations.of(context).aeEmailHint,
                     prefixIcon: KivoraIcons.mail,
                     keyboardType: TextInputType.emailAddress,
                     onFieldSubmitted: (_) => _submit(),
                     validator: (value) {
                       final email = value?.trim() ?? '';
                       if (email.isEmpty ||
-                          !RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(email)) {
-                        return 'Enter a valid email address.';
+                          !RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$')
+                              .hasMatch(email)) {
+                        return AppLocalizations.of(context).aeEmailInvalid;
                       }
                       return null;
                     },
@@ -143,17 +148,24 @@ class _AddExistingMemberDialogState
                     runSpacing: 12,
                     children: [
                       OutlinedButton(
-                        style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
-                        onPressed: _isSubmitting ? null : () => Navigator.pop(context),
-                        child: const Text('Cancel'),
+                        style: OutlinedButton.styleFrom(
+                            minimumSize: const Size(48, 48)),
+                        onPressed:
+                            _isSubmitting ? null : () => Navigator.pop(context),
+                        child: Text(AppLocalizations.of(context).aeCancel),
                       ),
                       FilledButton.icon(
-                        style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+                        style: FilledButton.styleFrom(
+                            minimumSize: const Size(48, 48)),
                         onPressed: _isSubmitting ? null : _submit,
                         icon: _isSubmitting
-                            ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                            ? const SizedBox(
+                                height: 16,
+                                width: 16,
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2))
                             : const Icon(KivoraIcons.userCheck, size: 18),
-                        label: const Text('Add member'),
+                        label: Text(AppLocalizations.of(context).aeAdd),
                       ),
                     ],
                   ),
