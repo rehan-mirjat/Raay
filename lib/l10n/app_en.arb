@@ -1117,5 +1117,76 @@
   "navPlatformOrganizations": "All organizations",
   "navPlatformReports": "User reports",
   "navPlatformAudit": "Audit log",
-  "resNotClosedYet": "Results can be calculated once the election has closed."
+  "resNotClosedYet": "Results can be calculated once the election has closed.",
+  "orgSetSaveTitle": "Save your branding changes?",
+  "orgSetUnsavedBody": "You changed this organization's branding but have not saved it. Discarded changes cannot be recovered.",
+  "orgSetKeepEditing": "Keep editing",
+  "orgSetDiscard": "Discard",
+  "orgSetSave": "Save",
+  "orgSetLoading": "Loading organization…",
+  "orgSetLoadError": "We could not load the organization. Check your connection and try again.",
+  "orgSetNoOrgTitle": "No active organization",
+  "orgSetNoOrgBody": "Select an organization before changing its branding.",
+  "orgSetDeniedTitle": "Access denied",
+  "orgSetDeniedBody": "Only the organization Owner can update its branding.",
+  "orgSetBackOverview": "Overview",
+  "orgSetTitle": "Organization branding",
+  "orgSetSubtitle": "Shape how {a} appears to members and voters.",
+  "@orgSetSubtitle": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "orgSetDetails": "Organization details",
+  "orgSetDetailsBody": "Your public name and a short introduction to your organization.",
+  "orgSetNameLabel": "Organization name *",
+  "orgSetNameHint": "e.g. Acme Corporation",
+  "orgSetNameShort": "Use at least 3 characters.",
+  "orgSetDescription": "Description",
+  "orgSetDescriptionHint": "Brief summary of your organization or department...",
+  "orgSetDescriptionHelp": "A short introduction shown on your organization profile.",
+  "orgSetWebsite": "Website (optional)",
+  "orgSetWebsiteInvalid": "Enter a valid HTTPS URL.",
+  "orgSetLogo": "Organization logo",
+  "orgSetLogoActive": "Logo active",
+  "orgSetLogoNone": "No logo uploaded",
+  "orgSetLogoChange": "Choose a different logo",
+  "orgSetLogoChoose": "Choose logo",
+  "orgSetRemove": "Remove",
+  "orgSetLogoHelp": "PNG, JPEG or WebP · Up to 2 MB\nUse a square image for the best result.",
+  "orgSetPreviewName": "Organization Name",
+  "orgSetPreviewDescription": "Description will appear here...",
+  "orgSetPreviewNoWebsite": "No website added",
+  "orgSetPreviewTitle": "Member profile preview",
+  "orgSetPreviewBody": "How your organization will appear to members.",
+  "orgSetPreviewRole": "Member",
+  "orgSetPreviewViewEvents": "View events",
+  "orgSetPreviewNote": "Preview only. Changes appear to members and voters after you save.",
+  "orgSetNotPermTitle": "Branding, not permissions",
+  "orgSetNotPermBody": "Access control and verification are managed separately. Updating your branding won't change either.",
+  "orgSetDirtyTitle": "You have unsaved changes",
+  "orgSetDirtyLogo": "A new logo is selected but not uploaded yet. Save to upload and publish it.",
+  "orgSetDirtyBody": "Save to publish your branding, or reset to discard your changes.",
+  "orgSetReset": "Reset",
+  "orgSetSaving": "Saving...",
+  "orgSetSaveBranding": "Save branding",
+  "orgSetLogoTooBig": "The logo is larger than 2 MB. Choose a smaller image.",
+  "orgSetSaved": "Organization branding saved.",
+  "orgSetSaveFailed": "Could not save branding. Check your connection and try again.",
+  "orgSetDanger": "Danger zone",
+  "orgSetDangerBody": "Deleting this organization will archive its workspace. Active elections will stop accepting ballots.",
+  "orgSetDelete": "Delete organization",
+  "orgSetDeleteTitle": "Delete Organization?",
+  "orgSetDeleteBody": "Are you sure you want to delete \"{a}\"?\n\nThis will archive the organization workspace. This action cannot be undone.",
+  "@orgSetDeleteBody": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "orgSetKeep": "Keep organization",
+  "orgSetDeleted": "Organization has been deleted."
 }

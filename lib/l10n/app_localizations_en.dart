@@ -2241,4 +2241,195 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get resNotClosedYet =>
       'Results can be calculated once the election has closed.';
+
+  @override
+  String get orgSetSaveTitle => 'Save your branding changes?';
+
+  @override
+  String get orgSetUnsavedBody =>
+      'You changed this organization\'s branding but have not saved it. Discarded changes cannot be recovered.';
+
+  @override
+  String get orgSetKeepEditing => 'Keep editing';
+
+  @override
+  String get orgSetDiscard => 'Discard';
+
+  @override
+  String get orgSetSave => 'Save';
+
+  @override
+  String get orgSetLoading => 'Loading organization…';
+
+  @override
+  String get orgSetLoadError =>
+      'We could not load the organization. Check your connection and try again.';
+
+  @override
+  String get orgSetNoOrgTitle => 'No active organization';
+
+  @override
+  String get orgSetNoOrgBody =>
+      'Select an organization before changing its branding.';
+
+  @override
+  String get orgSetDeniedTitle => 'Access denied';
+
+  @override
+  String get orgSetDeniedBody =>
+      'Only the organization Owner can update its branding.';
+
+  @override
+  String get orgSetBackOverview => 'Overview';
+
+  @override
+  String get orgSetTitle => 'Organization branding';
+
+  @override
+  String orgSetSubtitle(String a) {
+    return 'Shape how $a appears to members and voters.';
+  }
+
+  @override
+  String get orgSetDetails => 'Organization details';
+
+  @override
+  String get orgSetDetailsBody =>
+      'Your public name and a short introduction to your organization.';
+
+  @override
+  String get orgSetNameLabel => 'Organization name *';
+
+  @override
+  String get orgSetNameHint => 'e.g. Acme Corporation';
+
+  @override
+  String get orgSetNameShort => 'Use at least 3 characters.';
+
+  @override
+  String get orgSetDescription => 'Description';
+
+  @override
+  String get orgSetDescriptionHint =>
+      'Brief summary of your organization or department...';
+
+  @override
+  String get orgSetDescriptionHelp =>
+      'A short introduction shown on your organization profile.';
+
+  @override
+  String get orgSetWebsite => 'Website (optional)';
+
+  @override
+  String get orgSetWebsiteInvalid => 'Enter a valid HTTPS URL.';
+
+  @override
+  String get orgSetLogo => 'Organization logo';
+
+  @override
+  String get orgSetLogoActive => 'Logo active';
+
+  @override
+  String get orgSetLogoNone => 'No logo uploaded';
+
+  @override
+  String get orgSetLogoChange => 'Choose a different logo';
+
+  @override
+  String get orgSetLogoChoose => 'Choose logo';
+
+  @override
+  String get orgSetRemove => 'Remove';
+
+  @override
+  String get orgSetLogoHelp =>
+      'PNG, JPEG or WebP · Up to 2 MB\nUse a square image for the best result.';
+
+  @override
+  String get orgSetPreviewName => 'Organization Name';
+
+  @override
+  String get orgSetPreviewDescription => 'Description will appear here...';
+
+  @override
+  String get orgSetPreviewNoWebsite => 'No website added';
+
+  @override
+  String get orgSetPreviewTitle => 'Member profile preview';
+
+  @override
+  String get orgSetPreviewBody =>
+      'How your organization will appear to members.';
+
+  @override
+  String get orgSetPreviewRole => 'Member';
+
+  @override
+  String get orgSetPreviewViewEvents => 'View events';
+
+  @override
+  String get orgSetPreviewNote =>
+      'Preview only. Changes appear to members and voters after you save.';
+
+  @override
+  String get orgSetNotPermTitle => 'Branding, not permissions';
+
+  @override
+  String get orgSetNotPermBody =>
+      'Access control and verification are managed separately. Updating your branding won\'t change either.';
+
+  @override
+  String get orgSetDirtyTitle => 'You have unsaved changes';
+
+  @override
+  String get orgSetDirtyLogo =>
+      'A new logo is selected but not uploaded yet. Save to upload and publish it.';
+
+  @override
+  String get orgSetDirtyBody =>
+      'Save to publish your branding, or reset to discard your changes.';
+
+  @override
+  String get orgSetReset => 'Reset';
+
+  @override
+  String get orgSetSaving => 'Saving...';
+
+  @override
+  String get orgSetSaveBranding => 'Save branding';
+
+  @override
+  String get orgSetLogoTooBig =>
+      'The logo is larger than 2 MB. Choose a smaller image.';
+
+  @override
+  String get orgSetSaved => 'Organization branding saved.';
+
+  @override
+  String get orgSetSaveFailed =>
+      'Could not save branding. Check your connection and try again.';
+
+  @override
+  String get orgSetDanger => 'Danger zone';
+
+  @override
+  String get orgSetDangerBody =>
+      'Deleting this organization will archive its workspace. Active elections will stop accepting ballots.';
+
+  @override
+  String get orgSetDelete => 'Delete organization';
+
+  @override
+  String get orgSetDeleteTitle => 'Delete Organization?';
+
+  @override
+  String orgSetDeleteBody(String a) {
+    return 'Are you sure you want to delete \"$a\"?\n\nThis will archive the organization workspace. This action cannot be undone.';
+  }
+
+  @override
+  String get orgSetKeep => 'Keep organization';
+
+  @override
+  String get orgSetDeleted => 'Organization has been deleted.';
 }

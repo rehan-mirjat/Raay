@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import '../../../core/utils/error_utils.dart';
 import 'dart:typed_data';
 
@@ -93,25 +94,25 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     final choice = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Save your branding changes?'),
-        content: const Text(
-            'You changed this organization\'s branding but have not saved it. Discarded changes cannot be recovered.'),
+        title: Text(AppLocalizations.of(context).orgSetSaveTitle),
+        content: Text(
+            AppLocalizations.of(context).orgSetUnsavedBody),
         actions: [
           TextButton(
             style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
             onPressed: () => Navigator.pop(ctx, 'stay'),
-            child: const Text('Keep editing'),
+            child: Text(AppLocalizations.of(context).orgSetKeepEditing),
           ),
           TextButton(
             style: TextButton.styleFrom(
                 minimumSize: const Size(48, 48), foregroundColor: KivoraColors.of(ctx).errorText),
             onPressed: () => Navigator.pop(ctx, 'discard'),
-            child: const Text('Discard'),
+            child: Text(AppLocalizations.of(context).orgSetDiscard),
           ),
           FilledButton(
             style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
             onPressed: () => Navigator.pop(ctx, 'save'),
-            child: const Text('Save'),
+            child: Text(AppLocalizations.of(context).orgSetSave),
           ),
         ],
       ),
@@ -154,26 +155,26 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
       backgroundColor: KivoraColors.backgroundOf(context),
       body: state.when(
         skipLoadingOnReload: true,
-        loading: () => const LoadingView(message: 'Loading organization…'),
-        error: (_, __) => const ErrorView(
+        loading: () => LoadingView(message: AppLocalizations.of(context).orgSetLoading),
+        error: (_, __) => ErrorView(
           type: ErrorViewType.generic,
-          message: 'We could not load the organization. Check your connection and try again.',
+          message: AppLocalizations.of(context).orgSetLoadError,
         ),
         data: (active) {
           final orgContext = active.context;
           if (orgContext == null) {
-            return const ErrorView(
+            return ErrorView(
               type: ErrorViewType.organizationRequired,
-              title: 'No active organization',
-              message: 'Select an organization before changing its branding.',
+              title: AppLocalizations.of(context).orgSetNoOrgTitle,
+              message: AppLocalizations.of(context).orgSetNoOrgBody,
             );
           }
           final org = orgContext.organization;
           if (orgContext.member.role != OrganizationRole.owner) {
-            return const ErrorView(
+            return ErrorView(
               type: ErrorViewType.accessDenied,
-              title: 'Access denied',
-              message: 'Only the organization Owner can update its branding.',
+              title: AppLocalizations.of(context).orgSetDeniedTitle,
+              message: AppLocalizations.of(context).orgSetDeniedBody,
             );
           }
 
@@ -206,14 +207,14 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                         style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
                         onPressed: _leaveToOverview,
                         icon: const Icon(Icons.arrow_back_rounded, size: 18),
-                        label: const Text('Overview'),
+                        label: Text(AppLocalizations.of(context).orgSetBackOverview),
                       ),
                     ),
                     const SizedBox(height: 12),
 
                     // 2. Headline & Subtitle
                     Text(
-                      'Organization branding',
+                      AppLocalizations.of(context).orgSetTitle,
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: KivoraColors.textPrimaryOf(context),
@@ -221,7 +222,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'Shape how ${org.name} appears to members and voters.',
+                      AppLocalizations.of(context).orgSetSubtitle(org.name.toString()),
                       style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14),
                     ),
                     const SizedBox(height: 28),
@@ -314,12 +315,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Organization details',
+            AppLocalizations.of(context).orgSetDetails,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
           ),
           const SizedBox(height: 4),
           Text(
-            'Your public name and a short introduction to your organization.',
+            AppLocalizations.of(context).orgSetDetailsBody,
             style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context)),
           ),
           const SizedBox(height: 24),
@@ -328,7 +329,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(child: Text('Organization name *', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)))),
+              Expanded(child: Text(AppLocalizations.of(context).orgSetNameLabel, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)))),
               const SizedBox(width: 8),
               Text('${_name.text.length} / 100', style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
             ],
@@ -338,13 +339,13 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
             controller: _name,
             maxLength: 100,
             textCapitalization: TextCapitalization.words,
-            decoration: const InputDecoration(
-              hintText: 'e.g. Acme Corporation',
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context).orgSetNameHint,
               counterText: '',
             ),
             validator: (value) {
               final name = value?.trim() ?? '';
-              return name.length < 3 ? 'Use at least 3 characters.' : null;
+              return name.length < 3 ? AppLocalizations.of(context).orgSetNameShort : null;
             },
           ),
           const SizedBox(height: 20),
@@ -353,7 +354,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(child: Text('Description', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)))),
+              Expanded(child: Text(AppLocalizations.of(context).orgSetDescription, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)))),
               const SizedBox(width: 8),
               Text('${_description.text.length} / 500', style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
             ],
@@ -363,20 +364,20 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
             controller: _description,
             maxLength: 500,
             maxLines: 4,
-            decoration: const InputDecoration(
-              hintText: 'Brief summary of your organization or department...',
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context).orgSetDescriptionHint,
               counterText: '',
             ),
           ),
           const SizedBox(height: 6),
           Text(
-            'A short introduction shown on your organization profile.',
+            AppLocalizations.of(context).orgSetDescriptionHelp,
             style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context)),
           ),
           const SizedBox(height: 20),
 
           // Website
-          Text('Website (optional)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context))),
+          Text(AppLocalizations.of(context).orgSetWebsite, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context))),
           const SizedBox(height: 6),
           TextFormField(
             controller: _website,
@@ -384,7 +385,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
             decoration: const InputDecoration(
               hintText: 'https://example.org',
             ),
-            validator: (value) => _validOptionalHttps(value) ? null : 'Enter a valid HTTPS URL.',
+            validator: (value) => _validOptionalHttps(value) ? null : AppLocalizations.of(context).orgSetWebsiteInvalid,
           ),
         ],
       ),
@@ -420,11 +421,11 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
             runSpacing: 4,
             children: [
               Text(
-                'Organization logo',
+                AppLocalizations.of(context).orgSetLogo,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
               ),
               Text(
-                hasLogo ? 'Logo active' : 'No logo uploaded',
+                hasLogo ? AppLocalizations.of(context).orgSetLogoActive : AppLocalizations.of(context).orgSetLogoNone,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -481,7 +482,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                                     child: CircularProgressIndicator(strokeWidth: 2),
                                   )
                                 : const Icon(Icons.upload_rounded, size: 18),
-                            label: Text(_pendingLogo != null ? 'Choose a different logo' : 'Choose logo'),
+                            label: Text(_pendingLogo != null ? AppLocalizations.of(context).orgSetLogoChange : AppLocalizations.of(context).orgSetLogoChoose),
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                             ),
@@ -499,14 +500,14 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                               borderRadius: BorderRadius.circular(6),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                                child: Text('Remove', style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context), fontWeight: FontWeight.bold)),
+                                child: Text(AppLocalizations.of(context).orgSetRemove, style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context), fontWeight: FontWeight.bold)),
                               ),
                             ),
                         ],
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'PNG, JPEG or WebP · Up to 2 MB\nUse a square image for the best result.',
+                        AppLocalizations.of(context).orgSetLogoHelp,
                         style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.3),
                       ),
                     ],
@@ -524,9 +525,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
   // SIDEBAR 1: LIVE MEMBER PROFILE PREVIEW
   // ===========================================================================
   Widget _buildLivePreviewCard(BuildContext context) {
-    final nameStr = _name.text.trim().isEmpty ? 'Organization Name' : _name.text.trim();
-    final descStr = _description.text.trim().isEmpty ? 'Description will appear here...' : _description.text.trim();
-    final websiteStr = _website.text.trim().isEmpty ? 'No website added' : _website.text.trim();
+    final nameStr = _name.text.trim().isEmpty ? AppLocalizations.of(context).orgSetPreviewName : _name.text.trim();
+    final descStr = _description.text.trim().isEmpty ? AppLocalizations.of(context).orgSetPreviewDescription : _description.text.trim();
+    final websiteStr = _website.text.trim().isEmpty ? AppLocalizations.of(context).orgSetPreviewNoWebsite : _website.text.trim();
     final hasLogo = _pendingLogo != null || _logoUrl.text.isNotEmpty;
 
     return Container(
@@ -547,12 +548,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Member profile preview',
+            AppLocalizations.of(context).orgSetPreviewTitle,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
           ),
           const SizedBox(height: 4),
           Text(
-            'How your organization will appear to members.',
+            AppLocalizations.of(context).orgSetPreviewBody,
             style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
           ),
           const SizedBox(height: 20),
@@ -603,7 +604,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                         color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text('Member', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: KivoraColors.of(context).accentText)),
+                      child: Text(AppLocalizations.of(context).orgSetPreviewRole, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: KivoraColors.of(context).accentText)),
                     ),
                   ],
                 ),
@@ -643,7 +644,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                       color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text('View events',
+                    child: Text(AppLocalizations.of(context).orgSetPreviewViewEvents,
                         style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -661,7 +662,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Preview only. Changes appear to members and voters after you save.',
+                  AppLocalizations.of(context).orgSetPreviewNote,
                   style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context), height: 1.3),
                 ),
               ),
@@ -693,12 +694,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Branding, not permissions',
+                  AppLocalizations.of(context).orgSetNotPermTitle,
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Access control and verification are managed separately. Updating your branding won\'t change either.',
+                  AppLocalizations.of(context).orgSetNotPermBody,
                   style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.4),
                 ),
               ],
@@ -743,14 +744,14 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'You have unsaved changes',
+                  AppLocalizations.of(context).orgSetDirtyTitle,
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   _pendingLogo != null
-                      ? 'A new logo is selected but not uploaded yet. Save to upload and publish it.'
-                      : 'Save to publish your branding, or reset to discard your changes.',
+                      ? AppLocalizations.of(context).orgSetDirtyLogo
+                      : AppLocalizations.of(context).orgSetDirtyBody,
                   style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
                 ),
               ],
@@ -773,7 +774,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             ),
-            child: const Text('Reset'),
+            child: Text(AppLocalizations.of(context).orgSetReset),
           ),
           const SizedBox(width: 12),
 
@@ -782,7 +783,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
             icon: _saving
                 ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                 : const Icon(Icons.check_rounded, size: 18),
-            label: Text(_saving ? 'Saving...' : 'Save branding'),
+            label: Text(_saving ? AppLocalizations.of(context).orgSetSaving : AppLocalizations.of(context).orgSetSaveBranding),
             style: FilledButton.styleFrom(
               backgroundColor: AppTheme.primaryBlue,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -812,7 +813,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
       if (bytes == null || !mounted) return;
       // Storage rules reject anything over 2 MB, so refuse it here with a clear message.
       if (bytes.length > 2 * 1024 * 1024) {
-        throw Exception('The logo is larger than 2 MB. Choose a smaller image.');
+        throw Exception(AppLocalizations.of(context).orgSetLogoTooBig);
       }
       if (!mounted) return;
       setState(() => _pendingLogo = bytes);
@@ -881,7 +882,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
       ref.invalidate(userOrganizationsProvider);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Organization branding saved.')),
+          SnackBar(content: Text(AppLocalizations.of(context).orgSetSaved)),
         );
       }
       return true;
@@ -894,7 +895,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
       return false;
     } catch (error) {
       debugPrint('Save branding failed: $error');
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(friendlyError(error, fallback: 'Could not save branding. Check your connection and try again.'))));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(friendlyError(error, fallback: AppLocalizations.of(context).orgSetSaveFailed))));
       return false;
     } finally {
       if (mounted) {
@@ -923,7 +924,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  'Danger zone',
+                  AppLocalizations.of(context).orgSetDanger,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -935,14 +936,14 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           ),
           const SizedBox(height: 6),
           Text(
-            'Deleting this organization will archive its workspace. Active elections will stop accepting ballots.',
+            AppLocalizations.of(context).orgSetDangerBody,
             style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context), height: 1.4),
           ),
           const SizedBox(height: 20),
           OutlinedButton.icon(
             onPressed: () => _confirmDeleteOrganization(org),
             icon: Icon(Icons.delete_forever_rounded, color: KivoraColors.of(context).errorText, size: 18),
-            label: Text('Delete organization',
+            label: Text(AppLocalizations.of(context).orgSetDelete,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: KivoraColors.of(context).errorText, fontWeight: FontWeight.bold)),
             style: OutlinedButton.styleFrom(
@@ -960,21 +961,21 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Organization?'),
+        title: Text(AppLocalizations.of(context).orgSetDeleteTitle),
         content: Text(
-          'Are you sure you want to delete "${org.name}"?\n\nThis will archive the organization workspace. This action cannot be undone.',
+          AppLocalizations.of(context).orgSetDeleteBody(org.name.toString()),
         ),
         actions: [
           TextButton(
             style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Keep organization'),
+            child: Text(AppLocalizations.of(context).orgSetKeep),
           ),
           TextButton(
             style: TextButton.styleFrom(
                 minimumSize: const Size(48, 48), foregroundColor: KivoraColors.of(ctx).errorText),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete organization'),
+            child: Text(AppLocalizations.of(context).orgSetDelete),
           ),
         ],
       ),
@@ -988,7 +989,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
         if (!mounted) return;
         context.go('/orgs');
         messenger.showSnackBar(
-          const SnackBar(content: Text('Organization has been deleted.')),
+          SnackBar(content: Text(AppLocalizations.of(context).orgSetDeleted)),
         );
       } catch (e) {
         if (!mounted) return;

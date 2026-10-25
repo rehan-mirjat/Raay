@@ -2248,4 +2248,190 @@ class AppLocalizationsUr extends AppLocalizations {
   @override
   String get resNotClosedYet =>
       'انتخاب بند ہونے کے بعد ہی نتائج شمار کیے جا سکتے ہیں۔';
+
+  @override
+  String get orgSetSaveTitle => 'اپنی برانڈنگ کی تبدیلیاں محفوظ کریں؟';
+
+  @override
+  String get orgSetUnsavedBody =>
+      'آپ نے اس تنظیم کی برانڈنگ بدلی ہے مگر محفوظ نہیں کی۔ رد کی گئی تبدیلیاں واپس نہیں آ سکتیں۔';
+
+  @override
+  String get orgSetKeepEditing => 'ترمیم جاری رکھیں';
+
+  @override
+  String get orgSetDiscard => 'رد کریں';
+
+  @override
+  String get orgSetSave => 'محفوظ کریں';
+
+  @override
+  String get orgSetLoading => 'تنظیم لوڈ ہو رہی ہے…';
+
+  @override
+  String get orgSetLoadError =>
+      'ہم تنظیم لوڈ نہیں کر سکے۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔';
+
+  @override
+  String get orgSetNoOrgTitle => 'کوئی فعال تنظیم نہیں';
+
+  @override
+  String get orgSetNoOrgBody => 'برانڈنگ بدلنے سے پہلے ایک تنظیم منتخب کریں۔';
+
+  @override
+  String get orgSetDeniedTitle => 'رسائی نہیں دی گئی';
+
+  @override
+  String get orgSetDeniedBody =>
+      'صرف تنظیم کا مالک اس کی برانڈنگ اپ ڈیٹ کر سکتا ہے۔';
+
+  @override
+  String get orgSetBackOverview => 'جائزہ';
+
+  @override
+  String get orgSetTitle => 'تنظیم کی برانڈنگ';
+
+  @override
+  String orgSetSubtitle(String a) {
+    return 'طے کریں کہ $a اراکین اور ووٹرز کو کیسی دکھائی دے۔';
+  }
+
+  @override
+  String get orgSetDetails => 'تنظیم کی تفصیلات';
+
+  @override
+  String get orgSetDetailsBody => 'آپ کی تنظیم کا عوامی نام اور مختصر تعارف۔';
+
+  @override
+  String get orgSetNameLabel => 'تنظیم کا نام *';
+
+  @override
+  String get orgSetNameHint => 'مثلاً ایکمی کارپوریشن';
+
+  @override
+  String get orgSetNameShort => 'کم از کم 3 حروف استعمال کریں۔';
+
+  @override
+  String get orgSetDescription => 'تفصیل';
+
+  @override
+  String get orgSetDescriptionHint => 'اپنی تنظیم یا شعبے کا مختصر خلاصہ...';
+
+  @override
+  String get orgSetDescriptionHelp =>
+      'مختصر تعارف جو آپ کی تنظیم کی پروفائل پر دکھایا جاتا ہے۔';
+
+  @override
+  String get orgSetWebsite => 'ویب سائٹ (اختیاری)';
+
+  @override
+  String get orgSetWebsiteInvalid => 'درست HTTPS ویب ایڈریس درج کریں۔';
+
+  @override
+  String get orgSetLogo => 'تنظیم کا لوگو';
+
+  @override
+  String get orgSetLogoActive => 'لوگو لگا ہوا ہے';
+
+  @override
+  String get orgSetLogoNone => 'کوئی لوگو اپ لوڈ نہیں ہوا';
+
+  @override
+  String get orgSetLogoChange => 'دوسرا لوگو منتخب کریں';
+
+  @override
+  String get orgSetLogoChoose => 'لوگو منتخب کریں';
+
+  @override
+  String get orgSetRemove => 'ہٹائیں';
+
+  @override
+  String get orgSetLogoHelp =>
+      'PNG، JPEG یا WebP · زیادہ سے زیادہ 2 MB\nبہترین نتیجے کے لیے چوکور تصویر استعمال کریں۔';
+
+  @override
+  String get orgSetPreviewName => 'تنظیم کا نام';
+
+  @override
+  String get orgSetPreviewDescription => 'تفصیل یہاں دکھائی دے گی...';
+
+  @override
+  String get orgSetPreviewNoWebsite => 'کوئی ویب سائٹ شامل نہیں کی گئی';
+
+  @override
+  String get orgSetPreviewTitle => 'رکن کی پروفائل کا پیش منظر';
+
+  @override
+  String get orgSetPreviewBody => 'آپ کی تنظیم اراکین کو کیسی دکھائی دے گی۔';
+
+  @override
+  String get orgSetPreviewRole => 'رکن';
+
+  @override
+  String get orgSetPreviewViewEvents => 'انتخابات دیکھیں';
+
+  @override
+  String get orgSetPreviewNote =>
+      'صرف پیش منظر۔ محفوظ کرنے کے بعد تبدیلیاں اراکین اور ووٹرز کو نظر آئیں گی۔';
+
+  @override
+  String get orgSetNotPermTitle => 'برانڈنگ، اجازتیں نہیں';
+
+  @override
+  String get orgSetNotPermBody =>
+      'رسائی کا کنٹرول اور تصدیق الگ سے سنبھالی جاتی ہے۔ برانڈنگ بدلنے سے ان میں کوئی تبدیلی نہیں آئے گی۔';
+
+  @override
+  String get orgSetDirtyTitle => 'آپ کی تبدیلیاں محفوظ نہیں ہوئیں';
+
+  @override
+  String get orgSetDirtyLogo =>
+      'نیا لوگو منتخب ہوا ہے مگر ابھی اپ لوڈ نہیں ہوا۔ اپ لوڈ اور شائع کرنے کے لیے محفوظ کریں۔';
+
+  @override
+  String get orgSetDirtyBody =>
+      'برانڈنگ شائع کرنے کے لیے محفوظ کریں، یا تبدیلیاں رد کرنے کے لیے ری سیٹ کریں۔';
+
+  @override
+  String get orgSetReset => 'ری سیٹ';
+
+  @override
+  String get orgSetSaving => 'محفوظ ہو رہا ہے...';
+
+  @override
+  String get orgSetSaveBranding => 'برانڈنگ محفوظ کریں';
+
+  @override
+  String get orgSetLogoTooBig => 'لوگو 2 MB سے بڑا ہے۔ چھوٹی تصویر منتخب کریں۔';
+
+  @override
+  String get orgSetSaved => 'تنظیم کی برانڈنگ محفوظ ہو گئی۔';
+
+  @override
+  String get orgSetSaveFailed =>
+      'برانڈنگ محفوظ نہیں ہو سکی۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔';
+
+  @override
+  String get orgSetDanger => 'خطرناک حصہ';
+
+  @override
+  String get orgSetDangerBody =>
+      'اس تنظیم کو حذف کرنے سے اس کی ورک اسپیس آرکائیو ہو جائے گی۔ فعال انتخابات ووٹ لینا بند کر دیں گے۔';
+
+  @override
+  String get orgSetDelete => 'تنظیم حذف کریں';
+
+  @override
+  String get orgSetDeleteTitle => 'تنظیم حذف کریں؟';
+
+  @override
+  String orgSetDeleteBody(String a) {
+    return 'کیا آپ واقعی \"$a\" کو حذف کرنا چاہتے ہیں؟\n\nاس سے تنظیم کی ورک اسپیس آرکائیو ہو جائے گی۔ یہ عمل واپس نہیں ہو سکتا۔';
+  }
+
+  @override
+  String get orgSetKeep => 'تنظیم رکھیں';
+
+  @override
+  String get orgSetDeleted => 'تنظیم حذف کر دی گئی ہے۔';
 }

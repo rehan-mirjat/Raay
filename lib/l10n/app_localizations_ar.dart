@@ -2226,4 +2226,189 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get resNotClosedYet => 'يمكن احتساب النتائج بعد إغلاق الانتخاب.';
+
+  @override
+  String get orgSetSaveTitle => 'حفظ تغييرات العلامة التجارية؟';
+
+  @override
+  String get orgSetUnsavedBody =>
+      'لقد غيّرت العلامة التجارية لهذه المؤسسة دون حفظها. لا يمكن استرجاع التغييرات المهملة.';
+
+  @override
+  String get orgSetKeepEditing => 'متابعة التحرير';
+
+  @override
+  String get orgSetDiscard => 'تجاهل';
+
+  @override
+  String get orgSetSave => 'حفظ';
+
+  @override
+  String get orgSetLoading => 'جارٍ تحميل المؤسسة…';
+
+  @override
+  String get orgSetLoadError =>
+      'تعذّر تحميل المؤسسة. تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get orgSetNoOrgTitle => 'لا توجد مؤسسة نشطة';
+
+  @override
+  String get orgSetNoOrgBody => 'اختر مؤسسة قبل تغيير علامتها التجارية.';
+
+  @override
+  String get orgSetDeniedTitle => 'تم رفض الوصول';
+
+  @override
+  String get orgSetDeniedBody =>
+      'يمكن لمالك المؤسسة فقط تحديث علامتها التجارية.';
+
+  @override
+  String get orgSetBackOverview => 'نظرة عامة';
+
+  @override
+  String get orgSetTitle => 'العلامة التجارية للمؤسسة';
+
+  @override
+  String orgSetSubtitle(String a) {
+    return 'حدّد كيف تظهر $a للأعضاء والناخبين.';
+  }
+
+  @override
+  String get orgSetDetails => 'تفاصيل المؤسسة';
+
+  @override
+  String get orgSetDetailsBody => 'اسم مؤسستك العام ونبذة قصيرة عنها.';
+
+  @override
+  String get orgSetNameLabel => 'اسم المؤسسة *';
+
+  @override
+  String get orgSetNameHint => 'مثلاً شركة أكمي';
+
+  @override
+  String get orgSetNameShort => 'استخدم 3 أحرف على الأقل.';
+
+  @override
+  String get orgSetDescription => 'الوصف';
+
+  @override
+  String get orgSetDescriptionHint => 'ملخص موجز عن مؤسستك أو قسمك...';
+
+  @override
+  String get orgSetDescriptionHelp => 'نبذة قصيرة تظهر في ملف مؤسستك.';
+
+  @override
+  String get orgSetWebsite => 'الموقع الإلكتروني (اختياري)';
+
+  @override
+  String get orgSetWebsiteInvalid => 'أدخل رابط HTTPS صالحًا.';
+
+  @override
+  String get orgSetLogo => 'شعار المؤسسة';
+
+  @override
+  String get orgSetLogoActive => 'الشعار مفعّل';
+
+  @override
+  String get orgSetLogoNone => 'لم يتم رفع شعار';
+
+  @override
+  String get orgSetLogoChange => 'اختر شعارًا آخر';
+
+  @override
+  String get orgSetLogoChoose => 'اختر شعارًا';
+
+  @override
+  String get orgSetRemove => 'إزالة';
+
+  @override
+  String get orgSetLogoHelp =>
+      'PNG أو JPEG أو WebP · حتى 2 ميغابايت\nاستخدم صورة مربعة للحصول على أفضل نتيجة.';
+
+  @override
+  String get orgSetPreviewName => 'اسم المؤسسة';
+
+  @override
+  String get orgSetPreviewDescription => 'سيظهر الوصف هنا...';
+
+  @override
+  String get orgSetPreviewNoWebsite => 'لم تتم إضافة موقع إلكتروني';
+
+  @override
+  String get orgSetPreviewTitle => 'معاينة ملف العضو';
+
+  @override
+  String get orgSetPreviewBody => 'كيف ستظهر مؤسستك للأعضاء.';
+
+  @override
+  String get orgSetPreviewRole => 'عضو';
+
+  @override
+  String get orgSetPreviewViewEvents => 'عرض الانتخابات';
+
+  @override
+  String get orgSetPreviewNote =>
+      'معاينة فقط. تظهر التغييرات للأعضاء والناخبين بعد الحفظ.';
+
+  @override
+  String get orgSetNotPermTitle => 'العلامة التجارية، لا الصلاحيات';
+
+  @override
+  String get orgSetNotPermBody =>
+      'يُدار التحكم في الوصول والتحقق بشكل منفصل. تحديث العلامة التجارية لن يغيّر أيًّا منهما.';
+
+  @override
+  String get orgSetDirtyTitle => 'لديك تغييرات غير محفوظة';
+
+  @override
+  String get orgSetDirtyLogo =>
+      'تم اختيار شعار جديد لكنه لم يُرفع بعد. احفظ لرفعه ونشره.';
+
+  @override
+  String get orgSetDirtyBody =>
+      'احفظ لنشر علامتك التجارية، أو أعد الضبط لتجاهل تغييراتك.';
+
+  @override
+  String get orgSetReset => 'إعادة ضبط';
+
+  @override
+  String get orgSetSaving => 'جارٍ الحفظ...';
+
+  @override
+  String get orgSetSaveBranding => 'حفظ العلامة التجارية';
+
+  @override
+  String get orgSetLogoTooBig => 'الشعار أكبر من 2 ميغابايت. اختر صورة أصغر.';
+
+  @override
+  String get orgSetSaved => 'تم حفظ العلامة التجارية للمؤسسة.';
+
+  @override
+  String get orgSetSaveFailed =>
+      'تعذّر حفظ العلامة التجارية. تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get orgSetDanger => 'منطقة الخطر';
+
+  @override
+  String get orgSetDangerBody =>
+      'سيؤدي حذف هذه المؤسسة إلى أرشفة مساحة عملها. ستتوقف الانتخابات النشطة عن قبول الأصوات.';
+
+  @override
+  String get orgSetDelete => 'حذف المؤسسة';
+
+  @override
+  String get orgSetDeleteTitle => 'حذف المؤسسة؟';
+
+  @override
+  String orgSetDeleteBody(String a) {
+    return 'هل أنت متأكد من حذف \"$a\"؟\n\nسيؤدي ذلك إلى أرشفة مساحة عمل المؤسسة. لا يمكن التراجع عن هذا الإجراء.';
+  }
+
+  @override
+  String get orgSetKeep => 'الإبقاء على المؤسسة';
+
+  @override
+  String get orgSetDeleted => 'تم حذف المؤسسة.';
 }

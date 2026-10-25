@@ -3959,6 +3959,348 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Results can be calculated once the election has closed.'**
   String get resNotClosedYet;
+
+  /// No description provided for @orgSetSaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save your branding changes?'**
+  String get orgSetSaveTitle;
+
+  /// No description provided for @orgSetUnsavedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You changed this organization\'s branding but have not saved it. Discarded changes cannot be recovered.'**
+  String get orgSetUnsavedBody;
+
+  /// No description provided for @orgSetKeepEditing.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep editing'**
+  String get orgSetKeepEditing;
+
+  /// No description provided for @orgSetDiscard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get orgSetDiscard;
+
+  /// No description provided for @orgSetSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get orgSetSave;
+
+  /// No description provided for @orgSetLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading organization…'**
+  String get orgSetLoading;
+
+  /// No description provided for @orgSetLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the organization. Check your connection and try again.'**
+  String get orgSetLoadError;
+
+  /// No description provided for @orgSetNoOrgTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No active organization'**
+  String get orgSetNoOrgTitle;
+
+  /// No description provided for @orgSetNoOrgBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an organization before changing its branding.'**
+  String get orgSetNoOrgBody;
+
+  /// No description provided for @orgSetDeniedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Access denied'**
+  String get orgSetDeniedTitle;
+
+  /// No description provided for @orgSetDeniedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the organization Owner can update its branding.'**
+  String get orgSetDeniedBody;
+
+  /// No description provided for @orgSetBackOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get orgSetBackOverview;
+
+  /// No description provided for @orgSetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization branding'**
+  String get orgSetTitle;
+
+  /// No description provided for @orgSetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shape how {a} appears to members and voters.'**
+  String orgSetSubtitle(String a);
+
+  /// No description provided for @orgSetDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization details'**
+  String get orgSetDetails;
+
+  /// No description provided for @orgSetDetailsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your public name and a short introduction to your organization.'**
+  String get orgSetDetailsBody;
+
+  /// No description provided for @orgSetNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization name *'**
+  String get orgSetNameLabel;
+
+  /// No description provided for @orgSetNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Acme Corporation'**
+  String get orgSetNameHint;
+
+  /// No description provided for @orgSetNameShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Use at least 3 characters.'**
+  String get orgSetNameShort;
+
+  /// No description provided for @orgSetDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get orgSetDescription;
+
+  /// No description provided for @orgSetDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Brief summary of your organization or department...'**
+  String get orgSetDescriptionHint;
+
+  /// No description provided for @orgSetDescriptionHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A short introduction shown on your organization profile.'**
+  String get orgSetDescriptionHelp;
+
+  /// No description provided for @orgSetWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Website (optional)'**
+  String get orgSetWebsite;
+
+  /// No description provided for @orgSetWebsiteInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid HTTPS URL.'**
+  String get orgSetWebsiteInvalid;
+
+  /// No description provided for @orgSetLogo.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization logo'**
+  String get orgSetLogo;
+
+  /// No description provided for @orgSetLogoActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Logo active'**
+  String get orgSetLogoActive;
+
+  /// No description provided for @orgSetLogoNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No logo uploaded'**
+  String get orgSetLogoNone;
+
+  /// No description provided for @orgSetLogoChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a different logo'**
+  String get orgSetLogoChange;
+
+  /// No description provided for @orgSetLogoChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose logo'**
+  String get orgSetLogoChoose;
+
+  /// No description provided for @orgSetRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get orgSetRemove;
+
+  /// No description provided for @orgSetLogoHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'PNG, JPEG or WebP · Up to 2 MB\nUse a square image for the best result.'**
+  String get orgSetLogoHelp;
+
+  /// No description provided for @orgSetPreviewName.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization Name'**
+  String get orgSetPreviewName;
+
+  /// No description provided for @orgSetPreviewDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description will appear here...'**
+  String get orgSetPreviewDescription;
+
+  /// No description provided for @orgSetPreviewNoWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'No website added'**
+  String get orgSetPreviewNoWebsite;
+
+  /// No description provided for @orgSetPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Member profile preview'**
+  String get orgSetPreviewTitle;
+
+  /// No description provided for @orgSetPreviewBody.
+  ///
+  /// In en, this message translates to:
+  /// **'How your organization will appear to members.'**
+  String get orgSetPreviewBody;
+
+  /// No description provided for @orgSetPreviewRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Member'**
+  String get orgSetPreviewRole;
+
+  /// No description provided for @orgSetPreviewViewEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'View events'**
+  String get orgSetPreviewViewEvents;
+
+  /// No description provided for @orgSetPreviewNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview only. Changes appear to members and voters after you save.'**
+  String get orgSetPreviewNote;
+
+  /// No description provided for @orgSetNotPermTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Branding, not permissions'**
+  String get orgSetNotPermTitle;
+
+  /// No description provided for @orgSetNotPermBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Access control and verification are managed separately. Updating your branding won\'t change either.'**
+  String get orgSetNotPermBody;
+
+  /// No description provided for @orgSetDirtyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You have unsaved changes'**
+  String get orgSetDirtyTitle;
+
+  /// No description provided for @orgSetDirtyLogo.
+  ///
+  /// In en, this message translates to:
+  /// **'A new logo is selected but not uploaded yet. Save to upload and publish it.'**
+  String get orgSetDirtyLogo;
+
+  /// No description provided for @orgSetDirtyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to publish your branding, or reset to discard your changes.'**
+  String get orgSetDirtyBody;
+
+  /// No description provided for @orgSetReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get orgSetReset;
+
+  /// No description provided for @orgSetSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get orgSetSaving;
+
+  /// No description provided for @orgSetSaveBranding.
+  ///
+  /// In en, this message translates to:
+  /// **'Save branding'**
+  String get orgSetSaveBranding;
+
+  /// No description provided for @orgSetLogoTooBig.
+  ///
+  /// In en, this message translates to:
+  /// **'The logo is larger than 2 MB. Choose a smaller image.'**
+  String get orgSetLogoTooBig;
+
+  /// No description provided for @orgSetSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization branding saved.'**
+  String get orgSetSaved;
+
+  /// No description provided for @orgSetSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save branding. Check your connection and try again.'**
+  String get orgSetSaveFailed;
+
+  /// No description provided for @orgSetDanger.
+  ///
+  /// In en, this message translates to:
+  /// **'Danger zone'**
+  String get orgSetDanger;
+
+  /// No description provided for @orgSetDangerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting this organization will archive its workspace. Active elections will stop accepting ballots.'**
+  String get orgSetDangerBody;
+
+  /// No description provided for @orgSetDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete organization'**
+  String get orgSetDelete;
+
+  /// No description provided for @orgSetDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Organization?'**
+  String get orgSetDeleteTitle;
+
+  /// No description provided for @orgSetDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{a}\"?\n\nThis will archive the organization workspace. This action cannot be undone.'**
+  String orgSetDeleteBody(String a);
+
+  /// No description provided for @orgSetKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep organization'**
+  String get orgSetKeep;
+
+  /// No description provided for @orgSetDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization has been deleted.'**
+  String get orgSetDeleted;
 }
 
 class _AppLocalizationsDelegate
