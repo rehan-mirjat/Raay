@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -34,7 +35,6 @@ class _DepartmentMembersScreenState
   final Set<String> _pendingSelectedUids = {};
   bool _isAssigning = false;
 
-
   @override
   void initState() {
     super.initState();
@@ -66,15 +66,15 @@ class _DepartmentMembersScreenState
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Delete Department',
+        title: Text(AppLocalizations.of(context).dmDeleteTitle,
             style: TextStyle(color: KivoraColors.of(context).errorText)),
         content: Text(
-          'Are you sure you want to delete "${dept.name}"?\n\nThis permanently deletes the department.',
+          AppLocalizations.of(context).dmDeleteBody(dept.name.toString()),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context).dmCancel),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -85,8 +85,8 @@ class _DepartmentMembersScreenState
                     .deleteDepartment(dept.id);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Department deleted successfully.')),
+                    SnackBar(
+                        content: Text(AppLocalizations.of(context).dmDeleted)),
                   );
                   context.go('/orgs/departments');
                 }
@@ -94,8 +94,8 @@ class _DepartmentMembersScreenState
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(
-                          'Failed to delete: ${friendlyError(e)}'),
+                      content: Text(AppLocalizations.of(context)
+                          .dmDeleteFailed((friendlyError(e)).toString())),
                       backgroundColor: AppTheme.error,
                     ),
                   );
@@ -103,7 +103,7 @@ class _DepartmentMembersScreenState
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
-            child: const Text('Delete Permanently'),
+            child: Text(AppLocalizations.of(context).dmDeletePermanent),
           ),
         ],
       ),
@@ -137,8 +137,8 @@ class _DepartmentMembersScreenState
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-                'Successfully assigned $successCount member(s) to ${dept.name}.'),
+            content: Text(AppLocalizations.of(context)
+                .dmAssigned(successCount.toString(), dept.name.toString())),
             backgroundColor: AppTheme.success,
           ),
         );
@@ -147,8 +147,8 @@ class _DepartmentMembersScreenState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-                'Failed to assign members: ${friendlyError(e)}'),
+            content: Text(AppLocalizations.of(context)
+                .dmAssignFailed((friendlyError(e)).toString())),
             backgroundColor: AppTheme.error,
           ),
         );
@@ -163,13 +163,14 @@ class _DepartmentMembersScreenState
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Remove from department',
+        title: Text(AppLocalizations.of(context).dmRemoveFrom,
             style: TextStyle(color: KivoraColors.of(context).errorText)),
-        content: Text('Remove "$memberName" from this department?'),
+        content: Text(
+            AppLocalizations.of(context).dmRemoveBody(memberName.toString())),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context).dmCancel),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppTheme.error),
@@ -177,7 +178,7 @@ class _DepartmentMembersScreenState
               Navigator.pop(ctx);
               _handleRemoveMember(orgId, targetUid, memberName);
             },
-            child: const Text('Remove'),
+            child: Text(AppLocalizations.of(context).dmRemove),
           ),
         ],
       ),
@@ -197,15 +198,17 @@ class _DepartmentMembersScreenState
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Removed $memberName from department.')),
+          SnackBar(
+              content: Text(AppLocalizations.of(context)
+                  .dmRemoved(memberName.toString()))),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-                'Failed to remove member: ${friendlyError(e)}'),
+            content: Text(AppLocalizations.of(context)
+                .dmRemoveFailed((friendlyError(e)).toString())),
             backgroundColor: AppTheme.error,
           ),
         );
@@ -219,12 +222,11 @@ class _DepartmentMembersScreenState
     final orgContext = activeContextState.valueOrNull?.context;
 
     if (orgContext == null) {
-      return const Scaffold(
+      return Scaffold(
         body: ErrorView(
           type: ErrorViewType.generic,
-          title: 'No Active Organization',
-          message:
-              'Please select an organization context to view department members.',
+          title: AppLocalizations.of(context).dmNoOrgTitle,
+          message: AppLocalizations.of(context).dmNoOrgBody,
         ),
       );
     }
@@ -239,8 +241,8 @@ class _DepartmentMembersScreenState
         .firstOrNull;
 
     if (department == null) {
-      return const Scaffold(
-        body: LoadingView(message: 'Loading department details...'),
+      return Scaffold(
+        body: LoadingView(message: AppLocalizations.of(context).dmLoadingDept),
       );
     }
 
@@ -251,10 +253,10 @@ class _DepartmentMembersScreenState
       backgroundColor: Colors.transparent,
       body: membersAsync.when(
         loading: () =>
-            const LoadingView(message: 'Loading department roster...'),
+            LoadingView(message: AppLocalizations.of(context).dmLoadingRoster),
         error: (err, stack) => ErrorView(
           type: ErrorViewType.generic,
-          message: 'We could not load the roster. Check your connection and try again.',
+          message: AppLocalizations.of(context).dmRosterError,
           onRetry: () =>
               ref.invalidate(organizationMembersDirectoryProvider(orgId)),
         ),
@@ -284,16 +286,17 @@ class _DepartmentMembersScreenState
                       onTap: () => context.go('/orgs/departments'),
                       borderRadius: BorderRadius.circular(6),
                       child: Padding(
-                        padding:
-                            const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 4, horizontal: 2),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(Icons.arrow_back_rounded,
-                                size: 16, color: KivoraColors.of(context).accentText),
+                                size: 16,
+                                color: KivoraColors.of(context).accentText),
                             const SizedBox(width: 6),
                             Text(
-                              'Departments',
+                              AppLocalizations.of(context).dmBack,
                               style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
@@ -332,25 +335,32 @@ class _DepartmentMembersScreenState
                               ),
                               const SizedBox(height: 8),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 4),
                                 decoration: BoxDecoration(
                                   color: KivoraColors.surfaceOf(context),
-                                  borderRadius: BorderRadius.circular(AppTheme.radiusInput),
-                                  border: Border.all(color: KivoraColors.borderOf(context)),
+                                  borderRadius: BorderRadius.circular(
+                                      AppTheme.radiusInput),
+                                  border: Border.all(
+                                      color: KivoraColors.borderOf(context)),
                                 ),
                                 child: Text(
-                                  '${assignedMembers.length} assigned members',
+                                  AppLocalizations.of(context).dmAssignedCount(
+                                      assignedMembers.length.toString()),
                                   style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
-                                      color: KivoraColors.textSecondaryOf(context)),
+                                      color: KivoraColors.textSecondaryOf(
+                                          context)),
                                 ),
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Members in this department can be chosen as eligible voters for elections.',
+                                AppLocalizations.of(context).dmEligibleNote,
                                 style: TextStyle(
-                                    color: KivoraColors.textSecondaryOf(context), fontSize: 14),
+                                    color:
+                                        KivoraColors.textSecondaryOf(context),
+                                    fontSize: 14),
                               ),
                             ],
                           ),
@@ -364,25 +374,35 @@ class _DepartmentMembersScreenState
                                 onPressed: () {
                                   showDialog(
                                     context: context,
-                                    builder: (context) => CreateEditDepartmentDialog(
+                                    builder: (context) =>
+                                        CreateEditDepartmentDialog(
                                       organizationId: orgId,
                                       departmentToEdit: department,
                                     ),
                                   );
                                 },
                                 icon: const Icon(Icons.edit_outlined, size: 18),
-                                label: const Text('Edit details'),
-                                style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+                                label:
+                                    Text(AppLocalizations.of(context).dmEdit),
+                                style: OutlinedButton.styleFrom(
+                                    minimumSize: const Size(48, 48)),
                               ),
                               OutlinedButton.icon(
-                                onPressed: () => _showDeleteConfirmation(context, department, orgId),
+                                onPressed: () => _showDeleteConfirmation(
+                                    context, department, orgId),
                                 icon: Icon(Icons.delete_outline_rounded,
-                                    size: 18, color: KivoraColors.of(context).errorText),
-                                label: Text('Delete',
-                                    style: TextStyle(color: KivoraColors.of(context).errorText)),
+                                    size: 18,
+                                    color: KivoraColors.of(context).errorText),
+                                label: Text(
+                                    AppLocalizations.of(context).dmDelete,
+                                    style: TextStyle(
+                                        color: KivoraColors.of(context)
+                                            .errorText)),
                                 style: OutlinedButton.styleFrom(
                                   minimumSize: const Size(48, 48),
-                                  side: BorderSide(color: KivoraColors.of(context).errorText),
+                                  side: BorderSide(
+                                      color:
+                                          KivoraColors.of(context).errorText),
                                 ),
                               ),
                             ],
@@ -481,7 +501,8 @@ class _DepartmentMembersScreenState
               children: [
                 Expanded(
                   child: Text(
-                    'Members in ${dept.name}',
+                    AppLocalizations.of(context)
+                        .dmMembersIn(dept.name.toString()),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -531,7 +552,7 @@ class _DepartmentMembersScreenState
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'No members assigned yet',
+                    AppLocalizations.of(context).dmNoMembers,
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -539,7 +560,7 @@ class _DepartmentMembersScreenState
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'Choose people from the list to add them to this department. You can change it at any time.',
+                    AppLocalizations.of(context).dmNoMembersBody,
                     style: TextStyle(
                         fontSize: 13,
                         color: KivoraColors.textSecondaryOf(context),
@@ -548,9 +569,10 @@ class _DepartmentMembersScreenState
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Assigned members will appear here.',
-                    style:
-                        TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context)),
+                    AppLocalizations.of(context).dmAssignedHere,
+                    style: TextStyle(
+                        fontSize: 11,
+                        color: KivoraColors.textSecondaryOf(context)),
                   ),
                 ],
               ),
@@ -565,7 +587,8 @@ class _DepartmentMembersScreenState
                   Divider(height: 1, color: KivoraColors.borderOf(context)),
               itemBuilder: (context, idx) {
                 final member = assignedMembers[idx];
-                final name = member['displayName'] as String? ?? 'Member';
+                final name = member['displayName'] as String? ??
+                    AppLocalizations.of(context).dmMemberFallback;
                 final role = member['role'] as String? ?? 'member';
                 final userId = member['userId'] as String? ?? '';
                 final initials = _getInitials(name);
@@ -577,7 +600,10 @@ class _DepartmentMembersScreenState
                     children: [
                       CircleAvatar(
                         radius: 18,
-                        backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.14),
+                        backgroundColor: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withValues(alpha: 0.14),
                         child: Text(initials,
                             style: TextStyle(
                                 color: KivoraColors.of(context).accentText,
@@ -595,7 +621,8 @@ class _DepartmentMembersScreenState
                                 style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
-                                    color: KivoraColors.textPrimaryOf(context))),
+                                    color:
+                                        KivoraColors.textPrimaryOf(context))),
                             const SizedBox(height: 4),
                             StatusBadge.role(role),
                           ],
@@ -605,8 +632,9 @@ class _DepartmentMembersScreenState
                         const SizedBox(width: 8),
                         IconButton(
                           icon: Icon(Icons.close_rounded,
-                              size: 18, color: KivoraColors.textSecondaryOf(context)),
-                          tooltip: 'Remove from department',
+                              size: 18,
+                              color: KivoraColors.textSecondaryOf(context)),
+                          tooltip: AppLocalizations.of(context).dmRemoveFrom,
                           onPressed: () => _showRemoveMemberConfirmation(
                               context, orgId, userId, name),
                         ),
@@ -629,7 +657,9 @@ class _DepartmentMembersScreenState
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Pending selections are not members yet. Confirm with "Assign ${_pendingSelectedUids.length} members" to add them to ${dept.name}.',
+                    AppLocalizations.of(context).dmPendingNote(
+                        _pendingSelectedUids.length.toString(),
+                        dept.name.toString()),
                     style: TextStyle(
                         fontSize: 11,
                         color: KivoraColors.textSecondaryOf(context),
@@ -701,7 +731,7 @@ class _DepartmentMembersScreenState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Add members',
+                  AppLocalizations.of(context).dmAddMembers,
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -709,9 +739,11 @@ class _DepartmentMembersScreenState
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Select people to assign to ${dept.name}.',
+                  AppLocalizations.of(context)
+                      .dmSelectPeople(dept.name.toString()),
                   style: TextStyle(
-                      fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
+                      fontSize: 12,
+                      color: KivoraColors.textSecondaryOf(context)),
                 ),
                 const SizedBox(height: 16),
 
@@ -719,23 +751,26 @@ class _DepartmentMembersScreenState
                 TextField(
                   controller: _searchCtrl,
                   decoration: InputDecoration(
-                    hintText: 'Search by name',
+                    hintText: AppLocalizations.of(context).dmSearch,
                     prefixIcon: Icon(Icons.search_rounded,
                         color: KivoraColors.textSecondaryOf(context), size: 20),
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: KivoraColors.borderOf(context)),
+                      borderSide:
+                          BorderSide(color: KivoraColors.borderOf(context)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: KivoraColors.borderOf(context)),
+                      borderSide:
+                          BorderSide(color: KivoraColors.borderOf(context)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(
-                          color: KivoraColors.of(context).accentText, width: 1.5),
+                          color: KivoraColors.of(context).accentText,
+                          width: 1.5),
                     ),
                     fillColor: KivoraColors.surfaceOf(context),
                     filled: true,
@@ -750,11 +785,14 @@ class _DepartmentMembersScreenState
                   child: Row(
                     children: [
                       Icon(Icons.filter_list_rounded,
-                          size: 18, color: KivoraColors.textSecondaryOf(context)),
+                          size: 18,
+                          color: KivoraColors.textSecondaryOf(context)),
                       const SizedBox(width: 8),
-                      _buildFilterPill('all', 'All members'),
+                      _buildFilterPill(
+                          'all', AppLocalizations.of(context).dmAllMembers),
                       const SizedBox(width: 6),
-                      _buildFilterPill('unassigned', 'No department'),
+                      _buildFilterPill(
+                          'unassigned', AppLocalizations.of(context).dmNoDept),
                       const SizedBox(width: 6),
                       _buildFilterPill('assigned', dept.name),
                     ],
@@ -770,9 +808,10 @@ class _DepartmentMembersScreenState
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 40),
               child: Center(
-                child: Text('No members match your search.',
-                    style:
-                        TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 13)),
+                child: Text(AppLocalizations.of(context).dmNoMatch,
+                    style: TextStyle(
+                        color: KivoraColors.textSecondaryOf(context),
+                        fontSize: 13)),
               ),
             )
           else
@@ -784,7 +823,8 @@ class _DepartmentMembersScreenState
               itemBuilder: (context, idx) {
                 final member = filteredMembers[idx];
                 final userId = member['userId'] as String? ?? '';
-                final name = member['displayName'] as String? ?? 'Member';
+                final name = member['displayName'] as String? ??
+                    AppLocalizations.of(context).dmMemberFallback;
                 final role = member['role'] as String? ?? 'member';
                 final initials = _getInitials(name);
 
@@ -794,12 +834,14 @@ class _DepartmentMembersScreenState
                 final inThisDept =
                     deptIds.contains(dept.id) || singleDept == dept.id;
 
-                final currentDeptName =
-                    singleDept != null && deptMap.containsKey(singleDept)
-                        ? 'In ${deptMap[singleDept]}'
-                        : (deptIds.isNotEmpty
-                            ? 'In ${deptMap[deptIds.first] ?? 'department'}'
-                            : 'No department');
+                final currentDeptName = singleDept != null &&
+                        deptMap.containsKey(singleDept)
+                    ? AppLocalizations.of(context)
+                        .dmIn((deptMap[singleDept]).toString())
+                    : (deptIds.isNotEmpty
+                        ? AppLocalizations.of(context).dmInFirst(
+                            (deptMap[deptIds.first] ?? 'department').toString())
+                        : AppLocalizations.of(context).dmNoDept);
 
                 final isChecked =
                     inThisDept || _pendingSelectedUids.contains(userId);
@@ -825,7 +867,9 @@ class _DepartmentMembersScreenState
                           horizontal: 14, vertical: 10),
                       decoration: BoxDecoration(
                         color: isChecked
-                            ? AppTheme.primaryBlue.withValues(alpha: 0.12).withValues(alpha: 0.6)
+                            ? AppTheme.primaryBlue
+                                .withValues(alpha: 0.12)
+                                .withValues(alpha: 0.6)
                             : KivoraColors.surfaceOf(context),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
@@ -855,7 +899,9 @@ class _DepartmentMembersScreenState
                             ),
                             child: isChecked
                                 ? Icon(Icons.check_rounded,
-                                    size: 14, color: Theme.of(context).colorScheme.onPrimary)
+                                    size: 14,
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary)
                                 : null,
                           ),
                           const SizedBox(width: 12),
@@ -863,7 +909,10 @@ class _DepartmentMembersScreenState
                           // Avatar
                           CircleAvatar(
                             radius: 16,
-                            backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.14),
+                            backgroundColor: Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withValues(alpha: 0.14),
                             child: Text(initials,
                                 style: TextStyle(
                                     color: KivoraColors.of(context).accentText,
@@ -891,11 +940,13 @@ class _DepartmentMembersScreenState
                                 ),
                                 Text(
                                   inThisDept
-                                      ? 'Assigned to ${dept.name}'
+                                      ? AppLocalizations.of(context)
+                                          .dmAssignedTo(dept.name.toString())
                                       : currentDeptName,
                                   style: TextStyle(
                                       fontSize: 11,
-                                      color: KivoraColors.textSecondaryOf(context)),
+                                      color: KivoraColors.textSecondaryOf(
+                                          context)),
                                 ),
                               ],
                             ),
@@ -923,37 +974,43 @@ class _DepartmentMembersScreenState
               runSpacing: 12,
               children: [
                 ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 420),
-                  child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+                    constraints: const BoxConstraints(maxWidth: 420),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '${_pendingSelectedUids.length} selected',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13,
-                              color: KivoraColors.textPrimaryOf(context)),
+                        Row(
+                          children: [
+                            Text(
+                              AppLocalizations.of(context).dmSelectedCount(
+                                  _pendingSelectedUids.length.toString()),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                  color: KivoraColors.textPrimaryOf(context)),
+                            ),
+                            if (_pendingSelectedUids.isNotEmpty) ...[
+                              const SizedBox(width: 8),
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                    minimumSize: const Size(48, 48)),
+                                onPressed: () => setState(
+                                    () => _pendingSelectedUids.clear()),
+                                child:
+                                    Text(AppLocalizations.of(context).dmClear),
+                              ),
+                            ],
+                          ],
                         ),
-                        if (_pendingSelectedUids.isNotEmpty) ...[
-                          const SizedBox(width: 8),
-                          TextButton(
-                            style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
-                            onPressed: () => setState(() => _pendingSelectedUids.clear()),
-                            child: const Text('Clear'),
-                          ),
-                        ],
+                        const SizedBox(height: 2),
+                        Text(
+                          AppLocalizations.of(context)
+                              .dmPendingTo(dept.name.toString()),
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: KivoraColors.textSecondaryOf(context)),
+                        ),
                       ],
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'Pending assignment to ${dept.name}',
-                      style: TextStyle(
-                          fontSize: 14, color: KivoraColors.textSecondaryOf(context)),
-                    ),
-                  ],
-                )),
+                    )),
                 if (isManager)
                   FilledButton.icon(
                     onPressed: _pendingSelectedUids.isEmpty || _isAssigning
@@ -966,9 +1023,11 @@ class _DepartmentMembersScreenState
                           )
                         : const Icon(Icons.person_add_alt_1_rounded, size: 16),
                     label: Text(_isAssigning
-                        ? 'Assigning...'
-                        : 'Assign ${_pendingSelectedUids.length} members'),
-                    style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+                        ? AppLocalizations.of(context).dmAssigning
+                        : AppLocalizations.of(context)
+                            .dmAssign(_pendingSelectedUids.length.toString())),
+                    style:
+                        FilledButton.styleFrom(minimumSize: const Size(48, 48)),
                   ),
               ],
             ),
@@ -993,16 +1052,22 @@ class _DepartmentMembersScreenState
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? AppTheme.primaryBlue : KivoraColors.surfaceOf(context),
+          color: isSelected
+              ? AppTheme.primaryBlue
+              : KivoraColors.surfaceOf(context),
           borderRadius: BorderRadius.circular(16),
-          border: isSelected ? null : Border.all(color: KivoraColors.borderOf(context)),
+          border: isSelected
+              ? null
+              : Border.all(color: KivoraColors.borderOf(context)),
         ),
         child: Text(
           label,
           style: TextStyle(
             fontSize: 12,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-            color: isSelected ? Theme.of(context).colorScheme.onPrimary : KivoraColors.textSecondaryOf(context),
+            color: isSelected
+                ? Theme.of(context).colorScheme.onPrimary
+                : KivoraColors.textSecondaryOf(context),
           ),
         ),
       ),

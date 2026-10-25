@@ -2434,4 +2434,334 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get orgSetDeleted => 'تنظیم حذف کر دی گئی ہے۔';
+
+  @override
+  String get jcMaxUsesInvalid =>
+      'زیادہ سے زیادہ استعمال کی تعداد 0 سے 100,000 کے درمیان درج کریں۔';
+
+  @override
+  String get jcSaveTitle => 'یہ شمولیت کا کوڈ محفوظ کر لیں';
+
+  @override
+  String get jcShownOnce =>
+      'یہ کوڈ صرف ایک بار دکھایا جاتا ہے۔ اسے صرف انہی لوگوں کو دیں جنہیں آپ اس تنظیم میں شامل کرنا چاہتے ہیں۔';
+
+  @override
+  String get jcScanHint =>
+      'یا کسی دوسرے ڈیوائس پر Kivora کے \"Scan to Join\" سے اسے اسکین کریں۔';
+
+  @override
+  String get jcCopied => 'کاپی ہو گیا';
+
+  @override
+  String get jcCopy => 'کوڈ کاپی کریں';
+
+  @override
+  String get jcDone => 'مکمل';
+
+  @override
+  String get jcRevokeTitle => 'یہ کوڈ منسوخ کریں؟';
+
+  @override
+  String get jcCancel => 'منسوخ کریں';
+
+  @override
+  String get jcRevoke => 'کوڈ منسوخ کریں';
+
+  @override
+  String get jcRevokeNoId => 'یہ کوڈ منسوخ نہیں ہو سکتا (شناخت موجود نہیں)۔';
+
+  @override
+  String get jcRevoked => 'شمولیت کا کوڈ منسوخ کر دیا گیا۔';
+
+  @override
+  String get jcTitle => 'شمولیت کے کوڈ';
+
+  @override
+  String get jcRefresh => 'شمولیت کے کوڈ تازہ کریں';
+
+  @override
+  String get jcLoading => 'تنظیم لوڈ ہو رہی ہے…';
+
+  @override
+  String get jcOrgLoadError =>
+      'ہم یہ تنظیم لوڈ نہیں کر سکے۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔';
+
+  @override
+  String get jcNoOrgTitle => 'تنظیم منتخب کریں';
+
+  @override
+  String get jcNoOrgBody =>
+      'شمولیت کے کوڈ سنبھالنے سے پہلے ایک تنظیم منتخب کریں۔';
+
+  @override
+  String get jcAdminTitle => 'منتظم کی رسائی درکار ہے';
+
+  @override
+  String get jcAdminBody =>
+      'صرف اس تنظیم کا مالک اور منتظمین شمولیت کے کوڈ سنبھال سکتے ہیں۔';
+
+  @override
+  String get jcSubtitle =>
+      'ایسے کوڈ بنائیں اور منسوخ کریں جن سے لوگ اس تنظیم میں شامل ہو سکیں۔ درست کوڈ سے شخص فوراً رکن بن جاتا ہے؛ اس سے کبھی منتظم یا مالک کی رسائی نہیں ملتی۔';
+
+  @override
+  String get jcStatActive => 'فعال کوڈ';
+
+  @override
+  String get jcStatExpired => 'میعاد ختم یا استعمال مکمل';
+
+  @override
+  String get jcStatRevoked => 'منسوخ';
+
+  @override
+  String get jcExisting => 'موجودہ کوڈ';
+
+  @override
+  String get jcLoadError =>
+      'ہم شمولیت کے کوڈ لوڈ نہیں کر سکے۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔';
+
+  @override
+  String get jcEmpty => 'اس تنظیم کے لیے کوئی شمولیت کا کوڈ نہیں ہے۔';
+
+  @override
+  String get jcCreateTitle => 'شمولیت کا کوڈ بنائیں';
+
+  @override
+  String get jcCreateNote =>
+      'کوڈ صرف ایک بار دکھایا جاتا ہے۔ وہ محفوظ ہیش کی صورت میں رکھا جاتا ہے اور بعد میں دوبارہ حاصل نہیں ہو سکتا۔';
+
+  @override
+  String get jcCreating => 'بن رہا ہے…';
+
+  @override
+  String get jcCreate => 'کوڈ بنائیں';
+
+  @override
+  String get jcExpiresAfter => 'میعاد ختم ہو گی';
+
+  @override
+  String get jcExp24h => '24 گھنٹے';
+
+  @override
+  String get jcExp3d => '3 دن';
+
+  @override
+  String get jcExp7d => '7 دن';
+
+  @override
+  String get jcExp30d => '30 دن';
+
+  @override
+  String get jcExp1y => '1 سال';
+
+  @override
+  String get jcMaxUses => 'زیادہ سے زیادہ استعمال';
+
+  @override
+  String get jcMaxUsesHint => 'لامحدود کے لیے 0 لکھیں۔';
+
+  @override
+  String get jcExpiryUnknown => 'میعاد معلوم نہیں';
+
+  @override
+  String jcExpires(String a) {
+    return 'میعاد ختم: $a';
+  }
+
+  @override
+  String jcUses(String a) {
+    return '$a استعمال';
+  }
+
+  @override
+  String jcUsesOf(String a, String b) {
+    return '$b میں سے $a استعمال';
+  }
+
+  @override
+  String get dmDeleteTitle => 'شعبہ حذف کریں';
+
+  @override
+  String dmDeleteBody(String a) {
+    return 'کیا آپ واقعی \"$a\" کو حذف کرنا چاہتے ہیں؟\n\nاس سے شعبہ مستقل طور پر حذف ہو جائے گا۔';
+  }
+
+  @override
+  String get dmCancel => 'منسوخ کریں';
+
+  @override
+  String get dmDeleted => 'شعبہ کامیابی سے حذف ہو گیا۔';
+
+  @override
+  String dmDeleteFailed(String a) {
+    return 'حذف نہیں ہو سکا: $a';
+  }
+
+  @override
+  String get dmDeletePermanent => 'مستقل طور پر حذف کریں';
+
+  @override
+  String dmAssigned(String a, String b) {
+    return '$a رکن/اراکین کو $b میں شامل کر دیا گیا۔';
+  }
+
+  @override
+  String dmAssignFailed(String a) {
+    return 'اراکین کو شامل نہیں کیا جا سکا: $a';
+  }
+
+  @override
+  String get dmRemoveFrom => 'شعبے سے ہٹائیں';
+
+  @override
+  String dmRemoveBody(String a) {
+    return '\"$a\" کو اس شعبے سے ہٹائیں؟';
+  }
+
+  @override
+  String get dmRemove => 'ہٹائیں';
+
+  @override
+  String dmRemoved(String a) {
+    return '$a کو شعبے سے ہٹا دیا گیا۔';
+  }
+
+  @override
+  String dmRemoveFailed(String a) {
+    return 'رکن کو ہٹایا نہیں جا سکا: $a';
+  }
+
+  @override
+  String get dmNoOrgTitle => 'کوئی فعال تنظیم نہیں';
+
+  @override
+  String get dmNoOrgBody =>
+      'شعبے کے اراکین دیکھنے کے لیے ایک تنظیم منتخب کریں۔';
+
+  @override
+  String get dmLoadingDept => 'شعبے کی تفصیلات لوڈ ہو رہی ہیں...';
+
+  @override
+  String get dmLoadingRoster => 'شعبے کی فہرست لوڈ ہو رہی ہے...';
+
+  @override
+  String get dmRosterError =>
+      'ہم فہرست لوڈ نہیں کر سکے۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔';
+
+  @override
+  String get dmBack => 'شعبہ جات';
+
+  @override
+  String dmAssignedCount(String a) {
+    return '$a شامل اراکین';
+  }
+
+  @override
+  String get dmEligibleNote =>
+      'اس شعبے کے اراکین کو انتخابات کے اہل ووٹرز کے طور پر منتخب کیا جا سکتا ہے۔';
+
+  @override
+  String get dmEdit => 'تفصیلات میں ترمیم';
+
+  @override
+  String get dmDelete => 'حذف کریں';
+
+  @override
+  String dmMembersIn(String a) {
+    return '$a کے اراکین';
+  }
+
+  @override
+  String get dmNoMembers => 'ابھی کوئی رکن شامل نہیں';
+
+  @override
+  String get dmNoMembersBody =>
+      'فہرست سے لوگوں کو منتخب کر کے اس شعبے میں شامل کریں۔ آپ اسے کسی بھی وقت بدل سکتے ہیں۔';
+
+  @override
+  String get dmAssignedHere => 'شامل اراکین یہاں دکھائی دیں گے۔';
+
+  @override
+  String dmPendingNote(String a, String b) {
+    return 'زیر التوا انتخاب ابھی اراکین نہیں بنے۔ انہیں $b میں شامل کرنے کے لیے \"$a اراکین شامل کریں\" سے تصدیق کریں۔';
+  }
+
+  @override
+  String get dmAddMembers => 'اراکین شامل کریں';
+
+  @override
+  String dmSelectPeople(String a) {
+    return '$a میں شامل کرنے کے لیے لوگوں کو منتخب کریں۔';
+  }
+
+  @override
+  String get dmSearch => 'نام سے تلاش کریں';
+
+  @override
+  String get dmAllMembers => 'تمام اراکین';
+
+  @override
+  String get dmNoDept => 'کوئی شعبہ نہیں';
+
+  @override
+  String get dmNoMatch => 'آپ کی تلاش سے کوئی رکن نہیں ملا۔';
+
+  @override
+  String dmIn(String a) {
+    return '$a میں';
+  }
+
+  @override
+  String dmInFirst(String a) {
+    return '$a میں';
+  }
+
+  @override
+  String dmAssignedTo(String a) {
+    return '$a میں شامل';
+  }
+
+  @override
+  String get dmClear => 'صاف کریں';
+
+  @override
+  String dmPendingTo(String a) {
+    return '$a میں شمولیت زیر التوا';
+  }
+
+  @override
+  String get dmAssigning => 'شامل کیا جا رہا ہے...';
+
+  @override
+  String dmAssign(String a) {
+    return '$a اراکین شامل کریں';
+  }
+
+  @override
+  String jcRevokeBody(String a) {
+    return 'جس کے پاس بھی یہ کوڈ ہے وہ اب اسے استعمال نہیں کر سکے گا۔ ($a)';
+  }
+
+  @override
+  String jcCodeLabel(String a) {
+    return 'کوڈ • $a';
+  }
+
+  @override
+  String get statusExhausted => 'ختم';
+
+  @override
+  String get statusExpired => 'میعاد ختم';
+
+  @override
+  String get statusRevoked => 'منسوخ';
+
+  @override
+  String get dmMemberFallback => 'رکن';
+
+  @override
+  String dmSelectedCount(String a) {
+    return '$a منتخب';
+  }
 }

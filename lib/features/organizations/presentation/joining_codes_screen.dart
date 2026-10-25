@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,8 +47,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
     final maxUses = int.tryParse(_maxUsesController.text.trim());
     if (maxUses == null || maxUses < 0 || maxUses > 100000) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Enter a maximum use count from 0 to 100,000.')),
+        SnackBar(content: Text(AppLocalizations.of(context).jcMaxUsesInvalid)),
       );
       return;
     }
@@ -70,13 +70,12 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
             builder: (context, setDialogState) => AlertDialog(
               icon: Icon(Icons.key_rounded,
                   color: KivoraColors.of(context).accentText),
-              title: const Text('Save this joining code'),
+              title: Text(AppLocalizations.of(context).jcSaveTitle),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text(
-                      'This code is shown once. Share it only with people you want to join this organization.'),
+                  Text(AppLocalizations.of(context).jcShownOnce),
                   const SizedBox(height: 16),
                   SelectableText(
                     result.rawCode,
@@ -103,7 +102,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Or scan this with Kivora\'s "Scan to Join" on another device.',
+                    AppLocalizations.of(context).jcScanHint,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
@@ -118,11 +117,13 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
                     if (context.mounted) setDialogState(() => copied = true);
                   },
                   icon: Icon(copied ? Icons.check_rounded : Icons.copy_rounded),
-                  label: Text(copied ? 'Copied' : 'Copy code'),
+                  label: Text(copied
+                      ? AppLocalizations.of(context).jcCopied
+                      : AppLocalizations.of(context).jcCopy),
                 ),
                 FilledButton(
                   onPressed: () => Navigator.of(dialogContext).pop(),
-                  child: const Text('Done'),
+                  child: Text(AppLocalizations.of(context).jcDone),
                 ),
               ],
             ),
@@ -147,16 +148,16 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Revoke this code?'),
-        content: Text(
-            'Anyone who has this code will no longer be able to use it. (${code['displayId'] ?? 'Joining code'})'),
+        title: Text(AppLocalizations.of(context).jcRevokeTitle),
+        content: Text(AppLocalizations.of(context)
+            .jcRevokeBody((code['displayId'] ?? 'Joining code').toString())),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(dialogContext, false),
-              child: const Text('Cancel')),
+              child: Text(AppLocalizations.of(context).jcCancel)),
           FilledButton.tonal(
               onPressed: () => Navigator.pop(dialogContext, true),
-              child: const Text('Revoke code')),
+              child: Text(AppLocalizations.of(context).jcRevoke)),
         ],
       ),
     );
@@ -165,8 +166,8 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
     if (codeId == null || codeId.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('This code cannot be revoked (missing identifier).'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context).jcRevokeNoId),
             backgroundColor: AppTheme.error,
           ),
         );
@@ -178,7 +179,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
       ref.invalidate(organizationJoiningCodesProvider(orgId));
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Joining code revoked.')),
+          SnackBar(content: Text(AppLocalizations.of(context).jcRevoked)),
         );
       }
     } catch (error) {
@@ -198,10 +199,10 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
     final contextState = ref.watch(activeOrganizationContextProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Joining codes'),
+        title: Text(AppLocalizations.of(context).jcTitle),
         actions: [
           IconButton(
-            tooltip: 'Refresh joining codes',
+            tooltip: AppLocalizations.of(context).jcRefresh,
             onPressed: () {
               final orgId = contextState.valueOrNull?.context?.organization.id;
               if (orgId != null) {
@@ -213,29 +214,28 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
         ],
       ),
       body: contextState.when(
-        loading: () => const LoadingView(message: 'Loading organization…'),
+        loading: () =>
+            LoadingView(message: AppLocalizations.of(context).jcLoading),
         error: (error, _) => ErrorView(
           type: ErrorViewType.generic,
-          message:
-              'We could not load this organization. Check your connection and try again.',
+          message: AppLocalizations.of(context).jcOrgLoadError,
           onRetry: () => ref.invalidate(activeOrganizationContextProvider),
         ),
         data: (active) {
           final orgContext = active.context;
           if (orgContext == null) {
-            return const EmptyView(
+            return EmptyView(
               icon: Icons.business_outlined,
-              title: 'Select an organization',
-              message: 'Choose an organization before managing joining codes.',
+              title: AppLocalizations.of(context).jcNoOrgTitle,
+              message: AppLocalizations.of(context).jcNoOrgBody,
             );
           }
           final role = orgContext.member.role;
           if (!role.isAdmin) {
-            return const ErrorView(
+            return ErrorView(
               type: ErrorViewType.generic,
-              title: 'Administrator access required',
-              message:
-                  'Only this organization’s Owner and Admins can manage joining codes.',
+              title: AppLocalizations.of(context).jcAdminTitle,
+              message: AppLocalizations.of(context).jcAdminBody,
             );
           }
 
@@ -251,8 +251,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
                   Text(orgContext.organization.name,
                       style: Theme.of(context).textTheme.headlineSmall),
                   const SizedBox(height: 6),
-                  const Text(
-                      'Create and revoke codes that let people join this organization. A valid code adds the person as a member straight away; it never grants admin or owner access.'),
+                  Text(AppLocalizations.of(context).jcSubtitle),
                   const SizedBox(height: 20),
                   codes.maybeWhen(
                     data: (items) {
@@ -260,10 +259,15 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 20),
                         child: StatTileRow(columnsWide: 3, tiles: [
-                          StatTile(label: 'Active codes', value: c.active),
                           StatTile(
-                              label: 'Expired or used up', value: c.expired),
-                          StatTile(label: 'Revoked', value: c.revoked),
+                              label: AppLocalizations.of(context).jcStatActive,
+                              value: c.active),
+                          StatTile(
+                              label: AppLocalizations.of(context).jcStatExpired,
+                              value: c.expired),
+                          StatTile(
+                              label: AppLocalizations.of(context).jcStatRevoked,
+                              value: c.revoked),
                         ]),
                       );
                     },
@@ -271,24 +275,22 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
                   ),
                   _buildCreateCard(compact, orgId),
                   const SizedBox(height: 20),
-                  Text('Existing codes',
+                  Text(AppLocalizations.of(context).jcExisting,
                       style: Theme.of(context).textTheme.titleLarge),
                   const SizedBox(height: 8),
                   codes.when(
                     loading: () => const LoadingView(),
                     error: (error, _) => ErrorView(
                       type: ErrorViewType.generic,
-                      message:
-                          'We could not load joining codes. Check your connection and try again.',
+                      message: AppLocalizations.of(context).jcLoadError,
                       onRetry: () => ref
                           .invalidate(organizationJoiningCodesProvider(orgId)),
                     ),
                     data: (items) => items.isEmpty
-                        ? const Card(
+                        ? Card(
                             child: Padding(
-                              padding: EdgeInsets.all(20),
-                              child: Text(
-                                  'There are no joining codes for this organization.'),
+                              padding: const EdgeInsets.all(20),
+                              child: Text(AppLocalizations.of(context).jcEmpty),
                             ),
                           )
                         : Column(
@@ -312,11 +314,10 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Create a joining code',
+              Text(AppLocalizations.of(context).jcCreateTitle,
                   style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 6),
-              const Text(
-                  'A code is shown once. It is stored as a secure hash and cannot be retrieved later.'),
+              Text(AppLocalizations.of(context).jcCreateNote),
               const SizedBox(height: 16),
               if (compact)
                 Column(
@@ -342,7 +343,9 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
                         dimension: 18,
                         child: CircularProgressIndicator(strokeWidth: 2))
                     : const Icon(Icons.add_link_rounded),
-                label: Text(_creating ? 'Creating…' : 'Create code'),
+                label: Text(_creating
+                    ? AppLocalizations.of(context).jcCreating
+                    : AppLocalizations.of(context).jcCreate),
               ),
             ],
           ),
@@ -352,13 +355,19 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
   Widget _expiryPicker() => DropdownButtonFormField<int>(
         initialValue: _expiryHours,
         isExpanded: true,
-        decoration: const InputDecoration(labelText: 'Expires after'),
-        items: const [
-          DropdownMenuItem(value: 24, child: Text('24 hours')),
-          DropdownMenuItem(value: 72, child: Text('3 days')),
-          DropdownMenuItem(value: 168, child: Text('7 days')),
-          DropdownMenuItem(value: 720, child: Text('30 days')),
-          DropdownMenuItem(value: 8760, child: Text('1 year')),
+        decoration: InputDecoration(
+            labelText: AppLocalizations.of(context).jcExpiresAfter),
+        items: [
+          DropdownMenuItem(
+              value: 24, child: Text(AppLocalizations.of(context).jcExp24h)),
+          DropdownMenuItem(
+              value: 72, child: Text(AppLocalizations.of(context).jcExp3d)),
+          DropdownMenuItem(
+              value: 168, child: Text(AppLocalizations.of(context).jcExp7d)),
+          DropdownMenuItem(
+              value: 720, child: Text(AppLocalizations.of(context).jcExp30d)),
+          DropdownMenuItem(
+              value: 8760, child: Text(AppLocalizations.of(context).jcExp1y)),
         ],
         onChanged: (value) => setState(() => _expiryHours = value ?? 168),
       );
@@ -367,9 +376,9 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
         controller: _maxUsesController,
         keyboardType: TextInputType.number,
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        decoration: const InputDecoration(
-          labelText: 'Maximum uses',
-          helperText: 'Use 0 for unlimited.',
+        decoration: InputDecoration(
+          labelText: AppLocalizations.of(context).jcMaxUses,
+          helperText: AppLocalizations.of(context).jcMaxUsesHint,
         ),
       );
 
@@ -382,8 +391,9 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
     // actually do right now.
     final status = effectiveJoiningCodeStatus(code);
     final expiryLabel = expiry == null
-        ? 'Expiry unavailable'
-        : 'Expires ${_dateFormat.format(expiry.toLocal())}';
+        ? AppLocalizations.of(context).jcExpiryUnknown
+        : AppLocalizations.of(context)
+            .jcExpires((_dateFormat.format(expiry.toLocal())).toString());
     final active = rawStatus == 'active';
     final kc = KivoraColors.of(context);
     final Color tone = switch (status) {
@@ -409,7 +419,9 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
               Icon(Icons.key_outlined, color: kc.accentText),
               const SizedBox(width: 12),
               Expanded(
-                child: Text('Code • ${code['displayId'] ?? '••••••••'}',
+                child: Text(
+                    AppLocalizations.of(context).jcCodeLabel(
+                        (code['displayId'] ?? '••••••••').toString()),
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -424,12 +436,22 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 StatusBadge(
-                  label: status.toUpperCase(),
+                  label: switch (status) {
+                    'active' => AppLocalizations.of(context).statusActive,
+                    'exhausted' => AppLocalizations.of(context).statusExhausted,
+                    'expired' => AppLocalizations.of(context).statusExpired,
+                    'revoked' => AppLocalizations.of(context).statusRevoked,
+                    _ => status.toUpperCase(),
+                  },
                   backgroundColor:
                       tone.withValues(alpha: kc.isDark ? 0.16 : 0.10),
                   textColor: tone,
                 ),
-                Text('$uses${maxUses == 0 ? '' : ' of $maxUses'} uses',
+                Text(
+                    maxUses == 0
+                        ? AppLocalizations.of(context).jcUses(uses.toString())
+                        : AppLocalizations.of(context)
+                            .jcUsesOf(uses.toString(), maxUses.toString()),
                     style: TextStyle(fontSize: 14, color: kc.textSecondary)),
               ]),
           const SizedBox(height: 6),
@@ -442,7 +464,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
                   minimumSize: const Size(48, 48),
                   foregroundColor: kc.errorText),
               onPressed: () => _revoke(orgId, code),
-              child: const Text('Revoke code'),
+              child: Text(AppLocalizations.of(context).jcRevoke),
             ),
           ],
         ],

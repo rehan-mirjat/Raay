@@ -2411,4 +2411,331 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get orgSetDeleted => 'تم حذف المؤسسة.';
+
+  @override
+  String get jcMaxUsesInvalid => 'أدخل الحد الأقصى للاستخدام من 0 إلى 100,000.';
+
+  @override
+  String get jcSaveTitle => 'احفظ رمز الانضمام هذا';
+
+  @override
+  String get jcShownOnce =>
+      'يظهر هذا الرمز مرة واحدة فقط. شاركه فقط مع من تريد انضمامهم إلى هذه المؤسسة.';
+
+  @override
+  String get jcScanHint =>
+      'أو امسح هذا الرمز بخيار \"Scan to Join\" في Kivora على جهاز آخر.';
+
+  @override
+  String get jcCopied => 'تم النسخ';
+
+  @override
+  String get jcCopy => 'نسخ الرمز';
+
+  @override
+  String get jcDone => 'تم';
+
+  @override
+  String get jcRevokeTitle => 'إلغاء هذا الرمز؟';
+
+  @override
+  String get jcCancel => 'إلغاء';
+
+  @override
+  String get jcRevoke => 'إلغاء الرمز';
+
+  @override
+  String get jcRevokeNoId => 'لا يمكن إلغاء هذا الرمز (المعرّف مفقود).';
+
+  @override
+  String get jcRevoked => 'تم إلغاء رمز الانضمام.';
+
+  @override
+  String get jcTitle => 'رموز الانضمام';
+
+  @override
+  String get jcRefresh => 'تحديث رموز الانضمام';
+
+  @override
+  String get jcLoading => 'جارٍ تحميل المؤسسة…';
+
+  @override
+  String get jcOrgLoadError =>
+      'تعذّر تحميل هذه المؤسسة. تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get jcNoOrgTitle => 'اختر مؤسسة';
+
+  @override
+  String get jcNoOrgBody => 'اختر مؤسسة قبل إدارة رموز الانضمام.';
+
+  @override
+  String get jcAdminTitle => 'يلزم صلاحية المسؤول';
+
+  @override
+  String get jcAdminBody =>
+      'يمكن لمالك هذه المؤسسة ومسؤوليها فقط إدارة رموز الانضمام.';
+
+  @override
+  String get jcSubtitle =>
+      'أنشئ رموزًا يمكن للناس بها الانضمام إلى هذه المؤسسة وألغِها. الرمز الصالح يضيف الشخص عضوًا فورًا؛ ولا يمنح أبدًا صلاحية مسؤول أو مالك.';
+
+  @override
+  String get jcStatActive => 'رموز نشطة';
+
+  @override
+  String get jcStatExpired => 'منتهية أو مستنفدة';
+
+  @override
+  String get jcStatRevoked => 'ملغاة';
+
+  @override
+  String get jcExisting => 'الرموز الحالية';
+
+  @override
+  String get jcLoadError =>
+      'تعذّر تحميل رموز الانضمام. تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get jcEmpty => 'لا توجد رموز انضمام لهذه المؤسسة.';
+
+  @override
+  String get jcCreateTitle => 'إنشاء رمز انضمام';
+
+  @override
+  String get jcCreateNote =>
+      'يظهر الرمز مرة واحدة. يُخزَّن كتجزئة آمنة ولا يمكن استرجاعه لاحقًا.';
+
+  @override
+  String get jcCreating => 'جارٍ الإنشاء…';
+
+  @override
+  String get jcCreate => 'إنشاء رمز';
+
+  @override
+  String get jcExpiresAfter => 'ينتهي بعد';
+
+  @override
+  String get jcExp24h => '24 ساعة';
+
+  @override
+  String get jcExp3d => '3 أيام';
+
+  @override
+  String get jcExp7d => '7 أيام';
+
+  @override
+  String get jcExp30d => '30 يومًا';
+
+  @override
+  String get jcExp1y => 'سنة واحدة';
+
+  @override
+  String get jcMaxUses => 'الحد الأقصى للاستخدام';
+
+  @override
+  String get jcMaxUsesHint => 'استخدم 0 لعدد غير محدود.';
+
+  @override
+  String get jcExpiryUnknown => 'تاريخ الانتهاء غير متاحة';
+
+  @override
+  String jcExpires(String a) {
+    return 'ينتهي في $a';
+  }
+
+  @override
+  String jcUses(String a) {
+    return '$a استخدام';
+  }
+
+  @override
+  String jcUsesOf(String a, String b) {
+    return '$a من $b استخدام';
+  }
+
+  @override
+  String get dmDeleteTitle => 'حذف القسم';
+
+  @override
+  String dmDeleteBody(String a) {
+    return 'هل أنت متأكد من حذف \"$a\"؟\n\nسيؤدي ذلك إلى حذف القسم نهائيًا.';
+  }
+
+  @override
+  String get dmCancel => 'إلغاء';
+
+  @override
+  String get dmDeleted => 'تم حذف القسم بنجاح.';
+
+  @override
+  String dmDeleteFailed(String a) {
+    return 'تعذّر الحذف: $a';
+  }
+
+  @override
+  String get dmDeletePermanent => 'حذف نهائي';
+
+  @override
+  String dmAssigned(String a, String b) {
+    return 'تم تعيين $a عضو/أعضاء في $b.';
+  }
+
+  @override
+  String dmAssignFailed(String a) {
+    return 'تعذّر تعيين الأعضاء: $a';
+  }
+
+  @override
+  String get dmRemoveFrom => 'إزالة من القسم';
+
+  @override
+  String dmRemoveBody(String a) {
+    return 'إزالة \"$a\" من هذا القسم؟';
+  }
+
+  @override
+  String get dmRemove => 'إزالة';
+
+  @override
+  String dmRemoved(String a) {
+    return 'تمت إزالة $a من القسم.';
+  }
+
+  @override
+  String dmRemoveFailed(String a) {
+    return 'تعذّرت إزالة العضو: $a';
+  }
+
+  @override
+  String get dmNoOrgTitle => 'لا توجد مؤسسة نشطة';
+
+  @override
+  String get dmNoOrgBody => 'يرجى اختيار مؤسسة لعرض أعضاء القسم.';
+
+  @override
+  String get dmLoadingDept => 'جارٍ تحميل تفاصيل القسم...';
+
+  @override
+  String get dmLoadingRoster => 'جارٍ تحميل قائمة القسم...';
+
+  @override
+  String get dmRosterError =>
+      'تعذّر تحميل القائمة. تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get dmBack => 'الأقسام';
+
+  @override
+  String dmAssignedCount(String a) {
+    return '$a أعضاء معيّنون';
+  }
+
+  @override
+  String get dmEligibleNote =>
+      'يمكن اختيار أعضاء هذا القسم كناخبين مؤهلين في الانتخابات.';
+
+  @override
+  String get dmEdit => 'تعديل التفاصيل';
+
+  @override
+  String get dmDelete => 'حذف';
+
+  @override
+  String dmMembersIn(String a) {
+    return 'أعضاء $a';
+  }
+
+  @override
+  String get dmNoMembers => 'لم يُعيَّن أي عضو بعد';
+
+  @override
+  String get dmNoMembersBody =>
+      'اختر أشخاصًا من القائمة لإضافتهم إلى هذا القسم. يمكنك التغيير في أي وقت.';
+
+  @override
+  String get dmAssignedHere => 'سيظهر الأعضاء المعيّنون هنا.';
+
+  @override
+  String dmPendingNote(String a, String b) {
+    return 'التحديدات المعلّقة ليست أعضاء بعد. أكّد بـ \"تعيين $a أعضاء\" لإضافتهم إلى $b.';
+  }
+
+  @override
+  String get dmAddMembers => 'إضافة أعضاء';
+
+  @override
+  String dmSelectPeople(String a) {
+    return 'اختر أشخاصًا لتعيينهم في $a.';
+  }
+
+  @override
+  String get dmSearch => 'ابحث بالاسم';
+
+  @override
+  String get dmAllMembers => 'جميع الأعضاء';
+
+  @override
+  String get dmNoDept => 'بلا قسم';
+
+  @override
+  String get dmNoMatch => 'لا يوجد أعضاء يطابقون بحثك.';
+
+  @override
+  String dmIn(String a) {
+    return 'في $a';
+  }
+
+  @override
+  String dmInFirst(String a) {
+    return 'في $a';
+  }
+
+  @override
+  String dmAssignedTo(String a) {
+    return 'معيّن في $a';
+  }
+
+  @override
+  String get dmClear => 'مسح';
+
+  @override
+  String dmPendingTo(String a) {
+    return 'تعيين معلّق في $a';
+  }
+
+  @override
+  String get dmAssigning => 'جارٍ التعيين...';
+
+  @override
+  String dmAssign(String a) {
+    return 'تعيين $a أعضاء';
+  }
+
+  @override
+  String jcRevokeBody(String a) {
+    return 'لن يتمكن أي شخص يملك هذا الرمز من استخدامه بعد الآن. ($a)';
+  }
+
+  @override
+  String jcCodeLabel(String a) {
+    return 'الرمز • $a';
+  }
+
+  @override
+  String get statusExhausted => 'مستنفد';
+
+  @override
+  String get statusExpired => 'منتهٍ';
+
+  @override
+  String get statusRevoked => 'ملغى';
+
+  @override
+  String get dmMemberFallback => 'عضو';
+
+  @override
+  String dmSelectedCount(String a) {
+    return '$a محدد';
+  }
 }

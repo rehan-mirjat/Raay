@@ -2432,4 +2432,334 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orgSetDeleted => 'Organization has been deleted.';
+
+  @override
+  String get jcMaxUsesInvalid => 'Enter a maximum use count from 0 to 100,000.';
+
+  @override
+  String get jcSaveTitle => 'Save this joining code';
+
+  @override
+  String get jcShownOnce =>
+      'This code is shown once. Share it only with people you want to join this organization.';
+
+  @override
+  String get jcScanHint =>
+      'Or scan this with Kivora\'s \"Scan to Join\" on another device.';
+
+  @override
+  String get jcCopied => 'Copied';
+
+  @override
+  String get jcCopy => 'Copy code';
+
+  @override
+  String get jcDone => 'Done';
+
+  @override
+  String get jcRevokeTitle => 'Revoke this code?';
+
+  @override
+  String get jcCancel => 'Cancel';
+
+  @override
+  String get jcRevoke => 'Revoke code';
+
+  @override
+  String get jcRevokeNoId =>
+      'This code cannot be revoked (missing identifier).';
+
+  @override
+  String get jcRevoked => 'Joining code revoked.';
+
+  @override
+  String get jcTitle => 'Joining codes';
+
+  @override
+  String get jcRefresh => 'Refresh joining codes';
+
+  @override
+  String get jcLoading => 'Loading organization…';
+
+  @override
+  String get jcOrgLoadError =>
+      'We could not load this organization. Check your connection and try again.';
+
+  @override
+  String get jcNoOrgTitle => 'Select an organization';
+
+  @override
+  String get jcNoOrgBody =>
+      'Choose an organization before managing joining codes.';
+
+  @override
+  String get jcAdminTitle => 'Administrator access required';
+
+  @override
+  String get jcAdminBody =>
+      'Only this organization’s Owner and Admins can manage joining codes.';
+
+  @override
+  String get jcSubtitle =>
+      'Create and revoke codes that let people join this organization. A valid code adds the person as a member straight away; it never grants admin or owner access.';
+
+  @override
+  String get jcStatActive => 'Active codes';
+
+  @override
+  String get jcStatExpired => 'Expired or used up';
+
+  @override
+  String get jcStatRevoked => 'Revoked';
+
+  @override
+  String get jcExisting => 'Existing codes';
+
+  @override
+  String get jcLoadError =>
+      'We could not load joining codes. Check your connection and try again.';
+
+  @override
+  String get jcEmpty => 'There are no joining codes for this organization.';
+
+  @override
+  String get jcCreateTitle => 'Create a joining code';
+
+  @override
+  String get jcCreateNote =>
+      'A code is shown once. It is stored as a secure hash and cannot be retrieved later.';
+
+  @override
+  String get jcCreating => 'Creating…';
+
+  @override
+  String get jcCreate => 'Create code';
+
+  @override
+  String get jcExpiresAfter => 'Expires after';
+
+  @override
+  String get jcExp24h => '24 hours';
+
+  @override
+  String get jcExp3d => '3 days';
+
+  @override
+  String get jcExp7d => '7 days';
+
+  @override
+  String get jcExp30d => '30 days';
+
+  @override
+  String get jcExp1y => '1 year';
+
+  @override
+  String get jcMaxUses => 'Maximum uses';
+
+  @override
+  String get jcMaxUsesHint => 'Use 0 for unlimited.';
+
+  @override
+  String get jcExpiryUnknown => 'Expiry unavailable';
+
+  @override
+  String jcExpires(String a) {
+    return 'Expires $a';
+  }
+
+  @override
+  String jcUses(String a) {
+    return '$a uses';
+  }
+
+  @override
+  String jcUsesOf(String a, String b) {
+    return '$a of $b uses';
+  }
+
+  @override
+  String get dmDeleteTitle => 'Delete Department';
+
+  @override
+  String dmDeleteBody(String a) {
+    return 'Are you sure you want to delete \"$a\"?\n\nThis permanently deletes the department.';
+  }
+
+  @override
+  String get dmCancel => 'Cancel';
+
+  @override
+  String get dmDeleted => 'Department deleted successfully.';
+
+  @override
+  String dmDeleteFailed(String a) {
+    return 'Failed to delete: $a';
+  }
+
+  @override
+  String get dmDeletePermanent => 'Delete Permanently';
+
+  @override
+  String dmAssigned(String a, String b) {
+    return 'Successfully assigned $a member(s) to $b.';
+  }
+
+  @override
+  String dmAssignFailed(String a) {
+    return 'Failed to assign members: $a';
+  }
+
+  @override
+  String get dmRemoveFrom => 'Remove from department';
+
+  @override
+  String dmRemoveBody(String a) {
+    return 'Remove \"$a\" from this department?';
+  }
+
+  @override
+  String get dmRemove => 'Remove';
+
+  @override
+  String dmRemoved(String a) {
+    return 'Removed $a from department.';
+  }
+
+  @override
+  String dmRemoveFailed(String a) {
+    return 'Failed to remove member: $a';
+  }
+
+  @override
+  String get dmNoOrgTitle => 'No Active Organization';
+
+  @override
+  String get dmNoOrgBody =>
+      'Please select an organization context to view department members.';
+
+  @override
+  String get dmLoadingDept => 'Loading department details...';
+
+  @override
+  String get dmLoadingRoster => 'Loading department roster...';
+
+  @override
+  String get dmRosterError =>
+      'We could not load the roster. Check your connection and try again.';
+
+  @override
+  String get dmBack => 'Departments';
+
+  @override
+  String dmAssignedCount(String a) {
+    return '$a assigned members';
+  }
+
+  @override
+  String get dmEligibleNote =>
+      'Members in this department can be chosen as eligible voters for elections.';
+
+  @override
+  String get dmEdit => 'Edit details';
+
+  @override
+  String get dmDelete => 'Delete';
+
+  @override
+  String dmMembersIn(String a) {
+    return 'Members in $a';
+  }
+
+  @override
+  String get dmNoMembers => 'No members assigned yet';
+
+  @override
+  String get dmNoMembersBody =>
+      'Choose people from the list to add them to this department. You can change it at any time.';
+
+  @override
+  String get dmAssignedHere => 'Assigned members will appear here.';
+
+  @override
+  String dmPendingNote(String a, String b) {
+    return 'Pending selections are not members yet. Confirm with \"Assign $a members\" to add them to $b.';
+  }
+
+  @override
+  String get dmAddMembers => 'Add members';
+
+  @override
+  String dmSelectPeople(String a) {
+    return 'Select people to assign to $a.';
+  }
+
+  @override
+  String get dmSearch => 'Search by name';
+
+  @override
+  String get dmAllMembers => 'All members';
+
+  @override
+  String get dmNoDept => 'No department';
+
+  @override
+  String get dmNoMatch => 'No members match your search.';
+
+  @override
+  String dmIn(String a) {
+    return 'In $a';
+  }
+
+  @override
+  String dmInFirst(String a) {
+    return 'In $a';
+  }
+
+  @override
+  String dmAssignedTo(String a) {
+    return 'Assigned to $a';
+  }
+
+  @override
+  String get dmClear => 'Clear';
+
+  @override
+  String dmPendingTo(String a) {
+    return 'Pending assignment to $a';
+  }
+
+  @override
+  String get dmAssigning => 'Assigning...';
+
+  @override
+  String dmAssign(String a) {
+    return 'Assign $a members';
+  }
+
+  @override
+  String jcRevokeBody(String a) {
+    return 'Anyone who has this code will no longer be able to use it. ($a)';
+  }
+
+  @override
+  String jcCodeLabel(String a) {
+    return 'Code • $a';
+  }
+
+  @override
+  String get statusExhausted => 'EXHAUSTED';
+
+  @override
+  String get statusExpired => 'EXPIRED';
+
+  @override
+  String get statusRevoked => 'REVOKED';
+
+  @override
+  String get dmMemberFallback => 'Member';
+
+  @override
+  String dmSelectedCount(String a) {
+    return '$a selected';
+  }
 }

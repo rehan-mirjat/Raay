@@ -37,3 +37,5 @@ for _ in range(60):
     if not changed:
         print("could not auto-fix:\n"+"\n".join(m.group(0) for m in errs)); break
     open(f,"w").write(text)
+subprocess.run(["dart","fix","--apply",f],capture_output=True)
+subprocess.run(["dart","format",f],capture_output=True)

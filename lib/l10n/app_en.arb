@@ -1188,5 +1188,259 @@
     }
   },
   "orgSetKeep": "Keep organization",
-  "orgSetDeleted": "Organization has been deleted."
+  "orgSetDeleted": "Organization has been deleted.",
+  "jcMaxUsesInvalid": "Enter a maximum use count from 0 to 100,000.",
+  "jcSaveTitle": "Save this joining code",
+  "jcShownOnce": "This code is shown once. Share it only with people you want to join this organization.",
+  "jcScanHint": "Or scan this with Kivora's \"Scan to Join\" on another device.",
+  "jcCopied": "Copied",
+  "jcCopy": "Copy code",
+  "jcDone": "Done",
+  "jcRevokeTitle": "Revoke this code?",
+  "jcCancel": "Cancel",
+  "jcRevoke": "Revoke code",
+  "jcRevokeNoId": "This code cannot be revoked (missing identifier).",
+  "jcRevoked": "Joining code revoked.",
+  "jcTitle": "Joining codes",
+  "jcRefresh": "Refresh joining codes",
+  "jcLoading": "Loading organization…",
+  "jcOrgLoadError": "We could not load this organization. Check your connection and try again.",
+  "jcNoOrgTitle": "Select an organization",
+  "jcNoOrgBody": "Choose an organization before managing joining codes.",
+  "jcAdminTitle": "Administrator access required",
+  "jcAdminBody": "Only this organization’s Owner and Admins can manage joining codes.",
+  "jcSubtitle": "Create and revoke codes that let people join this organization. A valid code adds the person as a member straight away; it never grants admin or owner access.",
+  "jcStatActive": "Active codes",
+  "jcStatExpired": "Expired or used up",
+  "jcStatRevoked": "Revoked",
+  "jcExisting": "Existing codes",
+  "jcLoadError": "We could not load joining codes. Check your connection and try again.",
+  "jcEmpty": "There are no joining codes for this organization.",
+  "jcCreateTitle": "Create a joining code",
+  "jcCreateNote": "A code is shown once. It is stored as a secure hash and cannot be retrieved later.",
+  "jcCreating": "Creating…",
+  "jcCreate": "Create code",
+  "jcExpiresAfter": "Expires after",
+  "jcExp24h": "24 hours",
+  "jcExp3d": "3 days",
+  "jcExp7d": "7 days",
+  "jcExp30d": "30 days",
+  "jcExp1y": "1 year",
+  "jcMaxUses": "Maximum uses",
+  "jcMaxUsesHint": "Use 0 for unlimited.",
+  "jcExpiryUnknown": "Expiry unavailable",
+  "jcExpires": "Expires {a}",
+  "@jcExpires": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "jcUses": "{a} uses",
+  "@jcUses": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "jcUsesOf": "{a} of {b} uses",
+  "@jcUsesOf": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "dmDeleteTitle": "Delete Department",
+  "dmDeleteBody": "Are you sure you want to delete \"{a}\"?\n\nThis permanently deletes the department.",
+  "@dmDeleteBody": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "dmCancel": "Cancel",
+  "dmDeleted": "Department deleted successfully.",
+  "dmDeleteFailed": "Failed to delete: {a}",
+  "@dmDeleteFailed": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "dmDeletePermanent": "Delete Permanently",
+  "dmAssigned": "Successfully assigned {a} member(s) to {b}.",
+  "@dmAssigned": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "dmAssignFailed": "Failed to assign members: {a}",
+  "@dmAssignFailed": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "dmRemoveFrom": "Remove from department",
+  "dmRemoveBody": "Remove \"{a}\" from this department?",
+  "@dmRemoveBody": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "dmRemove": "Remove",
+  "dmRemoved": "Removed {a} from department.",
+  "@dmRemoved": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "dmRemoveFailed": "Failed to remove member: {a}",
+  "@dmRemoveFailed": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "dmNoOrgTitle": "No Active Organization",
+  "dmNoOrgBody": "Please select an organization context to view department members.",
+  "dmLoadingDept": "Loading department details...",
+  "dmLoadingRoster": "Loading department roster...",
+  "dmRosterError": "We could not load the roster. Check your connection and try again.",
+  "dmBack": "Departments",
+  "dmAssignedCount": "{a} assigned members",
+  "@dmAssignedCount": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "dmEligibleNote": "Members in this department can be chosen as eligible voters for elections.",
+  "dmEdit": "Edit details",
+  "dmDelete": "Delete",
+  "dmMembersIn": "Members in {a}",
+  "@dmMembersIn": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "dmNoMembers": "No members assigned yet",
+  "dmNoMembersBody": "Choose people from the list to add them to this department. You can change it at any time.",
+  "dmAssignedHere": "Assigned members will appear here.",
+  "dmPendingNote": "Pending selections are not members yet. Confirm with \"Assign {a} members\" to add them to {b}.",
+  "@dmPendingNote": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "dmAddMembers": "Add members",
+  "dmSelectPeople": "Select people to assign to {a}.",
+  "@dmSelectPeople": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "dmSearch": "Search by name",
+  "dmAllMembers": "All members",
+  "dmNoDept": "No department",
+  "dmNoMatch": "No members match your search.",
+  "dmIn": "In {a}",
+  "@dmIn": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "dmInFirst": "In {a}",
+  "@dmInFirst": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "dmAssignedTo": "Assigned to {a}",
+  "@dmAssignedTo": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "dmClear": "Clear",
+  "dmPendingTo": "Pending assignment to {a}",
+  "@dmPendingTo": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "dmAssigning": "Assigning...",
+  "dmAssign": "Assign {a} members",
+  "@dmAssign": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "jcRevokeBody": "Anyone who has this code will no longer be able to use it. ({a})",
+  "@jcRevokeBody": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "jcCodeLabel": "Code • {a}",
+  "@jcCodeLabel": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "statusExhausted": "EXHAUSTED",
+  "statusExpired": "EXPIRED",
+  "statusRevoked": "REVOKED",
+  "dmMemberFallback": "Member",
+  "dmSelectedCount": "{a} selected",
+  "@dmSelectedCount": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  }
 }

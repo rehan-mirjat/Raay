@@ -4301,6 +4301,552 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Organization has been deleted.'**
   String get orgSetDeleted;
+
+  /// No description provided for @jcMaxUsesInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a maximum use count from 0 to 100,000.'**
+  String get jcMaxUsesInvalid;
+
+  /// No description provided for @jcSaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save this joining code'**
+  String get jcSaveTitle;
+
+  /// No description provided for @jcShownOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'This code is shown once. Share it only with people you want to join this organization.'**
+  String get jcShownOnce;
+
+  /// No description provided for @jcScanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Or scan this with Kivora\'s \"Scan to Join\" on another device.'**
+  String get jcScanHint;
+
+  /// No description provided for @jcCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get jcCopied;
+
+  /// No description provided for @jcCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy code'**
+  String get jcCopy;
+
+  /// No description provided for @jcDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get jcDone;
+
+  /// No description provided for @jcRevokeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke this code?'**
+  String get jcRevokeTitle;
+
+  /// No description provided for @jcCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get jcCancel;
+
+  /// No description provided for @jcRevoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke code'**
+  String get jcRevoke;
+
+  /// No description provided for @jcRevokeNoId.
+  ///
+  /// In en, this message translates to:
+  /// **'This code cannot be revoked (missing identifier).'**
+  String get jcRevokeNoId;
+
+  /// No description provided for @jcRevoked.
+  ///
+  /// In en, this message translates to:
+  /// **'Joining code revoked.'**
+  String get jcRevoked;
+
+  /// No description provided for @jcTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Joining codes'**
+  String get jcTitle;
+
+  /// No description provided for @jcRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh joining codes'**
+  String get jcRefresh;
+
+  /// No description provided for @jcLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading organization…'**
+  String get jcLoading;
+
+  /// No description provided for @jcOrgLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load this organization. Check your connection and try again.'**
+  String get jcOrgLoadError;
+
+  /// No description provided for @jcNoOrgTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an organization'**
+  String get jcNoOrgTitle;
+
+  /// No description provided for @jcNoOrgBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an organization before managing joining codes.'**
+  String get jcNoOrgBody;
+
+  /// No description provided for @jcAdminTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Administrator access required'**
+  String get jcAdminTitle;
+
+  /// No description provided for @jcAdminBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Only this organization’s Owner and Admins can manage joining codes.'**
+  String get jcAdminBody;
+
+  /// No description provided for @jcSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create and revoke codes that let people join this organization. A valid code adds the person as a member straight away; it never grants admin or owner access.'**
+  String get jcSubtitle;
+
+  /// No description provided for @jcStatActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active codes'**
+  String get jcStatActive;
+
+  /// No description provided for @jcStatExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired or used up'**
+  String get jcStatExpired;
+
+  /// No description provided for @jcStatRevoked.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoked'**
+  String get jcStatRevoked;
+
+  /// No description provided for @jcExisting.
+  ///
+  /// In en, this message translates to:
+  /// **'Existing codes'**
+  String get jcExisting;
+
+  /// No description provided for @jcLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load joining codes. Check your connection and try again.'**
+  String get jcLoadError;
+
+  /// No description provided for @jcEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no joining codes for this organization.'**
+  String get jcEmpty;
+
+  /// No description provided for @jcCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a joining code'**
+  String get jcCreateTitle;
+
+  /// No description provided for @jcCreateNote.
+  ///
+  /// In en, this message translates to:
+  /// **'A code is shown once. It is stored as a secure hash and cannot be retrieved later.'**
+  String get jcCreateNote;
+
+  /// No description provided for @jcCreating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating…'**
+  String get jcCreating;
+
+  /// No description provided for @jcCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create code'**
+  String get jcCreate;
+
+  /// No description provided for @jcExpiresAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires after'**
+  String get jcExpiresAfter;
+
+  /// No description provided for @jcExp24h.
+  ///
+  /// In en, this message translates to:
+  /// **'24 hours'**
+  String get jcExp24h;
+
+  /// No description provided for @jcExp3d.
+  ///
+  /// In en, this message translates to:
+  /// **'3 days'**
+  String get jcExp3d;
+
+  /// No description provided for @jcExp7d.
+  ///
+  /// In en, this message translates to:
+  /// **'7 days'**
+  String get jcExp7d;
+
+  /// No description provided for @jcExp30d.
+  ///
+  /// In en, this message translates to:
+  /// **'30 days'**
+  String get jcExp30d;
+
+  /// No description provided for @jcExp1y.
+  ///
+  /// In en, this message translates to:
+  /// **'1 year'**
+  String get jcExp1y;
+
+  /// No description provided for @jcMaxUses.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum uses'**
+  String get jcMaxUses;
+
+  /// No description provided for @jcMaxUsesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Use 0 for unlimited.'**
+  String get jcMaxUsesHint;
+
+  /// No description provided for @jcExpiryUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiry unavailable'**
+  String get jcExpiryUnknown;
+
+  /// No description provided for @jcExpires.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires {a}'**
+  String jcExpires(String a);
+
+  /// No description provided for @jcUses.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} uses'**
+  String jcUses(String a);
+
+  /// No description provided for @jcUsesOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} of {b} uses'**
+  String jcUsesOf(String a, String b);
+
+  /// No description provided for @dmDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Department'**
+  String get dmDeleteTitle;
+
+  /// No description provided for @dmDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{a}\"?\n\nThis permanently deletes the department.'**
+  String dmDeleteBody(String a);
+
+  /// No description provided for @dmCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get dmCancel;
+
+  /// No description provided for @dmDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Department deleted successfully.'**
+  String get dmDeleted;
+
+  /// No description provided for @dmDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete: {a}'**
+  String dmDeleteFailed(String a);
+
+  /// No description provided for @dmDeletePermanent.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Permanently'**
+  String get dmDeletePermanent;
+
+  /// No description provided for @dmAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully assigned {a} member(s) to {b}.'**
+  String dmAssigned(String a, String b);
+
+  /// No description provided for @dmAssignFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to assign members: {a}'**
+  String dmAssignFailed(String a);
+
+  /// No description provided for @dmRemoveFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from department'**
+  String get dmRemoveFrom;
+
+  /// No description provided for @dmRemoveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove \"{a}\" from this department?'**
+  String dmRemoveBody(String a);
+
+  /// No description provided for @dmRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get dmRemove;
+
+  /// No description provided for @dmRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed {a} from department.'**
+  String dmRemoved(String a);
+
+  /// No description provided for @dmRemoveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to remove member: {a}'**
+  String dmRemoveFailed(String a);
+
+  /// No description provided for @dmNoOrgTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Active Organization'**
+  String get dmNoOrgTitle;
+
+  /// No description provided for @dmNoOrgBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select an organization context to view department members.'**
+  String get dmNoOrgBody;
+
+  /// No description provided for @dmLoadingDept.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading department details...'**
+  String get dmLoadingDept;
+
+  /// No description provided for @dmLoadingRoster.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading department roster...'**
+  String get dmLoadingRoster;
+
+  /// No description provided for @dmRosterError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the roster. Check your connection and try again.'**
+  String get dmRosterError;
+
+  /// No description provided for @dmBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Departments'**
+  String get dmBack;
+
+  /// No description provided for @dmAssignedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} assigned members'**
+  String dmAssignedCount(String a);
+
+  /// No description provided for @dmEligibleNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Members in this department can be chosen as eligible voters for elections.'**
+  String get dmEligibleNote;
+
+  /// No description provided for @dmEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit details'**
+  String get dmEdit;
+
+  /// No description provided for @dmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get dmDelete;
+
+  /// No description provided for @dmMembersIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Members in {a}'**
+  String dmMembersIn(String a);
+
+  /// No description provided for @dmNoMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'No members assigned yet'**
+  String get dmNoMembers;
+
+  /// No description provided for @dmNoMembersBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose people from the list to add them to this department. You can change it at any time.'**
+  String get dmNoMembersBody;
+
+  /// No description provided for @dmAssignedHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned members will appear here.'**
+  String get dmAssignedHere;
+
+  /// No description provided for @dmPendingNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending selections are not members yet. Confirm with \"Assign {a} members\" to add them to {b}.'**
+  String dmPendingNote(String a, String b);
+
+  /// No description provided for @dmAddMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Add members'**
+  String get dmAddMembers;
+
+  /// No description provided for @dmSelectPeople.
+  ///
+  /// In en, this message translates to:
+  /// **'Select people to assign to {a}.'**
+  String dmSelectPeople(String a);
+
+  /// No description provided for @dmSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name'**
+  String get dmSearch;
+
+  /// No description provided for @dmAllMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'All members'**
+  String get dmAllMembers;
+
+  /// No description provided for @dmNoDept.
+  ///
+  /// In en, this message translates to:
+  /// **'No department'**
+  String get dmNoDept;
+
+  /// No description provided for @dmNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No members match your search.'**
+  String get dmNoMatch;
+
+  /// No description provided for @dmIn.
+  ///
+  /// In en, this message translates to:
+  /// **'In {a}'**
+  String dmIn(String a);
+
+  /// No description provided for @dmInFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'In {a}'**
+  String dmInFirst(String a);
+
+  /// No description provided for @dmAssignedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned to {a}'**
+  String dmAssignedTo(String a);
+
+  /// No description provided for @dmClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get dmClear;
+
+  /// No description provided for @dmPendingTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending assignment to {a}'**
+  String dmPendingTo(String a);
+
+  /// No description provided for @dmAssigning.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigning...'**
+  String get dmAssigning;
+
+  /// No description provided for @dmAssign.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign {a} members'**
+  String dmAssign(String a);
+
+  /// No description provided for @jcRevokeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone who has this code will no longer be able to use it. ({a})'**
+  String jcRevokeBody(String a);
+
+  /// No description provided for @jcCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Code • {a}'**
+  String jcCodeLabel(String a);
+
+  /// No description provided for @statusExhausted.
+  ///
+  /// In en, this message translates to:
+  /// **'EXHAUSTED'**
+  String get statusExhausted;
+
+  /// No description provided for @statusExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'EXPIRED'**
+  String get statusExpired;
+
+  /// No description provided for @statusRevoked.
+  ///
+  /// In en, this message translates to:
+  /// **'REVOKED'**
+  String get statusRevoked;
+
+  /// No description provided for @dmMemberFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Member'**
+  String get dmMemberFallback;
+
+  /// No description provided for @dmSelectedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} selected'**
+  String dmSelectedCount(String a);
 }
 
 class _AppLocalizationsDelegate
