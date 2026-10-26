@@ -5711,4 +5711,280 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get obBack => 'رجوع';
+
+  @override
+  String get cfAdd => 'إضافة مرشح';
+
+  @override
+  String get cfEdit => 'تعديل المرشح';
+
+  @override
+  String get cfClose => 'إغلاق';
+
+  @override
+  String get cfPhotoSem => 'اختر صورة المرشح';
+
+  @override
+  String get cfPhoto => 'اختر صورة (JPEG، اختياري)';
+
+  @override
+  String get cfPhotoChange => 'اختر صورة أخرى';
+
+  @override
+  String get cfName => 'الاسم الكامل *';
+
+  @override
+  String get cfNameHint => 'مثلاً د. سارة جينكنز';
+
+  @override
+  String get cfNameShort => 'أدخل اسم المرشح (حرفان على الأقل).';
+
+  @override
+  String get cf100 => 'استخدم 100 حرف أو أقل.';
+
+  @override
+  String get cfParty => 'الحزب / الانتماء (اختياري)';
+
+  @override
+  String get cfPartyHint => 'مثلاً التحالف التقدمي';
+
+  @override
+  String get cfBio => 'نبذة عن المرشح / الرؤية (اختياري)';
+
+  @override
+  String get cfBioHint => 'ملخص موجز للخبرة والأهداف...';
+
+  @override
+  String get cf1000 => 'استخدم 1,000 حرف أو أقل.';
+
+  @override
+  String get cfCancel => 'إلغاء';
+
+  @override
+  String get cfSave => 'حفظ التغييرات';
+
+  @override
+  String get clRemoveTitle => 'إزالة هذا المرشح؟';
+
+  @override
+  String clRemoveBody(String a) {
+    return 'ستُزال $a من هذا الانتخاب. يمكنك إضافتهم مجددًا ما دام الانتخاب مسودة.';
+  }
+
+  @override
+  String get clKeep => 'الإبقاء على المرشح';
+
+  @override
+  String get clRemove => 'إزالة';
+
+  @override
+  String get clRemoveFailed => 'تعذّرت إزالة المرشح. حاول مرة أخرى.';
+
+  @override
+  String get clLocked => 'لم يعد هذا الانتخاب مسودة، لذا لا يمكن تغيير مرشحيه.';
+
+  @override
+  String get clLoadError => 'تعذّر تحميل المرشحين.';
+
+  @override
+  String get clRetry => 'حاول مرة أخرى';
+
+  @override
+  String clNeedOne(String a) {
+    return 'أضف مرشحًا واحدًا على الأقل لتتمكن من النشر (الحد الأدنى $a).';
+  }
+
+  @override
+  String clNeedMany(String a, String b) {
+    return 'أضف $a مرشحين على الأقل لتتمكن من النشر (الحد الأدنى $b).';
+  }
+
+  @override
+  String clCount(String a) {
+    return 'تمت إضافة $a مرشحين.';
+  }
+
+  @override
+  String get clNone => 'لم تتم إضافة مرشحين بعد.';
+
+  @override
+  String get clIndependent => 'مستقل / بلا انتماء';
+
+  @override
+  String clEdit(String a) {
+    return 'تعديل $a';
+  }
+
+  @override
+  String clRemoveName(String a) {
+    return 'إزالة $a';
+  }
+
+  @override
+  String get clAdd => 'إضافة مرشح';
+
+  @override
+  String get pfAddTitle => 'إضافة خيار استطلاع';
+
+  @override
+  String get pfEditTitle => 'تعديل خيار الاستطلاع';
+
+  @override
+  String get pfLabel => 'تسمية الخيار *';
+
+  @override
+  String get pfLabelHint => 'مثلاً الموافقة على المقترح أ';
+
+  @override
+  String get pfLabelRequired => 'التسمية مطلوبة';
+
+  @override
+  String get pfDesc => 'وصف الخيار (اختياري)';
+
+  @override
+  String get pfDescHint => 'قدّم تفاصيل إضافية للناخبين...';
+
+  @override
+  String get pfCancel => 'إلغاء';
+
+  @override
+  String get pfAdd => 'إضافة خيار';
+
+  @override
+  String get pfSave => 'حفظ التغييرات';
+
+  @override
+  String get plsAdd => 'إضافة خيار';
+
+  @override
+  String get plsLoadError => 'تعذّر تحميل الخيارات.';
+
+  @override
+  String get plsRetry => 'حاول مرة أخرى';
+
+  @override
+  String plsNone(String a) {
+    return 'لم تتم إضافة خيارات بعد. أضف $a على الأقل للنشر.';
+  }
+
+  @override
+  String get plsDeleteTitle => 'حذف الخيار؟';
+
+  @override
+  String plsDeleteBody(String a) {
+    return 'هل أنت متأكد من حذف $a؟';
+  }
+
+  @override
+  String get plsCancel => 'إلغاء';
+
+  @override
+  String get plsDelete => 'حذف';
+
+  @override
+  String get plsRemoveFailed => 'تعذّرت إزالة الخيار. حاول مرة أخرى.';
+
+  @override
+  String get chRoster => 'قائمة المرشحين';
+
+  @override
+  String get chYesNo => 'خيارات نعم/لا';
+
+  @override
+  String get chPoll => 'خيارات الاستطلاع';
+
+  @override
+  String get chBack => 'رجوع';
+
+  @override
+  String get chNext => 'التالي: المراجعة';
+
+  @override
+  String get chYes => 'نعم';
+
+  @override
+  String get chNo => 'لا';
+
+  @override
+  String get chSystem => 'خيار مُنشأ من النظام';
+
+  @override
+  String get ciTitle => 'استيراد ناخبين بالجملة';
+
+  @override
+  String get ciBody =>
+      'الصق بيانات CSV أو قائمة عناوين بريد أدناه. سيتم التحقق منها تلقائيًا مقابل أعضاء المؤسسة النشطين.';
+
+  @override
+  String get ciLabel => 'محتوى CSV / قائمة البريد';
+
+  @override
+  String get ciHint =>
+      'john@example.com, jane@organization.org\nmark@company.com';
+
+  @override
+  String get ciParse => 'تحليل وتحقق';
+
+  @override
+  String get ciResults => 'نتائج التحقق';
+
+  @override
+  String ciMatched(String a) {
+    return 'تمت مطابقة $a أعضاء وهم مؤهلون';
+  }
+
+  @override
+  String ciUnmatched(String a) {
+    return 'لم يُعثر على $a بريدًا في دليل مساحة العمل';
+  }
+
+  @override
+  String get ciReedit => 'إعادة تحرير القائمة';
+
+  @override
+  String ciApply(String a) {
+    return 'تطبيق التحديد ($a)';
+  }
+
+  @override
+  String get cdCreated => 'تم إنشاء القسم بنجاح.';
+
+  @override
+  String get cdUpdated => 'تم تحديث القسم بنجاح.';
+
+  @override
+  String get cdEditTitle => 'تعديل القسم';
+
+  @override
+  String get cdCreateTitle => 'إنشاء قسم';
+
+  @override
+  String get cdName => 'اسم القسم *';
+
+  @override
+  String get cdNameHint => 'مثلاً علوم الحاسوب';
+
+  @override
+  String get cdNameField => 'اسم القسم';
+
+  @override
+  String get cdNameShort => 'يجب ألا يقل الاسم عن حرفين';
+
+  @override
+  String get cdNameLong => 'لا يمكن أن يتجاوز الاسم 50 حرفًا';
+
+  @override
+  String get cdDesc => 'الوصف (اختياري)';
+
+  @override
+  String get cdDescHint => 'ملخص موجز عن القسم...';
+
+  @override
+  String get cdCancel => 'إلغاء';
+
+  @override
+  String get cdUpdate => 'تحديث';
+
+  @override
+  String get cdCreate => 'إنشاء';
 }

@@ -5765,4 +5765,282 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get obBack => 'واپس';
+
+  @override
+  String get cfAdd => 'امیدوار شامل کریں';
+
+  @override
+  String get cfEdit => 'امیدوار میں ترمیم کریں';
+
+  @override
+  String get cfClose => 'بند کریں';
+
+  @override
+  String get cfPhotoSem => 'امیدوار کی تصویر منتخب کریں';
+
+  @override
+  String get cfPhoto => 'تصویر منتخب کریں (JPEG، اختیاری)';
+
+  @override
+  String get cfPhotoChange => 'دوسری تصویر منتخب کریں';
+
+  @override
+  String get cfName => 'پورا نام *';
+
+  @override
+  String get cfNameHint => 'مثلاً ڈاکٹر سارہ جینکنز';
+
+  @override
+  String get cfNameShort => 'امیدوار کا نام درج کریں (کم از کم 2 حروف)۔';
+
+  @override
+  String get cf100 => '100 حروف یا کم استعمال کریں۔';
+
+  @override
+  String get cfParty => 'پارٹی / وابستگی (اختیاری)';
+
+  @override
+  String get cfPartyHint => 'مثلاً ترقی پسند اتحاد';
+
+  @override
+  String get cfBio => 'امیدوار کا تعارف / وژن (اختیاری)';
+
+  @override
+  String get cfBioHint => 'تجربے اور مقاصد کا مختصر خلاصہ...';
+
+  @override
+  String get cf1000 => '1,000 حروف یا کم استعمال کریں۔';
+
+  @override
+  String get cfCancel => 'منسوخ کریں';
+
+  @override
+  String get cfSave => 'تبدیلیاں محفوظ کریں';
+
+  @override
+  String get clRemoveTitle => 'اس امیدوار کو ہٹائیں؟';
+
+  @override
+  String clRemoveBody(String a) {
+    return '$a کو اس انتخاب سے ہٹا دیا جائے گا۔ جب تک انتخاب مسودہ ہے آپ انہیں دوبارہ شامل کر سکتے ہیں۔';
+  }
+
+  @override
+  String get clKeep => 'امیدوار رکھیں';
+
+  @override
+  String get clRemove => 'ہٹائیں';
+
+  @override
+  String get clRemoveFailed =>
+      'امیدوار کو ہٹایا نہیں جا سکا۔ دوبارہ کوشش کریں۔';
+
+  @override
+  String get clLocked =>
+      'یہ انتخاب اب مسودہ نہیں رہا، اس لیے اس کے امیدوار تبدیل نہیں ہو سکتے۔';
+
+  @override
+  String get clLoadError => 'ہم امیدوار لوڈ نہیں کر سکے۔';
+
+  @override
+  String get clRetry => 'دوبارہ کوشش کریں';
+
+  @override
+  String clNeedOne(String a) {
+    return 'شائع کرنے کے لیے کم از کم 1 مزید امیدوار شامل کریں (کم از کم $a)۔';
+  }
+
+  @override
+  String clNeedMany(String a, String b) {
+    return 'شائع کرنے کے لیے کم از کم $a مزید امیدوار شامل کریں (کم از کم $b)۔';
+  }
+
+  @override
+  String clCount(String a) {
+    return '$a امیدوار شامل ہو گئے۔';
+  }
+
+  @override
+  String get clNone => 'ابھی کوئی امیدوار شامل نہیں۔';
+
+  @override
+  String get clIndependent => 'آزاد / کوئی وابستگی نہیں';
+
+  @override
+  String clEdit(String a) {
+    return '$a میں ترمیم کریں';
+  }
+
+  @override
+  String clRemoveName(String a) {
+    return '$a کو ہٹائیں';
+  }
+
+  @override
+  String get clAdd => 'امیدوار شامل کریں';
+
+  @override
+  String get pfAddTitle => 'رائے شماری کا آپشن شامل کریں';
+
+  @override
+  String get pfEditTitle => 'رائے شماری کا آپشن ترمیم کریں';
+
+  @override
+  String get pfLabel => 'آپشن کا نام *';
+
+  @override
+  String get pfLabelHint => 'مثلاً تجویز الف منظور کریں';
+
+  @override
+  String get pfLabelRequired => 'نام ضروری ہے';
+
+  @override
+  String get pfDesc => 'آپشن کی تفصیل (اختیاری)';
+
+  @override
+  String get pfDescHint => 'ووٹرز کے لیے مزید تفصیلات دیں...';
+
+  @override
+  String get pfCancel => 'منسوخ کریں';
+
+  @override
+  String get pfAdd => 'آپشن شامل کریں';
+
+  @override
+  String get pfSave => 'تبدیلیاں محفوظ کریں';
+
+  @override
+  String get plsAdd => 'آپشن شامل کریں';
+
+  @override
+  String get plsLoadError => 'ہم آپشنز لوڈ نہیں کر سکے۔';
+
+  @override
+  String get plsRetry => 'دوبارہ کوشش کریں';
+
+  @override
+  String plsNone(String a) {
+    return 'ابھی کوئی آپشن شامل نہیں۔ شائع کرنے کے لیے کم از کم $a شامل کریں۔';
+  }
+
+  @override
+  String get plsDeleteTitle => 'آپشن حذف کریں؟';
+
+  @override
+  String plsDeleteBody(String a) {
+    return 'کیا آپ واقعی $a کو حذف کرنا چاہتے ہیں؟';
+  }
+
+  @override
+  String get plsCancel => 'منسوخ کریں';
+
+  @override
+  String get plsDelete => 'حذف کریں';
+
+  @override
+  String get plsRemoveFailed => 'آپشن کو ہٹایا نہیں جا سکا۔ دوبارہ کوشش کریں۔';
+
+  @override
+  String get chRoster => 'امیدواروں کی فہرست';
+
+  @override
+  String get chYesNo => 'ہاں/نہیں کے آپشنز';
+
+  @override
+  String get chPoll => 'رائے شماری کے آپشنز';
+
+  @override
+  String get chBack => 'واپس';
+
+  @override
+  String get chNext => 'اگلا: جائزہ';
+
+  @override
+  String get chYes => 'ہاں';
+
+  @override
+  String get chNo => 'نہیں';
+
+  @override
+  String get chSystem => 'نظام کا بنایا ہوا آپشن';
+
+  @override
+  String get ciTitle => 'ووٹرز کی بڑی تعداد درآمد کریں';
+
+  @override
+  String get ciBody =>
+      'نیچے CSV ڈیٹا یا ای میل ایڈریسز کی فہرست چسپاں کریں۔ ای میلز خودکار طور پر تنظیم کے فعال اراکین سے جانچی جائیں گی۔';
+
+  @override
+  String get ciLabel => 'CSV مواد / ای میل فہرست';
+
+  @override
+  String get ciHint =>
+      'john@example.com, jane@organization.org\nmark@company.com';
+
+  @override
+  String get ciParse => 'پڑھیں اور جانچیں';
+
+  @override
+  String get ciResults => 'جانچ کے نتائج';
+
+  @override
+  String ciMatched(String a) {
+    return '$a اراکین مل گئے اور اہل ہیں';
+  }
+
+  @override
+  String ciUnmatched(String a) {
+    return '$a ای میلز ورک اسپیس کی ڈائریکٹری میں نہیں ملیں';
+  }
+
+  @override
+  String get ciReedit => 'فہرست دوبارہ ایڈٹ کریں';
+
+  @override
+  String ciApply(String a) {
+    return 'انتخاب لاگو کریں ($a)';
+  }
+
+  @override
+  String get cdCreated => 'شعبہ کامیابی سے بن گیا۔';
+
+  @override
+  String get cdUpdated => 'شعبہ کامیابی سے اپ ڈیٹ ہو گیا۔';
+
+  @override
+  String get cdEditTitle => 'شعبے میں ترمیم کریں';
+
+  @override
+  String get cdCreateTitle => 'شعبہ بنائیں';
+
+  @override
+  String get cdName => 'شعبے کا نام *';
+
+  @override
+  String get cdNameHint => 'مثلاً کمپیوٹر سائنس';
+
+  @override
+  String get cdNameField => 'شعبے کا نام';
+
+  @override
+  String get cdNameShort => 'نام کم از کم 2 حروف کا ہونا چاہیے';
+
+  @override
+  String get cdNameLong => 'نام 50 حروف سے زیادہ نہیں ہو سکتا';
+
+  @override
+  String get cdDesc => 'تفصیل (اختیاری)';
+
+  @override
+  String get cdDescHint => 'شعبے کا مختصر خلاصہ...';
+
+  @override
+  String get cdCancel => 'منسوخ کریں';
+
+  @override
+  String get cdUpdate => 'اپ ڈیٹ کریں';
+
+  @override
+  String get cdCreate => 'بنائیں';
 }

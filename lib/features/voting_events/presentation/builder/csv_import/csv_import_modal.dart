@@ -1,3 +1,4 @@
+import '../../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/kivora_colors.dart';
@@ -36,7 +37,8 @@ class _CsvImportModalState extends State<CsvImportModal> {
       // Basic email regex match or simple string cleanup
       if (cleaned.contains('@') && cleaned.contains('.')) {
         // Strip quotes or extra text if any
-        final match = RegExp(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}').stringMatch(cleaned);
+        final match = RegExp(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')
+            .stringMatch(cleaned);
         if (match != null) {
           emailSet.add(match.toLowerCase());
         }
@@ -95,11 +97,12 @@ class _CsvImportModalState extends State<CsvImportModal> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Icon(KivoraIcons.fileSpreadsheet,
-                            color: KivoraColors.of(context).accentText, size: 20),
+                            color: KivoraColors.of(context).accentText,
+                            size: 20),
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        'Bulk Import Voters',
+                        AppLocalizations.of(context).ciTitle,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -116,20 +119,21 @@ class _CsvImportModalState extends State<CsvImportModal> {
               ),
               const SizedBox(height: 16),
               Text(
-                'Paste CSV data or a list of email addresses below. Emails will be automatically validated against active organization members.',
-                style: TextStyle(fontSize: 13, color: kc.textSecondary, height: 1.4),
+                AppLocalizations.of(context).ciBody,
+                style: TextStyle(
+                    fontSize: 13, color: kc.textSecondary, height: 1.4),
               ),
               const SizedBox(height: 20),
               KivoraTextField(
                 controller: _csvController,
-                label: 'CSV Content / Email List',
-                hint: 'john@example.com, jane@organization.org\nmark@company.com',
+                label: AppLocalizations.of(context).ciLabel,
+                hint: AppLocalizations.of(context).ciHint,
                 maxLines: 5,
               ),
               const SizedBox(height: 16),
               if (!_hasParsed)
                 KivoraButton(
-                  label: 'Parse & Validate',
+                  label: AppLocalizations.of(context).ciParse,
                   icon: KivoraIcons.check,
                   onPressed: _parseCsv,
                 )
@@ -147,7 +151,7 @@ class _CsvImportModalState extends State<CsvImportModal> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Validation Results',
+                        AppLocalizations.of(context).ciResults,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
@@ -158,10 +162,12 @@ class _CsvImportModalState extends State<CsvImportModal> {
                       Row(
                         children: [
                           Icon(KivoraIcons.checkCircle2,
-                              color: KivoraColors.of(context).successText, size: 16),
+                              color: KivoraColors.of(context).successText,
+                              size: 16),
                           const SizedBox(width: 8),
                           Text(
-                            '${_matchedUserIds.length} members matched and eligible',
+                            AppLocalizations.of(context)
+                                .ciMatched(_matchedUserIds.length.toString()),
                             style: TextStyle(
                               fontSize: 13,
                               color: kc.textPrimary,
@@ -175,11 +181,13 @@ class _CsvImportModalState extends State<CsvImportModal> {
                         Row(
                           children: [
                             Icon(KivoraIcons.alertTriangle,
-                                color: KivoraColors.of(context).warningText, size: 16),
+                                color: KivoraColors.of(context).warningText,
+                                size: 16),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                '${_unmatchedEmails.length} emails not found in workspace directory',
+                                AppLocalizations.of(context).ciUnmatched(
+                                    _unmatchedEmails.length.toString()),
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: kc.textSecondary,
@@ -198,14 +206,15 @@ class _CsvImportModalState extends State<CsvImportModal> {
                     Expanded(
                       child: KivoraButton(
                         type: KivoraButtonType.secondary,
-                        label: 'Re-edit List',
+                        label: AppLocalizations.of(context).ciReedit,
                         onPressed: () => setState(() => _hasParsed = false),
                       ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: KivoraButton(
-                        label: 'Apply Selection (${_matchedUserIds.length})',
+                        label: AppLocalizations.of(context)
+                            .ciApply(_matchedUserIds.length.toString()),
                         icon: KivoraIcons.userCheck,
                         onPressed: _matchedUserIds.isEmpty
                             ? null

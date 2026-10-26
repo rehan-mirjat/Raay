@@ -1,3 +1,4 @@
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kivora/core/theme/app_theme.dart';
@@ -24,14 +25,15 @@ class PollOptionFormDialog extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<PollOptionFormDialog> createState() => _PollOptionFormDialogState();
+  ConsumerState<PollOptionFormDialog> createState() =>
+      _PollOptionFormDialogState();
 }
 
 class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _labelCtrl;
   late TextEditingController _descCtrl;
-  
+
   bool _isLoading = false;
   String? _error;
 
@@ -111,15 +113,19 @@ class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: AppTheme.primaryBlue.withValues(alpha: 0.1),
+                              color:
+                                  AppTheme.primaryBlue.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Icon(KivoraIcons.listChecks,
-                                color: KivoraColors.of(context).accentText, size: 20),
+                                color: KivoraColors.of(context).accentText,
+                                size: 20),
                           ),
                           const SizedBox(width: 12),
                           Text(
-                            widget.existingOption == null ? 'Add Poll Option' : 'Edit Poll Option',
+                            widget.existingOption == null
+                                ? AppLocalizations.of(context).pfAddTitle
+                                : AppLocalizations.of(context).pfEditTitle,
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -137,15 +143,17 @@ class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
                   const SizedBox(height: 20),
                   KivoraTextField(
                     controller: _labelCtrl,
-                    label: 'Option Label *',
-                    hint: 'e.g. Approve Proposal A',
-                    validator: (v) => v == null || v.trim().isEmpty ? 'Label is required' : null,
+                    label: AppLocalizations.of(context).pfLabel,
+                    hint: AppLocalizations.of(context).pfLabelHint,
+                    validator: (v) => v == null || v.trim().isEmpty
+                        ? AppLocalizations.of(context).pfLabelRequired
+                        : null,
                   ),
                   const SizedBox(height: 16),
                   KivoraTextField(
                     controller: _descCtrl,
-                    label: 'Option Description (Optional)',
-                    hint: 'Provide additional details for voters...',
+                    label: AppLocalizations.of(context).pfDesc,
+                    hint: AppLocalizations.of(context).pfDescHint,
                     maxLines: 3,
                   ),
                   if (_error != null) ...[
@@ -158,14 +166,17 @@ class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
                       Expanded(
                         child: KivoraButton(
                           type: KivoraButtonType.secondary,
-                          label: 'Cancel',
-                          onPressed: _isLoading ? null : () => Navigator.pop(context),
+                          label: AppLocalizations.of(context).pfCancel,
+                          onPressed:
+                              _isLoading ? null : () => Navigator.pop(context),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: KivoraButton(
-                          label: widget.existingOption == null ? 'Add Option' : 'Save Changes',
+                          label: widget.existingOption == null
+                              ? AppLocalizations.of(context).pfAdd
+                              : AppLocalizations.of(context).pfSave,
                           isLoading: _isLoading,
                           onPressed: _submit,
                         ),

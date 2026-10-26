@@ -2769,5 +2769,169 @@
       }
     }
   },
-  "obBack": "Back"
+  "obBack": "Back",
+  "cfAdd": "Add candidate",
+  "cfEdit": "Edit candidate",
+  "cfClose": "Close",
+  "cfPhotoSem": "Choose candidate photo",
+  "cfPhoto": "Choose a photo (JPEG, optional)",
+  "cfPhotoChange": "Choose a different photo",
+  "cfName": "Full name *",
+  "cfNameHint": "e.g. Dr. Sarah Jenkins",
+  "cfNameShort": "Enter the candidate's name (at least 2 characters).",
+  "cf100": "Use 100 characters or fewer.",
+  "cfParty": "Party / Affiliation (Optional)",
+  "cfPartyHint": "e.g. Progressive Coalition",
+  "cfBio": "Candidate Bio / Vision Statement (Optional)",
+  "cfBioHint": "Brief summary of experience and objectives...",
+  "cf1000": "Use 1,000 characters or fewer.",
+  "cfCancel": "Cancel",
+  "cfSave": "Save changes",
+  "clRemoveTitle": "Remove this candidate?",
+  "clRemoveBody": "{a} will be removed from this election. You can add them again while the election is a draft.",
+  "@clRemoveBody": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "clKeep": "Keep candidate",
+  "clRemove": "Remove",
+  "clRemoveFailed": "Could not remove the candidate. Please try again.",
+  "clLocked": "This election is no longer a draft, so its candidates cannot be changed.",
+  "clLoadError": "We could not load the candidates.",
+  "clRetry": "Try again",
+  "clNeedOne": "Add at least 1 more candidate to publish (minimum {a}).",
+  "@clNeedOne": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "clNeedMany": "Add at least {a} more candidates to publish (minimum {b}).",
+  "@clNeedMany": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "clCount": "{a} candidates added.",
+  "@clCount": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "clNone": "No candidates added yet.",
+  "clIndependent": "Independent / no affiliation",
+  "clEdit": "Edit {a}",
+  "@clEdit": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "clRemoveName": "Remove {a}",
+  "@clRemoveName": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "clAdd": "Add candidate",
+  "pfAddTitle": "Add Poll Option",
+  "pfEditTitle": "Edit Poll Option",
+  "pfLabel": "Option Label *",
+  "pfLabelHint": "e.g. Approve Proposal A",
+  "pfLabelRequired": "Label is required",
+  "pfDesc": "Option Description (Optional)",
+  "pfDescHint": "Provide additional details for voters...",
+  "pfCancel": "Cancel",
+  "pfAdd": "Add Option",
+  "pfSave": "Save Changes",
+  "plsAdd": "Add Option",
+  "plsLoadError": "We could not load the options.",
+  "plsRetry": "Try again",
+  "plsNone": "No options added yet. Add at least {a} to publish.",
+  "@plsNone": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "plsDeleteTitle": "Delete Option?",
+  "plsDeleteBody": "Are you sure you want to delete {a}?",
+  "@plsDeleteBody": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "plsCancel": "Cancel",
+  "plsDelete": "Delete",
+  "plsRemoveFailed": "Could not remove the option. Please try again.",
+  "chRoster": "Candidate Roster",
+  "chYesNo": "Yes/No Options",
+  "chPoll": "Poll Options",
+  "chBack": "Back",
+  "chNext": "Next: Review",
+  "chYes": "Yes",
+  "chNo": "No",
+  "chSystem": "System-generated option",
+  "ciTitle": "Bulk Import Voters",
+  "ciBody": "Paste CSV data or a list of email addresses below. Emails will be automatically validated against active organization members.",
+  "ciLabel": "CSV Content / Email List",
+  "ciHint": "john@example.com, jane@organization.org\nmark@company.com",
+  "ciParse": "Parse & Validate",
+  "ciResults": "Validation Results",
+  "ciMatched": "{a} members matched and eligible",
+  "@ciMatched": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "ciUnmatched": "{a} emails not found in workspace directory",
+  "@ciUnmatched": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "ciReedit": "Re-edit List",
+  "ciApply": "Apply Selection ({a})",
+  "@ciApply": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "cdCreated": "Department created successfully.",
+  "cdUpdated": "Department updated successfully.",
+  "cdEditTitle": "Edit Department",
+  "cdCreateTitle": "Create Department",
+  "cdName": "Department Name *",
+  "cdNameHint": "e.g. Computer Science",
+  "cdNameField": "Department Name",
+  "cdNameShort": "Name must be at least 2 characters",
+  "cdNameLong": "Name cannot exceed 50 characters",
+  "cdDesc": "Description (Optional)",
+  "cdDescHint": "Brief summary of the department...",
+  "cdCancel": "Cancel",
+  "cdUpdate": "Update",
+  "cdCreate": "Create"
 }

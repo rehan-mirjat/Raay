@@ -1,3 +1,4 @@
+import '../../../../l10n/app_localizations.dart';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,7 +27,8 @@ class CandidateFormDialog extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<CandidateFormDialog> createState() => _CandidateFormDialogState();
+  ConsumerState<CandidateFormDialog> createState() =>
+      _CandidateFormDialogState();
 }
 
 class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
@@ -34,7 +36,7 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
   late TextEditingController _nameCtrl;
   late TextEditingController _partyCtrl;
   late TextEditingController _bioCtrl;
-  
+
   Uint8List? _selectedImageBytes;
   bool _isLoading = false;
   String? _error;
@@ -121,7 +123,8 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
           bio: changes['bio'],
           newPhotoBytes: _selectedImageBytes,
           expectedPhotoPath: _selectedImageBytes != null
-              ? saved.photoPath ?? 'organizations/${widget.orgId}/events/${widget.eventId}/candidates/${saved.id}/photo.jpg'
+              ? saved.photoPath ??
+                  'organizations/${widget.orgId}/events/${widget.eventId}/candidates/${saved.id}/photo.jpg'
               : null,
         );
       }
@@ -169,16 +172,23 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                         child: Semantics(
                           header: true,
                           child: Text(
-                            widget.existingCandidate == null ? 'Add candidate' : 'Edit candidate',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: kc.textPrimary),
+                            widget.existingCandidate == null
+                                ? AppLocalizations.of(context).cfAdd
+                                : AppLocalizations.of(context).cfEdit,
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: kc.textPrimary),
                           ),
                         ),
                       ),
                       IconButton(
-                        tooltip: 'Close',
-                        constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                        tooltip: AppLocalizations.of(context).cfClose,
+                        constraints:
+                            const BoxConstraints(minWidth: 48, minHeight: 48),
                         icon: const Icon(KivoraIcons.x, size: 20),
-                        onPressed: _isLoading ? null : () => Navigator.pop(context),
+                        onPressed:
+                            _isLoading ? null : () => Navigator.pop(context),
                       ),
                     ],
                   ),
@@ -188,7 +198,7 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                       children: [
                         Semantics(
                           button: true,
-                          label: 'Choose candidate photo',
+                          label: AppLocalizations.of(context).cfPhotoSem,
                           child: InkWell(
                             customBorder: const CircleBorder(),
                             onTap: _isLoading ? null : _pickImage,
@@ -208,15 +218,22 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                                         createdAt: DateTime.now(),
                                         updatedAt: DateTime.now(),
                                       ),
-                                  previewBytes: _selectedImageBytes == null ? null : MemoryImage(_selectedImageBytes!),
+                                  previewBytes: _selectedImageBytes == null
+                                      ? null
+                                      : MemoryImage(_selectedImageBytes!),
                                 ),
                                 Container(
                                   padding: const EdgeInsets.all(6),
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.primary,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                     shape: BoxShape.circle,
                                   ),
-                                  child: Icon(KivoraIcons.camera, size: 16, color: Theme.of(context).colorScheme.onPrimary),
+                                  child: Icon(KivoraIcons.camera,
+                                      size: 16,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary),
                                 ),
                               ],
                             ),
@@ -224,16 +241,20 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                         ),
                         const SizedBox(height: 8),
                         TextButton(
-                          style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                          style: TextButton.styleFrom(
+                              minimumSize: const Size(48, 48)),
                           onPressed: _isLoading ? null : _pickImage,
-                          child: Text(_selectedImageBytes == null ? 'Choose a photo (JPEG, optional)' : 'Choose a different photo'),
+                          child: Text(_selectedImageBytes == null
+                              ? AppLocalizations.of(context).cfPhoto
+                              : AppLocalizations.of(context).cfPhotoChange),
                         ),
                         if (_photoError != null)
                           Semantics(
                             liveRegion: true,
                             child: Text(_photoError!,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 14, color: kc.errorText)),
+                                style: TextStyle(
+                                    fontSize: 14, color: kc.errorText)),
                           ),
                       ],
                     ),
@@ -241,29 +262,35 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                   const SizedBox(height: 20),
                   KivoraTextField(
                     controller: _nameCtrl,
-                    label: 'Full name *',
-                    hint: 'e.g. Dr. Sarah Jenkins',
+                    label: AppLocalizations.of(context).cfName,
+                    hint: AppLocalizations.of(context).cfNameHint,
                     validator: (v) {
                       final n = v?.trim().length ?? 0;
-                      if (n < 2) return 'Enter the candidate\'s name (at least 2 characters).';
-                      if (n > 100) return 'Use 100 characters or fewer.';
+                      if (n < 2) {
+                        return AppLocalizations.of(context).cfNameShort;
+                      }
+                      if (n > 100) return AppLocalizations.of(context).cf100;
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
                   KivoraTextField(
                     controller: _partyCtrl,
-                    label: 'Party / Affiliation (Optional)',
-                    hint: 'e.g. Progressive Coalition',
-                    validator: (v) => (v?.trim().length ?? 0) > 100 ? 'Use 100 characters or fewer.' : null,
+                    label: AppLocalizations.of(context).cfParty,
+                    hint: AppLocalizations.of(context).cfPartyHint,
+                    validator: (v) => (v?.trim().length ?? 0) > 100
+                        ? AppLocalizations.of(context).cf100
+                        : null,
                   ),
                   const SizedBox(height: 16),
                   KivoraTextField(
                     controller: _bioCtrl,
-                    label: 'Candidate Bio / Vision Statement (Optional)',
-                    hint: 'Brief summary of experience and objectives...',
+                    label: AppLocalizations.of(context).cfBio,
+                    hint: AppLocalizations.of(context).cfBioHint,
                     maxLines: 3,
-                    validator: (v) => (v?.trim().length ?? 0) > 1000 ? 'Use 1,000 characters or fewer.' : null,
+                    validator: (v) => (v?.trim().length ?? 0) > 1000
+                        ? AppLocalizations.of(context).cf1000
+                        : null,
                   ),
                   if (_error != null) ...[
                     const SizedBox(height: 16),
@@ -276,17 +303,26 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                     runSpacing: 12,
                     children: [
                       OutlinedButton(
-                        style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
-                        onPressed: _isLoading ? null : () => Navigator.pop(context),
-                        child: const Text('Cancel'),
+                        style: OutlinedButton.styleFrom(
+                            minimumSize: const Size(48, 48)),
+                        onPressed:
+                            _isLoading ? null : () => Navigator.pop(context),
+                        child: Text(AppLocalizations.of(context).cfCancel),
                       ),
                       FilledButton.icon(
-                        style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+                        style: FilledButton.styleFrom(
+                            minimumSize: const Size(48, 48)),
                         onPressed: _isLoading ? null : _submit,
                         icon: _isLoading
-                            ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2))
                             : const SizedBox.shrink(),
-                        label: Text(widget.existingCandidate == null ? 'Add candidate' : 'Save changes'),
+                        label: Text(widget.existingCandidate == null
+                            ? AppLocalizations.of(context).cfAdd
+                            : AppLocalizations.of(context).cfSave),
                       ),
                     ],
                   ),

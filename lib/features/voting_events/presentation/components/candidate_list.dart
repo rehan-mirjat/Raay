@@ -1,3 +1,4 @@
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -6,7 +7,8 @@ import '../../../../core/theme/kivora_colors.dart';
 import '../../../../core/theme/kivora_icons.dart';
 import '../../../../core/utils/friendly_error.dart';
 import '../../../../core/widgets/loading_view.dart';
-import '../../../voting/presentation/cast_vote_screen.dart' show eventCandidatesProvider;
+import '../../../voting/presentation/cast_vote_screen.dart'
+    show eventCandidatesProvider;
 import '../../data/candidate_repository.dart';
 import '../../domain/candidate.dart';
 import 'candidate_avatar.dart';
@@ -20,26 +22,34 @@ class CandidateList extends ConsumerWidget {
   final String eventId;
   final bool isDraft;
 
-  const CandidateList({super.key, required this.orgId, required this.eventId, required this.isDraft});
+  const CandidateList(
+      {super.key,
+      required this.orgId,
+      required this.eventId,
+      required this.isDraft});
 
-  Future<void> _delete(BuildContext context, WidgetRef ref, Candidate cand) async {
+  Future<void> _delete(
+      BuildContext context, WidgetRef ref, Candidate cand) async {
     final messenger = ScaffoldMessenger.of(context);
+    final l10nAsync_ = AppLocalizations.of(context);
     final kc = KivoraColors.of(context);
     final confirm = await showDialog<bool>(
       context: context,
       builder: (c) => AlertDialog(
-        title: const Text('Remove this candidate?'),
-        content: Text('${cand.name} will be removed from this election. You can add them again while the election is a draft.'),
+        title: Text(AppLocalizations.of(context).clRemoveTitle),
+        content: Text(
+            AppLocalizations.of(context).clRemoveBody(cand.name.toString())),
         actions: [
           TextButton(
             style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
             onPressed: () => Navigator.pop(c, false),
-            child: const Text('Keep candidate'),
+            child: Text(AppLocalizations.of(context).clKeep),
           ),
           TextButton(
-            style: TextButton.styleFrom(minimumSize: const Size(48, 48), foregroundColor: kc.errorText),
+            style: TextButton.styleFrom(
+                minimumSize: const Size(48, 48), foregroundColor: kc.errorText),
             onPressed: () => Navigator.pop(c, true),
-            child: const Text('Remove'),
+            child: Text(AppLocalizations.of(context).clRemove),
           ),
         ],
       ),
@@ -49,7 +59,8 @@ class CandidateList extends ConsumerWidget {
       await ref.read(candidateRepositoryProvider).deleteCandidate(cand.id);
     } catch (e) {
       messenger.showSnackBar(SnackBar(
-          content: Text(friendlyError(e, fallback: 'Could not remove the candidate. Please try again.'))));
+          content:
+              Text(friendlyError(e, fallback: l10nAsync_.clRemoveFailed))));
     }
   }
 
@@ -69,25 +80,28 @@ class CandidateList extends ConsumerWidget {
             child: FilledButton.icon(
               style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
               icon: const Icon(KivoraIcons.plus, size: 18),
-              label: const Text('Add candidate'),
+              label: Text(AppLocalizations.of(context).clAdd),
               onPressed: () => showDialog<void>(
                 context: context,
                 barrierDismissible: false,
-                builder: (_) => CandidateFormDialog(orgId: orgId, eventId: eventId),
+                builder: (_) =>
+                    CandidateFormDialog(orgId: orgId, eventId: eventId),
               ),
             ),
           )
         else
-          _note(kc, Icons.lock_outline_rounded, 'This election is no longer a draft, so its candidates cannot be changed.'),
+          _note(kc, Icons.lock_outline_rounded,
+              AppLocalizations.of(context).clLocked),
         const SizedBox(height: 16),
         candsAsync.when(
           loading: () => const LoadingView(),
           error: (_, __) => Column(children: [
-            Text('We could not load the candidates.', style: TextStyle(color: kc.errorText)),
+            Text(AppLocalizations.of(context).clLoadError,
+                style: TextStyle(color: kc.errorText)),
             TextButton(
               style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
               onPressed: () => ref.invalidate(eventCandidatesProvider(eventId)),
-              child: const Text('Try again'),
+              child: Text(AppLocalizations.of(context).clRetry),
             ),
           ]),
           data: (candidates) {
@@ -100,10 +114,18 @@ class CandidateList extends ConsumerWidget {
                   liveRegion: true,
                   child: _note(
                     kc,
-                    missing > 0 ? Icons.info_outline_rounded : Icons.check_circle_outline_rounded,
                     missing > 0
-                        ? 'Add at least $missing more ${missing == 1 ? 'candidate' : 'candidates'} to publish (minimum $kMinCandidatesToPublish).'
-                        : '${candidates.length} candidates added.',
+                        ? Icons.info_outline_rounded
+                        : Icons.check_circle_outline_rounded,
+                    missing > 0
+                        ? (missing == 1
+                            ? AppLocalizations.of(context)
+                                .clNeedOne(kMinCandidatesToPublish.toString())
+                            : AppLocalizations.of(context).clNeedMany(
+                                missing.toString(),
+                                kMinCandidatesToPublish.toString()))
+                        : AppLocalizations.of(context)
+                            .clCount(candidates.length.toString()),
                     color: missing > 0 ? kc.warningText : kc.successText,
                   ),
                 ),
@@ -111,8 +133,9 @@ class CandidateList extends ConsumerWidget {
                 if (candidates.isEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 24),
-                    child: Text('No candidates added yet.',
-                        textAlign: TextAlign.center, style: TextStyle(color: kc.textSecondary)),
+                    child: Text(AppLocalizations.of(context).clNone,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: kc.textSecondary)),
                   )
                 else
                   for (final cand in candidates) ...[
@@ -122,7 +145,10 @@ class CandidateList extends ConsumerWidget {
                       onEdit: () => showDialog<void>(
                         context: context,
                         barrierDismissible: false,
-                        builder: (_) => CandidateFormDialog(orgId: orgId, eventId: eventId, existingCandidate: cand),
+                        builder: (_) => CandidateFormDialog(
+                            orgId: orgId,
+                            eventId: eventId,
+                            existingCandidate: cand),
                       ),
                       onDelete: () => _delete(context, ref, cand),
                     ),
@@ -148,14 +174,20 @@ class CandidateList extends ConsumerWidget {
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Icon(icon, size: 20, color: c),
         const SizedBox(width: 10),
-        Expanded(child: Text(text, style: TextStyle(fontSize: 14, color: kc.textPrimary))),
+        Expanded(
+            child: Text(text,
+                style: TextStyle(fontSize: 14, color: kc.textPrimary))),
       ]),
     );
   }
 }
 
 class _CandidateCard extends StatelessWidget {
-  const _CandidateCard({required this.cand, required this.isDraft, required this.onEdit, required this.onDelete});
+  const _CandidateCard(
+      {required this.cand,
+      required this.isDraft,
+      required this.onEdit,
+      required this.onDelete});
   final Candidate cand;
   final bool isDraft;
   final VoidCallback onEdit;
@@ -180,14 +212,22 @@ class _CandidateCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(cand.name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                Text(cand.name,
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: kc.textPrimary)),
                 const SizedBox(height: 2),
-                Text(cand.party.isNotEmpty ? cand.party : 'Independent / no affiliation',
+                Text(
+                    cand.party.isNotEmpty
+                        ? cand.party
+                        : AppLocalizations.of(context).clIndependent,
                     style: TextStyle(fontSize: 14, color: kc.textSecondary)),
                 if (cand.bio.isNotEmpty) ...[
                   const SizedBox(height: 6),
                   Text(cand.bio,
-                      style: TextStyle(fontSize: 14, color: kc.textSecondary, height: 1.3),
+                      style: TextStyle(
+                          fontSize: 14, color: kc.textSecondary, height: 1.3),
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis),
                 ],
@@ -197,13 +237,15 @@ class _CandidateCard extends StatelessWidget {
           if (isDraft)
             Column(mainAxisSize: MainAxisSize.min, children: [
               IconButton(
-                tooltip: 'Edit ${cand.name}',
+                tooltip:
+                    AppLocalizations.of(context).clEdit(cand.name.toString()),
                 constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                 icon: const Icon(KivoraIcons.edit3, size: 20),
                 onPressed: onEdit,
               ),
               IconButton(
-                tooltip: 'Remove ${cand.name}',
+                tooltip: AppLocalizations.of(context)
+                    .clRemoveName(cand.name.toString()),
                 constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                 icon: Icon(KivoraIcons.trash2, size: 20, color: kc.errorText),
                 onPressed: onDelete,

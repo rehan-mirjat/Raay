@@ -1,3 +1,4 @@
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kivora/core/theme/kivora_colors.dart';
@@ -8,7 +9,8 @@ import 'package:kivora/core/widgets/ui_kit/kivora_card.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/friendly_error.dart';
 import '../../../../core/widgets/loading_view.dart';
-import '../../../voting/presentation/cast_vote_screen.dart' show eventPollOptionsProvider;
+import '../../../voting/presentation/cast_vote_screen.dart'
+    show eventPollOptionsProvider;
 import '../../data/poll_option_repository.dart';
 import 'poll_option_form_dialog.dart';
 
@@ -38,7 +40,7 @@ class PollOptionList extends ConsumerWidget {
         if (isDraft)
           KivoraButton(
             icon: KivoraIcons.plus,
-            label: 'Add Option',
+            label: AppLocalizations.of(context).plsAdd,
             onPressed: () {
               showDialog(
                 context: context,
@@ -52,12 +54,13 @@ class PollOptionList extends ConsumerWidget {
         optsAsync.when(
           loading: () => const LoadingView(),
           error: (_, __) => Column(children: [
-            Text('We could not load the options.',
+            Text(AppLocalizations.of(context).plsLoadError,
                 style: TextStyle(color: KivoraColors.of(context).errorText)),
             TextButton(
               style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
-              onPressed: () => ref.invalidate(eventPollOptionsProvider(eventId)),
-              child: const Text('Try again'),
+              onPressed: () =>
+                  ref.invalidate(eventPollOptionsProvider(eventId)),
+              child: Text(AppLocalizations.of(context).plsRetry),
             ),
           ]),
           data: (loaded) {
@@ -67,7 +70,8 @@ class PollOptionList extends ConsumerWidget {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 24.0),
                 child: Text(
-                  'No options added yet. Add at least $kMinOptionsToPublish to publish.',
+                  AppLocalizations.of(context)
+                      .plsNone(kMinOptionsToPublish.toString()),
                   textAlign: TextAlign.center,
                   style: TextStyle(color: kc.textSecondary),
                 ),
@@ -104,7 +108,8 @@ class PollOptionList extends ConsumerWidget {
                           ReorderableDragStartListener(
                             index: i,
                             child: Padding(
-                              padding: const EdgeInsetsDirectional.only(end: 12.0),
+                              padding:
+                                  const EdgeInsetsDirectional.only(end: 12.0),
                               child: Icon(KivoraIcons.gripVertical,
                                   color: kc.textSecondary, size: 18),
                             ),
@@ -172,25 +177,37 @@ class PollOptionList extends ConsumerWidget {
                               ),
                               IconButton(
                                 icon: Icon(KivoraIcons.trash2,
-                                    size: 18, color: KivoraColors.of(context).errorText),
+                                    size: 18,
+                                    color: KivoraColors.of(context).errorText),
                                 onPressed: () async {
                                   final confirm = await showDialog<bool>(
                                       context: context,
                                       builder: (c) => AlertDialog(
-                                            title: const Text('Delete Option?'),
+                                            title: Text(
+                                                AppLocalizations.of(context)
+                                                    .plsDeleteTitle),
                                             content: Text(
-                                                'Are you sure you want to delete ${opt.label}?'),
+                                                AppLocalizations.of(context)
+                                                    .plsDeleteBody(
+                                                        opt.label.toString())),
                                             actions: [
                                               TextButton(
                                                   onPressed: () =>
                                                       Navigator.pop(c, false),
-                                                  child: const Text('Cancel')),
+                                                  child: Text(
+                                                      AppLocalizations.of(
+                                                              context)
+                                                          .plsCancel)),
                                               TextButton(
                                                 onPressed: () =>
                                                     Navigator.pop(c, true),
-                                                child: Text('Delete',
+                                                child: Text(
+                                                    AppLocalizations.of(context)
+                                                        .plsDelete,
                                                     style: TextStyle(
-                                                        color: KivoraColors.of(context).errorText)),
+                                                        color: KivoraColors.of(
+                                                                context)
+                                                            .errorText)),
                                               ),
                                             ],
                                           ));
@@ -204,7 +221,9 @@ class PollOptionList extends ConsumerWidget {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(SnackBar(
                                                 content: Text(friendlyError(e,
-                                                    fallback: 'Could not remove the option. Please try again.'))));
+                                                    fallback: AppLocalizations
+                                                            .of(context)
+                                                        .plsRemoveFailed))));
                                       }
                                     }
                                   }

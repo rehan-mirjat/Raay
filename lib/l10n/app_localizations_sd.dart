@@ -5780,4 +5780,284 @@ class AppLocalizationsSd extends AppLocalizations {
 
   @override
   String get obBack => 'Back';
+
+  @override
+  String get cfAdd => 'Add candidate';
+
+  @override
+  String get cfEdit => 'Edit candidate';
+
+  @override
+  String get cfClose => 'Close';
+
+  @override
+  String get cfPhotoSem => 'Choose candidate photo';
+
+  @override
+  String get cfPhoto => 'Choose a photo (JPEG, optional)';
+
+  @override
+  String get cfPhotoChange => 'Choose a different photo';
+
+  @override
+  String get cfName => 'Full name *';
+
+  @override
+  String get cfNameHint => 'e.g. Dr. Sarah Jenkins';
+
+  @override
+  String get cfNameShort =>
+      'Enter the candidate\'s name (at least 2 characters).';
+
+  @override
+  String get cf100 => 'Use 100 characters or fewer.';
+
+  @override
+  String get cfParty => 'Party / Affiliation (Optional)';
+
+  @override
+  String get cfPartyHint => 'e.g. Progressive Coalition';
+
+  @override
+  String get cfBio => 'Candidate Bio / Vision Statement (Optional)';
+
+  @override
+  String get cfBioHint => 'Brief summary of experience and objectives...';
+
+  @override
+  String get cf1000 => 'Use 1,000 characters or fewer.';
+
+  @override
+  String get cfCancel => 'Cancel';
+
+  @override
+  String get cfSave => 'Save changes';
+
+  @override
+  String get clRemoveTitle => 'Remove this candidate?';
+
+  @override
+  String clRemoveBody(String a) {
+    return '$a will be removed from this election. You can add them again while the election is a draft.';
+  }
+
+  @override
+  String get clKeep => 'Keep candidate';
+
+  @override
+  String get clRemove => 'Remove';
+
+  @override
+  String get clRemoveFailed =>
+      'Could not remove the candidate. Please try again.';
+
+  @override
+  String get clLocked =>
+      'This election is no longer a draft, so its candidates cannot be changed.';
+
+  @override
+  String get clLoadError => 'We could not load the candidates.';
+
+  @override
+  String get clRetry => 'Try again';
+
+  @override
+  String clNeedOne(String a) {
+    return 'Add at least 1 more candidate to publish (minimum $a).';
+  }
+
+  @override
+  String clNeedMany(String a, String b) {
+    return 'Add at least $a more candidates to publish (minimum $b).';
+  }
+
+  @override
+  String clCount(String a) {
+    return '$a candidates added.';
+  }
+
+  @override
+  String get clNone => 'No candidates added yet.';
+
+  @override
+  String get clIndependent => 'Independent / no affiliation';
+
+  @override
+  String clEdit(String a) {
+    return 'Edit $a';
+  }
+
+  @override
+  String clRemoveName(String a) {
+    return 'Remove $a';
+  }
+
+  @override
+  String get clAdd => 'Add candidate';
+
+  @override
+  String get pfAddTitle => 'Add Poll Option';
+
+  @override
+  String get pfEditTitle => 'Edit Poll Option';
+
+  @override
+  String get pfLabel => 'Option Label *';
+
+  @override
+  String get pfLabelHint => 'e.g. Approve Proposal A';
+
+  @override
+  String get pfLabelRequired => 'Label is required';
+
+  @override
+  String get pfDesc => 'Option Description (Optional)';
+
+  @override
+  String get pfDescHint => 'Provide additional details for voters...';
+
+  @override
+  String get pfCancel => 'Cancel';
+
+  @override
+  String get pfAdd => 'Add Option';
+
+  @override
+  String get pfSave => 'Save Changes';
+
+  @override
+  String get plsAdd => 'Add Option';
+
+  @override
+  String get plsLoadError => 'We could not load the options.';
+
+  @override
+  String get plsRetry => 'Try again';
+
+  @override
+  String plsNone(String a) {
+    return 'No options added yet. Add at least $a to publish.';
+  }
+
+  @override
+  String get plsDeleteTitle => 'Delete Option?';
+
+  @override
+  String plsDeleteBody(String a) {
+    return 'Are you sure you want to delete $a?';
+  }
+
+  @override
+  String get plsCancel => 'Cancel';
+
+  @override
+  String get plsDelete => 'Delete';
+
+  @override
+  String get plsRemoveFailed =>
+      'Could not remove the option. Please try again.';
+
+  @override
+  String get chRoster => 'Candidate Roster';
+
+  @override
+  String get chYesNo => 'Yes/No Options';
+
+  @override
+  String get chPoll => 'Poll Options';
+
+  @override
+  String get chBack => 'Back';
+
+  @override
+  String get chNext => 'Next: Review';
+
+  @override
+  String get chYes => 'Yes';
+
+  @override
+  String get chNo => 'No';
+
+  @override
+  String get chSystem => 'System-generated option';
+
+  @override
+  String get ciTitle => 'Bulk Import Voters';
+
+  @override
+  String get ciBody =>
+      'Paste CSV data or a list of email addresses below. Emails will be automatically validated against active organization members.';
+
+  @override
+  String get ciLabel => 'CSV Content / Email List';
+
+  @override
+  String get ciHint =>
+      'john@example.com, jane@organization.org\nmark@company.com';
+
+  @override
+  String get ciParse => 'Parse & Validate';
+
+  @override
+  String get ciResults => 'Validation Results';
+
+  @override
+  String ciMatched(String a) {
+    return '$a members matched and eligible';
+  }
+
+  @override
+  String ciUnmatched(String a) {
+    return '$a emails not found in workspace directory';
+  }
+
+  @override
+  String get ciReedit => 'Re-edit List';
+
+  @override
+  String ciApply(String a) {
+    return 'Apply Selection ($a)';
+  }
+
+  @override
+  String get cdCreated => 'Department created successfully.';
+
+  @override
+  String get cdUpdated => 'Department updated successfully.';
+
+  @override
+  String get cdEditTitle => 'Edit Department';
+
+  @override
+  String get cdCreateTitle => 'Create Department';
+
+  @override
+  String get cdName => 'Department Name *';
+
+  @override
+  String get cdNameHint => 'e.g. Computer Science';
+
+  @override
+  String get cdNameField => 'Department Name';
+
+  @override
+  String get cdNameShort => 'Name must be at least 2 characters';
+
+  @override
+  String get cdNameLong => 'Name cannot exceed 50 characters';
+
+  @override
+  String get cdDesc => 'Description (Optional)';
+
+  @override
+  String get cdDescHint => 'Brief summary of the department...';
+
+  @override
+  String get cdCancel => 'Cancel';
+
+  @override
+  String get cdUpdate => 'Update';
+
+  @override
+  String get cdCreate => 'Create';
 }

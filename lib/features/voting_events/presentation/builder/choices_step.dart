@@ -1,3 +1,4 @@
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,7 +13,11 @@ class ChoicesStep extends ConsumerWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
 
-  const ChoicesStep({super.key, required this.orgId, required this.onNext, required this.onBack});
+  const ChoicesStep(
+      {super.key,
+      required this.orgId,
+      required this.onNext,
+      required this.onBack});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,21 +31,25 @@ class ChoicesStep extends ConsumerWidget {
       children: [
         Text(
           draftState.votingType == VotingType.candidateElection
-              ? 'Candidate Roster'
+              ? AppLocalizations.of(context).chRoster
               : draftState.votingType == VotingType.yesNoPoll
-                  ? 'Yes/No Options'
-                  : 'Poll Options',
+                  ? AppLocalizations.of(context).chYesNo
+                  : AppLocalizations.of(context).chPoll,
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
-        
         if (draftState.votingType == VotingType.candidateElection)
-          CandidateList(orgId: orgId, eventId: eventId, isDraft: draftState.status == VotingEventStatus.draft)
+          CandidateList(
+              orgId: orgId,
+              eventId: eventId,
+              isDraft: draftState.status == VotingEventStatus.draft)
         else if (draftState.votingType == VotingType.singleChoicePoll)
-          PollOptionList(orgId: orgId, eventId: eventId, isDraft: draftState.status == VotingEventStatus.draft)
+          PollOptionList(
+              orgId: orgId,
+              eventId: eventId,
+              isDraft: draftState.status == VotingEventStatus.draft)
         else
           _buildYesNoList(context),
-
         const SizedBox(height: 32),
         Wrap(
           alignment: WrapAlignment.spaceBetween,
@@ -50,11 +59,11 @@ class ChoicesStep extends ConsumerWidget {
             TextButton(
                 style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
                 onPressed: onBack,
-                child: const Text('Back')),
+                child: Text(AppLocalizations.of(context).chBack)),
             FilledButton(
                 style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
                 onPressed: onNext,
-                child: const Text('Next: Review')),
+                child: Text(AppLocalizations.of(context).chNext)),
           ],
         ),
       ],
@@ -67,13 +76,13 @@ class ChoicesStep extends ConsumerWidget {
       children: [
         ListTile(
           leading: Icon(Icons.check_circle, color: kc.successText),
-          title: const Text('Yes'),
-          subtitle: const Text('System-generated option'),
+          title: Text(AppLocalizations.of(context).chYes),
+          subtitle: Text(AppLocalizations.of(context).chSystem),
         ),
         ListTile(
           leading: Icon(Icons.cancel, color: kc.errorText),
-          title: const Text('No'),
-          subtitle: const Text('System-generated option'),
+          title: Text(AppLocalizations.of(context).chNo),
+          subtitle: Text(AppLocalizations.of(context).chSystem),
         ),
       ],
     );

@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,10 +20,12 @@ class CreateEditDepartmentDialog extends ConsumerStatefulWidget {
   final Department? departmentToEdit;
 
   @override
-  ConsumerState<CreateEditDepartmentDialog> createState() => _CreateEditDepartmentDialogState();
+  ConsumerState<CreateEditDepartmentDialog> createState() =>
+      _CreateEditDepartmentDialogState();
 }
 
-class _CreateEditDepartmentDialogState extends ConsumerState<CreateEditDepartmentDialog> {
+class _CreateEditDepartmentDialogState
+    extends ConsumerState<CreateEditDepartmentDialog> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _descController;
@@ -33,8 +36,10 @@ class _CreateEditDepartmentDialogState extends ConsumerState<CreateEditDepartmen
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.departmentToEdit?.name ?? '');
-    _descController = TextEditingController(text: widget.departmentToEdit?.description ?? '');
+    _nameController =
+        TextEditingController(text: widget.departmentToEdit?.name ?? '');
+    _descController =
+        TextEditingController(text: widget.departmentToEdit?.description ?? '');
   }
 
   @override
@@ -54,7 +59,7 @@ class _CreateEditDepartmentDialogState extends ConsumerState<CreateEditDepartmen
 
     try {
       final repo = ref.read(departmentRepositoryProvider);
-      
+
       if (widget.departmentToEdit == null) {
         await repo.createDepartment(
           organizationId: widget.organizationId,
@@ -73,7 +78,9 @@ class _CreateEditDepartmentDialogState extends ConsumerState<CreateEditDepartmen
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(widget.departmentToEdit == null ? 'Department created successfully.' : 'Department updated successfully.'),
+            content: Text(widget.departmentToEdit == null
+                ? AppLocalizations.of(context).cdCreated
+                : AppLocalizations.of(context).cdUpdated),
             backgroundColor: AppTheme.success,
           ),
         );
@@ -93,7 +100,9 @@ class _CreateEditDepartmentDialogState extends ConsumerState<CreateEditDepartmen
     final isEditing = widget.departmentToEdit != null;
 
     return AlertDialog(
-      title: Text(isEditing ? 'Edit Department' : 'Create Department'),
+      title: Text(isEditing
+          ? AppLocalizations.of(context).cdEditTitle
+          : AppLocalizations.of(context).cdCreateTitle),
       content: SingleChildScrollView(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 400),
@@ -105,15 +114,20 @@ class _CreateEditDepartmentDialogState extends ConsumerState<CreateEditDepartmen
               children: [
                 TextFormField(
                   controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Department Name *',
-                    hintText: 'e.g. Computer Science',
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).cdName,
+                    hintText: AppLocalizations.of(context).cdNameHint,
                   ),
                   validator: (v) {
-                    final req = Validators.required(v, 'Department Name');
+                    final req = Validators.required(
+                        v, AppLocalizations.of(context).cdNameField);
                     if (req != null) return req;
-                    if (v!.trim().length < 2) return 'Name must be at least 2 characters';
-                    if (v.trim().length > 50) return 'Name cannot exceed 50 characters';
+                    if (v!.trim().length < 2) {
+                      return AppLocalizations.of(context).cdNameShort;
+                    }
+                    if (v.trim().length > 50) {
+                      return AppLocalizations.of(context).cdNameLong;
+                    }
                     return null;
                   },
                 ),
@@ -121,9 +135,9 @@ class _CreateEditDepartmentDialogState extends ConsumerState<CreateEditDepartmen
                 TextFormField(
                   controller: _descController,
                   maxLines: 3,
-                  decoration: const InputDecoration(
-                    labelText: 'Description (Optional)',
-                    hintText: 'Brief summary of the department...',
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context).cdDesc,
+                    hintText: AppLocalizations.of(context).cdDescHint,
                   ),
                 ),
                 if (_error != null) ...[
@@ -138,13 +152,19 @@ class _CreateEditDepartmentDialogState extends ConsumerState<CreateEditDepartmen
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context).cdCancel),
         ),
         ElevatedButton(
           onPressed: _isLoading ? null : _submit,
           child: _isLoading
-              ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-              : Text(isEditing ? 'Update' : 'Create'),
+              ? const SizedBox(
+                  height: 18,
+                  width: 18,
+                  child: CircularProgressIndicator(
+                      color: Colors.white, strokeWidth: 2))
+              : Text(isEditing
+                  ? AppLocalizations.of(context).cdUpdate
+                  : AppLocalizations.of(context).cdCreate),
         ),
       ],
     );

@@ -10355,6 +10355,510 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get obBack;
+
+  /// No description provided for @cfAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add candidate'**
+  String get cfAdd;
+
+  /// No description provided for @cfEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit candidate'**
+  String get cfEdit;
+
+  /// No description provided for @cfClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get cfClose;
+
+  /// No description provided for @cfPhotoSem.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose candidate photo'**
+  String get cfPhotoSem;
+
+  /// No description provided for @cfPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a photo (JPEG, optional)'**
+  String get cfPhoto;
+
+  /// No description provided for @cfPhotoChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a different photo'**
+  String get cfPhotoChange;
+
+  /// No description provided for @cfName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name *'**
+  String get cfName;
+
+  /// No description provided for @cfNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Dr. Sarah Jenkins'**
+  String get cfNameHint;
+
+  /// No description provided for @cfNameShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the candidate\'s name (at least 2 characters).'**
+  String get cfNameShort;
+
+  /// No description provided for @cf100.
+  ///
+  /// In en, this message translates to:
+  /// **'Use 100 characters or fewer.'**
+  String get cf100;
+
+  /// No description provided for @cfParty.
+  ///
+  /// In en, this message translates to:
+  /// **'Party / Affiliation (Optional)'**
+  String get cfParty;
+
+  /// No description provided for @cfPartyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Progressive Coalition'**
+  String get cfPartyHint;
+
+  /// No description provided for @cfBio.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate Bio / Vision Statement (Optional)'**
+  String get cfBio;
+
+  /// No description provided for @cfBioHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Brief summary of experience and objectives...'**
+  String get cfBioHint;
+
+  /// No description provided for @cf1000.
+  ///
+  /// In en, this message translates to:
+  /// **'Use 1,000 characters or fewer.'**
+  String get cf1000;
+
+  /// No description provided for @cfCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cfCancel;
+
+  /// No description provided for @cfSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get cfSave;
+
+  /// No description provided for @clRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this candidate?'**
+  String get clRemoveTitle;
+
+  /// No description provided for @clRemoveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} will be removed from this election. You can add them again while the election is a draft.'**
+  String clRemoveBody(String a);
+
+  /// No description provided for @clKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep candidate'**
+  String get clKeep;
+
+  /// No description provided for @clRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get clRemove;
+
+  /// No description provided for @clRemoveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not remove the candidate. Please try again.'**
+  String get clRemoveFailed;
+
+  /// No description provided for @clLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'This election is no longer a draft, so its candidates cannot be changed.'**
+  String get clLocked;
+
+  /// No description provided for @clLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the candidates.'**
+  String get clLoadError;
+
+  /// No description provided for @clRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get clRetry;
+
+  /// No description provided for @clNeedOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least 1 more candidate to publish (minimum {a}).'**
+  String clNeedOne(String a);
+
+  /// No description provided for @clNeedMany.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least {a} more candidates to publish (minimum {b}).'**
+  String clNeedMany(String a, String b);
+
+  /// No description provided for @clCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} candidates added.'**
+  String clCount(String a);
+
+  /// No description provided for @clNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No candidates added yet.'**
+  String get clNone;
+
+  /// No description provided for @clIndependent.
+  ///
+  /// In en, this message translates to:
+  /// **'Independent / no affiliation'**
+  String get clIndependent;
+
+  /// No description provided for @clEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {a}'**
+  String clEdit(String a);
+
+  /// No description provided for @clRemoveName.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {a}'**
+  String clRemoveName(String a);
+
+  /// No description provided for @clAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add candidate'**
+  String get clAdd;
+
+  /// No description provided for @pfAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Poll Option'**
+  String get pfAddTitle;
+
+  /// No description provided for @pfEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Poll Option'**
+  String get pfEditTitle;
+
+  /// No description provided for @pfLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Option Label *'**
+  String get pfLabel;
+
+  /// No description provided for @pfLabelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Approve Proposal A'**
+  String get pfLabelHint;
+
+  /// No description provided for @pfLabelRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Label is required'**
+  String get pfLabelRequired;
+
+  /// No description provided for @pfDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Option Description (Optional)'**
+  String get pfDesc;
+
+  /// No description provided for @pfDescHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Provide additional details for voters...'**
+  String get pfDescHint;
+
+  /// No description provided for @pfCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get pfCancel;
+
+  /// No description provided for @pfAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Option'**
+  String get pfAdd;
+
+  /// No description provided for @pfSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get pfSave;
+
+  /// No description provided for @plsAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Option'**
+  String get plsAdd;
+
+  /// No description provided for @plsLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the options.'**
+  String get plsLoadError;
+
+  /// No description provided for @plsRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get plsRetry;
+
+  /// No description provided for @plsNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No options added yet. Add at least {a} to publish.'**
+  String plsNone(String a);
+
+  /// No description provided for @plsDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Option?'**
+  String get plsDeleteTitle;
+
+  /// No description provided for @plsDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete {a}?'**
+  String plsDeleteBody(String a);
+
+  /// No description provided for @plsCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get plsCancel;
+
+  /// No description provided for @plsDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get plsDelete;
+
+  /// No description provided for @plsRemoveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not remove the option. Please try again.'**
+  String get plsRemoveFailed;
+
+  /// No description provided for @chRoster.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate Roster'**
+  String get chRoster;
+
+  /// No description provided for @chYesNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes/No Options'**
+  String get chYesNo;
+
+  /// No description provided for @chPoll.
+  ///
+  /// In en, this message translates to:
+  /// **'Poll Options'**
+  String get chPoll;
+
+  /// No description provided for @chBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get chBack;
+
+  /// No description provided for @chNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: Review'**
+  String get chNext;
+
+  /// No description provided for @chYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get chYes;
+
+  /// No description provided for @chNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get chNo;
+
+  /// No description provided for @chSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System-generated option'**
+  String get chSystem;
+
+  /// No description provided for @ciTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulk Import Voters'**
+  String get ciTitle;
+
+  /// No description provided for @ciBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste CSV data or a list of email addresses below. Emails will be automatically validated against active organization members.'**
+  String get ciBody;
+
+  /// No description provided for @ciLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'CSV Content / Email List'**
+  String get ciLabel;
+
+  /// No description provided for @ciHint.
+  ///
+  /// In en, this message translates to:
+  /// **'john@example.com, jane@organization.org\nmark@company.com'**
+  String get ciHint;
+
+  /// No description provided for @ciParse.
+  ///
+  /// In en, this message translates to:
+  /// **'Parse & Validate'**
+  String get ciParse;
+
+  /// No description provided for @ciResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Validation Results'**
+  String get ciResults;
+
+  /// No description provided for @ciMatched.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} members matched and eligible'**
+  String ciMatched(String a);
+
+  /// No description provided for @ciUnmatched.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} emails not found in workspace directory'**
+  String ciUnmatched(String a);
+
+  /// No description provided for @ciReedit.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-edit List'**
+  String get ciReedit;
+
+  /// No description provided for @ciApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply Selection ({a})'**
+  String ciApply(String a);
+
+  /// No description provided for @cdCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Department created successfully.'**
+  String get cdCreated;
+
+  /// No description provided for @cdUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Department updated successfully.'**
+  String get cdUpdated;
+
+  /// No description provided for @cdEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Department'**
+  String get cdEditTitle;
+
+  /// No description provided for @cdCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Department'**
+  String get cdCreateTitle;
+
+  /// No description provided for @cdName.
+  ///
+  /// In en, this message translates to:
+  /// **'Department Name *'**
+  String get cdName;
+
+  /// No description provided for @cdNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Computer Science'**
+  String get cdNameHint;
+
+  /// No description provided for @cdNameField.
+  ///
+  /// In en, this message translates to:
+  /// **'Department Name'**
+  String get cdNameField;
+
+  /// No description provided for @cdNameShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Name must be at least 2 characters'**
+  String get cdNameShort;
+
+  /// No description provided for @cdNameLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Name cannot exceed 50 characters'**
+  String get cdNameLong;
+
+  /// No description provided for @cdDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (Optional)'**
+  String get cdDesc;
+
+  /// No description provided for @cdDescHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Brief summary of the department...'**
+  String get cdDescHint;
+
+  /// No description provided for @cdCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cdCancel;
+
+  /// No description provided for @cdUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get cdUpdate;
+
+  /// No description provided for @cdCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get cdCreate;
 }
 
 class _AppLocalizationsDelegate
