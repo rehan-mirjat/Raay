@@ -167,7 +167,10 @@ class AppNavigationShell extends ConsumerWidget {
 
 // ─── Expanded: 248px sidebar ─────────────────────────────────────────────────
 
-class _Sidebar extends ConsumerWidget {
+/// The expanded navigation sidebar. It is always deep navy, in light and dark
+/// themes, so it reads as the stable frame around the page. Everything inside
+/// resolves its colors from a dark theme.
+class _Sidebar extends StatelessWidget {
   const _Sidebar(
       {required this.model, required this.active, required this.canCreate});
   final NavModel model;
@@ -175,6 +178,24 @@ class _Sidebar extends ConsumerWidget {
   final bool canCreate;
 
   static const width = 248.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final outer = Theme.of(context);
+    final dark = outer.brightness == Brightness.dark ? outer : AppTheme.darkTheme;
+    return Theme(
+      data: dark,
+      child: _SidebarBody(model: model, active: active, canCreate: canCreate),
+    );
+  }
+}
+
+class _SidebarBody extends ConsumerWidget {
+  const _SidebarBody(
+      {required this.model, required this.active, required this.canCreate});
+  final NavModel model;
+  final NavDestination? active;
+  final bool canCreate;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -192,15 +213,18 @@ class _Sidebar extends ConsumerWidget {
         );
 
     return Container(
-      width: width,
-      decoration: BoxDecoration(
-        color: kc.surface,
-        border: BorderDirectional(end: BorderSide(color: kc.border)),
+      width: _Sidebar.width,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF162B3E), Color(0xFF0F1D2B)],
+        ),
       ),
       child: Column(
         children: [
           const Padding(
-            padding: EdgeInsets.fromLTRB(12, 12, 12, 8),
+            padding: EdgeInsets.fromLTRB(12, 16, 12, 8),
             child: OrganizationContextSwitcher(),
           ),
           Expanded(
@@ -281,10 +305,13 @@ class _SidebarTile extends ConsumerWidget {
         child: ExcludeSemantics(
           child: Material(
             color: selected
-                ? primary.withValues(alpha: kc.isDark ? 0.16 : 0.10)
+                ? primary.withValues(alpha: kc.isDark ? 0.26 : 0.10)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+            clipBehavior: Clip.antiAlias,
             child: InkWell(
+              hoverColor: Colors.white.withValues(alpha: 0.06),
+              focusColor: Colors.white.withValues(alpha: 0.10),
               borderRadius: BorderRadius.circular(AppTheme.radiusInput),
               onTap: () => _navigate(context, ref, dest.route),
               child: ConstrainedBox(
@@ -294,6 +321,18 @@ class _SidebarTile extends ConsumerWidget {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: Row(
                     children: [
+                      // Selected: a teal marker on the leading edge as well as
+                      // the tint, so selection never relies on color alone.
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 160),
+                        width: 3,
+                        height: 22,
+                        margin: const EdgeInsetsDirectional.only(end: 9),
+                        decoration: BoxDecoration(
+                          color: selected ? kc.accentText : Colors.transparent,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
                       Icon(selected ? dest.iconActive : dest.icon,
                           size: 22, color: color),
                       const SizedBox(width: 12),

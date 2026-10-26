@@ -2246,5 +2246,26 @@
         "type": "String"
       }
     }
-  }
+  },
+  "vpWelcomeNamed": "Welcome back, {a}",
+  "@vpWelcomeNamed": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "vpWelcome": "Welcome back",
+  "vpReadyOne": "1 election is open for your vote.",
+  "vpReadyMany": "{a} elections are open for your vote.",
+  "@vpReadyMany": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "vpAllCaughtUp": "You are all caught up. Nothing is waiting for your vote.",
+  "vpYourWorkspace": "Your voting workspace",
+  "vpOpenFirst": "Go to my ballot"
 }

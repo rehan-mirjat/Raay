@@ -64,6 +64,7 @@ class VoterElectionCard extends StatelessWidget {
         color: kc.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
         border: Border.all(color: kc.border),
+        boxShadow: AppTheme.cardShadow(dark: kc.isDark),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

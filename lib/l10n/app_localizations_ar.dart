@@ -4396,4 +4396,29 @@ class AppLocalizationsAr extends AppLocalizations {
   String obTurnout(String a, String b, String c) {
     return '$a من $b ناخبين مؤهلين ($c%)';
   }
+
+  @override
+  String vpWelcomeNamed(String a) {
+    return 'مرحبًا بعودتك، $a';
+  }
+
+  @override
+  String get vpWelcome => 'مرحبًا بعودتك';
+
+  @override
+  String get vpReadyOne => 'انتخاب واحد مفتوح لتصويتك.';
+
+  @override
+  String vpReadyMany(String a) {
+    return '$a انتخابات مفتوحة لتصويتك.';
+  }
+
+  @override
+  String get vpAllCaughtUp => 'لا شيء بانتظار تصويتك. أنت على اطلاع بكل شيء.';
+
+  @override
+  String get vpYourWorkspace => 'مساحة التصويت الخاصة بك';
+
+  @override
+  String get vpOpenFirst => 'الانتقال إلى اقتراعي';
 }

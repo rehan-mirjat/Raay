@@ -25,7 +25,7 @@ import 'voter_portal_screen.dart' show AdaptiveCardGrid;
 /// own percentage, so color is never the only identifier.
 List<Color> _seriesColors(KivoraColors kc) => [
       kc.isDark ? const Color(0xFF5EEAD4) : const Color(0xFF0F766E),
-      kc.isDark ? const Color(0xFFB8A8FF) : const Color(0xFF5936DB),
+      kc.isDark ? const Color(0xFFB8A8FF) : const Color(0xFF5B3FC4),
       kc.isDark ? const Color(0xFFF5B94A) : const Color(0xFF8A5A00),
       kc.isDark ? const Color(0xFFFF8A80) : const Color(0xFFB42318),
       kc.isDark ? const Color(0xFF7DB8FF) : const Color(0xFF0B5CAD),

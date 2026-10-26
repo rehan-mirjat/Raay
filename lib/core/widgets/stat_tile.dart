@@ -1,3 +1,5 @@
+import 'dart:ui' show FontFeature;
+
 import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
@@ -23,6 +25,7 @@ class StatTile extends StatelessWidget {
           color: kc.surface,
           borderRadius: BorderRadius.circular(AppTheme.radiusCard),
           border: Border.all(color: kc.border),
+          boxShadow: AppTheme.cardShadow(dark: kc.isDark),
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(label,
@@ -35,8 +38,10 @@ class StatTile extends StatelessWidget {
           const SizedBox(height: 8),
           Text(value == null ? '–' : '$value',
               style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 30,
                   fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
+                  fontFeatures: const [FontFeature.tabularFigures()],
                   color: kc.textPrimary)),
         ]),
       ),

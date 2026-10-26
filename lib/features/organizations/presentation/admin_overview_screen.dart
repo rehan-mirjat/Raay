@@ -1,22 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../../../core/utils/status_text.dart';
+import '../../../core/widgets/hero_banner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/kivora_colors.dart';
-import '../../../core/widgets/status_badge.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../departments/presentation/providers/department_providers.dart';
 import '../../voting_events/data/voting_event_repository.dart';
 import '../../voting_events/domain/voting_event.dart';
 import '../../voting_events/presentation/dashboard/event_card.dart';
-import '../../voting_events/presentation/voter_portal_screen.dart' show AdaptiveCardGrid;
+import '../../voting_events/presentation/voter_portal_screen.dart'
+    show AdaptiveCardGrid;
 import '../domain/active_organization_context.dart';
 import '../domain/organization_enums.dart';
 import '../domain/overview_state.dart';
-import 'membership_directory_screen.dart' show organizationMembersDirectoryProvider;
+import 'membership_directory_screen.dart'
+    show organizationMembersDirectoryProvider;
 import 'organization_audit_screen.dart' show organizationAuditLogsProvider;
 import 'pending_invitations_widget.dart' show pendingInvitationsProvider;
 import '../../onboarding/presentation/setup_checklist_widget.dart';
@@ -41,31 +44,61 @@ class AdminOverviewScreen extends ConsumerWidget {
 
     final eventsArgs = (orgId: org.id, includeDrafts: true);
     final eventsAsync = ref.watch(organizationVotingEventsProvider(eventsArgs));
-    final membersAsync = ref.watch(organizationMembersDirectoryProvider(org.id));
+    final membersAsync =
+        ref.watch(organizationMembersDirectoryProvider(org.id));
     final departmentsAsync = ref.watch(activeOrganizationDepartmentsProvider);
     final invitesAsync = ref.watch(pendingInvitationsProvider(org.id));
 
     MetricValue metric(AsyncValue<Object?> a, int? Function(Object?) count) =>
-        metricFrom(hasValue: a.hasValue, hasError: a.hasError && !a.hasValue, count: a.hasValue ? count(a.value) : null);
+        metricFrom(
+            hasValue: a.hasValue,
+            hasError: a.hasError && !a.hasValue,
+            count: a.hasValue ? count(a.value) : null);
 
     final events = eventsAsync.valueOrNull;
     final pendingInvites = invitesAsync.valueOrNull?.length;
-    final actions = requiredActionsFor(events: events, pendingInvites: pendingInvites);
+    final actions =
+        requiredActionsFor(events: events, pendingInvites: pendingInvites);
 
     final metrics = <(String, IconData, MetricValue)>[
-      (l10n.overviewMetricMembers, Icons.groups_outlined,
-          metric(membersAsync, (v) => (v as List?)?.length)),
-      (l10n.overviewMetricLive, Icons.how_to_vote_outlined,
-          metric(eventsAsync, (v) => (v as List<VotingEvent>?)?.where((e) => e.status == VotingEventStatus.active).length)),
-      (l10n.overviewMetricUpcoming, Icons.event_outlined,
-          metric(eventsAsync, (v) => (v as List<VotingEvent>?)?.where((e) => e.status == VotingEventStatus.scheduled).length)),
-      (l10n.overviewMetricInvites, Icons.mail_outline_rounded,
-          metric(invitesAsync, (v) => (v as List?)?.length)),
-      (l10n.overviewMetricDepartments, Icons.apartment_outlined,
-          metric(departmentsAsync, (v) => (v as List?)?.length)),
+      (
+        l10n.overviewMetricMembers,
+        Icons.groups_outlined,
+        metric(membersAsync, (v) => (v as List?)?.length)
+      ),
+      (
+        l10n.overviewMetricLive,
+        Icons.how_to_vote_outlined,
+        metric(
+            eventsAsync,
+            (v) => (v as List<VotingEvent>?)
+                ?.where((e) => e.status == VotingEventStatus.active)
+                .length)
+      ),
+      (
+        l10n.overviewMetricUpcoming,
+        Icons.event_outlined,
+        metric(
+            eventsAsync,
+            (v) => (v as List<VotingEvent>?)
+                ?.where((e) => e.status == VotingEventStatus.scheduled)
+                .length)
+      ),
+      (
+        l10n.overviewMetricInvites,
+        Icons.mail_outline_rounded,
+        metric(invitesAsync, (v) => (v as List?)?.length)
+      ),
+      (
+        l10n.overviewMetricDepartments,
+        Icons.apartment_outlined,
+        metric(departmentsAsync, (v) => (v as List?)?.length)
+      ),
     ];
 
-    final electionsSection = _ElectionsSection(eventsAsync: eventsAsync, onRetry: () => ref.invalidate(organizationVotingEventsProvider));
+    final electionsSection = _ElectionsSection(
+        eventsAsync: eventsAsync,
+        onRetry: () => ref.invalidate(organizationVotingEventsProvider));
     final side = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -90,7 +123,8 @@ class AdminOverviewScreen extends ConsumerWidget {
           padding: EdgeInsets.all(isDesktop ? 32 : 16),
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: ResponsiveLayout.maxContentWidth),
+              constraints: const BoxConstraints(
+                  maxWidth: ResponsiveLayout.maxContentWidth),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -104,7 +138,10 @@ class AdminOverviewScreen extends ConsumerWidget {
                   ],
                   AdaptiveCardGrid(
                     minColumnWidth: 200,
-                    children: [for (final m in metrics) _MetricTile(label: m.$1, icon: m.$2, value: m.$3)],
+                    children: [
+                      for (final m in metrics)
+                        _MetricTile(label: m.$1, icon: m.$2, value: m.$3)
+                    ],
                   ),
                   const SizedBox(height: 32),
                   if (isDesktop)
@@ -138,43 +175,23 @@ ShapeBorder _cardShape(KivoraColors kc) => RoundedRectangleBorder(
     );
 
 class _Header extends StatelessWidget {
-  const _Header({required this.orgName, required this.role, required this.l10n});
+  const _Header(
+      {required this.orgName, required this.role, required this.l10n});
   final String orgName;
   final OrganizationRole role;
   final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
-    return Wrap(
-      alignment: WrapAlignment.spaceBetween,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      spacing: 16,
-      runSpacing: 12,
-      children: [
-        ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 640),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Semantics(
-                header: true,
-                child: Text(orgName,
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: kc.textPrimary)),
-              ),
-              const SizedBox(height: 6),
-              Wrap(spacing: 8, runSpacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: [
-                StatusBadge.role(role.name),
-                Text(l10n.overviewSubtitle, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
-              ]),
-            ],
-          ),
-        ),
-        FilledButton.icon(
-          style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+    return HeroBanner(
+      eyebrow: memberRoleText(l10n, role.name),
+      title: orgName,
+      subtitle: l10n.overviewSubtitle,
+      actions: [
+        HeroAction(
+          label: l10n.adminCreateElection,
+          icon: Icons.add_rounded,
           onPressed: () => context.go('/admin/events/new'),
-          icon: const Icon(Icons.add_rounded, size: 20),
-          label: Text(l10n.adminCreateElection),
         ),
       ],
     );
@@ -206,7 +223,10 @@ class _RequiredActions extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(l10n.overviewRequiredTitle,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kc.textPrimary)),
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: kc.textPrimary)),
               ),
             ]),
           ),
@@ -220,8 +240,10 @@ class _RequiredActions extends StatelessWidget {
                   constraints: const BoxConstraints(maxWidth: 520),
                   child: Text(
                     switch (a.kind) {
-                      RequiredActionKind.finishDrafts => l10n.overviewFinishDrafts(a.count),
-                      RequiredActionKind.reviewInvites => l10n.overviewReviewInvites(a.count),
+                      RequiredActionKind.finishDrafts =>
+                        l10n.overviewFinishDrafts(a.count),
+                      RequiredActionKind.reviewInvites =>
+                        l10n.overviewReviewInvites(a.count),
                     },
                     style: TextStyle(fontSize: 14, color: kc.textPrimary),
                   ),
@@ -233,7 +255,8 @@ class _RequiredActions extends StatelessWidget {
                     RequiredActionKind.reviewInvites => '/orgs/members',
                   }),
                   child: Text(switch (a.kind) {
-                    RequiredActionKind.finishDrafts => l10n.overviewOpenElections,
+                    RequiredActionKind.finishDrafts =>
+                      l10n.overviewOpenElections,
                     RequiredActionKind.reviewInvites => l10n.overviewOpenPeople,
                   }),
                 ),
@@ -246,7 +269,8 @@ class _RequiredActions extends StatelessWidget {
 }
 
 class _MetricTile extends StatelessWidget {
-  const _MetricTile({required this.label, required this.icon, required this.value});
+  const _MetricTile(
+      {required this.label, required this.icon, required this.value});
   final String label;
   final IconData icon;
   final MetricValue value;
@@ -284,7 +308,8 @@ class _MetricTile extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                       color: isNumber ? kc.textPrimary : kc.textSecondary)),
               const SizedBox(height: 2),
-              Text(label, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+              Text(label,
+                  style: TextStyle(fontSize: 14, color: kc.textSecondary)),
             ],
           ),
         ),
@@ -305,7 +330,8 @@ class _ElectionsSection extends StatelessWidget {
 
     Widget body = eventsAsync.when(
       loading: () => const Padding(
-          padding: EdgeInsets.all(32), child: Center(child: CircularProgressIndicator())),
+          padding: EdgeInsets.all(32),
+          child: Center(child: CircularProgressIndicator())),
       error: (_, __) => _Message(
         text: l10n.overviewElectionsError,
         action: TextButton(
@@ -316,11 +342,14 @@ class _ElectionsSection extends StatelessWidget {
       data: (events) {
         final featured = featuredElections(events);
         if (featured.isEmpty) {
-          return _Message(text: '${l10n.overviewNoLive} ${l10n.overviewNoLiveBody}');
+          return _Message(
+              text: '${l10n.overviewNoLive} ${l10n.overviewNoLiveBody}');
         }
         return AdaptiveCardGrid(
           minColumnWidth: 380,
-          children: [for (final e in featured) EventCard(key: ValueKey(e.id), event: e)],
+          children: [
+            for (final e in featured) EventCard(key: ValueKey(e.id), event: e)
+          ],
         );
       },
     );
@@ -333,7 +362,10 @@ class _ElectionsSection extends StatelessWidget {
             child: Semantics(
               header: true,
               child: Text(l10n.overviewElectionsTitle,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kc.textPrimary)),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: kc.textPrimary)),
             ),
           ),
           TextButton(
@@ -365,7 +397,9 @@ class _Message extends StatelessWidget {
         border: Border.all(color: kc.border),
       ),
       child: Column(children: [
-        Text(text, textAlign: TextAlign.center, style: TextStyle(color: kc.textSecondary)),
+        Text(text,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: kc.textSecondary)),
         if (action != null) action!,
       ]),
     );
@@ -382,12 +416,30 @@ class _Shortcuts extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final items = [
       (Icons.groups_outlined, l10n.overviewShortcutPeople, '/orgs/members'),
-      (Icons.apartment_outlined, l10n.overviewShortcutDepartments, '/orgs/departments'),
-      (Icons.qr_code_2_rounded, l10n.overviewShortcutCodes, '/orgs/joining-codes'),
-      (Icons.mail_outline_rounded, l10n.overviewShortcutInvites, '/orgs/invitations'),
-      (Icons.dashboard_customize_outlined, l10n.overviewShortcutCommand, '/admin/command-center'),
-      if (isOwner) (Icons.tune_rounded, l10n.overviewShortcutSettings, '/orgs/settings'),
-      if (isOwner) (Icons.credit_card_outlined, l10n.overviewShortcutBilling, '/plans'),
+      (
+        Icons.apartment_outlined,
+        l10n.overviewShortcutDepartments,
+        '/orgs/departments'
+      ),
+      (
+        Icons.qr_code_2_rounded,
+        l10n.overviewShortcutCodes,
+        '/orgs/joining-codes'
+      ),
+      (
+        Icons.mail_outline_rounded,
+        l10n.overviewShortcutInvites,
+        '/orgs/invitations'
+      ),
+      (
+        Icons.dashboard_customize_outlined,
+        l10n.overviewShortcutCommand,
+        '/admin/command-center'
+      ),
+      if (isOwner)
+        (Icons.tune_rounded, l10n.overviewShortcutSettings, '/orgs/settings'),
+      if (isOwner)
+        (Icons.credit_card_outlined, l10n.overviewShortcutBilling, '/plans'),
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -395,7 +447,10 @@ class _Shortcuts extends StatelessWidget {
         Semantics(
           header: true,
           child: Text(l10n.overviewShortcuts,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kc.textPrimary)),
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: kc.textPrimary)),
         ),
         const SizedBox(height: 12),
         Material(
@@ -442,7 +497,8 @@ class _ActivitySection extends ConsumerWidget {
 
     Widget body = logs.when(
       loading: () => const Padding(
-          padding: EdgeInsets.all(24), child: Center(child: CircularProgressIndicator(strokeWidth: 2))),
+          padding: EdgeInsets.all(24),
+          child: Center(child: CircularProgressIndicator(strokeWidth: 2))),
       error: (_, __) => _Message(text: l10n.overviewActivityError),
       data: (snap) {
         final docs = snap.docs.take(4).toList();
@@ -456,11 +512,14 @@ class _ActivitySection extends ConsumerWidget {
               if (i > 0) Divider(height: 1, color: kc.border),
               Builder(builder: (context) {
                 final data = docs[i].data();
-                final action = humanizeAuditAction(data['action'] as String? ?? '');
+                final action =
+                    humanizeAuditAction(data['action'] as String? ?? '');
                 return ListTile(
                   minTileHeight: 48,
-                  leading: Icon(Icons.history_rounded, color: kc.accentText, size: 20),
-                  title: Text(action.isEmpty ? l10n.overviewActivityUnknown : action),
+                  leading: Icon(Icons.history_rounded,
+                      color: kc.accentText, size: 20),
+                  title: Text(
+                      action.isEmpty ? l10n.overviewActivityUnknown : action),
                   subtitle: Text(_age(l10n, data['timestamp'] as Timestamp?)),
                 );
               }),
@@ -478,7 +537,10 @@ class _ActivitySection extends ConsumerWidget {
             child: Semantics(
               header: true,
               child: Text(l10n.overviewActivityTitle,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kc.textPrimary)),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: kc.textPrimary)),
             ),
           ),
           TextButton(

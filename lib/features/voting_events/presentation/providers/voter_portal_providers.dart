@@ -72,13 +72,16 @@ final voterPortalEntriesProvider =
     if (org != null) orgsById[m.organizationId] = org;
   }));
 
-  final membersByOrgId = {for (final m in activeMemberships) m.organizationId: m};
+  final membersByOrgId = {
+    for (final m in activeMemberships) m.organizationId: m
+  };
 
   final restricted = events
       .where((e) => e.eligibilityType != EligibilityType.allMembers)
       .map((e) => e.id)
       .toList();
-  final decisions = await ref.watch(eligibilityRepositoryProvider).fetchMine(restricted);
+  final decisions =
+      await ref.watch(eligibilityRepositoryProvider).fetchMine(restricted);
 
   return events
       .map((event) {
@@ -86,12 +89,14 @@ final voterPortalEntriesProvider =
         final member = membersByOrgId[event.organizationId];
         if (org == null || member == null) return null;
         return VoterPortalEntry(
-            event: event, organization: org, member: member, eligibility: decisions[event.id]);
+            event: event,
+            organization: org,
+            member: member,
+            eligibility: decisions[event.id]);
       })
       .whereType<VoterPortalEntry>()
       .toList();
 });
-
 
 /// Participation per election id. A failed or impossible lookup is
 /// [ParticipationStatus.unknown] for that election; this provider itself never
@@ -106,8 +111,8 @@ final participationStatusesProvider =
     if (uid == null) return MapEntry(e.event.id, ParticipationStatus.unknown);
     try {
       final voted = await repo.hasUserVoted(e.organization.id, e.event.id, uid);
-      return MapEntry(
-          e.event.id, voted ? ParticipationStatus.voted : ParticipationStatus.notVoted);
+      return MapEntry(e.event.id,
+          voted ? ParticipationStatus.voted : ParticipationStatus.notVoted);
     } catch (_) {
       return MapEntry(e.event.id, ParticipationStatus.unknown);
     }
@@ -129,7 +134,8 @@ final resultsStatusesProvider =
 
   final results = await Future.wait(finished.map((e) async {
     try {
-      final doc = await firestore.collection('eventResults').doc(e.event.id).get();
+      final doc =
+          await firestore.collection('eventResults').doc(e.event.id).get();
       return MapEntry(
           e.event.id, resultsStatusFrom(exists: doc.exists, data: doc.data()));
     } catch (err) {
@@ -141,10 +147,14 @@ final resultsStatusesProvider =
 
 /// Publication status of a single election's results (same source as the
 /// results screen). Never inferred from lifecycle status.
-final eventResultsStatusProvider =
-    FutureProvider.autoDispose.family<ResultsStatus, String>((ref, eventId) async {
+final eventResultsStatusProvider = FutureProvider.autoDispose
+    .family<ResultsStatus, String>((ref, eventId) async {
   try {
-    final doc = await FirebaseService().firestore.collection('eventResults').doc(eventId).get();
+    final doc = await FirebaseService()
+        .firestore
+        .collection('eventResults')
+        .doc(eventId)
+        .get();
     return resultsStatusFrom(exists: doc.exists, data: doc.data());
   } catch (err) {
     return resultsStatusFrom(error: err);
@@ -154,12 +164,25 @@ final eventResultsStatusProvider =
 /// Raw `eventResults/{id}` document as a map (null when it does not exist).
 /// Errors (including permission-denied for unpublished results) propagate so
 /// the screen can tell "not available to you" from "failed to load".
-final eventResultsDataProvider =
-    StreamProvider.autoDispose.family<Map<String, dynamic>?, String>((ref, eventId) {
+final eventResultsDataProvider = StreamProvider.autoDispose
+    .family<Map<String, dynamic>?, String>((ref, eventId) {
   return FirebaseService()
       .firestore
       .collection('eventResults')
       .doc(eventId)
       .snapshots()
       .map((doc) => doc.data());
+});
+
+/// First name for the greeting on the member home. Purely cosmetic: if the
+/// signed-in user cannot be read the greeting simply has no name.
+final greetingNameProvider = Provider.autoDispose<String?>((ref) {
+  try {
+    final name =
+        ref.watch(authServiceProvider).currentUser?.displayName?.trim();
+    if (name == null || name.isEmpty) return null;
+    return name.split(' ').first;
+  } catch (_) {
+    return null;
+  }
 });

@@ -41,6 +41,7 @@ class KivoraCard extends StatelessWidget {
           color: isGlass ? colors.accentText : colors.border,
           width: isGlass ? 1.5 : 1,
         ),
+        boxShadow: AppTheme.cardShadow(dark: colors.isDark),
       ),
       child: content,
     );

@@ -4450,4 +4450,30 @@ class AppLocalizationsSd extends AppLocalizations {
   String obTurnout(String a, String b, String c) {
     return '$a of $b eligible voters ($c%)';
   }
+
+  @override
+  String vpWelcomeNamed(String a) {
+    return 'Welcome back, $a';
+  }
+
+  @override
+  String get vpWelcome => 'Welcome back';
+
+  @override
+  String get vpReadyOne => '1 election is open for your vote.';
+
+  @override
+  String vpReadyMany(String a) {
+    return '$a elections are open for your vote.';
+  }
+
+  @override
+  String get vpAllCaughtUp =>
+      'You are all caught up. Nothing is waiting for your vote.';
+
+  @override
+  String get vpYourWorkspace => 'Your voting workspace';
+
+  @override
+  String get vpOpenFirst => 'Go to my ballot';
 }

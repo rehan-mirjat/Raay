@@ -33,6 +33,7 @@ class KivoraMetricCard extends StatelessWidget {
         border: Border.all(
             color: isDark ? AppTheme.darkBorder : AppTheme.borderLight,
             width: 1),
+        boxShadow: AppTheme.cardShadow(dark: isDark),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

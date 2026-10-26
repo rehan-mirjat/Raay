@@ -14,10 +14,10 @@ def blend(fg,bg,a):
     return '#%02X%02X%02X'%tuple(round(f[i]*a+b[i]*(1-a)) for i in range(3))
 
 L=dict(bg='#F7F8FC',surface='#FFFFFF',text='#172033',text2='#526078',border='#E2E7F0',
-       primary='#6D4AFF',pressed='#5936DB',
+       primary='#0F766E',pressed='#0B5F58',
        success='#0F7A4F',warning='#8A5A00',error='#B42318',info='#0B5CAD',disabled='#8792A6')
-D=dict(bg='#0F1420',surface='#171F2E',elev='#202B3D',text='#F4F6FB',text2='#B0BCD0',border='#354158',
-       primary='#6D4AFF',pressed='#5936DB',accent='#B8A8FF',
+D=dict(bg='#0B1520',surface='#111F2E',elev='#202B3D',text='#F4F6FB',text2='#B0BCD0',border='#354158',
+       primary='#0F766E',pressed='#0B5F58',accent='#5EEAD4',
        success='#4ADE9A',warning='#F5B94A',error='#FF8A80',info='#7DB8FF',disabled='#6B778C')
 
 rows=[]
@@ -36,7 +36,7 @@ for k in ('success','warning','error','info'):
     chk(f'L {k} text / surface',L[k],L['surface'],4.5)
     tint=blend(L[k],L['surface'],0.10); chk(f'L {k} text / 10% tint',L[k],tint,4.5)
 chk('L disabled text / surface (informational only)',L['disabled'],L['surface'],3.0)
-sel=blend(L['primary'],L['surface'],0.10); chk('L pressed(#5936DB) / selected tint',L['pressed'],sel,4.5)
+sel=blend(L['primary'],L['surface'],0.10); chk('L pressed(#0B5F58) / selected tint',L['pressed'],sel,4.5)
 chk('L text / selected tint',L['text'],sel,4.5)
 # Dark
 chk('D text / bg',D['text'],D['bg'],4.5); chk('D text / surface',D['text'],D['surface'],4.5)
@@ -48,7 +48,7 @@ chk('D white / pressed','#FFFFFF',D['pressed'],4.5)
 chk('D accent text / bg',D['accent'],D['bg'],4.5)
 chk('D accent text / surface',D['accent'],D['surface'],4.5)
 chk('D accent text / elev',D['accent'],D['elev'],4.5)
-chk('D focus ring #B8A8FF / surface (non-text)',D['accent'],D['surface'],3.0)
+chk('D focus ring #5EEAD4 / surface (non-text)',D['accent'],D['surface'],3.0)
 chk('D border / surface (non-text)',D['border'],D['surface'],1.0)
 for k in ('success','warning','error','info'):
     chk(f'D {k} text / surface',D[k],D['surface'],4.5)
@@ -56,9 +56,9 @@ for k in ('success','warning','error','info'):
 sel=blend(D['primary'],D['surface'],0.16); chk('D accent / selected tint',D['accent'],sel,4.5)
 chk('D text / selected tint',D['text'],sel,4.5)
 # The brief's raw starting token, as given
-chk('RAW dark #6D4AFF text / surface #171F2E','#6D4AFF',D['surface'],4.5)
-chk('RAW dark #6D4AFF text / bg #0F1420','#6D4AFF',D['bg'],4.5)
-chk('RAW dark white / #6D4AFF button','#FFFFFF','#6D4AFF',4.5)
+chk('RAW dark #0F766E text / surface #111F2E','#0F766E',D['surface'],4.5)
+chk('RAW dark #0F766E text / bg #0B1520','#0F766E',D['bg'],4.5)
+chk('RAW dark white / #0F766E button','#FFFFFF','#0F766E',4.5)
 w=max(len(r[0]) for r in rows)
 for n,fg,bg,r,need,res in rows:
     print(f'{n:<{w}}  {fg} on {bg}  {r:5.2f}:1  need {need}  {res}')

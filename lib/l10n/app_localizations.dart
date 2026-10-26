@@ -7949,6 +7949,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{a} of {b} eligible voters ({c}%)'**
   String obTurnout(String a, String b, String c);
+
+  /// No description provided for @vpWelcomeNamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back, {a}'**
+  String vpWelcomeNamed(String a);
+
+  /// No description provided for @vpWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get vpWelcome;
+
+  /// No description provided for @vpReadyOne.
+  ///
+  /// In en, this message translates to:
+  /// **'1 election is open for your vote.'**
+  String get vpReadyOne;
+
+  /// No description provided for @vpReadyMany.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} elections are open for your vote.'**
+  String vpReadyMany(String a);
+
+  /// No description provided for @vpAllCaughtUp.
+  ///
+  /// In en, this message translates to:
+  /// **'You are all caught up. Nothing is waiting for your vote.'**
+  String get vpAllCaughtUp;
+
+  /// No description provided for @vpYourWorkspace.
+  ///
+  /// In en, this message translates to:
+  /// **'Your voting workspace'**
+  String get vpYourWorkspace;
+
+  /// No description provided for @vpOpenFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to my ballot'**
+  String get vpOpenFirst;
 }
 
 class _AppLocalizationsDelegate

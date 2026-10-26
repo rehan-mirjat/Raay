@@ -27,24 +27,25 @@ Nothing in this document claims a live visual audit of authenticated screens (se
 * Urdu/Arabic/Sindhi font glyph coverage (to be checked with a rendered test, section 8).
 * Whether the previous glass pass hurts readability. The spec replaces it; no measurement was made.
 
-### 1.3 Starting-token contrast problem (found by `contrast_check.py`)
-The brief's `#6D4AFF` fails as **text** on the dark surfaces (3.20:1 on `#171F2E`, 3.57:1 on `#0F1420`;
-need 4.5:1). It passes as a **filled button with white text** (5.15:1). Dark mode therefore gets a separate
-accent-text token (`#B8A8FF`, 6.8-8.8:1). Re-run `python3 docs/design/contrast_check.py` after any token change.
+### 1.3 Palette history (navy + teal, 2026-10-26)
+The violet `#6D4AFF` palette was replaced by **deep navy + restrained teal** (approved mock-ups in
+`docs/design/mockups-navy-teal.html`). Every pair below was checked with `python3 docs/design/contrast_check.py`
+(text pairs >= 4.5:1, input borders >= 3:1). Re-run it after any token change.
 
 ## 2. Tokens (single source: `lib/core/theme/app_tokens.dart`, consumed by `AppTheme`/`KivoraColors`)
 
 | Token | Light | Dark |
 |-------|-------|------|
-| background | `#F7F8FC` | `#0F1420` |
-| surface | `#FFFFFF` | `#171F2E` |
-| surfaceElevated | `#FFFFFF` | `#202B3D` |
-| textPrimary | `#172033` | `#F4F6FB` |
-| textSecondary | `#526078` | `#B0BCD0` |
-| border | `#E2E7F0` | `#354158` |
-| primary (filled controls) | `#6D4AFF` (white label 5.15:1) | `#6D4AFF` (white label 5.15:1) |
-| primaryPressed | `#5936DB` | `#5936DB` |
-| accentText (links, selected text, focus ring) | `#5936DB` | `#B8A8FF` |
+| background | `#F4F6F8` | `#0B1520` |
+| surface | `#FFFFFF` | `#111F2E` |
+| surfaceElevated | `#FFFFFF` | `#172B3F` |
+| textPrimary | `#17212F` | `#F1F5F9` |
+| textSecondary | `#526174` | `#A9B8C9` |
+| border | `#DCE2E8` | `#2A3E54` |
+| primary (filled controls) | `#0F766E` (white label 5.47:1) | `#0F766E` (white label 5.47:1) |
+| primaryPressed | `#0B5F58` | `#0B5F58` |
+| accentText (links, selected text, focus ring) | `#0B5F58` | `#5EEAD4` |
+| sidebar | deep navy gradient `#162B3E` to `#0F1D2B` in both themes | same |
 | selectedFill | primary at 10% over surface | primary at 16% over surface |
 | success / warning / error / info | `#0F7A4F` / `#8A5A00` / `#B42318` / `#0B5CAD` | `#4ADE9A` / `#F5B94A` / `#FF8A80` / `#7DB8FF` |
 
@@ -52,9 +53,9 @@ Rules: status is never color-only (icon + label). Disabled controls are exempt f
 a text label. Organization branding may replace `primary`/`primaryPressed`; the theme re-derives `onPrimary`
 by contrast so a light brand color gets a dark label. High contrast mode raises borders and text.
 
-* Spacing: 4, 8, 12, 16, 24, 32, 48. Card radius 14, controls 12, chips 10.
+* Spacing: 4, 8, 12, 16, 24, 32, 48. Card radius 16, controls 12, chips 10.
 * Type: body 14-16, secondary at least 13, page heading 24-32 (clamped by text scale), min touch target 48x48.
-* Surfaces are solid. Borders separate. Shadow only on overlays (menus, dialogs, bottom sheets).
+* Surfaces are solid with a border and a soft two-layer shadow (`AppTheme.cardShadow`); overlays use stronger elevation. Workspace pages open with a `HeroBanner` (navy to teal) carrying the greeting or organization name and one or two real actions.
 * No global gradient/orbs/blur. Gradients allowed only in landing/auth branding panels.
 * Motion: every custom animation checks `MediaQuery.disableAnimations` (the app's reduced-motion setting already sets it).
 

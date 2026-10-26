@@ -7,6 +7,7 @@ import '../../../core/theme/kivora_colors.dart';
 import '../../../core/theme/kivora_icons.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
+import '../../../core/widgets/hero_banner.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../core/widgets/stat_tile.dart';
 import '../../../l10n/app_localizations.dart';
@@ -154,7 +155,6 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
 
   Widget _buildList(BuildContext context, AppLocalizations l10n,
       List<VoterPortalEntry> entries) {
-    final kc = KivoraColors.of(context);
     final participationAsync = ref.watch(participationStatusesProvider);
     final resultsAsync = ref.watch(resultsStatusesProvider);
     // Loading or failed lookups leave the map empty -> every event reads as
@@ -179,34 +179,38 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
           results: results[e.event.id] ?? ResultsStatus.unknown,
         );
 
+    final groups = participationAsync.hasValue
+        ? groupPortalEntries(entries, participation)
+        : null;
+    final ready = groups?[PortalSection.ready] ?? const <VoterPortalEntry>[];
+    final firstName = ref.watch(greetingNameProvider);
+
     final children = <Widget>[
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Semantics(
-                  header: true,
-                  child: Text(l10n.voterHomeTitle,
-                      style: TextStyle(
-                          fontSize: isDesktop ? 28 : 24,
-                          fontWeight: FontWeight.bold,
-                          color: kc.textPrimary)),
-                ),
-                const SizedBox(height: 4),
-                Text(l10n.voterHomeSubtitle,
-                    style: TextStyle(fontSize: 14, color: kc.textSecondary)),
-              ],
+      HeroBanner(
+        eyebrow: l10n.voterHomeTitle,
+        title:
+            firstName == null ? l10n.vpWelcome : l10n.vpWelcomeNamed(firstName),
+        // Only claim something about the user's elections once participation is
+        // known; before that the subtitle stays neutral.
+        subtitle: groups == null
+            ? l10n.voterHomeSubtitle
+            : ready.isEmpty
+                ? l10n.vpAllCaughtUp
+                : (ready.length == 1
+                    ? l10n.vpReadyOne
+                    : l10n.vpReadyMany(ready.length.toString())),
+        actions: [
+          if (ready.isNotEmpty)
+            HeroAction(
+              label: l10n.vpOpenFirst,
+              icon: Icons.how_to_vote_rounded,
+              onPressed: () => context.go('/elections/${ready.first.event.id}'),
             ),
-          ),
-          const SizedBox(width: 12),
-          OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+          HeroAction(
+            filled: ready.isEmpty,
+            label: l10n.voterCalendar,
+            icon: KivoraIcons.calendar,
             onPressed: () => context.go('/calendar'),
-            icon: const Icon(KivoraIcons.calendar, size: 18),
-            label: Text(l10n.voterCalendar),
           ),
         ],
       ),
@@ -219,10 +223,16 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
             : null;
         int? n(PortalSection s) => groups?[s]!.length;
         return StatTileRow(tiles: [
-          StatTile(label: l10n.voterSectionReady, value: n(PortalSection.ready)),
-          StatTile(label: l10n.voterSectionUpcoming, value: n(PortalSection.upcoming)),
-          StatTile(label: l10n.voterSectionParticipated, value: n(PortalSection.participated)),
-          StatTile(label: l10n.voterSectionOther, value: n(PortalSection.other)),
+          StatTile(
+              label: l10n.voterSectionReady, value: n(PortalSection.ready)),
+          StatTile(
+              label: l10n.voterSectionUpcoming,
+              value: n(PortalSection.upcoming)),
+          StatTile(
+              label: l10n.voterSectionParticipated,
+              value: n(PortalSection.participated)),
+          StatTile(
+              label: l10n.voterSectionOther, value: n(PortalSection.other)),
         ]);
       }),
       const SizedBox(height: 16),
