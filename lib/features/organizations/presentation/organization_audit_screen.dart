@@ -111,8 +111,8 @@ class _OrganizationAuditScreenState
         action.contains('STATUS')) {
       return (
         Icons.shield_outlined,
-        Colors.purple.shade700,
-        Colors.purple.withValues(alpha: 0.1),
+        AppTheme.secondaryBlue,
+        AppTheme.secondaryBlue.withValues(alpha: 0.1),
       );
     }
     return (

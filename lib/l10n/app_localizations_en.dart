@@ -4475,4 +4475,264 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get vpOpenFirst => 'Go to my ballot';
+
+  @override
+  String get gsHome => 'Home';
+
+  @override
+  String get gsHomeSub => 'Dashboard';
+
+  @override
+  String get gsOrgs => 'Organizations';
+
+  @override
+  String get gsOrgsSub => 'Your workspaces';
+
+  @override
+  String get gsEvents => 'Events';
+
+  @override
+  String get gsEventsSub => 'Manage voting events';
+
+  @override
+  String get gsMembers => 'Members directory';
+
+  @override
+  String get gsMembersSub => 'Browse org members';
+
+  @override
+  String get gsDepts => 'Departments';
+
+  @override
+  String get gsDeptsSub => 'Manage departments';
+
+  @override
+  String get gsAccount => 'Account settings';
+
+  @override
+  String get gsAccountSub => 'Profile & security';
+
+  @override
+  String get gsAudit => 'Audit log';
+
+  @override
+  String get gsAuditSub => 'Organization activity';
+
+  @override
+  String get gsInvites => 'Invitations';
+
+  @override
+  String get gsInvitesSub => 'Pending org invitations';
+
+  @override
+  String get gsOrganization => 'Organization';
+
+  @override
+  String gsVotingEvent(String a) {
+    return 'Voting event · $a';
+  }
+
+  @override
+  String get gsSearchLabel => 'Search';
+
+  @override
+  String get gsSearchHint => 'Search events, members, organizations…';
+
+  @override
+  String get gsEsc => 'ESC';
+
+  @override
+  String gsNoResults(String a) {
+    return 'No results for \"$a\"';
+  }
+
+  @override
+  String get authTagline => 'Secure voting for organizations';
+
+  @override
+  String aiWelcome(String a) {
+    return 'Welcome to $a!';
+  }
+
+  @override
+  String get aiTheOrg => 'the organization';
+
+  @override
+  String get alBadge => 'PRIVACY-AWARE VOTING';
+
+  @override
+  String get alHeadline => 'Your Voice,\nYour Choice.';
+
+  @override
+  String get alSub =>
+      'Secure, transparent and modern\ne-voting for organizations.';
+
+  @override
+  String get alP1 => 'Server-authorized voting';
+
+  @override
+  String get alP1b =>
+      'Ballots are validated and recorded by trusted backend services.';
+
+  @override
+  String get alP2 => 'Privacy-aware ballots';
+
+  @override
+  String get alP2b =>
+      'Anonymous ballots are separated from participation records.';
+
+  @override
+  String get alP3 => 'Clear participation receipts';
+
+  @override
+  String get alP3b => 'Confirm participation without revealing your selection.';
+
+  @override
+  String get alCopy => 'Kivora © 2026';
+
+  @override
+  String get alPlatforms => 'Android • Web';
+
+  @override
+  String get osTitle => 'Switch organization';
+
+  @override
+  String get osBody => 'Choose the workspace you want to work in.';
+
+  @override
+  String get osLoadError => 'Could not load your organizations.';
+
+  @override
+  String get osRetry => 'Try again';
+
+  @override
+  String get osNone => 'No joined organizations found.';
+
+  @override
+  String get osJoin => 'Join organization with code';
+
+  @override
+  String get osCreate => 'Create new organization';
+
+  @override
+  String get osInvites => 'View invitations';
+
+  @override
+  String get osRetry2 => 'Retry';
+
+  @override
+  String get osSelect => 'Select Organization';
+
+  @override
+  String get osCurrentLabel => 'CURRENT ORGANIZATION';
+
+  @override
+  String get osCurrent => 'Current organization';
+
+  @override
+  String get osSwitchTo => 'Switch to this organization';
+
+  @override
+  String get aiMissing => 'This invitation link is missing or malformed.';
+
+  @override
+  String get aiInvited => 'You\'ve been invited';
+
+  @override
+  String get aiInvitedBody =>
+      'Accept to join this organization with the email address you\'re signed in with.';
+
+  @override
+  String get aiNotNow => 'Not now';
+
+  @override
+  String get aiAccept => 'Accept invitation';
+
+  @override
+  String get aiAccepting => 'Accepting invitation…';
+
+  @override
+  String get aiJoinedBody =>
+      'You\'ve successfully joined. You can start exploring right away.';
+
+  @override
+  String get aiContinue => 'Continue';
+
+  @override
+  String get aiFailedTitle => 'Couldn\'t accept this invitation';
+
+  @override
+  String get aiFailedBody => 'Something went wrong. Please try again.';
+
+  @override
+  String get aiHome => 'Go to home';
+
+  @override
+  String get shCalendar => 'Election Calendar';
+
+  @override
+  String get shLight => 'Switch to light mode';
+
+  @override
+  String get shDark => 'Switch to dark mode';
+
+  @override
+  String get shSearch => 'Search';
+
+  @override
+  String get shNotifications => 'Notifications';
+
+  @override
+  String get shMarkRead => 'Mark all read';
+
+  @override
+  String get shNoNotifications => 'No new notifications';
+
+  @override
+  String get shOrganization => 'Organization';
+
+  @override
+  String shInvitedTo(String a) {
+    return 'Invited to join $a';
+  }
+
+  @override
+  String shRoleAction(String a) {
+    return 'Role: $a • Action required';
+  }
+
+  @override
+  String get shViewAll => 'View all notifications';
+
+  @override
+  String get shAccountMenu => 'Account menu';
+
+  @override
+  String shAccountRole(String a) {
+    return 'Account $a';
+  }
+
+  @override
+  String get shAccountUser => 'Account user';
+
+  @override
+  String get shAccountSettings => 'Account settings';
+
+  @override
+  String get shHelp => 'Help & support';
+
+  @override
+  String get shBilling => 'Plans & Billing';
+
+  @override
+  String get shTrust => 'Trust & Transparency';
+
+  @override
+  String get shPlatformAdmin => 'Platform admin';
+
+  @override
+  String get shOrganizations => 'Organizations';
+
+  @override
+  String get shLogout => 'Log out';
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/status_text.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -182,7 +183,8 @@ class _Sidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final outer = Theme.of(context);
-    final dark = outer.brightness == Brightness.dark ? outer : AppTheme.darkTheme;
+    final dark =
+        outer.brightness == Brightness.dark ? outer : AppTheme.darkTheme;
     return Theme(
       data: dark,
       child: _SidebarBody(model: model, active: active, canCreate: canCreate),
@@ -606,7 +608,7 @@ class _TopHeader extends ConsumerWidget {
                     const SizedBox(width: 8),
                     if (user != null) ...[
                       Tooltip(
-                        message: 'Election Calendar',
+                        message: AppLocalizations.of(context).shCalendar,
                         child: IconButton(
                           icon: const Icon(Icons.calendar_month_outlined),
                           onPressed: () => context.go('/calendar'),
@@ -651,7 +653,9 @@ class _ThemeToggleButton extends ConsumerWidget {
     final bgColor = isDark ? AppTheme.darkElevated : AppTheme.backgroundLight;
 
     return Tooltip(
-      message: isDark ? 'Switch to light mode' : 'Switch to dark mode',
+      message: isDark
+          ? AppLocalizations.of(context).shLight
+          : AppLocalizations.of(context).shDark,
       child: GestureDetector(
         onTap: () => ref.read(themeModeProvider.notifier).toggle(),
         child: AnimatedContainer(
@@ -718,7 +722,7 @@ class _SearchButtonState extends State<_SearchButton> {
               Icon(Icons.search_rounded, size: 16, color: textColor),
               if (isDesktop) ...[
                 const SizedBox(width: 6),
-                Text('Search',
+                Text(AppLocalizations.of(context).shSearch,
                     style: TextStyle(
                         fontSize: 12,
                         color: textColor,
@@ -842,7 +846,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
         ),
         color: menuBg,
         elevation: 6,
-        tooltip: 'Notifications',
+        tooltip: AppLocalizations.of(context).shNotifications,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
           width: 36,
@@ -940,7 +944,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Notifications',
+                      AppLocalizations.of(context).shNotifications,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
@@ -956,7 +960,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                         }
                       },
                       child: Text(
-                        'Mark all read',
+                        AppLocalizations.of(context).shMarkRead,
                         style: TextStyle(
                           fontSize: 12,
                           color: KivoraColors.of(context).accentText,
@@ -976,7 +980,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Center(
                     child: Text(
-                      'No new notifications',
+                      AppLocalizations.of(context).shNoNotifications,
                       style: TextStyle(color: subColor, fontSize: 13),
                     ),
                   ),
@@ -984,8 +988,8 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
               )
             else
               ...items.take(4).map((item) {
-                final orgName =
-                    item['organizationName'] as String? ?? 'Organization';
+                final orgName = item['organizationName'] as String? ??
+                    AppLocalizations.of(context).shOrganization;
                 final role = item['role'] as String? ?? 'member';
 
                 return PopupMenuItem<String>(
@@ -1016,7 +1020,8 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Invited to join $orgName',
+                                  AppLocalizations.of(context)
+                                      .shInvitedTo(orgName.toString()),
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
@@ -1025,7 +1030,11 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  'Role: ${role.toUpperCase()} • Action required',
+                                  AppLocalizations.of(context).shRoleAction(
+                                      (memberRoleText(
+                                              AppLocalizations.of(context),
+                                              role))
+                                          .toString()),
                                   style:
                                       TextStyle(fontSize: 11, color: subColor),
                                 ),
@@ -1088,7 +1097,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
               value: 'view_all',
               child: Center(
                 child: Text(
-                  'View all notifications',
+                  AppLocalizations.of(context).shViewAll,
                   style: TextStyle(
                     color: KivoraColors.of(context).accentText,
                     fontWeight: FontWeight.bold,
@@ -1152,7 +1161,7 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
         ),
         color: menuBg,
         elevation: 6,
-        tooltip: 'Account menu',
+        tooltip: AppLocalizations.of(context).shAccountMenu,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -1198,8 +1207,11 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                           .role
                           .value;
                       final roleLabel = role != null
-                          ? 'Account ${role.toLowerCase()}'
-                          : 'Account user';
+                          ? AppLocalizations.of(context).shAccountRole(
+                              (memberRoleText(
+                                      AppLocalizations.of(context), role))
+                                  .toString())
+                          : AppLocalizations.of(context).shAccountUser;
                       return Text(
                         roleLabel,
                         style: TextStyle(
@@ -1275,9 +1287,9 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
             ),
             const PopupMenuDivider(),
             _buildMenuItem(context, isDark, 'settings', Icons.settings_outlined,
-                'Account settings'),
-            _buildMenuItem(
-                context, isDark, 'help', Icons.help_outline, 'Help & support'),
+                AppLocalizations.of(context).shAccountSettings),
+            _buildMenuItem(context, isDark, 'help', Icons.help_outline,
+                AppLocalizations.of(context).shHelp),
             if (ref
                     .watch(activeOrganizationContextProvider)
                     .valueOrNull
@@ -1285,20 +1297,32 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                     ?.member
                     .role ==
                 OrganizationRole.owner)
-              _buildMenuItem(context, isDark, 'plans',
-                  Icons.workspace_premium_outlined, 'Plans & Billing'),
+              _buildMenuItem(
+                  context,
+                  isDark,
+                  'plans',
+                  Icons.workspace_premium_outlined,
+                  AppLocalizations.of(context).shBilling),
             _buildMenuItem(context, isDark, 'transparency',
-                Icons.verified_outlined, 'Trust & Transparency'),
+                Icons.verified_outlined, AppLocalizations.of(context).shTrust),
             if (ref.watch(platformAdminProvider).valueOrNull == true) ...[
               const PopupMenuDivider(),
-              _buildMenuItem(context, isDark, 'platform_admin',
-                  Icons.admin_panel_settings_outlined, 'Platform admin'),
-              _buildMenuItem(context, isDark, 'platform_organizations',
-                  Icons.domain_outlined, 'Organizations'),
+              _buildMenuItem(
+                  context,
+                  isDark,
+                  'platform_admin',
+                  Icons.admin_panel_settings_outlined,
+                  AppLocalizations.of(context).shPlatformAdmin),
+              _buildMenuItem(
+                  context,
+                  isDark,
+                  'platform_organizations',
+                  Icons.domain_outlined,
+                  AppLocalizations.of(context).shOrganizations),
             ],
             const PopupMenuDivider(),
-            _buildMenuItem(
-                context, isDark, 'logout', Icons.logout_rounded, 'Log out',
+            _buildMenuItem(context, isDark, 'logout', Icons.logout_rounded,
+                AppLocalizations.of(context).shLogout,
                 isDestructive: true),
           ];
         },

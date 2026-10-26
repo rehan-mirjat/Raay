@@ -2267,5 +2267,128 @@
   },
   "vpAllCaughtUp": "You are all caught up. Nothing is waiting for your vote.",
   "vpYourWorkspace": "Your voting workspace",
-  "vpOpenFirst": "Go to my ballot"
+  "vpOpenFirst": "Go to my ballot",
+  "gsHome": "Home",
+  "gsHomeSub": "Dashboard",
+  "gsOrgs": "Organizations",
+  "gsOrgsSub": "Your workspaces",
+  "gsEvents": "Events",
+  "gsEventsSub": "Manage voting events",
+  "gsMembers": "Members directory",
+  "gsMembersSub": "Browse org members",
+  "gsDepts": "Departments",
+  "gsDeptsSub": "Manage departments",
+  "gsAccount": "Account settings",
+  "gsAccountSub": "Profile & security",
+  "gsAudit": "Audit log",
+  "gsAuditSub": "Organization activity",
+  "gsInvites": "Invitations",
+  "gsInvitesSub": "Pending org invitations",
+  "gsOrganization": "Organization",
+  "gsVotingEvent": "Voting event · {a}",
+  "@gsVotingEvent": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "gsSearchLabel": "Search",
+  "gsSearchHint": "Search events, members, organizations…",
+  "gsEsc": "ESC",
+  "gsNoResults": "No results for \"{a}\"",
+  "@gsNoResults": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "authTagline": "Secure voting for organizations",
+  "aiWelcome": "Welcome to {a}!",
+  "@aiWelcome": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "aiTheOrg": "the organization",
+  "alBadge": "PRIVACY-AWARE VOTING",
+  "alHeadline": "Your Voice,\nYour Choice.",
+  "alSub": "Secure, transparent and modern\ne-voting for organizations.",
+  "alP1": "Server-authorized voting",
+  "alP1b": "Ballots are validated and recorded by trusted backend services.",
+  "alP2": "Privacy-aware ballots",
+  "alP2b": "Anonymous ballots are separated from participation records.",
+  "alP3": "Clear participation receipts",
+  "alP3b": "Confirm participation without revealing your selection.",
+  "alCopy": "Kivora © 2026",
+  "alPlatforms": "Android • Web",
+  "osTitle": "Switch organization",
+  "osBody": "Choose the workspace you want to work in.",
+  "osLoadError": "Could not load your organizations.",
+  "osRetry": "Try again",
+  "osNone": "No joined organizations found.",
+  "osJoin": "Join organization with code",
+  "osCreate": "Create new organization",
+  "osInvites": "View invitations",
+  "osRetry2": "Retry",
+  "osSelect": "Select Organization",
+  "osCurrentLabel": "CURRENT ORGANIZATION",
+  "osCurrent": "Current organization",
+  "osSwitchTo": "Switch to this organization",
+  "aiMissing": "This invitation link is missing or malformed.",
+  "aiInvited": "You've been invited",
+  "aiInvitedBody": "Accept to join this organization with the email address you're signed in with.",
+  "aiNotNow": "Not now",
+  "aiAccept": "Accept invitation",
+  "aiAccepting": "Accepting invitation…",
+  "aiJoinedBody": "You've successfully joined. You can start exploring right away.",
+  "aiContinue": "Continue",
+  "aiFailedTitle": "Couldn't accept this invitation",
+  "aiFailedBody": "Something went wrong. Please try again.",
+  "aiHome": "Go to home",
+  "shCalendar": "Election Calendar",
+  "shLight": "Switch to light mode",
+  "shDark": "Switch to dark mode",
+  "shSearch": "Search",
+  "shNotifications": "Notifications",
+  "shMarkRead": "Mark all read",
+  "shNoNotifications": "No new notifications",
+  "shOrganization": "Organization",
+  "shInvitedTo": "Invited to join {a}",
+  "@shInvitedTo": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "shRoleAction": "Role: {a} • Action required",
+  "@shRoleAction": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "shViewAll": "View all notifications",
+  "shAccountMenu": "Account menu",
+  "shAccountRole": "Account {a}",
+  "@shAccountRole": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "shAccountUser": "Account user",
+  "shAccountSettings": "Account settings",
+  "shHelp": "Help & support",
+  "shBilling": "Plans & Billing",
+  "shTrust": "Trust & Transparency",
+  "shPlatformAdmin": "Platform admin",
+  "shOrganizations": "Organizations",
+  "shLogout": "Log out"
 }

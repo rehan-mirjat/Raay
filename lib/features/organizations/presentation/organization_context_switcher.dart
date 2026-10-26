@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../core/navigation/exit_guard.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,7 +47,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Switch organization',
+                            AppLocalizations.of(context).osTitle,
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -54,9 +55,10 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            'Choose the workspace you want to work in.',
+                            AppLocalizations.of(context).osBody,
                             style: TextStyle(
-                                fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
+                                fontSize: 12,
+                                color: KivoraColors.textSecondaryOf(context)),
                           ),
                         ],
                       ),
@@ -64,7 +66,8 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                         icon: const Icon(Icons.close_rounded, size: 20),
                         onPressed: () => Navigator.pop(context),
                         style: IconButton.styleFrom(
-                          foregroundColor: KivoraColors.textSecondaryOf(context),
+                          foregroundColor:
+                              KivoraColors.textSecondaryOf(context),
                           minimumSize: const Size(32, 32),
                         ),
                       ),
@@ -77,16 +80,17 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                     Column(
                       children: [
                         Text(
-                          'Could not load your organizations.',
+                          AppLocalizations.of(context).osLoadError,
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: KivoraColors.of(context).errorText),
+                          style: TextStyle(
+                              color: KivoraColors.of(context).errorText),
                         ),
                         const SizedBox(height: 8),
                         TextButton.icon(
                           onPressed: () =>
                               ref.invalidate(userOrganizationsProvider),
                           icon: const Icon(Icons.refresh_rounded, size: 18),
-                          label: const Text('Try again'),
+                          label: Text(AppLocalizations.of(context).osRetry),
                         ),
                       ],
                     ),
@@ -94,9 +98,10 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 24),
                       child: Text(
-                        'No joined organizations found.',
+                        AppLocalizations.of(context).osNone,
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: KivoraColors.textSecondaryOf(context)),
+                        style: TextStyle(
+                            color: KivoraColors.textSecondaryOf(context)),
                       ),
                     ),
                   ] else ...[
@@ -116,10 +121,12 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                                   isSelected: isSelected,
                                   onTap: () async {
                                     final navigator = Navigator.of(context);
-                                    final container = ProviderScope.containerOf(context);
+                                    final container =
+                                        ProviderScope.containerOf(context);
                                     // Switching workspace leaves the current screen: ask first
                                     // if it holds unsaved work.
-                                    final canLeave = await canLeaveCurrentScreen(container);
+                                    final canLeave =
+                                        await canLeaveCurrentScreen(container);
                                     if (canLeave && !isSelected) {
                                       await container
                                           .read(activeOrgIdProvider.notifier)
@@ -141,7 +148,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                   _buildMenuItem(
                     context,
                     icon: Icons.key_outlined,
-                    label: 'Join organization with code',
+                    label: AppLocalizations.of(context).osJoin,
                     onTap: () {
                       final router = GoRouter.of(context);
                       Navigator.pop(context);
@@ -151,7 +158,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                   _buildMenuItem(
                     context,
                     icon: Icons.add_rounded,
-                    label: 'Create new organization',
+                    label: AppLocalizations.of(context).osCreate,
                     onTap: () {
                       final router = GoRouter.of(context);
                       Navigator.pop(context);
@@ -161,7 +168,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                   _buildMenuItem(
                     context,
                     icon: Icons.mail_outline_rounded,
-                    label: 'View invitations',
+                    label: AppLocalizations.of(context).osInvites,
                     onTap: () {
                       final router = GoRouter.of(context);
                       Navigator.pop(context);
@@ -241,11 +248,12 @@ class OrganizationContextSwitcher extends ConsumerWidget {
       error: (_, __) => TextButton.icon(
         onPressed: () => ref.invalidate(activeOrganizationContextProvider),
         icon: const Icon(Icons.refresh_rounded, size: 18),
-        label: const Text('Retry'),
+        label: Text(AppLocalizations.of(context).osRetry2),
       ),
       data: (state) {
         final contextObj = state.context;
-        final orgName = contextObj?.organization.name ?? 'Select Organization';
+        final orgName = contextObj?.organization.name ??
+            AppLocalizations.of(context).osSelect;
 
         return Container(
           decoration: BoxDecoration(
@@ -274,7 +282,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'CURRENT ORGANIZATION',
+                            AppLocalizations.of(context).osCurrentLabel,
                             style: TextStyle(
                               fontSize: 9,
                               fontWeight: FontWeight.bold,
@@ -345,7 +353,9 @@ class _SwitcherOrgItemState extends State<_SwitcherOrgItem> {
             color: widget.isSelected
                 ? AppTheme.primaryBlue.withValues(alpha: 0.1)
                 : (_isHovered
-                    ? AppTheme.primaryBlue.withValues(alpha: 0.12).withValues(alpha: 0.5)
+                    ? AppTheme.primaryBlue
+                        .withValues(alpha: 0.12)
+                        .withValues(alpha: 0.5)
                     : KivoraColors.surfaceOf(context)),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
@@ -418,8 +428,8 @@ class _SwitcherOrgItemState extends State<_SwitcherOrgItem> {
                     const SizedBox(height: 2),
                     Text(
                       widget.isSelected
-                          ? 'Current organization'
-                          : 'Switch to this organization',
+                          ? AppLocalizations.of(context).osCurrent
+                          : AppLocalizations.of(context).osSwitchTo,
                       style: TextStyle(
                         fontSize: 11,
                         color: widget.isSelected

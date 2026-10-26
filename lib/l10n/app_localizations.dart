@@ -7991,6 +7991,492 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Go to my ballot'**
   String get vpOpenFirst;
+
+  /// No description provided for @gsHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get gsHome;
+
+  /// No description provided for @gsHomeSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get gsHomeSub;
+
+  /// No description provided for @gsOrgs.
+  ///
+  /// In en, this message translates to:
+  /// **'Organizations'**
+  String get gsOrgs;
+
+  /// No description provided for @gsOrgsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Your workspaces'**
+  String get gsOrgsSub;
+
+  /// No description provided for @gsEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Events'**
+  String get gsEvents;
+
+  /// No description provided for @gsEventsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage voting events'**
+  String get gsEventsSub;
+
+  /// No description provided for @gsMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Members directory'**
+  String get gsMembers;
+
+  /// No description provided for @gsMembersSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse org members'**
+  String get gsMembersSub;
+
+  /// No description provided for @gsDepts.
+  ///
+  /// In en, this message translates to:
+  /// **'Departments'**
+  String get gsDepts;
+
+  /// No description provided for @gsDeptsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage departments'**
+  String get gsDeptsSub;
+
+  /// No description provided for @gsAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account settings'**
+  String get gsAccount;
+
+  /// No description provided for @gsAccountSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile & security'**
+  String get gsAccountSub;
+
+  /// No description provided for @gsAudit.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit log'**
+  String get gsAudit;
+
+  /// No description provided for @gsAuditSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization activity'**
+  String get gsAuditSub;
+
+  /// No description provided for @gsInvites.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitations'**
+  String get gsInvites;
+
+  /// No description provided for @gsInvitesSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending org invitations'**
+  String get gsInvitesSub;
+
+  /// No description provided for @gsOrganization.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization'**
+  String get gsOrganization;
+
+  /// No description provided for @gsVotingEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Voting event · {a}'**
+  String gsVotingEvent(String a);
+
+  /// No description provided for @gsSearchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get gsSearchLabel;
+
+  /// No description provided for @gsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search events, members, organizations…'**
+  String get gsSearchHint;
+
+  /// No description provided for @gsEsc.
+  ///
+  /// In en, this message translates to:
+  /// **'ESC'**
+  String get gsEsc;
+
+  /// No description provided for @gsNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results for \"{a}\"'**
+  String gsNoResults(String a);
+
+  /// No description provided for @authTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure voting for organizations'**
+  String get authTagline;
+
+  /// No description provided for @aiWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to {a}!'**
+  String aiWelcome(String a);
+
+  /// No description provided for @aiTheOrg.
+  ///
+  /// In en, this message translates to:
+  /// **'the organization'**
+  String get aiTheOrg;
+
+  /// No description provided for @alBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'PRIVACY-AWARE VOTING'**
+  String get alBadge;
+
+  /// No description provided for @alHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Voice,\nYour Choice.'**
+  String get alHeadline;
+
+  /// No description provided for @alSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure, transparent and modern\ne-voting for organizations.'**
+  String get alSub;
+
+  /// No description provided for @alP1.
+  ///
+  /// In en, this message translates to:
+  /// **'Server-authorized voting'**
+  String get alP1;
+
+  /// No description provided for @alP1b.
+  ///
+  /// In en, this message translates to:
+  /// **'Ballots are validated and recorded by trusted backend services.'**
+  String get alP1b;
+
+  /// No description provided for @alP2.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy-aware ballots'**
+  String get alP2;
+
+  /// No description provided for @alP2b.
+  ///
+  /// In en, this message translates to:
+  /// **'Anonymous ballots are separated from participation records.'**
+  String get alP2b;
+
+  /// No description provided for @alP3.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear participation receipts'**
+  String get alP3;
+
+  /// No description provided for @alP3b.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm participation without revealing your selection.'**
+  String get alP3b;
+
+  /// No description provided for @alCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Kivora © 2026'**
+  String get alCopy;
+
+  /// No description provided for @alPlatforms.
+  ///
+  /// In en, this message translates to:
+  /// **'Android • Web'**
+  String get alPlatforms;
+
+  /// No description provided for @osTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch organization'**
+  String get osTitle;
+
+  /// No description provided for @osBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the workspace you want to work in.'**
+  String get osBody;
+
+  /// No description provided for @osLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load your organizations.'**
+  String get osLoadError;
+
+  /// No description provided for @osRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get osRetry;
+
+  /// No description provided for @osNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No joined organizations found.'**
+  String get osNone;
+
+  /// No description provided for @osJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Join organization with code'**
+  String get osJoin;
+
+  /// No description provided for @osCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new organization'**
+  String get osCreate;
+
+  /// No description provided for @osInvites.
+  ///
+  /// In en, this message translates to:
+  /// **'View invitations'**
+  String get osInvites;
+
+  /// No description provided for @osRetry2.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get osRetry2;
+
+  /// No description provided for @osSelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Organization'**
+  String get osSelect;
+
+  /// No description provided for @osCurrentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'CURRENT ORGANIZATION'**
+  String get osCurrentLabel;
+
+  /// No description provided for @osCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current organization'**
+  String get osCurrent;
+
+  /// No description provided for @osSwitchTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to this organization'**
+  String get osSwitchTo;
+
+  /// No description provided for @aiMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'This invitation link is missing or malformed.'**
+  String get aiMissing;
+
+  /// No description provided for @aiInvited.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve been invited'**
+  String get aiInvited;
+
+  /// No description provided for @aiInvitedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept to join this organization with the email address you\'re signed in with.'**
+  String get aiInvitedBody;
+
+  /// No description provided for @aiNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get aiNotNow;
+
+  /// No description provided for @aiAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept invitation'**
+  String get aiAccept;
+
+  /// No description provided for @aiAccepting.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepting invitation…'**
+  String get aiAccepting;
+
+  /// No description provided for @aiJoinedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve successfully joined. You can start exploring right away.'**
+  String get aiJoinedBody;
+
+  /// No description provided for @aiContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get aiContinue;
+
+  /// No description provided for @aiFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t accept this invitation'**
+  String get aiFailedTitle;
+
+  /// No description provided for @aiFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get aiFailedBody;
+
+  /// No description provided for @aiHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to home'**
+  String get aiHome;
+
+  /// No description provided for @shCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Election Calendar'**
+  String get shCalendar;
+
+  /// No description provided for @shLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to light mode'**
+  String get shLight;
+
+  /// No description provided for @shDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to dark mode'**
+  String get shDark;
+
+  /// No description provided for @shSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get shSearch;
+
+  /// No description provided for @shNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get shNotifications;
+
+  /// No description provided for @shMarkRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all read'**
+  String get shMarkRead;
+
+  /// No description provided for @shNoNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No new notifications'**
+  String get shNoNotifications;
+
+  /// No description provided for @shOrganization.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization'**
+  String get shOrganization;
+
+  /// No description provided for @shInvitedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Invited to join {a}'**
+  String shInvitedTo(String a);
+
+  /// No description provided for @shRoleAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Role: {a} • Action required'**
+  String shRoleAction(String a);
+
+  /// No description provided for @shViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View all notifications'**
+  String get shViewAll;
+
+  /// No description provided for @shAccountMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Account menu'**
+  String get shAccountMenu;
+
+  /// No description provided for @shAccountRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Account {a}'**
+  String shAccountRole(String a);
+
+  /// No description provided for @shAccountUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Account user'**
+  String get shAccountUser;
+
+  /// No description provided for @shAccountSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Account settings'**
+  String get shAccountSettings;
+
+  /// No description provided for @shHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & support'**
+  String get shHelp;
+
+  /// No description provided for @shBilling.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans & Billing'**
+  String get shBilling;
+
+  /// No description provided for @shTrust.
+  ///
+  /// In en, this message translates to:
+  /// **'Trust & Transparency'**
+  String get shTrust;
+
+  /// No description provided for @shPlatformAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform admin'**
+  String get shPlatformAdmin;
+
+  /// No description provided for @shOrganizations.
+  ///
+  /// In en, this message translates to:
+  /// **'Organizations'**
+  String get shOrganizations;
+
+  /// No description provided for @shLogout.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out'**
+  String get shLogout;
 }
 
 class _AppLocalizationsDelegate

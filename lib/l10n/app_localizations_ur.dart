@@ -4466,4 +4466,262 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get vpOpenFirst => 'میرے بیلٹ پر جائیں';
+
+  @override
+  String get gsHome => 'ہوم';
+
+  @override
+  String get gsHomeSub => 'ڈیش بورڈ';
+
+  @override
+  String get gsOrgs => 'تنظیمیں';
+
+  @override
+  String get gsOrgsSub => 'آپ کی ورک اسپیسز';
+
+  @override
+  String get gsEvents => 'انتخابات';
+
+  @override
+  String get gsEventsSub => 'ووٹنگ کے انتخابات سنبھالیں';
+
+  @override
+  String get gsMembers => 'اراکین کی ڈائریکٹری';
+
+  @override
+  String get gsMembersSub => 'تنظیم کے اراکین دیکھیں';
+
+  @override
+  String get gsDepts => 'شعبہ جات';
+
+  @override
+  String get gsDeptsSub => 'شعبے سنبھالیں';
+
+  @override
+  String get gsAccount => 'اکاؤنٹ کی ترتیبات';
+
+  @override
+  String get gsAccountSub => 'پروفائل اور سیکیورٹی';
+
+  @override
+  String get gsAudit => 'آڈٹ لاگ';
+
+  @override
+  String get gsAuditSub => 'تنظیم کی سرگرمی';
+
+  @override
+  String get gsInvites => 'دعوت نامے';
+
+  @override
+  String get gsInvitesSub => 'زیر التوا تنظیمی دعوتیں';
+
+  @override
+  String get gsOrganization => 'تنظیم';
+
+  @override
+  String gsVotingEvent(String a) {
+    return 'ووٹنگ کا انتخاب · $a';
+  }
+
+  @override
+  String get gsSearchLabel => 'تلاش';
+
+  @override
+  String get gsSearchHint => 'انتخابات، اراکین، تنظیمیں تلاش کریں…';
+
+  @override
+  String get gsEsc => 'ESC';
+
+  @override
+  String gsNoResults(String a) {
+    return '\"$a\" کے لیے کوئی نتیجہ نہیں';
+  }
+
+  @override
+  String get authTagline => 'تنظیموں کے لیے محفوظ ووٹنگ';
+
+  @override
+  String aiWelcome(String a) {
+    return '$a میں خوش آمدید!';
+  }
+
+  @override
+  String get aiTheOrg => 'تنظیم';
+
+  @override
+  String get alBadge => 'رازداری کا خیال رکھنے والی ووٹنگ';
+
+  @override
+  String get alHeadline => 'آپ کی آواز،\nآپ کا انتخاب۔';
+
+  @override
+  String get alSub => 'تنظیموں کے لیے محفوظ، شفاف اور جدید\nای ووٹنگ۔';
+
+  @override
+  String get alP1 => 'سرور سے مجاز ووٹنگ';
+
+  @override
+  String get alP1b =>
+      'بیلٹ کی تصدیق اور ریکارڈنگ قابلِ اعتماد بیک اینڈ سروسز کرتی ہیں۔';
+
+  @override
+  String get alP2 => 'رازداری کا خیال رکھنے والے بیلٹ';
+
+  @override
+  String get alP2b => 'گمنام بیلٹ شرکت کے ریکارڈ سے الگ رکھے جاتے ہیں۔';
+
+  @override
+  String get alP3 => 'شرکت کی واضح رسیدیں';
+
+  @override
+  String get alP3b => 'اپنے انتخاب کو ظاہر کیے بغیر شرکت کی تصدیق کریں۔';
+
+  @override
+  String get alCopy => 'Kivora © 2026';
+
+  @override
+  String get alPlatforms => 'Android • ویب';
+
+  @override
+  String get osTitle => 'تنظیم تبدیل کریں';
+
+  @override
+  String get osBody => 'وہ ورک اسپیس منتخب کریں جس میں آپ کام کرنا چاہتے ہیں۔';
+
+  @override
+  String get osLoadError => 'آپ کی تنظیمیں لوڈ نہیں ہو سکیں۔';
+
+  @override
+  String get osRetry => 'دوبارہ کوشش کریں';
+
+  @override
+  String get osNone => 'کوئی شامل کردہ تنظیم نہیں ملی۔';
+
+  @override
+  String get osJoin => 'کوڈ سے تنظیم میں شامل ہوں';
+
+  @override
+  String get osCreate => 'نئی تنظیم بنائیں';
+
+  @override
+  String get osInvites => 'دعوت نامے دیکھیں';
+
+  @override
+  String get osRetry2 => 'دوبارہ کوشش';
+
+  @override
+  String get osSelect => 'تنظیم منتخب کریں';
+
+  @override
+  String get osCurrentLabel => 'موجودہ تنظیم';
+
+  @override
+  String get osCurrent => 'موجودہ تنظیم';
+
+  @override
+  String get osSwitchTo => 'اس تنظیم پر جائیں';
+
+  @override
+  String get aiMissing => 'یہ دعوتی لنک غائب یا خراب ہے۔';
+
+  @override
+  String get aiInvited => 'آپ کو مدعو کیا گیا ہے';
+
+  @override
+  String get aiInvitedBody =>
+      'جس ای میل سے آپ سائن اِن ہیں اسی سے اس تنظیم میں شامل ہونے کے لیے قبول کریں۔';
+
+  @override
+  String get aiNotNow => 'ابھی نہیں';
+
+  @override
+  String get aiAccept => 'دعوت قبول کریں';
+
+  @override
+  String get aiAccepting => 'دعوت قبول ہو رہی ہے…';
+
+  @override
+  String get aiJoinedBody =>
+      'آپ کامیابی سے شامل ہو گئے۔ آپ فوراً دیکھنا شروع کر سکتے ہیں۔';
+
+  @override
+  String get aiContinue => 'جاری رکھیں';
+
+  @override
+  String get aiFailedTitle => 'یہ دعوت قبول نہیں ہو سکی';
+
+  @override
+  String get aiFailedBody => 'کچھ غلط ہو گیا۔ دوبارہ کوشش کریں۔';
+
+  @override
+  String get aiHome => 'ہوم پر جائیں';
+
+  @override
+  String get shCalendar => 'انتخابی کیلنڈر';
+
+  @override
+  String get shLight => 'روشن موڈ پر جائیں';
+
+  @override
+  String get shDark => 'گہرے موڈ پر جائیں';
+
+  @override
+  String get shSearch => 'تلاش';
+
+  @override
+  String get shNotifications => 'اطلاعات';
+
+  @override
+  String get shMarkRead => 'سب پڑھا ہوا نشان زد کریں';
+
+  @override
+  String get shNoNotifications => 'کوئی نئی اطلاع نہیں';
+
+  @override
+  String get shOrganization => 'تنظیم';
+
+  @override
+  String shInvitedTo(String a) {
+    return '$a میں شامل ہونے کی دعوت';
+  }
+
+  @override
+  String shRoleAction(String a) {
+    return 'کردار: $a • کارروائی درکار';
+  }
+
+  @override
+  String get shViewAll => 'تمام اطلاعات دیکھیں';
+
+  @override
+  String get shAccountMenu => 'اکاؤنٹ مینو';
+
+  @override
+  String shAccountRole(String a) {
+    return 'اکاؤنٹ $a';
+  }
+
+  @override
+  String get shAccountUser => 'اکاؤنٹ صارف';
+
+  @override
+  String get shAccountSettings => 'اکاؤنٹ کی ترتیبات';
+
+  @override
+  String get shHelp => 'مدد اور معاونت';
+
+  @override
+  String get shBilling => 'پلانز اور بلنگ';
+
+  @override
+  String get shTrust => 'اعتماد اور شفافیت';
+
+  @override
+  String get shPlatformAdmin => 'پلیٹ فارم ایڈمن';
+
+  @override
+  String get shOrganizations => 'تنظیمیں';
+
+  @override
+  String get shLogout => 'لاگ آؤٹ';
 }

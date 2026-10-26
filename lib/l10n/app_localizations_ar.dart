@@ -4421,4 +4421,260 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get vpOpenFirst => 'الانتقال إلى اقتراعي';
+
+  @override
+  String get gsHome => 'الرئيسية';
+
+  @override
+  String get gsHomeSub => 'لوحة التحكم';
+
+  @override
+  String get gsOrgs => 'المؤسسات';
+
+  @override
+  String get gsOrgsSub => 'مساحات عملك';
+
+  @override
+  String get gsEvents => 'الانتخابات';
+
+  @override
+  String get gsEventsSub => 'إدارة أحداث التصويت';
+
+  @override
+  String get gsMembers => 'دليل الأعضاء';
+
+  @override
+  String get gsMembersSub => 'تصفّح أعضاء المؤسسة';
+
+  @override
+  String get gsDepts => 'الأقسام';
+
+  @override
+  String get gsDeptsSub => 'إدارة الأقسام';
+
+  @override
+  String get gsAccount => 'إعدادات الحساب';
+
+  @override
+  String get gsAccountSub => 'الملف الشخصي والأمان';
+
+  @override
+  String get gsAudit => 'سجل التدقيق';
+
+  @override
+  String get gsAuditSub => 'نشاط المؤسسة';
+
+  @override
+  String get gsInvites => 'الدعوات';
+
+  @override
+  String get gsInvitesSub => 'دعوات المؤسسات المعلّقة';
+
+  @override
+  String get gsOrganization => 'المؤسسة';
+
+  @override
+  String gsVotingEvent(String a) {
+    return 'حدث تصويت · $a';
+  }
+
+  @override
+  String get gsSearchLabel => 'بحث';
+
+  @override
+  String get gsSearchHint => 'ابحث في الانتخابات والأعضاء والمؤسسات…';
+
+  @override
+  String get gsEsc => 'ESC';
+
+  @override
+  String gsNoResults(String a) {
+    return 'لا نتائج لـ \"$a\"';
+  }
+
+  @override
+  String get authTagline => 'تصويت آمن للمؤسسات';
+
+  @override
+  String aiWelcome(String a) {
+    return 'مرحبًا بك في $a!';
+  }
+
+  @override
+  String get aiTheOrg => 'المؤسسة';
+
+  @override
+  String get alBadge => 'تصويت يراعي الخصوصية';
+
+  @override
+  String get alHeadline => 'صوتك،\nاختيارك.';
+
+  @override
+  String get alSub => 'تصويت إلكتروني آمن وشفاف\nوحديث للمؤسسات.';
+
+  @override
+  String get alP1 => 'تصويت مرخّص من الخادم';
+
+  @override
+  String get alP1b => 'تُتحقق الأصوات وتُسجَّل عبر خدمات خلفية موثوقة.';
+
+  @override
+  String get alP2 => 'اقتراع يراعي الخصوصية';
+
+  @override
+  String get alP2b => 'تُفصل الأصوات السرية عن سجلات المشاركة.';
+
+  @override
+  String get alP3 => 'إيصالات مشاركة واضحة';
+
+  @override
+  String get alP3b => 'أكّد مشاركتك دون كشف اختيارك.';
+
+  @override
+  String get alCopy => 'Kivora © 2026';
+
+  @override
+  String get alPlatforms => 'Android • ويب';
+
+  @override
+  String get osTitle => 'تبديل المؤسسة';
+
+  @override
+  String get osBody => 'اختر مساحة العمل التي تريد العمل فيها.';
+
+  @override
+  String get osLoadError => 'تعذّر تحميل مؤسساتك.';
+
+  @override
+  String get osRetry => 'حاول مرة أخرى';
+
+  @override
+  String get osNone => 'لم يُعثر على مؤسسات منضمّ إليها.';
+
+  @override
+  String get osJoin => 'الانضمام إلى مؤسسة برمز';
+
+  @override
+  String get osCreate => 'إنشاء مؤسسة جديدة';
+
+  @override
+  String get osInvites => 'عرض الدعوات';
+
+  @override
+  String get osRetry2 => 'إعادة المحاولة';
+
+  @override
+  String get osSelect => 'اختر المؤسسة';
+
+  @override
+  String get osCurrentLabel => 'المؤسسة الحالية';
+
+  @override
+  String get osCurrent => 'المؤسسة الحالية';
+
+  @override
+  String get osSwitchTo => 'التبديل إلى هذه المؤسسة';
+
+  @override
+  String get aiMissing => 'رابط الدعوة هذا مفقود أو غير صالح.';
+
+  @override
+  String get aiInvited => 'تمت دعوتك';
+
+  @override
+  String get aiInvitedBody =>
+      'اقبل للانضمام إلى هذه المؤسسة بالبريد الإلكتروني الذي سجّلت به الدخول.';
+
+  @override
+  String get aiNotNow => 'ليس الآن';
+
+  @override
+  String get aiAccept => 'قبول الدعوة';
+
+  @override
+  String get aiAccepting => 'جارٍ قبول الدعوة…';
+
+  @override
+  String get aiJoinedBody => 'لقد انضممت بنجاح. يمكنك البدء بالاستكشاف فورًا.';
+
+  @override
+  String get aiContinue => 'متابعة';
+
+  @override
+  String get aiFailedTitle => 'تعذّر قبول هذه الدعوة';
+
+  @override
+  String get aiFailedBody => 'حدث خطأ ما. حاول مرة أخرى.';
+
+  @override
+  String get aiHome => 'الانتقال إلى الرئيسية';
+
+  @override
+  String get shCalendar => 'تقويم الانتخابات';
+
+  @override
+  String get shLight => 'التبديل إلى الوضع الفاتح';
+
+  @override
+  String get shDark => 'التبديل إلى الوضع الداكن';
+
+  @override
+  String get shSearch => 'بحث';
+
+  @override
+  String get shNotifications => 'الإشعارات';
+
+  @override
+  String get shMarkRead => 'تعليم الكل كمقروء';
+
+  @override
+  String get shNoNotifications => 'لا إشعارات جديدة';
+
+  @override
+  String get shOrganization => 'المؤسسة';
+
+  @override
+  String shInvitedTo(String a) {
+    return 'دعوة للانضمام إلى $a';
+  }
+
+  @override
+  String shRoleAction(String a) {
+    return 'الدور: $a • مطلوب إجراء';
+  }
+
+  @override
+  String get shViewAll => 'عرض كل الإشعارات';
+
+  @override
+  String get shAccountMenu => 'قائمة الحساب';
+
+  @override
+  String shAccountRole(String a) {
+    return 'حساب $a';
+  }
+
+  @override
+  String get shAccountUser => 'حساب مستخدم';
+
+  @override
+  String get shAccountSettings => 'إعدادات الحساب';
+
+  @override
+  String get shHelp => 'المساعدة والدعم';
+
+  @override
+  String get shBilling => 'الخطط والفوترة';
+
+  @override
+  String get shTrust => 'الثقة والشفافية';
+
+  @override
+  String get shPlatformAdmin => 'مسؤول المنصة';
+
+  @override
+  String get shOrganizations => 'المؤسسات';
+
+  @override
+  String get shLogout => 'تسجيل الخروج';
 }

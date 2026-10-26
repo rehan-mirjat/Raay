@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../navigation/exit_guard.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,40 +35,86 @@ class _SearchResult {
 
 // ─── Static quick-nav items ───────────────────────────────────────────────────
 
-const _staticRoutes = [
-  _SearchResult(
-      title: 'Home', subtitle: 'Dashboard', icon: Icons.home_outlined,
-      route: '/home', category: _SearchCategory.route),
-  _SearchResult(
-      title: 'Organizations', subtitle: 'Your workspaces', icon: Icons.business_outlined,
-      route: '/orgs', category: _SearchCategory.route),
-  _SearchResult(
-      title: 'Events', subtitle: 'Manage voting events', icon: Icons.how_to_vote_outlined,
-      route: '/admin/events', category: _SearchCategory.route),
-  _SearchResult(
-      title: 'Members directory', subtitle: 'Browse org members', icon: Icons.groups_outlined,
-      route: '/orgs/members', category: _SearchCategory.route),
-  _SearchResult(
-      title: 'Departments', subtitle: 'Manage departments', icon: Icons.apartment_outlined,
-      route: '/orgs/departments', category: _SearchCategory.route),
-  _SearchResult(
-      title: 'Account settings', subtitle: 'Profile & security', icon: Icons.settings_outlined,
-      route: '/settings', category: _SearchCategory.route),
-  _SearchResult(
-      title: 'Audit log', subtitle: 'Organization activity', icon: Icons.history_edu_outlined,
-      route: '/orgs/audit', category: _SearchCategory.route),
-  _SearchResult(
-      title: 'Invitations', subtitle: 'Pending org invitations', icon: Icons.mail_outline_rounded,
-      route: '/orgs/invitations', category: _SearchCategory.route),
-];
+List<_SearchResult> _staticRoutes(AppLocalizations l) => [
+      _SearchResult(
+          title: l.gsHome,
+          subtitle: l.gsHomeSub,
+          icon: Icons.home_outlined,
+          route: '/home',
+          category: _SearchCategory.route),
+      _SearchResult(
+          title: l.gsOrgs,
+          subtitle: l.gsOrgsSub,
+          icon: Icons.business_outlined,
+          route: '/orgs',
+          category: _SearchCategory.route),
+      _SearchResult(
+          title: l.gsEvents,
+          subtitle: l.gsEventsSub,
+          icon: Icons.how_to_vote_outlined,
+          route: '/admin/events',
+          category: _SearchCategory.route),
+      _SearchResult(
+          title: l.gsMembers,
+          subtitle: l.gsMembersSub,
+          icon: Icons.groups_outlined,
+          route: '/orgs/members',
+          category: _SearchCategory.route),
+      _SearchResult(
+          title: l.gsDepts,
+          subtitle: l.gsDeptsSub,
+          icon: Icons.apartment_outlined,
+          route: '/orgs/departments',
+          category: _SearchCategory.route),
+      _SearchResult(
+          title: l.gsAccount,
+          subtitle: l.gsAccountSub,
+          icon: Icons.settings_outlined,
+          route: '/settings',
+          category: _SearchCategory.route),
+      _SearchResult(
+          title: l.gsAudit,
+          subtitle: l.gsAuditSub,
+          icon: Icons.history_edu_outlined,
+          route: '/orgs/audit',
+          category: _SearchCategory.route),
+      _SearchResult(
+          title: l.gsInvites,
+          subtitle: l.gsInvitesSub,
+          icon: Icons.mail_outline_rounded,
+          route: '/orgs/invitations',
+          category: _SearchCategory.route),
+    ];
+
+/// The subtitle shown (and searched) for a result. Orgs and events store only
+/// raw data; their wording is added here so it follows the app language.
+String _subtitleFor(AppLocalizations l, _SearchResult r) =>
+    switch (r.category) {
+      _SearchCategory.org => l.gsOrganization,
+      _SearchCategory.event => l.gsVotingEvent(_eventStatusWord(l, r.subtitle)),
+      _ => r.subtitle,
+    };
+
+String _eventStatusWord(AppLocalizations l, String name) => switch (name) {
+      'draft' => l.statusDraft,
+      'scheduled' => l.statusScheduled,
+      'active' => l.statusActive,
+      'closed' => l.statusClosed,
+      'cancelled' => l.statusCancelled,
+      'archived' => l.statusArchived,
+      _ => name,
+    };
 
 // ─── Provider: flattened search index ─────────────────────────────────────────
 
 final _searchIndexProvider =
     FutureProvider.autoDispose<List<_SearchResult>>((ref) async {
-  final orgs = await ref.watch(userOrganizationsProvider.future).catchError((_) => <Organization>[]);
+  final orgs = await ref
+      .watch(userOrganizationsProvider.future)
+      .catchError((_) => <Organization>[]);
 
-  final activeCtx = ref.read(activeOrganizationContextProvider).valueOrNull?.context;
+  final activeCtx =
+      ref.read(activeOrganizationContextProvider).valueOrNull?.context;
   final orgId = activeCtx?.organization.id;
 
   final results = <_SearchResult>[];
@@ -75,7 +122,7 @@ final _searchIndexProvider =
   for (final org in orgs) {
     results.add(_SearchResult(
       title: org.name,
-      subtitle: 'Organization',
+      subtitle: '',
       icon: Icons.business_rounded,
       route: '/orgs',
       category: _SearchCategory.org,
@@ -92,7 +139,7 @@ final _searchIndexProvider =
       for (final e in events.take(50)) {
         results.add(_SearchResult(
           title: e.title,
-          subtitle: 'Voting event · ${e.status.name}',
+          subtitle: e.status.name,
           icon: Icons.how_to_vote_rounded,
           route: '/elections/${e.id}',
           category: _SearchCategory.event,
@@ -130,15 +177,15 @@ void showGlobalSearch(BuildContext context) {
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
-    barrierLabel: 'Search',
+    barrierLabel: AppLocalizations.of(context).gsSearchLabel,
     barrierColor: Colors.black.withValues(alpha: 0.55),
     transitionDuration: const Duration(milliseconds: 180),
     transitionBuilder: (context, anim, _, child) {
       return FadeTransition(
         opacity: CurvedAnimation(parent: anim, curve: Curves.easeOutCubic),
         child: ScaleTransition(
-          scale: Tween<double>(begin: 0.96, end: 1.0)
-              .animate(CurvedAnimation(parent: anim, curve: Curves.easeOutCubic)),
+          scale: Tween<double>(begin: 0.96, end: 1.0).animate(
+              CurvedAnimation(parent: anim, curve: Curves.easeOutCubic)),
           child: child,
         ),
       );
@@ -153,7 +200,8 @@ class _GlobalSearchDialog extends ConsumerStatefulWidget {
   const _GlobalSearchDialog();
 
   @override
-  ConsumerState<_GlobalSearchDialog> createState() => _GlobalSearchDialogState();
+  ConsumerState<_GlobalSearchDialog> createState() =>
+      _GlobalSearchDialogState();
 }
 
 class _GlobalSearchDialogState extends ConsumerState<_GlobalSearchDialog> {
@@ -163,14 +211,15 @@ class _GlobalSearchDialogState extends ConsumerState<_GlobalSearchDialog> {
   int _selectedIndex = 0;
 
   List<_SearchResult> _filter(List<_SearchResult> index) {
-    if (_query.isEmpty) return _staticRoutes;
+    final l = AppLocalizations.of(context);
+    if (_query.isEmpty) return _staticRoutes(l);
     final q = _query.toLowerCase();
     final dynamic = index
         .where((r) =>
             r.title.toLowerCase().contains(q) ||
-            r.subtitle.toLowerCase().contains(q))
+            _subtitleFor(l, r).toLowerCase().contains(q))
         .toList();
-    final stat = _staticRoutes
+    final stat = _staticRoutes(l)
         .where((r) =>
             r.title.toLowerCase().contains(q) ||
             r.subtitle.toLowerCase().contains(q))
@@ -189,7 +238,8 @@ class _GlobalSearchDialogState extends ConsumerState<_GlobalSearchDialog> {
     final navigator = Navigator.of(context);
     final router = GoRouter.of(context);
     // Leaving a screen with unsaved work (e.g. the election builder) asks first.
-    final canLeave = await canLeaveCurrentScreen(ProviderScope.containerOf(context));
+    final canLeave =
+        await canLeaveCurrentScreen(ProviderScope.containerOf(context));
     if (!canLeave || !mounted) return;
     navigator.pop();
     router.go(route);
@@ -249,16 +299,19 @@ class _GlobalSearchDialogState extends ConsumerState<_GlobalSearchDialog> {
                       if (event is! KeyDownEvent) return;
                       if (results.isEmpty) return;
                       if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-                        setState(() =>
-                            _selectedIndex = (_selectedIndex + 1) % results.length);
-                      } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
                         setState(() => _selectedIndex =
-                            (_selectedIndex - 1 + results.length) % results.length);
+                            (_selectedIndex + 1) % results.length);
+                      } else if (event.logicalKey ==
+                          LogicalKeyboardKey.arrowUp) {
+                        setState(() => _selectedIndex =
+                            (_selectedIndex - 1 + results.length) %
+                                results.length);
                       } else if (event.logicalKey == LogicalKeyboardKey.enter) {
                         if (_selectedIndex < results.length) {
                           _navigate(results[_selectedIndex].route);
                         }
-                      } else if (event.logicalKey == LogicalKeyboardKey.escape) {
+                      } else if (event.logicalKey ==
+                          LogicalKeyboardKey.escape) {
                         Navigator.of(context).pop();
                       }
                     },
@@ -271,31 +324,37 @@ class _GlobalSearchDialogState extends ConsumerState<_GlobalSearchDialog> {
                           child: TextField(
                             controller: _ctrl,
                             focusNode: _focus,
-                            decoration: const InputDecoration(
-                              hintText: 'Search events, members, organizations…',
+                            decoration: InputDecoration(
+                              hintText:
+                                  AppLocalizations.of(context).gsSearchHint,
                               border: InputBorder.none,
                               enabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
                               filled: false,
                               isDense: true,
-                              contentPadding: EdgeInsets.symmetric(vertical: 16),
+                              contentPadding:
+                                  const EdgeInsets.symmetric(vertical: 16),
                             ),
                             style: TextStyle(
                                 fontSize: 15,
                                 color: kc.textPrimary,
                                 fontWeight: FontWeight.w500),
-                            onChanged: (v) =>
-                                setState(() { _query = v; _selectedIndex = 0; }),
+                            onChanged: (v) => setState(() {
+                              _query = v;
+                              _selectedIndex = 0;
+                            }),
                           ),
                         ),
                         if (_query.isNotEmpty)
                           IconButton(
-                            onPressed: () =>
-                                setState(() { _ctrl.clear(); _query = ''; }),
+                            onPressed: () => setState(() {
+                              _ctrl.clear();
+                              _query = '';
+                            }),
                             icon: Icon(Icons.close_rounded,
                                 size: 16, color: kc.textSecondary),
-                            constraints:
-                                const BoxConstraints(minWidth: 32, minHeight: 32),
+                            constraints: const BoxConstraints(
+                                minWidth: 32, minHeight: 32),
                             padding: EdgeInsets.zero,
                           ),
                         Container(
@@ -306,7 +365,7 @@ class _GlobalSearchDialogState extends ConsumerState<_GlobalSearchDialog> {
                             color: kc.border,
                             borderRadius: BorderRadius.circular(6),
                           ),
-                          child: Text('ESC',
+                          child: Text(AppLocalizations.of(context).gsEsc,
                               style: TextStyle(
                                   fontSize: 10,
                                   color: kc.textSecondary,
@@ -327,7 +386,9 @@ class _GlobalSearchDialogState extends ConsumerState<_GlobalSearchDialog> {
                         Icon(Icons.search_off_rounded,
                             size: 36, color: kc.textSecondary),
                         const SizedBox(height: 10),
-                        Text('No results for "$_query"',
+                        Text(
+                            AppLocalizations.of(context)
+                                .gsNoResults(_query.toString()),
                             style: TextStyle(
                                 color: kc.textSecondary, fontSize: 14)),
                       ],
@@ -363,19 +424,22 @@ class _GlobalSearchDialogState extends ConsumerState<_GlobalSearchDialog> {
                     children: [
                       const _Kbd('↑↓'),
                       const SizedBox(width: 4),
-                      Text('navigate', style: TextStyle(fontSize: 11, color: kc.textSecondary)),
+                      Text('navigate',
+                          style:
+                              TextStyle(fontSize: 11, color: kc.textSecondary)),
                       const SizedBox(width: 12),
                       const _Kbd('↵'),
                       const SizedBox(width: 4),
-                      Text('open', style: TextStyle(fontSize: 11, color: kc.textSecondary)),
+                      Text('open',
+                          style:
+                              TextStyle(fontSize: 11, color: kc.textSecondary)),
                       const Spacer(),
                       if (indexAsync.isLoading)
                         SizedBox(
                           width: 12,
                           height: 12,
                           child: CircularProgressIndicator(
-                              strokeWidth: 1.5,
-                              color: kc.textSecondary),
+                              strokeWidth: 1.5, color: kc.textSecondary),
                         ),
                     ],
                   ),
@@ -456,7 +520,7 @@ class _ResultTile extends StatelessWidget {
                                 : kc.textPrimary),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
-                    Text(result.subtitle,
+                    Text(_subtitleFor(AppLocalizations.of(context), result),
                         style: TextStyle(fontSize: 11, color: kc.textSecondary),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),

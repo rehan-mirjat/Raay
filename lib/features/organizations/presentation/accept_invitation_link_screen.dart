@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -36,7 +37,7 @@ class _AcceptInvitationLinkScreenState
     super.initState();
     if (widget.rawToken == null || widget.rawToken!.trim().isEmpty) {
       _stage = _Stage.error;
-      _error = 'This invitation link is missing or malformed.';
+      _error = AppLocalizations.of(context).aiMissing;
     }
     // The token has now reached this screen - stop the router from
     // redirecting back here on every navigation.
@@ -129,7 +130,7 @@ class _AcceptInvitationLinkScreenState
         ),
         const SizedBox(height: 20),
         Text(
-          'You\'ve been invited',
+          AppLocalizations.of(context).aiInvited,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: KivoraColors.textPrimaryOf(context),
@@ -137,8 +138,11 @@ class _AcceptInvitationLinkScreenState
         ),
         const SizedBox(height: 8),
         Text(
-          'Accept to join this organization with the email address you\'re signed in with.',
-          style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14, height: 1.4),
+          AppLocalizations.of(context).aiInvitedBody,
+          style: TextStyle(
+              color: KivoraColors.textSecondaryOf(context),
+              fontSize: 14,
+              height: 1.4),
         ),
         const SizedBox(height: 28),
         Row(
@@ -147,18 +151,20 @@ class _AcceptInvitationLinkScreenState
             OutlinedButton(
               onPressed: () => context.go('/home'),
               style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
-              child: const Text('Not now'),
+              child: Text(AppLocalizations.of(context).aiNotNow),
             ),
             const SizedBox(width: 12),
             FilledButton(
               onPressed: _accept,
               style: FilledButton.styleFrom(
                 backgroundColor: AppTheme.primaryBlue,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
-              child: const Text('Accept invitation'),
+              child: Text(AppLocalizations.of(context).aiAccept),
             ),
           ],
         ),
@@ -175,7 +181,7 @@ class _AcceptInvitationLinkScreenState
           children: [
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
-            Text('Accepting invitation…',
+            Text(AppLocalizations.of(context).aiAccepting,
                 style: TextStyle(color: KivoraColors.textSecondaryOf(context))),
           ],
         ),
@@ -192,7 +198,8 @@ class _AcceptInvitationLinkScreenState
             size: 40, color: KivoraColors.of(context).successText),
         const SizedBox(height: 16),
         Text(
-          'Welcome to ${_organizationName ?? 'the organization'}!',
+          AppLocalizations.of(context).aiWelcome(
+              _organizationName ?? AppLocalizations.of(context).aiTheOrg),
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: KivoraColors.textPrimaryOf(context),
@@ -200,8 +207,11 @@ class _AcceptInvitationLinkScreenState
         ),
         const SizedBox(height: 8),
         Text(
-          'You\'ve successfully joined. You can start exploring right away.',
-          style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14, height: 1.4),
+          AppLocalizations.of(context).aiJoinedBody,
+          style: TextStyle(
+              color: KivoraColors.textSecondaryOf(context),
+              fontSize: 14,
+              height: 1.4),
         ),
         const SizedBox(height: 24),
         Align(
@@ -212,7 +222,7 @@ class _AcceptInvitationLinkScreenState
               backgroundColor: AppTheme.primaryBlue,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
-            child: const Text('Continue'),
+            child: Text(AppLocalizations.of(context).aiContinue),
           ),
         ),
       ],
@@ -224,10 +234,11 @@ class _AcceptInvitationLinkScreenState
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(Icons.error_outline_rounded, size: 40, color: KivoraColors.of(context).errorText),
+        Icon(Icons.error_outline_rounded,
+            size: 40, color: KivoraColors.of(context).errorText),
         const SizedBox(height: 16),
         Text(
-          'Couldn\'t accept this invitation',
+          AppLocalizations.of(context).aiFailedTitle,
           style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -235,8 +246,11 @@ class _AcceptInvitationLinkScreenState
         ),
         const SizedBox(height: 8),
         Text(
-          _error ?? 'Something went wrong. Please try again.',
-          style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14, height: 1.4),
+          _error ?? AppLocalizations.of(context).aiFailedBody,
+          style: TextStyle(
+              color: KivoraColors.textSecondaryOf(context),
+              fontSize: 14,
+              height: 1.4),
         ),
         const SizedBox(height: 24),
         Align(
@@ -247,7 +261,7 @@ class _AcceptInvitationLinkScreenState
               backgroundColor: AppTheme.primaryBlue,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
-            child: const Text('Go to home'),
+            child: Text(AppLocalizations.of(context).aiHome),
           ),
         ),
       ],
