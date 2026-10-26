@@ -198,6 +198,7 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
         ...AppLocalizations.localizationsDelegates,
         const FallbackMaterialLocalizationDelegate(),
         const FallbackCupertinoLocalizationDelegate(),
+        const FallbackWidgetsLocalizationDelegate(),
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: goRouter,
