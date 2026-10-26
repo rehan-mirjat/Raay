@@ -5218,4 +5218,401 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get trVerify => 'رسید کی تصدیق کریں';
+
+  @override
+  String get lcF1T => 'تنظیم کا انتظام';
+
+  @override
+  String get lcF1B =>
+      'اراکین، کردار، شعبے، دعوتیں اور شمولیت کے کوڈ ایک ہی جگہ سنبھالیں۔';
+
+  @override
+  String get lcF2T => 'انتخابات اور رائے شماریاں';
+
+  @override
+  String get lcF2B =>
+      'امیدواروں کے انتخابات، واحد انتخاب اور ہاں/نہیں رائے شماریاں ایک مقررہ دورانیے کے ساتھ چلائیں: مسودہ، شیڈول، فعال، بند، آرکائیو۔';
+
+  @override
+  String get lcF3T => 'گمنام یا شناخت کے ساتھ';
+
+  @override
+  String get lcF3B =>
+      'ووٹ بناتے وقت رازداری کا طریقہ چنیں۔ یہ اراکین کو بیلٹ پر، انتخاب کرنے سے پہلے دکھایا جاتا ہے۔';
+
+  @override
+  String get lcF4T => 'اہلیت آپ کے اختیار میں';
+
+  @override
+  String get lcF4B =>
+      'ووٹ تمام فعال اراکین، منتخب شعبوں یا منتخب اراکین کے لیے کھولیں۔ بیلٹ جمع ہوتے وقت سرور اسے دوبارہ جانچتا ہے۔';
+
+  @override
+  String get lcF5T => 'قابلِ جائزہ تاریخ';
+
+  @override
+  String get lcF5B =>
+      'مالکان اور منتظمین اہم انتظامی اور انتخابی کارروائیوں کا سرور-سائیڈ ریکارڈ دیکھ سکتے ہیں۔';
+
+  @override
+  String get lcF6T => 'رسید کی تصدیق';
+
+  @override
+  String get lcF6B =>
+      'ووٹ کے بعد آپ کو رسید ملتی ہے۔ کوئی بھی، بغیر اکاؤنٹ کے، جانچ سکتا ہے کہ رسید موجود ہے۔';
+
+  @override
+  String get lcS1T => 'اپنی تنظیم بنائیں';
+
+  @override
+  String get lcS1B =>
+      'سائن اَپ کریں، پھر تنظیم بنائیں اور اپنے لوگوں کو مدعو کریں۔';
+
+  @override
+  String get lcS2T => 'ووٹ ترتیب دیں';
+
+  @override
+  String get lcS2B => 'سوال، شیڈول، آپشنز، اہلیت اور رازداری کا طریقہ چنیں۔';
+
+  @override
+  String get lcS3T => 'اراکین شریک ہوں';
+
+  @override
+  String get lcS3B =>
+      'ووٹ کھلا ہونے کے دوران اہل اراکین کو بیلٹ تک آسان راستہ ملتا ہے۔';
+
+  @override
+  String get lcS4T => 'نتیجہ دیکھیں';
+
+  @override
+  String get lcS4B =>
+      'ووٹ بند ہونے کے بعد نتائج شمار ہوتے ہیں اور منتظم کے شائع کرنے پر اراکین کو نظر آتے ہیں۔';
+
+  @override
+  String get lcO1T => 'تعلیمی ادارے';
+
+  @override
+  String get lcO1B => 'شعبے، کونسلیں اور کمیٹیاں۔';
+
+  @override
+  String get lcO2T => 'کارپوریٹ ٹیمیں';
+
+  @override
+  String get lcO2B => 'اندرونی رائے شماریاں اور انتخابات۔';
+
+  @override
+  String get lcO3T => 'غیر منافع بخش ادارے';
+
+  @override
+  String get lcO3B => 'بورڈ، رضاکار اور اراکین۔';
+
+  @override
+  String get lcO4T => 'کلب اور سوسائٹیاں';
+
+  @override
+  String get lcO4B => 'طلبہ کی سوسائٹیاں اور کلب۔';
+
+  @override
+  String get lcO5T => 'کمیونٹی ایسوسی ایشنز';
+
+  @override
+  String get lcO5B => 'مشترکہ مقامی فیصلے۔';
+
+  @override
+  String get lcT1T => 'دو مرحلہ سائن اِن';
+
+  @override
+  String get lcT1B => 'حساس انتظامی کارروائیوں کے لیے دو مرحلہ تصدیق ضروری ہے۔';
+
+  @override
+  String get lcT2T => 'رازداری آپ کا انتخاب';
+
+  @override
+  String get lcT2B =>
+      'گمنام ووٹنگ میں آپ کا انتخاب بغیر کسی ایسے خانے کے محفوظ ہوتا ہے جو اسے آپ کے اکاؤنٹ سے جوڑے۔';
+
+  @override
+  String get lcT3T => 'سرور سے جانچے گئے اصول';
+
+  @override
+  String get lcT3B =>
+      'اہلیت، وقت اور دوہرے ووٹ کی جانچ سرور کرتا ہے، ایپ نہیں۔';
+
+  @override
+  String get lcY1T => 'دو مرحلہ تصدیق';
+
+  @override
+  String get lcY1B =>
+      'حساس انتظامی کارروائیوں کے لیے حالیہ سائن اِن اور دو مرحلہ تصدیق ضروری ہے۔';
+
+  @override
+  String get lcY2T => 'رازداری آپ کا انتخاب';
+
+  @override
+  String get lcY2B =>
+      'جب فیصلہ تقاضا کرے تو گمنام ووٹنگ آن کریں۔ طریقہ بیلٹ پر نظر آتا ہے۔';
+
+  @override
+  String get lcY3T => 'فیصلہ سرور کرتا ہے';
+
+  @override
+  String get lcY3B =>
+      'ووٹنگ کا وقت، اہلیت اور فی شخص ایک ووٹ جمع کراتے وقت سرور پر جانچے جاتے ہیں۔';
+
+  @override
+  String get lcY4T => 'قابلِ جائزہ ریکارڈ';
+
+  @override
+  String get lcY4B =>
+      'اہم انتظامی کارروائیاں ریکارڈ ہوتی ہیں تاکہ مالکان اور منتظمین انہیں دیکھ سکیں۔';
+
+  @override
+  String get lcQ1T => 'ہم Kivora کس لیے استعمال کر سکتے ہیں؟';
+
+  @override
+  String get lcQ1B =>
+      'امیدواروں کے انتخابات، واحد انتخاب اور ہاں/نہیں رائے شماریاں آپ کی تنظیم کے لیے، جیسے نمائندوں کا انتخاب، کمیٹی کے فیصلے اور اراکین کے سوالات۔';
+
+  @override
+  String get lcQ2T => 'کون ووٹ دے سکتا ہے؟';
+
+  @override
+  String get lcQ2B =>
+      'منتظم ہر ووٹ کے لیے اہلیت کا ایک اصول طے کرتا ہے: تمام فعال اراکین، منتخب شعبے، یا منتخب اراکین۔ بیلٹ جمع کرتے وقت سرور اسے دوبارہ جانچتا ہے۔';
+
+  @override
+  String get lcQ3T => 'کیا بیلٹ گمنام ہو سکتا ہے؟';
+
+  @override
+  String get lcQ3B =>
+      'جی ہاں، یہ اختیاری ہے۔ گمنام ووٹ میں آپ کا انتخاب بغیر کسی ایسے خانے کے محفوظ ہوتا ہے جو اسے آپ کے اکاؤنٹ سے جوڑے، جبکہ الگ شرکت کا ریکارڈ دوہری ووٹنگ روکتا ہے۔ طریقہ ووٹ بنتے وقت طے ہوتا ہے اور انتخاب سے پہلے دکھایا جاتا ہے۔';
+
+  @override
+  String get lcQ4T => 'میں اپنی ووٹ کی رسید کیسے جانچوں؟';
+
+  @override
+  String get lcQ4B =>
+      '\"رسید کی تصدیق کریں\" کھولیں، اپنی رسید کا ہیش چسپاں کریں اور جانچیں۔ رسید تصدیق کرتی ہے کہ اس رسید والا بیلٹ موجود ہے۔ یہ آپ کا انتخاب، ووٹر، یا باقی عمل کے بارے میں کچھ ظاہر نہیں کرتی۔';
+
+  @override
+  String get lcQ5T => 'تاریخ کیا دکھاتی ہے؟';
+
+  @override
+  String get lcQ5B =>
+      'مالکان اور منتظمین اپنی تنظیم کے اہم انتظامی اور انتخابی کارروائیوں کا سرور-سائیڈ ریکارڈ دیکھ سکتے ہیں۔';
+
+  @override
+  String get lcQ6T => 'اراکین نتائج کب دیکھ سکتے ہیں؟';
+
+  @override
+  String get lcQ6B =>
+      'ووٹ بند ہونے کے بعد نتائج شمار ہوتے ہیں۔ عام اراکین انہیں تب دیکھتے ہیں جب تنظیم کا منتظم شائع کرے۔';
+
+  @override
+  String get ldCandA => 'امیدوار الف';
+
+  @override
+  String get ldCandB => 'امیدوار ب';
+
+  @override
+  String get ldCandC => 'امیدوار ج';
+
+  @override
+  String get ldNavFeatures => 'خصوصیات';
+
+  @override
+  String get ldNavHow => 'یہ کیسے کام کرتا ہے';
+
+  @override
+  String get ldNavOrgs => 'تنظیمیں';
+
+  @override
+  String get ldNavSecurity => 'سیکیورٹی اور رازداری';
+
+  @override
+  String get ldNavTransparency => 'شفافیت';
+
+  @override
+  String get ldBrandTop => 'Kivora، اوپر واپس';
+
+  @override
+  String get ldToLight => 'روشن تھیم پر جائیں';
+
+  @override
+  String get ldToDark => 'گہری تھیم پر جائیں';
+
+  @override
+  String get ldSignIn => 'سائن اِن';
+
+  @override
+  String get ldGetStarted => 'شروع کریں';
+
+  @override
+  String get ldMenu => 'مینو';
+
+  @override
+  String get ldCloseMenu => 'مینو بند کریں';
+
+  @override
+  String get ldVerify => 'رسید کی تصدیق کریں';
+
+  @override
+  String get ldHeroBadge => 'Kivora · محفوظ ای ووٹنگ اور رائے شماری';
+
+  @override
+  String get ldHeroTitle => 'اپنی تنظیم کے لیے منصفانہ انتخابات کروائیں۔';
+
+  @override
+  String get ldHeroBody =>
+      'اپنے اراکین کے لیے انتخابات اور رائے شماریاں کروائیں، گمنام یا شناخت والی ووٹنگ میں سے چنیں، اور اہلیت، وقت اور فی شخص ایک ووٹ سرور سے نافذ کروائیں۔';
+
+  @override
+  String get ldHaveCode => 'شمولیت کا کوڈ یا دعوت ہے؟  ';
+
+  @override
+  String get ldCreateToJoin => 'شامل ہونے کے لیے اکاؤنٹ بنائیں';
+
+  @override
+  String get ldFeaturesEyebrow => 'اجتماعی فیصلوں کے لیے بنایا گیا';
+
+  @override
+  String get ldFeaturesTitle =>
+      'ووٹ دینے اور یہ طے کرنے کی ایک ہی جگہ کہ کون دے سکتا ہے۔';
+
+  @override
+  String get ldFeaturesBody =>
+      'نمائندے چننے سے لے کر ہاں/نہیں کا سوال طے کرنے تک، ہر ووٹ کا ایک واضح ٹھکانہ ہے۔';
+
+  @override
+  String get ldHowTitle => 'ترتیب سے نتیجے تک ایک واضح راستہ۔';
+
+  @override
+  String get ldHowBody => 'منتظمین اور اراکین دونوں کے لیے شرکت آسان بنائیں۔';
+
+  @override
+  String get ldStart => 'Kivora کے ساتھ شروع کریں';
+
+  @override
+  String get ldOrgsEyebrow => 'ہر قسم کی تنظیم کے لیے';
+
+  @override
+  String get ldOrgsTitle => 'آپ کی کمیونٹی، نمائندگی کے ساتھ۔';
+
+  @override
+  String get ldOrgsBody =>
+      'Kivora کی تنظیمیں ان میں سے ایک قسم کی ہوتی ہیں، پھر شریک لوگوں کے مطابق ڈھالی جاتی ہیں۔';
+
+  @override
+  String get ldSecTitle => 'اعتماد ہر قدم میں شامل۔';
+
+  @override
+  String get ldSecBody =>
+      'اہم اصول سرور پر چلتے ہیں، اور ووٹنگ کا طریقہ اراکین کو انتخاب سے پہلے نظر آتا ہے۔';
+
+  @override
+  String get ldExplore => 'شفافیت دیکھیں';
+
+  @override
+  String get ldPartRecord => 'شرکت کا ریکارڈ';
+
+  @override
+  String get ldPartBody =>
+      'ریکارڈ کرتا ہے کہ ایک اہل رکن نے ووٹ دیا، تاکہ کوئی دو بار ووٹ نہ دے سکے۔ گمنام ووٹ میں یہ انتخاب نہیں رکھتا۔';
+
+  @override
+  String get ldBallotRecord => 'بیلٹ کا ریکارڈ';
+
+  @override
+  String get ldBallotBody =>
+      'انتخاب رکھتا ہے۔ گمنام ووٹ میں اس میں کوئی ایسا خانہ نہیں جو اسے ووٹر کے اکاؤنٹ سے جوڑے۔';
+
+  @override
+  String get ldAnonEyebrow => 'گمنام ووٹنگ';
+
+  @override
+  String get ldAnonTitle => 'شرکت ریکارڈ ہوتی ہے۔ بیلٹ الگ رہتے ہیں۔';
+
+  @override
+  String get ldAnonBody =>
+      'دو الگ ریکارڈ Kivora کو دوہری ووٹنگ روکنے دیتے ہیں اور گمنام انتخاب کو گمنام رکھتے ہیں۔';
+
+  @override
+  String get ldReceiptTitle => 'بغیر اکاؤنٹ کے رسید جانچیں۔';
+
+  @override
+  String get ldReceiptBody =>
+      'رسید کا ہیش چسپاں کر کے تصدیق کریں کہ اس رسید والا بیلٹ موجود ہے۔ یہ کسی انتخاب یا ووٹر کو ظاہر نہیں کرتا، اور یہ ریکارڈ کی موجودگی کی جانچ ہے، پورے عمل کا باقاعدہ ثبوت نہیں۔';
+
+  @override
+  String get ldFaqEyebrow => 'اکثر پوچھے جانے والے سوالات';
+
+  @override
+  String get ldFaqTitle => 'اچھے فیصلے واضح جوابات سے شروع ہوتے ہیں۔';
+
+  @override
+  String get ldCtaTitle => 'اپنے اگلے فیصلے کو اہم بنائیں۔';
+
+  @override
+  String get ldCtaBody =>
+      'ہر رکن کو اپنی بات پہنچانے کا واضح اور محفوظ طریقہ دیں۔';
+
+  @override
+  String get ldFooterTag => 'تنظیموں کے لیے محفوظ ای ووٹنگ اور رائے شماری۔';
+
+  @override
+  String get ldFooterProduct => 'پروڈکٹ';
+
+  @override
+  String get ldFooterTrust => 'اعتماد';
+
+  @override
+  String get ldFooterAccount => 'اکاؤنٹ';
+
+  @override
+  String get ldFooterCreate => 'اکاؤنٹ بنائیں';
+
+  @override
+  String get ldFooterFaq => 'سوالات';
+
+  @override
+  String get ldCopyright => '© 2026 Sonryan۔ جملہ حقوق محفوظ ہیں۔';
+
+  @override
+  String get ldBackTop => 'اوپر واپس';
+
+  @override
+  String get ldIllus => 'مثال، حقیقی انتخاب نہیں';
+
+  @override
+  String get ldSample => 'نمونہ بیلٹ';
+
+  @override
+  String get ldChoose => 'ایک امیدوار منتخب کریں۔';
+
+  @override
+  String get ldSampleCands => 'نمونہ امیدوار';
+
+  @override
+  String get ldAnonBallot => 'گمنام بیلٹ';
+
+  @override
+  String get ldSubmit => 'ووٹ جمع کریں';
+
+  @override
+  String get ldTry => 'کوئی امیدوار چن کر دیکھیں۔ یہ صرف پیش منظر ہے۔';
+
+  @override
+  String ldPicked(String a) {
+    return 'آپ نے اس پیش منظر میں $a چنا۔ کچھ جمع نہیں ہوا۔';
+  }
+
+  @override
+  String get ldHelpTitle => 'مزید مدد چاہیے؟';
+
+  @override
+  String get ldHelpBody =>
+      'رسائی یا اہلیت کے سوالات کے لیے اپنی تنظیم کے منتظم سے پوچھیں۔ انتخابات شروع سے آخر تک کیسے کام کرتے ہیں، یہ دیکھنے کے لیے شفافیت کا مرکز پڑھیں۔';
+
+  @override
+  String get ldHelpOpen => 'شفافیت کا مرکز کھولیں';
 }

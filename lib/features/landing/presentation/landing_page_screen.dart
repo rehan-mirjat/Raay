@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -104,12 +105,20 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   }
 
   List<_NavItem> get _navItems => [
-        _NavItem('Features', () => _scrollTo(_featuresKey), section: 0),
-        _NavItem('How it works', () => _scrollTo(_howKey), section: 1),
-        _NavItem('Organizations', () => _scrollTo(_orgsKey), section: 2),
-        _NavItem('Security & privacy', () => _scrollTo(_securityKey),
+        _NavItem(AppLocalizations.of(context).ldNavFeatures,
+            () => _scrollTo(_featuresKey),
+            section: 0),
+        _NavItem(
+            AppLocalizations.of(context).ldNavHow, () => _scrollTo(_howKey),
+            section: 1),
+        _NavItem(
+            AppLocalizations.of(context).ldNavOrgs, () => _scrollTo(_orgsKey),
+            section: 2),
+        _NavItem(AppLocalizations.of(context).ldNavSecurity,
+            () => _scrollTo(_securityKey),
             section: 3),
-        _NavItem('Transparency', () => _open('/transparency')),
+        _NavItem(AppLocalizations.of(context).ldNavTransparency,
+            () => _open('/transparency')),
       ];
 
   // ---- build ---------------------------------------------------------------
@@ -233,7 +242,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
     final dark = kc.isDark;
     final brand = Semantics(
       button: true,
-      label: 'Kivora, back to top',
+      label: AppLocalizations.of(context).ldBrandTop,
       child: InkWell(
         onTap: _top,
         borderRadius: BorderRadius.circular(12),
@@ -261,7 +270,9 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
       ),
     );
     final theme = Tooltip(
-      message: dark ? 'Switch to light theme' : 'Switch to dark theme',
+      message: dark
+          ? AppLocalizations.of(context).ldToLight
+          : AppLocalizations.of(context).ldToDark,
       child: OutlinedButton(
         style: _outlinedAction(kc).copyWith(
           fixedSize: const WidgetStatePropertyAll(Size(44, 44)),
@@ -330,7 +341,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           OutlinedButton(
             style: _outlinedAction(kc),
             onPressed: () => _go('/login'),
-            child: const Text('Sign in'),
+            child: Text(AppLocalizations.of(context).ldSignIn),
           ),
           const SizedBox(width: 8),
           FilledButton(
@@ -350,13 +361,13 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                       : BorderSide.none),
             ),
             onPressed: () => _go('/register'),
-            child: const Text('Get started'),
+            child: Text(AppLocalizations.of(context).ldGetStarted),
           ),
         ] else ...[
           theme,
           const SizedBox(width: 4),
           Tooltip(
-            message: 'Menu',
+            message: AppLocalizations.of(context).ldMenu,
             child: OutlinedButton(
               style: _outlinedAction(kc).copyWith(
                 fixedSize: const WidgetStatePropertyAll(Size(44, 44)),
@@ -395,14 +406,15 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           Align(
             alignment: AlignmentDirectional.centerEnd,
             child: IconButton(
-              tooltip: 'Close menu',
+              tooltip: AppLocalizations.of(context).ldCloseMenu,
               constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(Icons.close_rounded),
             ),
           ),
           for (final item in _navItems) tile(item.label, item.onTap),
-          tile('Verify a receipt', () => _open('/receipt-verify')),
+          tile(AppLocalizations.of(context).ldVerify,
+              () => _open('/receipt-verify')),
           const Divider(height: 32),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -416,7 +428,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                       Navigator.of(context).pop();
                       _go('/login');
                     },
-                    child: const Text('Sign in'),
+                    child: Text(AppLocalizations.of(context).ldSignIn),
                   ),
                   const SizedBox(height: 12),
                   FilledButton(
@@ -426,7 +438,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                       Navigator.of(context).pop();
                       _go('/register');
                     },
-                    child: const Text('Get started'),
+                    child: Text(AppLocalizations.of(context).ldGetStarted),
                   ),
                 ]),
           ),
@@ -455,7 +467,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
             border:
                 Border.all(color: AppTheme.primaryBlue.withValues(alpha: 0.3)),
           ),
-          child: Text('Kivora · secure e-voting and polling',
+          child: Text(AppLocalizations.of(context).ldHeroBadge,
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontSize: 13,
@@ -465,7 +477,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
         const SizedBox(height: 22),
         Semantics(
           header: true,
-          child: Text('Run fair elections for your organization.',
+          child: Text(AppLocalizations.of(context).ldHeroTitle,
               textAlign: wide ? TextAlign.start : TextAlign.center,
               style: TextStyle(
                   fontSize: narrow ? 36 : (wide ? 58 : 48),
@@ -477,8 +489,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
         const SizedBox(height: 20),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 560),
-          child: Text(
-              'Hold elections and polls for your members, choose between anonymous and identifiable voting, and let the server enforce eligibility, timing and one vote per person.',
+          child: Text(AppLocalizations.of(context).ldHeroBody,
               textAlign: wide ? TextAlign.start : TextAlign.center,
               style: TextStyle(
                   fontSize: narrow ? 16 : 18,
@@ -496,16 +507,18 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                   minimumSize: const Size(48, 52),
                   padding: const EdgeInsets.symmetric(horizontal: 28)),
               onPressed: () => _go('/register'),
-              child: const Text('Get started',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+              child: Text(AppLocalizations.of(context).ldGetStarted,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w700)),
             ),
             OutlinedButton(
               style: OutlinedButton.styleFrom(
                   minimumSize: const Size(48, 52),
                   padding: const EdgeInsets.symmetric(horizontal: 28)),
               onPressed: () => _go('/login'),
-              child: const Text('Sign in',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+              child: Text(AppLocalizations.of(context).ldSignIn,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w700)),
             ),
           ],
         ),
@@ -514,7 +527,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           crossAxisAlignment: WrapCrossAlignment.center,
           alignment: wide ? WrapAlignment.start : WrapAlignment.center,
           children: [
-            Text('Have a joining code or invitation?  ',
+            Text(AppLocalizations.of(context).ldHaveCode,
                 style: TextStyle(fontSize: 14, color: kc.textSecondary)),
             TextButton(
               style: TextButton.styleFrom(
@@ -523,8 +536,8 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
               // Joining needs an account, so this opens registration; the join
               // screen is reached from Organizations after signing in.
               onPressed: () => _go('/register'),
-              child: const Text('Create an account to join',
-                  style: TextStyle(fontWeight: FontWeight.w700)),
+              child: Text(AppLocalizations.of(context).ldCreateToJoin,
+                  style: const TextStyle(fontWeight: FontWeight.w700)),
             ),
           ],
         ),
@@ -564,7 +577,11 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
       child: ReflowGrid(
         maxColumns: 3,
         minColumnWidth: 280,
-        children: [for (final p in landingTrustPoints) _trustItem(context, p)],
+        children: [
+          for (final p
+              in localizedLandingTrustPoints(AppLocalizations.of(context)))
+            _trustItem(context, p)
+        ],
       ),
     );
   }
@@ -592,15 +609,17 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
 
   Widget _features(BuildContext context) => SectionShell(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const SectionHeader(
-            eyebrow: 'Built for collective decisions',
-            title: 'One place to vote and to manage who can.',
-            body:
-                'From choosing representatives to settling a yes/no question, every vote has a clear home.',
+          SectionHeader(
+            eyebrow: AppLocalizations.of(context).ldFeaturesEyebrow,
+            title: AppLocalizations.of(context).ldFeaturesTitle,
+            body: AppLocalizations.of(context).ldFeaturesBody,
           ),
           const SizedBox(height: 40),
-          ReflowGrid(
-              children: [for (final f in landingFeatures) FeatureCard(f)]),
+          ReflowGrid(children: [
+            for (final f
+                in localizedLandingFeatures(AppLocalizations.of(context)))
+              FeatureCard(f)
+          ]),
         ]),
       );
 
@@ -608,22 +627,22 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
     return SectionShell(
       tinted: true,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const SectionHeader(
-          eyebrow: 'How it works',
-          title: 'A clear path from setup to result.',
-          body:
-              'Make participation straightforward for organizers and members alike.',
+        SectionHeader(
+          eyebrow: AppLocalizations.of(context).ldNavHow,
+          title: AppLocalizations.of(context).ldHowTitle,
+          body: AppLocalizations.of(context).ldHowBody,
         ),
         const SizedBox(height: 40),
-        const StepsTimeline(steps: landingSteps),
+        StepsTimeline(
+            steps: localizedLandingSteps(AppLocalizations.of(context))),
         const SizedBox(height: 32),
         FilledButton(
           style: FilledButton.styleFrom(
               minimumSize: const Size(48, 52),
               padding: const EdgeInsets.symmetric(horizontal: 28)),
           onPressed: () => _go('/register'),
-          child: const Text('Start with Kivora',
-              style: TextStyle(fontWeight: FontWeight.w700)),
+          child: Text(AppLocalizations.of(context).ldStart,
+              style: const TextStyle(fontWeight: FontWeight.w700)),
         ),
       ]),
     );
@@ -631,15 +650,16 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
 
   Widget _organizations(BuildContext context) => SectionShell(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const SectionHeader(
-            eyebrow: 'For every kind of organization',
-            title: 'Your community, represented.',
-            body:
-                'Kivora organizations are set up as one of these types, then shaped around the people who take part.',
+          SectionHeader(
+            eyebrow: AppLocalizations.of(context).ldOrgsEyebrow,
+            title: AppLocalizations.of(context).ldOrgsTitle,
+            body: AppLocalizations.of(context).ldOrgsBody,
           ),
           const SizedBox(height: 40),
           ReflowGrid(maxColumns: 5, minColumnWidth: 200, gap: 16, children: [
-            for (final t in landingOrgTypes) FeatureCard(t),
+            for (final t
+                in localizedLandingOrgTypes(AppLocalizations.of(context)))
+              FeatureCard(t),
           ]),
         ]),
       );
@@ -649,11 +669,10 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
     final wide = MediaQuery.sizeOf(context).width >= 960;
     final header =
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const SectionHeader(
-        eyebrow: 'Security & privacy',
-        title: 'Trust built into every step.',
-        body:
-            'The rules that matter run on the server, and the voting mode is visible to members before they choose.',
+      SectionHeader(
+        eyebrow: AppLocalizations.of(context).ldNavSecurity,
+        title: AppLocalizations.of(context).ldSecTitle,
+        body: AppLocalizations.of(context).ldSecBody,
       ),
       const SizedBox(height: 24),
       OutlinedButton(
@@ -661,8 +680,8 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
             minimumSize: const Size(48, 52),
             padding: const EdgeInsets.symmetric(horizontal: 24)),
         onPressed: () => _open('/transparency'),
-        child: const Text('Explore transparency',
-            style: TextStyle(fontWeight: FontWeight.w700)),
+        child: Text(AppLocalizations.of(context).ldExplore,
+            style: const TextStyle(fontWeight: FontWeight.w700)),
       ),
     ]);
     final points = ReflowGrid(
@@ -670,7 +689,8 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
       minColumnWidth: 240,
       gap: 16,
       children: [
-        for (final p in landingSecurityPoints)
+        for (final p
+            in localizedLandingSecurityPoints(AppLocalizations.of(context)))
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -738,10 +758,14 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                         fontSize: 15, height: 1.55, color: kc.textSecondary)),
               ]),
         );
-    final a = card(Icons.how_to_reg_rounded, 'Participation record',
-        'Records that an eligible member voted, so nobody can vote twice. It does not hold the choice in an anonymous vote.');
-    final b = card(Icons.ballot_rounded, 'Ballot record',
-        'Holds the choice. In an anonymous vote it has no field linking it to the voter\'s account.');
+    final a = card(
+        Icons.how_to_reg_rounded,
+        AppLocalizations.of(context).ldPartRecord,
+        AppLocalizations.of(context).ldPartBody);
+    final b = card(
+        Icons.ballot_rounded,
+        AppLocalizations.of(context).ldBallotRecord,
+        AppLocalizations.of(context).ldBallotBody);
     final link = Padding(
       padding: const EdgeInsets.all(12),
       child: Icon(wide ? Icons.sync_alt_rounded : Icons.swap_vert_rounded,
@@ -749,11 +773,10 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
     );
     return SectionShell(
       child: Column(children: [
-        const SectionHeader(
-          eyebrow: 'Anonymous voting',
-          title: 'Participation is recorded. Ballots stay separate.',
-          body:
-              'Two separate records let Kivora prevent double voting while keeping an anonymous choice anonymous.',
+        SectionHeader(
+          eyebrow: AppLocalizations.of(context).ldAnonEyebrow,
+          title: AppLocalizations.of(context).ldAnonTitle,
+          body: AppLocalizations.of(context).ldAnonBody,
           center: true,
         ),
         const SizedBox(height: 40),
@@ -779,13 +802,12 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
         ),
         child: LayoutBuilder(builder: (context, c) {
           final row = c.maxWidth >= 720;
-          const text =
+          final text =
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             SectionHeader(
-              eyebrow: 'Verify a receipt',
-              title: 'Check a receipt without an account.',
-              body:
-                  'Paste a receipt hash to confirm that a ballot with that receipt exists. It does not reveal a choice or a voter, and it is a record-existence check, not a formal proof of the whole process.',
+              eyebrow: AppLocalizations.of(context).ldVerify,
+              title: AppLocalizations.of(context).ldReceiptTitle,
+              body: AppLocalizations.of(context).ldReceiptBody,
             ),
           ]);
           final button = FilledButton.icon(
@@ -794,12 +816,12 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 24)),
             onPressed: () => _open('/receipt-verify'),
             icon: const Icon(Icons.verified_outlined),
-            label: const Text('Verify a receipt',
-                style: TextStyle(fontWeight: FontWeight.w700)),
+            label: Text(AppLocalizations.of(context).ldVerify,
+                style: const TextStyle(fontWeight: FontWeight.w700)),
           );
           return row
               ? Row(children: [
-                  const Expanded(child: text),
+                  Expanded(child: text),
                   const SizedBox(width: 32),
                   button
                 ])
@@ -814,9 +836,9 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   Widget _faq(BuildContext context) {
     return SectionShell(
       child: Column(children: [
-        const SectionHeader(
-          eyebrow: 'Frequently asked questions',
-          title: 'Good decisions start with clear answers.',
+        SectionHeader(
+          eyebrow: AppLocalizations.of(context).ldFaqEyebrow,
+          title: AppLocalizations.of(context).ldFaqTitle,
           center: true,
         ),
         const SizedBox(height: 36),
@@ -824,7 +846,10 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           final help = HelpCard(onTransparency: () => _open('/transparency'));
           if (c.maxWidth >= 960) {
             return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Expanded(child: FaqList(items: landingFaqs)),
+              Expanded(
+                  child: FaqList(
+                      items:
+                          localizedLandingFaqs(AppLocalizations.of(context)))),
               const SizedBox(width: 32),
               SizedBox(width: 320, child: help),
             ]);
@@ -832,7 +857,8 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
           return Column(children: [
             ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 820),
-                child: const FaqList(items: landingFaqs)),
+                child: FaqList(
+                    items: localizedLandingFaqs(AppLocalizations.of(context)))),
             const SizedBox(height: 12),
             ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 820), child: help),
@@ -859,7 +885,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
         child: Column(children: [
           Semantics(
             header: true,
-            child: Text('Make your next decision count.',
+            child: Text(AppLocalizations.of(context).ldCtaTitle,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: narrow ? 28 : 40,
@@ -869,9 +895,10 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     color: Colors.white)),
           ),
           const SizedBox(height: 14),
-          const Text('Give every member a clear, secure way to be heard.',
+          Text(AppLocalizations.of(context).ldCtaBody,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 17, height: 1.5, color: Colors.white)),
+              style: const TextStyle(
+                  fontSize: 17, height: 1.5, color: Colors.white)),
           const SizedBox(height: 28),
           Wrap(
               spacing: 12,
@@ -885,8 +912,8 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                       minimumSize: const Size(48, 52),
                       padding: const EdgeInsets.symmetric(horizontal: 28)),
                   onPressed: () => _go('/register'),
-                  child: const Text('Get started',
-                      style: TextStyle(fontWeight: FontWeight.w800)),
+                  child: Text(AppLocalizations.of(context).ldGetStarted,
+                      style: const TextStyle(fontWeight: FontWeight.w800)),
                 ),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
@@ -898,8 +925,8 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                       minimumSize: const Size(48, 52),
                       padding: const EdgeInsets.symmetric(horizontal: 28)),
                   onPressed: () => _go('/login'),
-                  child: const Text('Sign in',
-                      style: TextStyle(fontWeight: FontWeight.w700)),
+                  child: Text(AppLocalizations.of(context).ldSignIn,
+                      style: const TextStyle(fontWeight: FontWeight.w700)),
                 ),
               ]),
         ]),
@@ -970,27 +997,36 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                         ),
                       ]),
                       const SizedBox(height: 12),
-                      Text('Secure e-voting and polling for organizations.',
+                      Text(AppLocalizations.of(context).ldFooterTag,
                           style: TextStyle(
                               fontSize: 14,
                               height: 1.5,
                               color: kc.textSecondary)),
                     ]),
               ),
-              col('Product', [
-                link('Features', () => _scrollTo(_featuresKey)),
-                link('How it works', () => _scrollTo(_howKey)),
-                link('Organizations', () => _scrollTo(_orgsKey)),
+              col(AppLocalizations.of(context).ldFooterProduct, [
+                link(AppLocalizations.of(context).ldNavFeatures,
+                    () => _scrollTo(_featuresKey)),
+                link(AppLocalizations.of(context).ldNavHow,
+                    () => _scrollTo(_howKey)),
+                link(AppLocalizations.of(context).ldNavOrgs,
+                    () => _scrollTo(_orgsKey)),
               ]),
-              col('Trust', [
-                link('Security & privacy', () => _scrollTo(_securityKey)),
-                link('Transparency', () => _open('/transparency')),
-                link('Verify a receipt', () => _open('/receipt-verify')),
+              col(AppLocalizations.of(context).ldFooterTrust, [
+                link(AppLocalizations.of(context).ldNavSecurity,
+                    () => _scrollTo(_securityKey)),
+                link(AppLocalizations.of(context).ldNavTransparency,
+                    () => _open('/transparency')),
+                link(AppLocalizations.of(context).ldVerify,
+                    () => _open('/receipt-verify')),
               ]),
-              col('Account', [
-                link('Sign in', () => _go('/login')),
-                link('Create an account', () => _go('/register')),
-                link('FAQ', () => _scrollTo(_faqKey)),
+              col(AppLocalizations.of(context).ldFooterAccount, [
+                link(
+                    AppLocalizations.of(context).ldSignIn, () => _go('/login')),
+                link(AppLocalizations.of(context).ldFooterCreate,
+                    () => _go('/register')),
+                link(AppLocalizations.of(context).ldFooterFaq,
+                    () => _scrollTo(_faqKey)),
               ]),
             ]),
             const SizedBox(height: 28),
@@ -999,7 +1035,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
             // Copyright on the left, the real "Back to top" action on the right
             // edge of the content; they stack on narrow screens.
             LayoutBuilder(builder: (context, c) {
-              final copy = Text('© 2026 Sonryan. All rights reserved.',
+              final copy = Text(AppLocalizations.of(context).ldCopyright,
                   style: TextStyle(fontSize: 13, color: kc.textSecondary));
               final top = TextButton.icon(
                 style: TextButton.styleFrom(
@@ -1007,7 +1043,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     foregroundColor: kc.textSecondary),
                 onPressed: _top,
                 icon: const Icon(Icons.arrow_upward_rounded, size: 16),
-                label: const Text('Back to top'),
+                label: Text(AppLocalizations.of(context).ldBackTop),
               );
               if (c.maxWidth < 520) {
                 return Column(

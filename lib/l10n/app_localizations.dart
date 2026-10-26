@@ -9347,6 +9347,732 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Verify a receipt'**
   String get trVerify;
+
+  /// No description provided for @lcF1T.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization management'**
+  String get lcF1T;
+
+  /// No description provided for @lcF1B.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage members, roles, departments, invitations and joining codes in one place.'**
+  String get lcF1B;
+
+  /// No description provided for @lcF2T.
+  ///
+  /// In en, this message translates to:
+  /// **'Elections and polls'**
+  String get lcF2T;
+
+  /// No description provided for @lcF2B.
+  ///
+  /// In en, this message translates to:
+  /// **'Run candidate elections, single-choice polls and yes/no polls with a fixed lifecycle: Draft, Scheduled, Active, Closed, Archived.'**
+  String get lcF2B;
+
+  /// No description provided for @lcF3T.
+  ///
+  /// In en, this message translates to:
+  /// **'Anonymous or identifiable'**
+  String get lcF3T;
+
+  /// No description provided for @lcF3B.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the privacy mode when you create a vote. It is shown to members on the ballot, before they choose.'**
+  String get lcF3B;
+
+  /// No description provided for @lcF4T.
+  ///
+  /// In en, this message translates to:
+  /// **'Eligibility you control'**
+  String get lcF4T;
+
+  /// No description provided for @lcF4B.
+  ///
+  /// In en, this message translates to:
+  /// **'Open a vote to all active members, to selected departments, or to selected members. The server re-checks it when a ballot is submitted.'**
+  String get lcF4B;
+
+  /// No description provided for @lcF5T.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviewable history'**
+  String get lcF5T;
+
+  /// No description provided for @lcF5B.
+  ///
+  /// In en, this message translates to:
+  /// **'Owners and admins can review a server-side record of key administrative and election actions.'**
+  String get lcF5B;
+
+  /// No description provided for @lcF6T.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt verification'**
+  String get lcF6T;
+
+  /// No description provided for @lcF6B.
+  ///
+  /// In en, this message translates to:
+  /// **'After voting you get a receipt. Anyone can check that a receipt exists, without an account.'**
+  String get lcF6B;
+
+  /// No description provided for @lcS1T.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your organization'**
+  String get lcS1T;
+
+  /// No description provided for @lcS1B.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up, then create an organization and invite the people who belong to it.'**
+  String get lcS1B;
+
+  /// No description provided for @lcS2T.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up a vote'**
+  String get lcS2T;
+
+  /// No description provided for @lcS2B.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the question, schedule, choices, eligibility and privacy mode.'**
+  String get lcS2B;
+
+  /// No description provided for @lcS3T.
+  ///
+  /// In en, this message translates to:
+  /// **'Members take part'**
+  String get lcS3T;
+
+  /// No description provided for @lcS3B.
+  ///
+  /// In en, this message translates to:
+  /// **'Eligible members get a simple route to the ballot while the vote is open.'**
+  String get lcS3B;
+
+  /// No description provided for @lcS4T.
+  ///
+  /// In en, this message translates to:
+  /// **'Review the outcome'**
+  String get lcS4T;
+
+  /// No description provided for @lcS4B.
+  ///
+  /// In en, this message translates to:
+  /// **'Results are calculated after the vote closes and shown to members once an admin publishes them.'**
+  String get lcS4B;
+
+  /// No description provided for @lcO1T.
+  ///
+  /// In en, this message translates to:
+  /// **'Academic institutions'**
+  String get lcO1T;
+
+  /// No description provided for @lcO1B.
+  ///
+  /// In en, this message translates to:
+  /// **'Departments, councils and committees.'**
+  String get lcO1B;
+
+  /// No description provided for @lcO2T.
+  ///
+  /// In en, this message translates to:
+  /// **'Corporate teams'**
+  String get lcO2T;
+
+  /// No description provided for @lcO2B.
+  ///
+  /// In en, this message translates to:
+  /// **'Internal polls and elections.'**
+  String get lcO2B;
+
+  /// No description provided for @lcO3T.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-profits'**
+  String get lcO3T;
+
+  /// No description provided for @lcO3B.
+  ///
+  /// In en, this message translates to:
+  /// **'Boards, volunteers and members.'**
+  String get lcO3B;
+
+  /// No description provided for @lcO4T.
+  ///
+  /// In en, this message translates to:
+  /// **'Clubs and societies'**
+  String get lcO4T;
+
+  /// No description provided for @lcO4B.
+  ///
+  /// In en, this message translates to:
+  /// **'Student societies and clubs.'**
+  String get lcO4B;
+
+  /// No description provided for @lcO5T.
+  ///
+  /// In en, this message translates to:
+  /// **'Community associations'**
+  String get lcO5T;
+
+  /// No description provided for @lcO5B.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared local decisions.'**
+  String get lcO5B;
+
+  /// No description provided for @lcT1T.
+  ///
+  /// In en, this message translates to:
+  /// **'Two-step sign-in'**
+  String get lcT1T;
+
+  /// No description provided for @lcT1B.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensitive administrative actions require two-step verification.'**
+  String get lcT1B;
+
+  /// No description provided for @lcT2T.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy is a choice'**
+  String get lcT2T;
+
+  /// No description provided for @lcT2B.
+  ///
+  /// In en, this message translates to:
+  /// **'Anonymous voting stores the choice without a field linking it to your account.'**
+  String get lcT2B;
+
+  /// No description provided for @lcT3T.
+  ///
+  /// In en, this message translates to:
+  /// **'Server-checked rules'**
+  String get lcT3T;
+
+  /// No description provided for @lcT3B.
+  ///
+  /// In en, this message translates to:
+  /// **'Eligibility, timing and duplicate votes are enforced by the server, not the app.'**
+  String get lcT3B;
+
+  /// No description provided for @lcY1T.
+  ///
+  /// In en, this message translates to:
+  /// **'Two-step verification'**
+  String get lcY1T;
+
+  /// No description provided for @lcY1B.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensitive administrative actions need a recent sign-in and two-step verification.'**
+  String get lcY1B;
+
+  /// No description provided for @lcY2T.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy is a choice'**
+  String get lcY2T;
+
+  /// No description provided for @lcY2B.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on anonymous voting when a decision calls for it. The mode is visible on the ballot.'**
+  String get lcY2B;
+
+  /// No description provided for @lcY3T.
+  ///
+  /// In en, this message translates to:
+  /// **'The server decides'**
+  String get lcY3T;
+
+  /// No description provided for @lcY3B.
+  ///
+  /// In en, this message translates to:
+  /// **'Voting windows, eligibility and one-vote-per-person are checked on the server at submission.'**
+  String get lcY3B;
+
+  /// No description provided for @lcY4T.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviewable records'**
+  String get lcY4T;
+
+  /// No description provided for @lcY4B.
+  ///
+  /// In en, this message translates to:
+  /// **'Key administrative actions are recorded so owners and admins can review them.'**
+  String get lcY4B;
+
+  /// No description provided for @lcQ1T.
+  ///
+  /// In en, this message translates to:
+  /// **'What can we use Kivora for?'**
+  String get lcQ1T;
+
+  /// No description provided for @lcQ1B.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate elections, single-choice polls and yes/no polls for your organization, such as representative choices, committee decisions and member questions.'**
+  String get lcQ1B;
+
+  /// No description provided for @lcQ2T.
+  ///
+  /// In en, this message translates to:
+  /// **'Who is allowed to vote?'**
+  String get lcQ2T;
+
+  /// No description provided for @lcQ2B.
+  ///
+  /// In en, this message translates to:
+  /// **'The organizer sets one eligibility rule per vote: all active members, selected departments, or selected members. The server checks it again when you submit your ballot.'**
+  String get lcQ2B;
+
+  /// No description provided for @lcQ3T.
+  ///
+  /// In en, this message translates to:
+  /// **'Can a ballot be anonymous?'**
+  String get lcQ3T;
+
+  /// No description provided for @lcQ3B.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, it is optional. In an anonymous vote your choice is stored without a field linking it to your account, while a separate participation record prevents voting twice. The mode is fixed when the vote is created and shown before you choose.'**
+  String get lcQ3B;
+
+  /// No description provided for @lcQ4T.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I check my vote receipt?'**
+  String get lcQ4T;
+
+  /// No description provided for @lcQ4B.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Verify a receipt, paste your receipt hash and check it. The receipt confirms that a ballot with that receipt exists. It does not show your choice, who voted, or prove anything about the rest of the process.'**
+  String get lcQ4B;
+
+  /// No description provided for @lcQ5T.
+  ///
+  /// In en, this message translates to:
+  /// **'What does the history show?'**
+  String get lcQ5T;
+
+  /// No description provided for @lcQ5B.
+  ///
+  /// In en, this message translates to:
+  /// **'Owners and admins can review a server-side record of key administrative and election actions for their organization.'**
+  String get lcQ5B;
+
+  /// No description provided for @lcQ6T.
+  ///
+  /// In en, this message translates to:
+  /// **'When can members see results?'**
+  String get lcQ6T;
+
+  /// No description provided for @lcQ6B.
+  ///
+  /// In en, this message translates to:
+  /// **'Results are calculated after a vote closes. Ordinary members see them once an organization admin publishes them.'**
+  String get lcQ6B;
+
+  /// No description provided for @ldCandA.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate A'**
+  String get ldCandA;
+
+  /// No description provided for @ldCandB.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate B'**
+  String get ldCandB;
+
+  /// No description provided for @ldCandC.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate C'**
+  String get ldCandC;
+
+  /// No description provided for @ldNavFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Features'**
+  String get ldNavFeatures;
+
+  /// No description provided for @ldNavHow.
+  ///
+  /// In en, this message translates to:
+  /// **'How it works'**
+  String get ldNavHow;
+
+  /// No description provided for @ldNavOrgs.
+  ///
+  /// In en, this message translates to:
+  /// **'Organizations'**
+  String get ldNavOrgs;
+
+  /// No description provided for @ldNavSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Security & privacy'**
+  String get ldNavSecurity;
+
+  /// No description provided for @ldNavTransparency.
+  ///
+  /// In en, this message translates to:
+  /// **'Transparency'**
+  String get ldNavTransparency;
+
+  /// No description provided for @ldBrandTop.
+  ///
+  /// In en, this message translates to:
+  /// **'Kivora, back to top'**
+  String get ldBrandTop;
+
+  /// No description provided for @ldToLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to light theme'**
+  String get ldToLight;
+
+  /// No description provided for @ldToDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to dark theme'**
+  String get ldToDark;
+
+  /// No description provided for @ldSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get ldSignIn;
+
+  /// No description provided for @ldGetStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get ldGetStarted;
+
+  /// No description provided for @ldMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get ldMenu;
+
+  /// No description provided for @ldCloseMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Close menu'**
+  String get ldCloseMenu;
+
+  /// No description provided for @ldVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify a receipt'**
+  String get ldVerify;
+
+  /// No description provided for @ldHeroBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Kivora · secure e-voting and polling'**
+  String get ldHeroBadge;
+
+  /// No description provided for @ldHeroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Run fair elections for your organization.'**
+  String get ldHeroTitle;
+
+  /// No description provided for @ldHeroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold elections and polls for your members, choose between anonymous and identifiable voting, and let the server enforce eligibility, timing and one vote per person.'**
+  String get ldHeroBody;
+
+  /// No description provided for @ldHaveCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Have a joining code or invitation?  '**
+  String get ldHaveCode;
+
+  /// No description provided for @ldCreateToJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an account to join'**
+  String get ldCreateToJoin;
+
+  /// No description provided for @ldFeaturesEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Built for collective decisions'**
+  String get ldFeaturesEyebrow;
+
+  /// No description provided for @ldFeaturesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One place to vote and to manage who can.'**
+  String get ldFeaturesTitle;
+
+  /// No description provided for @ldFeaturesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'From choosing representatives to settling a yes/no question, every vote has a clear home.'**
+  String get ldFeaturesBody;
+
+  /// No description provided for @ldHowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A clear path from setup to result.'**
+  String get ldHowTitle;
+
+  /// No description provided for @ldHowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Make participation straightforward for organizers and members alike.'**
+  String get ldHowBody;
+
+  /// No description provided for @ldStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with Kivora'**
+  String get ldStart;
+
+  /// No description provided for @ldOrgsEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'For every kind of organization'**
+  String get ldOrgsEyebrow;
+
+  /// No description provided for @ldOrgsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your community, represented.'**
+  String get ldOrgsTitle;
+
+  /// No description provided for @ldOrgsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Kivora organizations are set up as one of these types, then shaped around the people who take part.'**
+  String get ldOrgsBody;
+
+  /// No description provided for @ldSecTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trust built into every step.'**
+  String get ldSecTitle;
+
+  /// No description provided for @ldSecBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The rules that matter run on the server, and the voting mode is visible to members before they choose.'**
+  String get ldSecBody;
+
+  /// No description provided for @ldExplore.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore transparency'**
+  String get ldExplore;
+
+  /// No description provided for @ldPartRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'Participation record'**
+  String get ldPartRecord;
+
+  /// No description provided for @ldPartBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Records that an eligible member voted, so nobody can vote twice. It does not hold the choice in an anonymous vote.'**
+  String get ldPartBody;
+
+  /// No description provided for @ldBallotRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'Ballot record'**
+  String get ldBallotRecord;
+
+  /// No description provided for @ldBallotBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Holds the choice. In an anonymous vote it has no field linking it to the voter\'s account.'**
+  String get ldBallotBody;
+
+  /// No description provided for @ldAnonEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Anonymous voting'**
+  String get ldAnonEyebrow;
+
+  /// No description provided for @ldAnonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Participation is recorded. Ballots stay separate.'**
+  String get ldAnonTitle;
+
+  /// No description provided for @ldAnonBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Two separate records let Kivora prevent double voting while keeping an anonymous choice anonymous.'**
+  String get ldAnonBody;
+
+  /// No description provided for @ldReceiptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check a receipt without an account.'**
+  String get ldReceiptTitle;
+
+  /// No description provided for @ldReceiptBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a receipt hash to confirm that a ballot with that receipt exists. It does not reveal a choice or a voter, and it is a record-existence check, not a formal proof of the whole process.'**
+  String get ldReceiptBody;
+
+  /// No description provided for @ldFaqEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequently asked questions'**
+  String get ldFaqEyebrow;
+
+  /// No description provided for @ldFaqTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Good decisions start with clear answers.'**
+  String get ldFaqTitle;
+
+  /// No description provided for @ldCtaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Make your next decision count.'**
+  String get ldCtaTitle;
+
+  /// No description provided for @ldCtaBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Give every member a clear, secure way to be heard.'**
+  String get ldCtaBody;
+
+  /// No description provided for @ldFooterTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure e-voting and polling for organizations.'**
+  String get ldFooterTag;
+
+  /// No description provided for @ldFooterProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Product'**
+  String get ldFooterProduct;
+
+  /// No description provided for @ldFooterTrust.
+  ///
+  /// In en, this message translates to:
+  /// **'Trust'**
+  String get ldFooterTrust;
+
+  /// No description provided for @ldFooterAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get ldFooterAccount;
+
+  /// No description provided for @ldFooterCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an account'**
+  String get ldFooterCreate;
+
+  /// No description provided for @ldFooterFaq.
+  ///
+  /// In en, this message translates to:
+  /// **'FAQ'**
+  String get ldFooterFaq;
+
+  /// No description provided for @ldCopyright.
+  ///
+  /// In en, this message translates to:
+  /// **'© 2026 Sonryan. All rights reserved.'**
+  String get ldCopyright;
+
+  /// No description provided for @ldBackTop.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to top'**
+  String get ldBackTop;
+
+  /// No description provided for @ldIllus.
+  ///
+  /// In en, this message translates to:
+  /// **'Illustration, not a live election'**
+  String get ldIllus;
+
+  /// No description provided for @ldSample.
+  ///
+  /// In en, this message translates to:
+  /// **'Sample ballot'**
+  String get ldSample;
+
+  /// No description provided for @ldChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose one candidate.'**
+  String get ldChoose;
+
+  /// No description provided for @ldSampleCands.
+  ///
+  /// In en, this message translates to:
+  /// **'Sample candidates'**
+  String get ldSampleCands;
+
+  /// No description provided for @ldAnonBallot.
+  ///
+  /// In en, this message translates to:
+  /// **'Anonymous ballot'**
+  String get ldAnonBallot;
+
+  /// No description provided for @ldSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit vote'**
+  String get ldSubmit;
+
+  /// No description provided for @ldTry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try selecting a candidate. This is a preview only.'**
+  String get ldTry;
+
+  /// No description provided for @ldPicked.
+  ///
+  /// In en, this message translates to:
+  /// **'You picked {a} in this preview. Nothing is submitted.'**
+  String ldPicked(String a);
+
+  /// No description provided for @ldHelpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Still need a hand?'**
+  String get ldHelpTitle;
+
+  /// No description provided for @ldHelpBody.
+  ///
+  /// In en, this message translates to:
+  /// **'For access or eligibility questions, ask your organization administrator. To see how elections work end to end, read the Transparency Center.'**
+  String get ldHelpBody;
+
+  /// No description provided for @ldHelpOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the Transparency Center'**
+  String get ldHelpOpen;
 }
 
 class _AppLocalizationsDelegate

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
+
 /// Landing page copy. Every claim here is backed by something in this
 /// repository (see the comment on each block); nothing is a metric, a
 /// testimonial or a guarantee.
@@ -103,3 +105,54 @@ const landingFaqs = <LandingFaq>[
   LandingFaq('When can members see results?',
       'Results are calculated after a vote closes. Ordinary members see them once an organization admin publishes them.'),
 ];
+
+// ---- localized accessors -------------------------------------------------
+// The constants above are the English source. These build the same lists from
+// the ARB files so the page follows the app language. A test asserts the
+// English ARB text equals the constants.
+
+List<LandingFeature> localizedLandingFeatures(AppLocalizations l) => [
+      LandingFeature(landingFeatures[0].icon, l.lcF1T, l.lcF1B),
+      LandingFeature(landingFeatures[1].icon, l.lcF2T, l.lcF2B),
+      LandingFeature(landingFeatures[2].icon, l.lcF3T, l.lcF3B),
+      LandingFeature(landingFeatures[3].icon, l.lcF4T, l.lcF4B),
+      LandingFeature(landingFeatures[4].icon, l.lcF5T, l.lcF5B),
+      LandingFeature(landingFeatures[5].icon, l.lcF6T, l.lcF6B),
+    ];
+
+List<LandingStep> localizedLandingSteps(AppLocalizations l) => [
+      LandingStep(l.lcS1T, l.lcS1B),
+      LandingStep(l.lcS2T, l.lcS2B),
+      LandingStep(l.lcS3T, l.lcS3B),
+      LandingStep(l.lcS4T, l.lcS4B),
+    ];
+
+List<LandingFeature> localizedLandingOrgTypes(AppLocalizations l) => [
+      LandingFeature(landingOrgTypes[0].icon, l.lcO1T, l.lcO1B),
+      LandingFeature(landingOrgTypes[1].icon, l.lcO2T, l.lcO2B),
+      LandingFeature(landingOrgTypes[2].icon, l.lcO3T, l.lcO3B),
+      LandingFeature(landingOrgTypes[3].icon, l.lcO4T, l.lcO4B),
+      LandingFeature(landingOrgTypes[4].icon, l.lcO5T, l.lcO5B),
+    ];
+
+List<LandingFeature> localizedLandingTrustPoints(AppLocalizations l) => [
+      LandingFeature(landingTrustPoints[0].icon, l.lcT1T, l.lcT1B),
+      LandingFeature(landingTrustPoints[1].icon, l.lcT2T, l.lcT2B),
+      LandingFeature(landingTrustPoints[2].icon, l.lcT3T, l.lcT3B),
+    ];
+
+List<LandingFeature> localizedLandingSecurityPoints(AppLocalizations l) => [
+      LandingFeature(landingSecurityPoints[0].icon, l.lcY1T, l.lcY1B),
+      LandingFeature(landingSecurityPoints[1].icon, l.lcY2T, l.lcY2B),
+      LandingFeature(landingSecurityPoints[2].icon, l.lcY3T, l.lcY3B),
+      LandingFeature(landingSecurityPoints[3].icon, l.lcY4T, l.lcY4B),
+    ];
+
+List<LandingFaq> localizedLandingFaqs(AppLocalizations l) => [
+      LandingFaq(l.lcQ1T, l.lcQ1B),
+      LandingFaq(l.lcQ2T, l.lcQ2B),
+      LandingFaq(l.lcQ3T, l.lcQ3B),
+      LandingFaq(l.lcQ4T, l.lcQ4B),
+      LandingFaq(l.lcQ5T, l.lcQ5B),
+      LandingFaq(l.lcQ6T, l.lcQ6B),
+    ];

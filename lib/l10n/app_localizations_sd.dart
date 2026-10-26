@@ -5232,4 +5232,402 @@ class AppLocalizationsSd extends AppLocalizations {
 
   @override
   String get trVerify => 'Verify a receipt';
+
+  @override
+  String get lcF1T => 'Organization management';
+
+  @override
+  String get lcF1B =>
+      'Manage members, roles, departments, invitations and joining codes in one place.';
+
+  @override
+  String get lcF2T => 'Elections and polls';
+
+  @override
+  String get lcF2B =>
+      'Run candidate elections, single-choice polls and yes/no polls with a fixed lifecycle: Draft, Scheduled, Active, Closed, Archived.';
+
+  @override
+  String get lcF3T => 'Anonymous or identifiable';
+
+  @override
+  String get lcF3B =>
+      'Choose the privacy mode when you create a vote. It is shown to members on the ballot, before they choose.';
+
+  @override
+  String get lcF4T => 'Eligibility you control';
+
+  @override
+  String get lcF4B =>
+      'Open a vote to all active members, to selected departments, or to selected members. The server re-checks it when a ballot is submitted.';
+
+  @override
+  String get lcF5T => 'Reviewable history';
+
+  @override
+  String get lcF5B =>
+      'Owners and admins can review a server-side record of key administrative and election actions.';
+
+  @override
+  String get lcF6T => 'Receipt verification';
+
+  @override
+  String get lcF6B =>
+      'After voting you get a receipt. Anyone can check that a receipt exists, without an account.';
+
+  @override
+  String get lcS1T => 'Create your organization';
+
+  @override
+  String get lcS1B =>
+      'Sign up, then create an organization and invite the people who belong to it.';
+
+  @override
+  String get lcS2T => 'Set up a vote';
+
+  @override
+  String get lcS2B =>
+      'Choose the question, schedule, choices, eligibility and privacy mode.';
+
+  @override
+  String get lcS3T => 'Members take part';
+
+  @override
+  String get lcS3B =>
+      'Eligible members get a simple route to the ballot while the vote is open.';
+
+  @override
+  String get lcS4T => 'Review the outcome';
+
+  @override
+  String get lcS4B =>
+      'Results are calculated after the vote closes and shown to members once an admin publishes them.';
+
+  @override
+  String get lcO1T => 'Academic institutions';
+
+  @override
+  String get lcO1B => 'Departments, councils and committees.';
+
+  @override
+  String get lcO2T => 'Corporate teams';
+
+  @override
+  String get lcO2B => 'Internal polls and elections.';
+
+  @override
+  String get lcO3T => 'Non-profits';
+
+  @override
+  String get lcO3B => 'Boards, volunteers and members.';
+
+  @override
+  String get lcO4T => 'Clubs and societies';
+
+  @override
+  String get lcO4B => 'Student societies and clubs.';
+
+  @override
+  String get lcO5T => 'Community associations';
+
+  @override
+  String get lcO5B => 'Shared local decisions.';
+
+  @override
+  String get lcT1T => 'Two-step sign-in';
+
+  @override
+  String get lcT1B =>
+      'Sensitive administrative actions require two-step verification.';
+
+  @override
+  String get lcT2T => 'Privacy is a choice';
+
+  @override
+  String get lcT2B =>
+      'Anonymous voting stores the choice without a field linking it to your account.';
+
+  @override
+  String get lcT3T => 'Server-checked rules';
+
+  @override
+  String get lcT3B =>
+      'Eligibility, timing and duplicate votes are enforced by the server, not the app.';
+
+  @override
+  String get lcY1T => 'Two-step verification';
+
+  @override
+  String get lcY1B =>
+      'Sensitive administrative actions need a recent sign-in and two-step verification.';
+
+  @override
+  String get lcY2T => 'Privacy is a choice';
+
+  @override
+  String get lcY2B =>
+      'Turn on anonymous voting when a decision calls for it. The mode is visible on the ballot.';
+
+  @override
+  String get lcY3T => 'The server decides';
+
+  @override
+  String get lcY3B =>
+      'Voting windows, eligibility and one-vote-per-person are checked on the server at submission.';
+
+  @override
+  String get lcY4T => 'Reviewable records';
+
+  @override
+  String get lcY4B =>
+      'Key administrative actions are recorded so owners and admins can review them.';
+
+  @override
+  String get lcQ1T => 'What can we use Kivora for?';
+
+  @override
+  String get lcQ1B =>
+      'Candidate elections, single-choice polls and yes/no polls for your organization, such as representative choices, committee decisions and member questions.';
+
+  @override
+  String get lcQ2T => 'Who is allowed to vote?';
+
+  @override
+  String get lcQ2B =>
+      'The organizer sets one eligibility rule per vote: all active members, selected departments, or selected members. The server checks it again when you submit your ballot.';
+
+  @override
+  String get lcQ3T => 'Can a ballot be anonymous?';
+
+  @override
+  String get lcQ3B =>
+      'Yes, it is optional. In an anonymous vote your choice is stored without a field linking it to your account, while a separate participation record prevents voting twice. The mode is fixed when the vote is created and shown before you choose.';
+
+  @override
+  String get lcQ4T => 'How do I check my vote receipt?';
+
+  @override
+  String get lcQ4B =>
+      'Open Verify a receipt, paste your receipt hash and check it. The receipt confirms that a ballot with that receipt exists. It does not show your choice, who voted, or prove anything about the rest of the process.';
+
+  @override
+  String get lcQ5T => 'What does the history show?';
+
+  @override
+  String get lcQ5B =>
+      'Owners and admins can review a server-side record of key administrative and election actions for their organization.';
+
+  @override
+  String get lcQ6T => 'When can members see results?';
+
+  @override
+  String get lcQ6B =>
+      'Results are calculated after a vote closes. Ordinary members see them once an organization admin publishes them.';
+
+  @override
+  String get ldCandA => 'Candidate A';
+
+  @override
+  String get ldCandB => 'Candidate B';
+
+  @override
+  String get ldCandC => 'Candidate C';
+
+  @override
+  String get ldNavFeatures => 'Features';
+
+  @override
+  String get ldNavHow => 'How it works';
+
+  @override
+  String get ldNavOrgs => 'Organizations';
+
+  @override
+  String get ldNavSecurity => 'Security & privacy';
+
+  @override
+  String get ldNavTransparency => 'Transparency';
+
+  @override
+  String get ldBrandTop => 'Kivora, back to top';
+
+  @override
+  String get ldToLight => 'Switch to light theme';
+
+  @override
+  String get ldToDark => 'Switch to dark theme';
+
+  @override
+  String get ldSignIn => 'Sign in';
+
+  @override
+  String get ldGetStarted => 'Get started';
+
+  @override
+  String get ldMenu => 'Menu';
+
+  @override
+  String get ldCloseMenu => 'Close menu';
+
+  @override
+  String get ldVerify => 'Verify a receipt';
+
+  @override
+  String get ldHeroBadge => 'Kivora · secure e-voting and polling';
+
+  @override
+  String get ldHeroTitle => 'Run fair elections for your organization.';
+
+  @override
+  String get ldHeroBody =>
+      'Hold elections and polls for your members, choose between anonymous and identifiable voting, and let the server enforce eligibility, timing and one vote per person.';
+
+  @override
+  String get ldHaveCode => 'Have a joining code or invitation?  ';
+
+  @override
+  String get ldCreateToJoin => 'Create an account to join';
+
+  @override
+  String get ldFeaturesEyebrow => 'Built for collective decisions';
+
+  @override
+  String get ldFeaturesTitle => 'One place to vote and to manage who can.';
+
+  @override
+  String get ldFeaturesBody =>
+      'From choosing representatives to settling a yes/no question, every vote has a clear home.';
+
+  @override
+  String get ldHowTitle => 'A clear path from setup to result.';
+
+  @override
+  String get ldHowBody =>
+      'Make participation straightforward for organizers and members alike.';
+
+  @override
+  String get ldStart => 'Start with Kivora';
+
+  @override
+  String get ldOrgsEyebrow => 'For every kind of organization';
+
+  @override
+  String get ldOrgsTitle => 'Your community, represented.';
+
+  @override
+  String get ldOrgsBody =>
+      'Kivora organizations are set up as one of these types, then shaped around the people who take part.';
+
+  @override
+  String get ldSecTitle => 'Trust built into every step.';
+
+  @override
+  String get ldSecBody =>
+      'The rules that matter run on the server, and the voting mode is visible to members before they choose.';
+
+  @override
+  String get ldExplore => 'Explore transparency';
+
+  @override
+  String get ldPartRecord => 'Participation record';
+
+  @override
+  String get ldPartBody =>
+      'Records that an eligible member voted, so nobody can vote twice. It does not hold the choice in an anonymous vote.';
+
+  @override
+  String get ldBallotRecord => 'Ballot record';
+
+  @override
+  String get ldBallotBody =>
+      'Holds the choice. In an anonymous vote it has no field linking it to the voter\'s account.';
+
+  @override
+  String get ldAnonEyebrow => 'Anonymous voting';
+
+  @override
+  String get ldAnonTitle => 'Participation is recorded. Ballots stay separate.';
+
+  @override
+  String get ldAnonBody =>
+      'Two separate records let Kivora prevent double voting while keeping an anonymous choice anonymous.';
+
+  @override
+  String get ldReceiptTitle => 'Check a receipt without an account.';
+
+  @override
+  String get ldReceiptBody =>
+      'Paste a receipt hash to confirm that a ballot with that receipt exists. It does not reveal a choice or a voter, and it is a record-existence check, not a formal proof of the whole process.';
+
+  @override
+  String get ldFaqEyebrow => 'Frequently asked questions';
+
+  @override
+  String get ldFaqTitle => 'Good decisions start with clear answers.';
+
+  @override
+  String get ldCtaTitle => 'Make your next decision count.';
+
+  @override
+  String get ldCtaBody => 'Give every member a clear, secure way to be heard.';
+
+  @override
+  String get ldFooterTag => 'Secure e-voting and polling for organizations.';
+
+  @override
+  String get ldFooterProduct => 'Product';
+
+  @override
+  String get ldFooterTrust => 'Trust';
+
+  @override
+  String get ldFooterAccount => 'Account';
+
+  @override
+  String get ldFooterCreate => 'Create an account';
+
+  @override
+  String get ldFooterFaq => 'FAQ';
+
+  @override
+  String get ldCopyright => '© 2026 Sonryan. All rights reserved.';
+
+  @override
+  String get ldBackTop => 'Back to top';
+
+  @override
+  String get ldIllus => 'Illustration, not a live election';
+
+  @override
+  String get ldSample => 'Sample ballot';
+
+  @override
+  String get ldChoose => 'Choose one candidate.';
+
+  @override
+  String get ldSampleCands => 'Sample candidates';
+
+  @override
+  String get ldAnonBallot => 'Anonymous ballot';
+
+  @override
+  String get ldSubmit => 'Submit vote';
+
+  @override
+  String get ldTry => 'Try selecting a candidate. This is a preview only.';
+
+  @override
+  String ldPicked(String a) {
+    return 'You picked $a in this preview. Nothing is submitted.';
+  }
+
+  @override
+  String get ldHelpTitle => 'Still need a hand?';
+
+  @override
+  String get ldHelpBody =>
+      'For access or eligibility questions, ask your organization administrator. To see how elections work end to end, read the Transparency Center.';
+
+  @override
+  String get ldHelpOpen => 'Open the Transparency Center';
 }

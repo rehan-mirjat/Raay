@@ -5167,4 +5167,398 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get trVerify => 'التحقق من إيصال';
+
+  @override
+  String get lcF1T => 'إدارة المؤسسة';
+
+  @override
+  String get lcF1B =>
+      'أدر الأعضاء والأدوار والأقسام والدعوات ورموز الانضمام في مكان واحد.';
+
+  @override
+  String get lcF2T => 'الانتخابات والاستطلاعات';
+
+  @override
+  String get lcF2B =>
+      'أجرِ انتخابات مرشحين واستطلاعات اختيار واحد ونعم/لا بدورة حياة ثابتة: مسودة، مجدول، نشط، مغلق، مؤرشف.';
+
+  @override
+  String get lcF3T => 'سري أو معرّف الهوية';
+
+  @override
+  String get lcF3B =>
+      'اختر وضع الخصوصية عند إنشاء التصويت. يُعرض للأعضاء على الاقتراع قبل أن يختاروا.';
+
+  @override
+  String get lcF4T => 'أهلية تحت سيطرتك';
+
+  @override
+  String get lcF4B =>
+      'افتح التصويت لجميع الأعضاء النشطين أو أقسام محددة أو أعضاء محددين. يعيد الخادم التحقق منها عند إرسال الاقتراع.';
+
+  @override
+  String get lcF5T => 'سجل قابل للمراجعة';
+
+  @override
+  String get lcF5B =>
+      'يمكن للمالكين والمسؤولين مراجعة سجل على الخادم للإجراءات الإدارية والانتخابية المهمة.';
+
+  @override
+  String get lcF6T => 'التحقق من الإيصال';
+
+  @override
+  String get lcF6B =>
+      'بعد التصويت تحصل على إيصال. يستطيع أي شخص، دون حساب، التحقق من وجوده.';
+
+  @override
+  String get lcS1T => 'أنشئ مؤسستك';
+
+  @override
+  String get lcS1B => 'سجّل، ثم أنشئ مؤسسة وادعُ أفرادك.';
+
+  @override
+  String get lcS2T => 'أعدّ التصويت';
+
+  @override
+  String get lcS2B => 'اختر السؤال والجدول والخيارات والأهلية ووضع الخصوصية.';
+
+  @override
+  String get lcS3T => 'يشارك الأعضاء';
+
+  @override
+  String get lcS3B =>
+      'يحصل الأعضاء المؤهلون على طريق بسيط إلى الاقتراع أثناء فتح التصويت.';
+
+  @override
+  String get lcS4T => 'راجع النتيجة';
+
+  @override
+  String get lcS4B =>
+      'تُحتسب النتائج بعد إغلاق التصويت وتظهر للأعضاء عندما ينشرها المسؤول.';
+
+  @override
+  String get lcO1T => 'المؤسسات الأكاديمية';
+
+  @override
+  String get lcO1B => 'الأقسام والمجالس واللجان.';
+
+  @override
+  String get lcO2T => 'فرق الشركات';
+
+  @override
+  String get lcO2B => 'استطلاعات وانتخابات داخلية.';
+
+  @override
+  String get lcO3T => 'المنظمات غير الربحية';
+
+  @override
+  String get lcO3B => 'المجالس والمتطوعون والأعضاء.';
+
+  @override
+  String get lcO4T => 'الأندية والجمعيات';
+
+  @override
+  String get lcO4B => 'الجمعيات الطلابية والأندية.';
+
+  @override
+  String get lcO5T => 'الجمعيات المجتمعية';
+
+  @override
+  String get lcO5B => 'قرارات محلية مشتركة.';
+
+  @override
+  String get lcT1T => 'تسجيل دخول بخطوتين';
+
+  @override
+  String get lcT1B => 'تتطلب الإجراءات الإدارية الحساسة تحققًا بخطوتين.';
+
+  @override
+  String get lcT2T => 'الخصوصية خيارك';
+
+  @override
+  String get lcT2B =>
+      'في التصويت السري يُخزَّن اختيارك دون أي حقل يربطه بحسابك.';
+
+  @override
+  String get lcT3T => 'قواعد يتحقق منها الخادم';
+
+  @override
+  String get lcT3B =>
+      'يتحقق الخادم، لا التطبيق، من الأهلية والتوقيت والأصوات المكررة.';
+
+  @override
+  String get lcY1T => 'التحقق بخطوتين';
+
+  @override
+  String get lcY1B =>
+      'تتطلب الإجراءات الإدارية الحساسة تسجيل دخول حديثًا وتحققًا بخطوتين.';
+
+  @override
+  String get lcY2T => 'الخصوصية خيارك';
+
+  @override
+  String get lcY2B =>
+      'فعّل التصويت السري عندما يتطلب القرار ذلك. يظهر الوضع على الاقتراع.';
+
+  @override
+  String get lcY3T => 'الخادم هو الذي يقرر';
+
+  @override
+  String get lcY3B =>
+      'يُتحقق من وقت التصويت والأهلية وصوت واحد لكل شخص على الخادم عند الإرسال.';
+
+  @override
+  String get lcY4T => 'سجلات قابلة للمراجعة';
+
+  @override
+  String get lcY4B =>
+      'تُسجَّل الإجراءات الإدارية المهمة ليراجعها المالكون والمسؤولون.';
+
+  @override
+  String get lcQ1T => 'فيمَ يمكننا استخدام Kivora؟';
+
+  @override
+  String get lcQ1B =>
+      'انتخابات مرشحين واستطلاعات اختيار واحد ونعم/لا لمؤسستك، مثل اختيار الممثلين وقرارات اللجان وأسئلة الأعضاء.';
+
+  @override
+  String get lcQ2T => 'من يحق له التصويت؟';
+
+  @override
+  String get lcQ2B =>
+      'يحدد المنظّم قاعدة أهلية واحدة لكل تصويت: جميع الأعضاء النشطين أو أقسام محددة أو أعضاء محددون. يعيد الخادم التحقق منها عند إرسال اقتراعك.';
+
+  @override
+  String get lcQ3T => 'هل يمكن أن يكون الاقتراع سريًا؟';
+
+  @override
+  String get lcQ3B =>
+      'نعم، وهو اختياري. في التصويت السري يُخزَّن اختيارك دون حقل يربطه بحسابك، بينما يمنع سجل مشاركة منفصل التصويت مرتين. يُحدَّد الوضع عند إنشاء التصويت ويُعرض قبل أن تختار.';
+
+  @override
+  String get lcQ4T => 'كيف أتحقق من إيصال تصويتي؟';
+
+  @override
+  String get lcQ4B =>
+      'افتح \"التحقق من إيصال\" والصق تجزئة إيصالك وتحقق. يؤكد الإيصال وجود اقتراع بهذا الإيصال. لا يكشف اختيارك ولا الناخب ولا شيئًا عن بقية العملية.';
+
+  @override
+  String get lcQ5T => 'ماذا يعرض السجل؟';
+
+  @override
+  String get lcQ5B =>
+      'يمكن للمالكين والمسؤولين مراجعة سجل على الخادم للإجراءات الإدارية والانتخابية المهمة في مؤسستهم.';
+
+  @override
+  String get lcQ6T => 'متى يستطيع الأعضاء رؤية النتائج؟';
+
+  @override
+  String get lcQ6B =>
+      'تُحتسب النتائج بعد إغلاق التصويت. يراها الأعضاء العاديون عندما ينشرها مسؤول المؤسسة.';
+
+  @override
+  String get ldCandA => 'المرشح أ';
+
+  @override
+  String get ldCandB => 'المرشح ب';
+
+  @override
+  String get ldCandC => 'المرشح ج';
+
+  @override
+  String get ldNavFeatures => 'الميزات';
+
+  @override
+  String get ldNavHow => 'كيف يعمل';
+
+  @override
+  String get ldNavOrgs => 'المؤسسات';
+
+  @override
+  String get ldNavSecurity => 'الأمان والخصوصية';
+
+  @override
+  String get ldNavTransparency => 'الشفافية';
+
+  @override
+  String get ldBrandTop => 'Kivora، العودة إلى الأعلى';
+
+  @override
+  String get ldToLight => 'التبديل إلى السمة الفاتحة';
+
+  @override
+  String get ldToDark => 'التبديل إلى السمة الداكنة';
+
+  @override
+  String get ldSignIn => 'تسجيل الدخول';
+
+  @override
+  String get ldGetStarted => 'ابدأ الآن';
+
+  @override
+  String get ldMenu => 'القائمة';
+
+  @override
+  String get ldCloseMenu => 'إغلاق القائمة';
+
+  @override
+  String get ldVerify => 'التحقق من إيصال';
+
+  @override
+  String get ldHeroBadge => 'Kivora · تصويت واستطلاعات إلكترونية آمنة';
+
+  @override
+  String get ldHeroTitle => 'أجرِ انتخابات عادلة لمؤسستك.';
+
+  @override
+  String get ldHeroBody =>
+      'أجرِ انتخابات واستطلاعات لأعضائك، واختر بين التصويت السري والمعرّف، ودع الخادم يفرض الأهلية والتوقيت وصوتًا واحدًا لكل شخص.';
+
+  @override
+  String get ldHaveCode => 'هل لديك رمز انضمام أو دعوة؟  ';
+
+  @override
+  String get ldCreateToJoin => 'أنشئ حسابًا للانضمام';
+
+  @override
+  String get ldFeaturesEyebrow => 'مصمّم للقرارات الجماعية';
+
+  @override
+  String get ldFeaturesTitle => 'مكان واحد للتصويت ولإدارة من يحق له.';
+
+  @override
+  String get ldFeaturesBody =>
+      'من اختيار الممثلين إلى حسم سؤال نعم/لا، لكل تصويت مكان واضح.';
+
+  @override
+  String get ldHowTitle => 'طريق واضح من الإعداد إلى النتيجة.';
+
+  @override
+  String get ldHowBody => 'اجعل المشاركة سهلة للمنظّمين والأعضاء على حد سواء.';
+
+  @override
+  String get ldStart => 'ابدأ مع Kivora';
+
+  @override
+  String get ldOrgsEyebrow => 'لكل أنواع المؤسسات';
+
+  @override
+  String get ldOrgsTitle => 'مجتمعك، ممثَّلًا.';
+
+  @override
+  String get ldOrgsBody =>
+      'تُنشأ مؤسسات Kivora كأحد هذه الأنواع ثم تُشكَّل حول الأشخاص المشاركين.';
+
+  @override
+  String get ldSecTitle => 'ثقة مدمجة في كل خطوة.';
+
+  @override
+  String get ldSecBody =>
+      'القواعد المهمة تعمل على الخادم، ووضع التصويت ظاهر للأعضاء قبل أن يختاروا.';
+
+  @override
+  String get ldExplore => 'استكشف الشفافية';
+
+  @override
+  String get ldPartRecord => 'سجل المشاركة';
+
+  @override
+  String get ldPartBody =>
+      'يسجّل أن عضوًا مؤهلًا صوّت، فلا يستطيع أحد التصويت مرتين. لا يحتفظ بالاختيار في التصويت السري.';
+
+  @override
+  String get ldBallotRecord => 'سجل الاقتراع';
+
+  @override
+  String get ldBallotBody =>
+      'يحتفظ بالاختيار. وفي التصويت السري لا يحتوي على أي حقل يربطه بحساب الناخب.';
+
+  @override
+  String get ldAnonEyebrow => 'التصويت السري';
+
+  @override
+  String get ldAnonTitle => 'تُسجَّل المشاركة. وتبقى الأصوات منفصلة.';
+
+  @override
+  String get ldAnonBody =>
+      'سجلان منفصلان يتيحان لـ Kivora منع التصويت المزدوج مع إبقاء الاختيار السري سريًا.';
+
+  @override
+  String get ldReceiptTitle => 'تحقق من إيصال دون حساب.';
+
+  @override
+  String get ldReceiptBody =>
+      'الصق تجزئة إيصال للتأكد من وجود اقتراع بهذا الإيصال. لا يكشف اختيارًا ولا ناخبًا، وهو فحص لوجود السجل لا إثباتًا رسميًا للعملية كلها.';
+
+  @override
+  String get ldFaqEyebrow => 'الأسئلة الشائعة';
+
+  @override
+  String get ldFaqTitle => 'القرارات الجيدة تبدأ بإجابات واضحة.';
+
+  @override
+  String get ldCtaTitle => 'اجعل قرارك القادم مؤثرًا.';
+
+  @override
+  String get ldCtaBody => 'امنح كل عضو طريقة واضحة وآمنة ليُسمَع صوته.';
+
+  @override
+  String get ldFooterTag => 'تصويت واستطلاعات إلكترونية آمنة للمؤسسات.';
+
+  @override
+  String get ldFooterProduct => 'المنتج';
+
+  @override
+  String get ldFooterTrust => 'الثقة';
+
+  @override
+  String get ldFooterAccount => 'الحساب';
+
+  @override
+  String get ldFooterCreate => 'إنشاء حساب';
+
+  @override
+  String get ldFooterFaq => 'الأسئلة الشائعة';
+
+  @override
+  String get ldCopyright => '© 2026 Sonryan. جميع الحقوق محفوظة.';
+
+  @override
+  String get ldBackTop => 'العودة إلى الأعلى';
+
+  @override
+  String get ldIllus => 'توضيح، وليس انتخابًا حقيقيًا';
+
+  @override
+  String get ldSample => 'اقتراع تجريبي';
+
+  @override
+  String get ldChoose => 'اختر مرشحًا واحدًا.';
+
+  @override
+  String get ldSampleCands => 'مرشحون تجريبيون';
+
+  @override
+  String get ldAnonBallot => 'اقتراع سري';
+
+  @override
+  String get ldSubmit => 'إرسال الصوت';
+
+  @override
+  String get ldTry => 'جرّب اختيار مرشح. هذه معاينة فقط.';
+
+  @override
+  String ldPicked(String a) {
+    return 'اخترت $a في هذه المعاينة. لم يُرسَل شيء.';
+  }
+
+  @override
+  String get ldHelpTitle => 'هل تحتاج إلى مساعدة؟';
+
+  @override
+  String get ldHelpBody =>
+      'لأسئلة الوصول أو الأهلية اسأل مسؤول مؤسستك. ولمعرفة كيف تعمل الانتخابات من البداية إلى النهاية اقرأ مركز الشفافية.';
+
+  @override
+  String get ldHelpOpen => 'افتح مركز الشفافية';
 }

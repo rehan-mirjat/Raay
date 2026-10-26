@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/foundation.dart' show ValueListenable;
@@ -334,7 +335,7 @@ class IllustrativeBallot extends StatefulWidget {
 }
 
 class _IllustrativeBallotState extends State<IllustrativeBallot> {
-  static const _names = ['Candidate A', 'Candidate B', 'Candidate C'];
+  List<String> _names(AppLocalizations l) => [l.ldCandA, l.ldCandB, l.ldCandC];
   int? _selected;
 
   @override
@@ -364,7 +365,7 @@ class _IllustrativeBallotState extends State<IllustrativeBallot> {
                   size: 16, color: kc.textSecondary),
               const SizedBox(width: 6),
               Expanded(
-                child: Text('Illustration, not a live election',
+                child: Text(AppLocalizations.of(context).ldIllus,
                     style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -374,21 +375,21 @@ class _IllustrativeBallotState extends State<IllustrativeBallot> {
             const SizedBox(height: 16),
             Semantics(
               header: true,
-              child: Text('Sample ballot',
+              child: Text(AppLocalizations.of(context).ldSample,
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w800,
                       color: kc.textPrimary)),
             ),
             const SizedBox(height: 4),
-            Text('Choose one candidate.',
+            Text(AppLocalizations.of(context).ldChoose,
                 style: TextStyle(fontSize: 14, color: kc.textSecondary)),
             const SizedBox(height: 16),
             Semantics(
               container: true,
-              label: 'Sample candidates',
+              label: AppLocalizations.of(context).ldSampleCands,
               child: Column(children: [
-                for (var i = 0; i < _names.length; i++) _row(context, i),
+                for (var i = 0; i < 3; i++) _row(context, i),
               ]),
             ),
             const SizedBox(height: 8),
@@ -397,7 +398,7 @@ class _IllustrativeBallotState extends State<IllustrativeBallot> {
                   size: 16, color: kc.successText),
               const SizedBox(width: 6),
               Expanded(
-                child: Text('Anonymous ballot',
+                child: Text(AppLocalizations.of(context).ldAnonBallot,
                     style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
@@ -411,14 +412,16 @@ class _IllustrativeBallotState extends State<IllustrativeBallot> {
                 onPressed: null,
                 style: FilledButton.styleFrom(
                     minimumSize: const Size.fromHeight(48)),
-                child: const Text('Submit vote'),
+                child: Text(AppLocalizations.of(context).ldSubmit),
               ),
             ),
             const SizedBox(height: 10),
             Text(
               _selected == null
-                  ? 'Try selecting a candidate. This is a preview only.'
-                  : 'You picked ${_names[_selected!]} in this preview. Nothing is submitted.',
+                  ? AppLocalizations.of(context).ldTry
+                  : AppLocalizations.of(context).ldPicked(
+                      (_names(AppLocalizations.of(context))[_selected!])
+                          .toString()),
               style:
                   TextStyle(fontSize: 13, height: 1.4, color: kc.textSecondary),
             ),
@@ -433,7 +436,7 @@ class _IllustrativeBallotState extends State<IllustrativeBallot> {
     return Semantics(
       inMutuallyExclusiveGroup: true,
       checked: selected,
-      label: _names[i],
+      label: _names(AppLocalizations.of(context))[i],
       excludeSemantics: true,
       onTap: () => setState(() => _selected = i),
       child: Padding(
@@ -467,7 +470,7 @@ class _IllustrativeBallotState extends State<IllustrativeBallot> {
                     color: selected ? kc.accentText : kc.textSecondary),
                 const SizedBox(width: 12),
                 Expanded(
-                    child: Text(_names[i],
+                    child: Text(_names(AppLocalizations.of(context))[i],
                         style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
@@ -899,21 +902,20 @@ class HelpCard extends StatelessWidget {
           children: [
             const IconTile(Icons.support_agent_rounded),
             const SizedBox(height: 16),
-            Text('Still need a hand?',
+            Text(AppLocalizations.of(context).ldHelpTitle,
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: kc.textPrimary)),
             const SizedBox(height: 8),
-            Text(
-                'For access or eligibility questions, ask your organization administrator. To see how elections work end to end, read the Transparency Center.',
+            Text(AppLocalizations.of(context).ldHelpBody,
                 style: TextStyle(
                     fontSize: 15, height: 1.55, color: kc.textSecondary)),
             const SizedBox(height: 16),
             OutlinedButton(
               style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
               onPressed: onTransparency,
-              child: const Text('Open the Transparency Center'),
+              child: Text(AppLocalizations.of(context).ldHelpOpen),
             ),
           ]),
     );
