@@ -4724,4 +4724,359 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get shLogout => 'لاگ آؤٹ';
+
+  @override
+  String get hsThanks => 'آپ کی رائے کا شکریہ! ہمیں آپ کا پیغام مل گیا ہے۔';
+
+  @override
+  String get hsFailed =>
+      'رائے نہیں بھیجی جا سکی۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔';
+
+  @override
+  String get hsTitle => 'مدد اور معاونت';
+
+  @override
+  String get hsFaq => 'اکثر پوچھے جانے والے سوالات';
+
+  @override
+  String get hsQ1 => 'میں اپنا ووٹ کیسے دوں؟';
+
+  @override
+  String get hsA1 =>
+      'اپنی تنظیم کے ڈیش بورڈ سے کوئی فعال انتخاب منتخب کریں اور اسکرین کی ہدایات پر عمل کریں۔';
+
+  @override
+  String get hsQ2 => 'کیا میرا ووٹ گمنام ہے؟';
+
+  @override
+  String get hsA2 =>
+      'گمنام انتخاب میں آپ کا انتخاب کبھی آپ کے اکاؤنٹ سے نہیں جوڑا جاتا - نظام یہ تصدیق کر سکتا ہے کہ آپ نے ووٹ دیا بغیر یہ ریکارڈ کیے کہ آپ نے کیا چنا۔ شناخت والے انتخابات ووٹ سے پہلے واضح طور پر نشان زد ہوتے ہیں۔ آپ کی رسید کیا ثابت کرتی ہے اور کیا نہیں، اس کی تفصیل کے لیے اعتماد اور شفافیت کا مرکز دیکھیں۔';
+
+  @override
+  String get hsQ3 => 'میں اپنی پروفائل کی معلومات کیسے بدلوں؟';
+
+  @override
+  String get hsA3 =>
+      'اپنی ذاتی تفصیلات اپ ڈیٹ کرنے کے لیے اوپر دائیں پروفائل مینو سے اکاؤنٹ کی ترتیبات کے صفحے پر جائیں۔';
+
+  @override
+  String get hsGuidance => 'مدد اور رہنمائی';
+
+  @override
+  String get hsVerify => 'رسید کی تصدیق کریں';
+
+  @override
+  String get hsVerifyBody =>
+      'جانچیں کہ بیلٹ کی رسید ریکارڈ ہوئی۔ اس سے کبھی ظاہر نہیں ہوتا کہ کسی نے کیسے ووٹ دیا۔';
+
+  @override
+  String get hsTrust => 'اعتماد اور شفافیت';
+
+  @override
+  String get hsTrustBody =>
+      'Kivora بیلٹ کی رازداری کیسے محفوظ رکھتا ہے اور کیا ریکارڈ ہوتا ہے۔';
+
+  @override
+  String get hsSend => 'رائے بھیجیں یا معاونت سے رابطہ کریں';
+
+  @override
+  String get hsCategory => 'زمرہ';
+
+  @override
+  String get hsSubject => 'موضوع';
+
+  @override
+  String get hsSubjectHint => 'یہ کس بارے میں ہے؟';
+
+  @override
+  String get hsSubjectField => 'موضوع';
+
+  @override
+  String get hsReceipt => 'رسید کی آئی ڈی (اختیاری)';
+
+  @override
+  String get hsReceiptHint =>
+      'اگر یہ کسی خاص ووٹ سے متعلق ہے تو رسید کی آئی ڈی چسپاں کریں';
+
+  @override
+  String get hsReceiptNote =>
+      'یہاں اپنا بیلٹ کا انتخاب کبھی نہ لکھیں - رسید صرف تصدیق کرتی ہے کہ آپ کا ووٹ ریکارڈ ہوا، یہ ظاہر نہیں کرتی کہ آپ نے کیا چنا۔';
+
+  @override
+  String get hsMessage => 'پیغام';
+
+  @override
+  String get hsMessageHint => 'اپنا مسئلہ بیان کریں یا اپنی رائے دیں...';
+
+  @override
+  String get hsMessageField => 'پیغام';
+
+  @override
+  String get hsSending => 'بھیجا جا رہا ہے...';
+
+  @override
+  String get hsSendButton => 'پیغام بھیجیں';
+
+  @override
+  String get rvfTitle => 'عوامی رسید کی تصدیق';
+
+  @override
+  String get rvfHeading => 'بیلٹ کی رسید کی تصدیق کریں';
+
+  @override
+  String get rvfIntro =>
+      'اپنی رسید کا ہیش درج کریں تاکہ تصدیق ہو سکے کہ سرور نے اسے ریکارڈ کیا۔ یہ صرف جانچتا ہے کہ مماثل رسید موجود ہے۔ اس سے ظاہر نہیں ہوتا کہ کسی نے کیسے ووٹ دیا، اور یہ حتمی گنتی میں شمولیت کا آزادانہ ثبوت نہیں۔';
+
+  @override
+  String get rvfHashLabel => 'رسید کا ہیش';
+
+  @override
+  String get rvfHashHint => '64 حروف کا ہیش (حروف a-f اور ہندسے)';
+
+  @override
+  String get rvfVerify => 'رسید کی تصدیق کریں';
+
+  @override
+  String get rvfOkTitle => 'رسید کی تصدیق ہو گئی';
+
+  @override
+  String get rvfOkBody =>
+      'مماثل رسید ملی، یعنی سرور نے یہ بیلٹ ریکارڈ کیا۔ یہ حتمی گنتی میں شمولیت کا آزادانہ ثبوت نہیں۔';
+
+  @override
+  String get rvfNoTitle => 'کوئی مماثل رسید نہیں';
+
+  @override
+  String get rvfNoBody =>
+      'سروس کام کر رہی ہے اور اس ہیش کی کوئی رسید نہیں۔ جانچیں کہ آپ نے اپنی رسید سے پورا ہیش کاپی کیا ہے۔';
+
+  @override
+  String get rvfBadTitle => 'یہ درست رسید کا ہیش نہیں';
+
+  @override
+  String get rvfBadBody =>
+      'رسید کا ہیش بالکل 64 حروف کا ہوتا ہے: ہندسے 0-9 اور حروف a-f۔ سرور کو کچھ نہیں بھیجا گیا۔';
+
+  @override
+  String get rvfRateTitle => 'بہت زیادہ تلاشیں';
+
+  @override
+  String get rvfRateBody => 'دوبارہ کوشش سے پہلے ایک منٹ انتظار کریں۔';
+
+  @override
+  String get rvfDownTitle => 'تصدیق ابھی دستیاب نہیں';
+
+  @override
+  String get rvfDownBody =>
+      'ہم تصدیقی سروس تک نہیں پہنچ سکے، اس لیے نہیں بتا سکتے کہ آپ کی رسید موجود ہے یا نہیں۔ یہ \"نہیں ملی\" کا نتیجہ نہیں۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔';
+
+  @override
+  String get rvfRetry => 'دوبارہ کوشش کریں';
+
+  @override
+  String get rgDoneTitle => 'رجسٹریشن کامیاب';
+
+  @override
+  String get rgDoneBody =>
+      'آپ کی Kivora شناخت محفوظ طریقے سے بن گئی ہے۔ اب آپ اپنی معلومات سے سائن اِن کر سکتے ہیں۔';
+
+  @override
+  String get rgReturn => 'لاگ اِن پر واپس جائیں';
+
+  @override
+  String get rgFirstLabel => 'پہلا نام';
+
+  @override
+  String get rgFirstHint => 'پہلا';
+
+  @override
+  String get rgFirstField => 'پہلا نام';
+
+  @override
+  String get rgLastLabel => 'آخری نام';
+
+  @override
+  String get rgLastHint => 'آخری';
+
+  @override
+  String get rgLastField => 'آخری نام';
+
+  @override
+  String get rgEmailLabel => 'ای میل ایڈریس';
+
+  @override
+  String get rgEmailHint => 'user@email.com';
+
+  @override
+  String get rgPassword => 'پاس ورڈ';
+
+  @override
+  String get rgConfirm => 'پاس ورڈ کی تصدیق کریں';
+
+  @override
+  String get evYourEmail => 'آپ کا ای میل ایڈریس';
+
+  @override
+  String get evOk => 'ای میل کی تصدیق کامیاب!';
+
+  @override
+  String get evNot =>
+      'ای میل کی تصدیق ابھی نہیں ہوئی۔ اپنا ان باکس دیکھیں اور تصدیقی لنک پر کلک کریں۔';
+
+  @override
+  String evCheckFailed(String a) {
+    return 'تصدیق کی حالت جانچی نہیں جا سکی: $a';
+  }
+
+  @override
+  String get evResent =>
+      'نئی تصدیقی ای میل بھیج دی گئی ہے۔ اپنا ان باکس دیکھیں۔';
+
+  @override
+  String evResendFailed(String a) {
+    return 'ای میل دوبارہ نہیں بھیجی جا سکی: $a';
+  }
+
+  @override
+  String get evTitle => 'ای میل کی تصدیق';
+
+  @override
+  String get evSignOut => 'سائن آؤٹ';
+
+  @override
+  String get evHeading => 'اپنے ای میل ایڈریس کی تصدیق کریں';
+
+  @override
+  String evSent(String a) {
+    return 'ہم نے تصدیقی لنک بھیجا ہے:\n$a';
+  }
+
+  @override
+  String get evClick =>
+      'مکمل رسائی کھولنے کے لیے اپنی ای میل میں لنک پر کلک کریں۔';
+
+  @override
+  String evCooldown(String a) {
+    return '$a سیکنڈ میں ای میل دوبارہ بھیجیں';
+  }
+
+  @override
+  String get evResend => 'تصدیقی ای میل دوبارہ بھیجیں';
+
+  @override
+  String get evSwitch => 'سائن آؤٹ / دوسرا اکاؤنٹ استعمال کریں';
+
+  @override
+  String get fpTitle => 'پاس ورڈ بھول گئے؟';
+
+  @override
+  String get fpBody =>
+      'پاس ورڈ ری سیٹ کرنے کی ہدایات پانے کے لیے اپنے اکاؤنٹ سے منسلک ای میل ایڈریس درج کریں۔';
+
+  @override
+  String get fpSent =>
+      'اگر اس ای میل کا اکاؤنٹ موجود ہے تو پاس ورڈ ری سیٹ کا لنک بھیج دیا گیا ہے۔ اپنا ان باکس دیکھیں۔';
+
+  @override
+  String get fpEmail => 'ای میل ایڈریس';
+
+  @override
+  String get fpEmailHint => 'user@email.com';
+
+  @override
+  String fpCooldown(String a) {
+    return '$a سیکنڈ میں لنک دوبارہ بھیجیں';
+  }
+
+  @override
+  String get fpSend => 'ری سیٹ لنک بھیجیں';
+
+  @override
+  String get plOpenFailed => 'ادائیگی کا صفحہ نہیں کھل سکا۔';
+
+  @override
+  String get plReauth =>
+      'سیکیورٹی کے لیے سائن آؤٹ کر کے دوبارہ سائن اِن کریں، پھر کوشش کریں۔';
+
+  @override
+  String get plGeneric => 'کچھ غلط ہو گیا۔ دوبارہ کوشش کریں۔';
+
+  @override
+  String get plBack => 'واپس';
+
+  @override
+  String get plTitle => 'پلانز اور بلنگ';
+
+  @override
+  String get plNoOrg => 'اس کا پلان دیکھنے کے لیے ایک تنظیم منتخب کریں۔';
+
+  @override
+  String plIntro(String a) {
+    return 'پلانز $a پر لاگو ہوتے ہیں۔ ووٹرز کبھی ادائیگی نہیں کرتے اور انہیں ووٹ دینے سے کبھی نہیں روکا جاتا۔ اشتہارات بیلٹ، رسید، تصدیق یا ایڈمن اسکرینز پر کبھی نہیں آتے۔';
+  }
+
+  @override
+  String get plOwnerOnly => 'صرف تنظیم کا مالک پلان بدل سکتا ہے۔';
+
+  @override
+  String get plSoon => 'آن لائن اپ گریڈ جلد آ رہا ہے';
+
+  @override
+  String get plOpening => 'کھل رہا ہے…';
+
+  @override
+  String get plUpgrade => 'پرو میں اپ گریڈ کریں';
+
+  @override
+  String get plManage => 'سبسکرپشن سنبھالیں یا منسوخ کریں';
+
+  @override
+  String get plContact => 'سیلز سے رابطہ کریں';
+
+  @override
+  String get plCurrent => 'موجودہ';
+
+  @override
+  String get spLogo => 'Kivora کا لوگو';
+
+  @override
+  String get spTag => 'انٹرپرائز ملٹی ٹیننٹ ای ووٹنگ';
+
+  @override
+  String get spBadge => 'سرور سے مجاز اور ٹیننٹ سے الگ';
+
+  @override
+  String get spInit => 'محفوظ سیشن شروع ہو رہا ہے...';
+
+  @override
+  String get spErrTitle => 'کنکشن میں خرابی';
+
+  @override
+  String get spErrBody => 'Kivora کی سروسز سے رابطہ نہیں ہو سکا۔';
+
+  @override
+  String get spRetry => 'کنکشن دوبارہ آزمائیں';
+
+  @override
+  String get sclProfile => 'تنظیم کی پروفائل مکمل کریں';
+
+  @override
+  String get sclMembers => 'اراکین شامل کریں';
+
+  @override
+  String get sclDepts => 'شعبے ترتیب دیں';
+
+  @override
+  String get sclFirst => 'اپنا پہلا ووٹنگ انتخاب بنائیں';
+
+  @override
+  String get sclTitle => 'اپنی تنظیم تیار کریں';
+
+  @override
+  String get sclDismiss => 'بند کریں';
+
+  @override
+  String sclProgress(String a, String b) {
+    return '$b میں سے $a مکمل';
+  }
 }

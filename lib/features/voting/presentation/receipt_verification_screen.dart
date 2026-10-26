@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:kivora/core/theme/kivora_icons.dart';
 
@@ -19,7 +20,8 @@ class ReceiptVerificationScreen extends StatefulWidget {
   final ReceiptVerifier? verifier;
 
   @override
-  State<ReceiptVerificationScreen> createState() => _ReceiptVerificationScreenState();
+  State<ReceiptVerificationScreen> createState() =>
+      _ReceiptVerificationScreenState();
 }
 
 class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
@@ -81,14 +83,15 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Public Receipt Verification'),
+        title: Text(AppLocalizations.of(context).rvfTitle),
         elevation: 0,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(isDesktop ? 32 : 16),
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: ResponsiveLayout.maxFormWidth),
+            constraints:
+                const BoxConstraints(maxWidth: ResponsiveLayout.maxFormWidth),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -96,10 +99,11 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(KivoraIcons.shieldCheck, size: 32, color: kc.accentText),
+                      Icon(KivoraIcons.shieldCheck,
+                          size: 32, color: kc.accentText),
                       const SizedBox(height: 16),
                       Text(
-                        'Verify ballot receipt',
+                        AppLocalizations.of(context).rvfHeading,
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -108,23 +112,22 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Enter the receipt hash from your receipt to confirm the server recorded it. '
-                        'This checks that a matching receipt exists. It does not show how anyone voted, '
-                        'and it does not independently prove inclusion in the final tally.',
-                        style: TextStyle(fontSize: 14, color: kc.textSecondary, height: 1.5),
+                        AppLocalizations.of(context).rvfIntro,
+                        style: TextStyle(
+                            fontSize: 14, color: kc.textSecondary, height: 1.5),
                       ),
                       const SizedBox(height: 24),
                       KivoraTextField(
-                        label: 'Receipt hash',
+                        label: AppLocalizations.of(context).rvfHashLabel,
                         controller: _hashController,
-                        hint: '64-character hash (letters a-f and digits)',
+                        hint: AppLocalizations.of(context).rvfHashHint,
                         prefixIcon: KivoraIcons.lock,
                         textInputAction: TextInputAction.search,
                         onFieldSubmitted: (_) => _verifyReceipt(),
                       ),
                       const SizedBox(height: 16),
                       KivoraButton(
-                        label: 'Verify receipt',
+                        label: AppLocalizations.of(context).rvfVerify,
                         icon: KivoraIcons.search,
                         isLoading: _isSearching,
                         onPressed: _isSearching ? null : _verifyReceipt,
@@ -164,33 +167,29 @@ class _OutcomeCard extends StatelessWidget {
       case ReceiptVerificationOutcome.verified:
         icon = KivoraIcons.checkCircle;
         color = kc.successText;
-        title = 'Receipt verified';
-        body = 'A matching receipt was found, so the server recorded this ballot. '
-            'This does not independently prove inclusion in the final tally.';
+        title = AppLocalizations.of(context).rvfOkTitle;
+        body = AppLocalizations.of(context).rvfOkBody;
       case ReceiptVerificationOutcome.notFound:
         icon = KivoraIcons.alertCircle;
         color = kc.errorText;
-        title = 'No matching receipt';
-        body = 'The service is working and has no receipt with this hash. '
-            'Check that you copied the whole hash from your receipt.';
+        title = AppLocalizations.of(context).rvfNoTitle;
+        body = AppLocalizations.of(context).rvfNoBody;
       case ReceiptVerificationOutcome.invalidInput:
         icon = Icons.edit_off_outlined;
         color = kc.warningText;
-        title = 'That is not a valid receipt hash';
-        body = 'A receipt hash is exactly 64 characters: digits 0-9 and letters a-f. '
-            'Nothing was sent to the server.';
+        title = AppLocalizations.of(context).rvfBadTitle;
+        body = AppLocalizations.of(context).rvfBadBody;
       case ReceiptVerificationOutcome.rateLimited:
         icon = Icons.hourglass_top_rounded;
         color = kc.warningText;
-        title = 'Too many lookups';
-        body = 'Please wait a minute before trying again.';
+        title = AppLocalizations.of(context).rvfRateTitle;
+        body = AppLocalizations.of(context).rvfRateBody;
         retry = true;
       case ReceiptVerificationOutcome.unavailable:
         icon = Icons.cloud_off_outlined;
         color = kc.warningText;
-        title = 'Verification is unavailable right now';
-        body = 'We could not reach the verification service, so we cannot say whether '
-            'your receipt exists. This is not a "not found" result. Check your connection and try again.';
+        title = AppLocalizations.of(context).rvfDownTitle;
+        body = AppLocalizations.of(context).rvfDownBody;
         retry = true;
     }
 
@@ -204,7 +203,8 @@ class _OutcomeCard extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color),
+              style: TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.bold, color: color),
             ),
             const SizedBox(height: 8),
             Text(
@@ -216,7 +216,7 @@ class _OutcomeCard extends StatelessWidget {
               const SizedBox(height: 16),
               KivoraButton(
                 type: KivoraButtonType.secondary,
-                label: 'Try again',
+                label: AppLocalizations.of(context).rvfRetry,
                 icon: Icons.refresh_rounded,
                 onPressed: onRetry,
               ),

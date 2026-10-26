@@ -29,8 +29,7 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
       context,
       ref,
       reason:
-          'Enrolling two-factor authentication requires you to have signed '
-          'in recently. Please verify your identity to continue.',
+          'Enrolling two-factor authentication requires you to have signed in recently. Please verify your identity to continue.',
     );
     if (!reauthed || !context.mounted) return false;
     session = await user.multiFactor.getSession();
@@ -115,8 +114,7 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    '1. Scan this QR code with an authenticator app '
-                    '(Google Authenticator, Authy, 1Password, etc.).',
+                    '1. Scan this QR code with an authenticator app (Google Authenticator, Authy, 1Password, etc.).',
                     style: TextStyle(fontSize: 13),
                   ),
                   const SizedBox(height: 12),

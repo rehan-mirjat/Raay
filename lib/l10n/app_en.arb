@@ -2390,5 +2390,164 @@
   "shTrust": "Trust & Transparency",
   "shPlatformAdmin": "Platform admin",
   "shOrganizations": "Organizations",
-  "shLogout": "Log out"
+  "shLogout": "Log out",
+  "hsThanks": "Thank you for your feedback! We have received your message.",
+  "hsFailed": "Failed to send feedback. Please check your connection and try again.",
+  "hsTitle": "Help & Support",
+  "hsFaq": "Frequently Asked Questions",
+  "hsQ1": "How do I cast my vote?",
+  "hsA1": "You can cast your vote by selecting an active election from your organization dashboard and following the on-screen instructions.",
+  "hsQ2": "Are my votes anonymous?",
+  "hsA2": "In an anonymous election, your ballot choice is never linked to your account - the system can confirm you voted without recording what you chose. Identifiable elections are clearly labeled before you vote. See the Trust & Transparency Center for full detail on what your receipt does and doesn't prove.",
+  "hsQ3": "How can I change my profile information?",
+  "hsA3": "Navigate to the Account Settings page from the top-right profile dropdown menu to update your personal details.",
+  "hsGuidance": "Help & Guidance",
+  "hsVerify": "Verify a receipt",
+  "hsVerifyBody": "Check that a ballot receipt was recorded. This never shows how anyone voted.",
+  "hsTrust": "Trust & transparency",
+  "hsTrustBody": "How Kivora protects ballot privacy and what is recorded.",
+  "hsSend": "Send Feedback or Contact Support",
+  "hsCategory": "CATEGORY",
+  "hsSubject": "SUBJECT",
+  "hsSubjectHint": "What is this regarding?",
+  "hsSubjectField": "Subject",
+  "hsReceipt": "RECEIPT ID (OPTIONAL)",
+  "hsReceiptHint": "Paste a receipt ID if this relates to a specific vote",
+  "hsReceiptNote": "Never include your ballot choice here - a receipt confirms your vote was recorded, it does not reveal what you selected.",
+  "hsMessage": "MESSAGE",
+  "hsMessageHint": "Please describe your issue or share your feedback...",
+  "hsMessageField": "Message",
+  "hsSending": "Sending...",
+  "hsSendButton": "Send Message",
+  "rvfTitle": "Public Receipt Verification",
+  "rvfHeading": "Verify ballot receipt",
+  "rvfIntro": "Enter the receipt hash from your receipt to confirm the server recorded it. This checks that a matching receipt exists. It does not show how anyone voted, and it does not independently prove inclusion in the final tally.",
+  "rvfHashLabel": "Receipt hash",
+  "rvfHashHint": "64-character hash (letters a-f and digits)",
+  "rvfVerify": "Verify receipt",
+  "rvfOkTitle": "Receipt verified",
+  "rvfOkBody": "A matching receipt was found, so the server recorded this ballot. This does not independently prove inclusion in the final tally.",
+  "rvfNoTitle": "No matching receipt",
+  "rvfNoBody": "The service is working and has no receipt with this hash. Check that you copied the whole hash from your receipt.",
+  "rvfBadTitle": "That is not a valid receipt hash",
+  "rvfBadBody": "A receipt hash is exactly 64 characters: digits 0-9 and letters a-f. Nothing was sent to the server.",
+  "rvfRateTitle": "Too many lookups",
+  "rvfRateBody": "Please wait a minute before trying again.",
+  "rvfDownTitle": "Verification is unavailable right now",
+  "rvfDownBody": "We could not reach the verification service, so we cannot say whether your receipt exists. This is not a \"not found\" result. Check your connection and try again.",
+  "rvfRetry": "Try again",
+  "rgDoneTitle": "Registration Successful",
+  "rgDoneBody": "Your Kivora identity has been securely generated. You may now sign in using your credentials.",
+  "rgReturn": "Return to Login",
+  "rgFirstLabel": "First name",
+  "rgFirstHint": "First",
+  "rgFirstField": "First Name",
+  "rgLastLabel": "Last name",
+  "rgLastHint": "Last",
+  "rgLastField": "Last Name",
+  "rgEmailLabel": "Email address",
+  "rgEmailHint": "user@email.com",
+  "rgPassword": "Password",
+  "rgConfirm": "Confirm Password",
+  "evYourEmail": "your email address",
+  "evOk": "Email verified successfully!",
+  "evNot": "Email is not verified yet. Please check your inbox and click the verification link.",
+  "evCheckFailed": "Could not check verification status: {a}",
+  "@evCheckFailed": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "evResent": "A new verification email has been sent. Please check your inbox.",
+  "evResendFailed": "Failed to resend email: {a}",
+  "@evResendFailed": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "evTitle": "Verify Email",
+  "evSignOut": "Sign Out",
+  "evHeading": "Verify Your Email Address",
+  "evSent": "We have sent a verification link to:\n{a}",
+  "@evSent": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "evClick": "Please click the link in your email to unlock complete platform access.",
+  "evCooldown": "Resend Email in {a}s",
+  "@evCooldown": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "evResend": "Resend Verification Email",
+  "evSwitch": "Sign Out / Use Different Account",
+  "fpTitle": "Forgot Password?",
+  "fpBody": "Enter the email address associated with your account to receive instructions to reset your password.",
+  "fpSent": "If an account exists for this email address, a password reset link has been sent. Please check your inbox.",
+  "fpEmail": "EMAIL ADDRESS",
+  "fpEmailHint": "user@email.com",
+  "fpCooldown": "Resend Link in {a}s",
+  "@fpCooldown": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "fpSend": "Send Reset Link",
+  "plOpenFailed": "Could not open the payment page.",
+  "plReauth": "For security, please sign out and sign back in, then try again.",
+  "plGeneric": "Something went wrong. Please try again.",
+  "plBack": "Back",
+  "plTitle": "Plans & Billing",
+  "plNoOrg": "Select an organization to see its plan.",
+  "plIntro": "Plans apply to {a}. Voters never pay and are never blocked from voting. Ads never appear on ballot, receipt, verification or admin screens.",
+  "@plIntro": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "plOwnerOnly": "Only the organization owner can change the plan.",
+  "plSoon": "Online upgrade coming soon",
+  "plOpening": "Opening…",
+  "plUpgrade": "Upgrade to Pro",
+  "plManage": "Manage or cancel subscription",
+  "plContact": "Contact sales",
+  "plCurrent": "CURRENT",
+  "spLogo": "Kivora Logo",
+  "spTag": "Enterprise Multi-Tenant E-Voting",
+  "spBadge": "Server-Authorized & Tenant-Isolated",
+  "spInit": "Initializing secure session...",
+  "spErrTitle": "Connection Error",
+  "spErrBody": "Failed to connect to Kivora services.",
+  "spRetry": "Retry Connection",
+  "sclProfile": "Complete organization profile",
+  "sclMembers": "Add members",
+  "sclDepts": "Set up departments",
+  "sclFirst": "Create your first voting event",
+  "sclTitle": "Get your organization ready",
+  "sclDismiss": "Dismiss",
+  "sclProgress": "{a} of {b} completed",
+  "@sclProgress": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  }
 }

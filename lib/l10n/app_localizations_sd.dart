@@ -4736,4 +4736,361 @@ class AppLocalizationsSd extends AppLocalizations {
 
   @override
   String get shLogout => 'Log out';
+
+  @override
+  String get hsThanks =>
+      'Thank you for your feedback! We have received your message.';
+
+  @override
+  String get hsFailed =>
+      'Failed to send feedback. Please check your connection and try again.';
+
+  @override
+  String get hsTitle => 'Help & Support';
+
+  @override
+  String get hsFaq => 'Frequently Asked Questions';
+
+  @override
+  String get hsQ1 => 'How do I cast my vote?';
+
+  @override
+  String get hsA1 =>
+      'You can cast your vote by selecting an active election from your organization dashboard and following the on-screen instructions.';
+
+  @override
+  String get hsQ2 => 'Are my votes anonymous?';
+
+  @override
+  String get hsA2 =>
+      'In an anonymous election, your ballot choice is never linked to your account - the system can confirm you voted without recording what you chose. Identifiable elections are clearly labeled before you vote. See the Trust & Transparency Center for full detail on what your receipt does and doesn\'t prove.';
+
+  @override
+  String get hsQ3 => 'How can I change my profile information?';
+
+  @override
+  String get hsA3 =>
+      'Navigate to the Account Settings page from the top-right profile dropdown menu to update your personal details.';
+
+  @override
+  String get hsGuidance => 'Help & Guidance';
+
+  @override
+  String get hsVerify => 'Verify a receipt';
+
+  @override
+  String get hsVerifyBody =>
+      'Check that a ballot receipt was recorded. This never shows how anyone voted.';
+
+  @override
+  String get hsTrust => 'Trust & transparency';
+
+  @override
+  String get hsTrustBody =>
+      'How Kivora protects ballot privacy and what is recorded.';
+
+  @override
+  String get hsSend => 'Send Feedback or Contact Support';
+
+  @override
+  String get hsCategory => 'CATEGORY';
+
+  @override
+  String get hsSubject => 'SUBJECT';
+
+  @override
+  String get hsSubjectHint => 'What is this regarding?';
+
+  @override
+  String get hsSubjectField => 'Subject';
+
+  @override
+  String get hsReceipt => 'RECEIPT ID (OPTIONAL)';
+
+  @override
+  String get hsReceiptHint =>
+      'Paste a receipt ID if this relates to a specific vote';
+
+  @override
+  String get hsReceiptNote =>
+      'Never include your ballot choice here - a receipt confirms your vote was recorded, it does not reveal what you selected.';
+
+  @override
+  String get hsMessage => 'MESSAGE';
+
+  @override
+  String get hsMessageHint =>
+      'Please describe your issue or share your feedback...';
+
+  @override
+  String get hsMessageField => 'Message';
+
+  @override
+  String get hsSending => 'Sending...';
+
+  @override
+  String get hsSendButton => 'Send Message';
+
+  @override
+  String get rvfTitle => 'Public Receipt Verification';
+
+  @override
+  String get rvfHeading => 'Verify ballot receipt';
+
+  @override
+  String get rvfIntro =>
+      'Enter the receipt hash from your receipt to confirm the server recorded it. This checks that a matching receipt exists. It does not show how anyone voted, and it does not independently prove inclusion in the final tally.';
+
+  @override
+  String get rvfHashLabel => 'Receipt hash';
+
+  @override
+  String get rvfHashHint => '64-character hash (letters a-f and digits)';
+
+  @override
+  String get rvfVerify => 'Verify receipt';
+
+  @override
+  String get rvfOkTitle => 'Receipt verified';
+
+  @override
+  String get rvfOkBody =>
+      'A matching receipt was found, so the server recorded this ballot. This does not independently prove inclusion in the final tally.';
+
+  @override
+  String get rvfNoTitle => 'No matching receipt';
+
+  @override
+  String get rvfNoBody =>
+      'The service is working and has no receipt with this hash. Check that you copied the whole hash from your receipt.';
+
+  @override
+  String get rvfBadTitle => 'That is not a valid receipt hash';
+
+  @override
+  String get rvfBadBody =>
+      'A receipt hash is exactly 64 characters: digits 0-9 and letters a-f. Nothing was sent to the server.';
+
+  @override
+  String get rvfRateTitle => 'Too many lookups';
+
+  @override
+  String get rvfRateBody => 'Please wait a minute before trying again.';
+
+  @override
+  String get rvfDownTitle => 'Verification is unavailable right now';
+
+  @override
+  String get rvfDownBody =>
+      'We could not reach the verification service, so we cannot say whether your receipt exists. This is not a \"not found\" result. Check your connection and try again.';
+
+  @override
+  String get rvfRetry => 'Try again';
+
+  @override
+  String get rgDoneTitle => 'Registration Successful';
+
+  @override
+  String get rgDoneBody =>
+      'Your Kivora identity has been securely generated. You may now sign in using your credentials.';
+
+  @override
+  String get rgReturn => 'Return to Login';
+
+  @override
+  String get rgFirstLabel => 'First name';
+
+  @override
+  String get rgFirstHint => 'First';
+
+  @override
+  String get rgFirstField => 'First Name';
+
+  @override
+  String get rgLastLabel => 'Last name';
+
+  @override
+  String get rgLastHint => 'Last';
+
+  @override
+  String get rgLastField => 'Last Name';
+
+  @override
+  String get rgEmailLabel => 'Email address';
+
+  @override
+  String get rgEmailHint => 'user@email.com';
+
+  @override
+  String get rgPassword => 'Password';
+
+  @override
+  String get rgConfirm => 'Confirm Password';
+
+  @override
+  String get evYourEmail => 'your email address';
+
+  @override
+  String get evOk => 'Email verified successfully!';
+
+  @override
+  String get evNot =>
+      'Email is not verified yet. Please check your inbox and click the verification link.';
+
+  @override
+  String evCheckFailed(String a) {
+    return 'Could not check verification status: $a';
+  }
+
+  @override
+  String get evResent =>
+      'A new verification email has been sent. Please check your inbox.';
+
+  @override
+  String evResendFailed(String a) {
+    return 'Failed to resend email: $a';
+  }
+
+  @override
+  String get evTitle => 'Verify Email';
+
+  @override
+  String get evSignOut => 'Sign Out';
+
+  @override
+  String get evHeading => 'Verify Your Email Address';
+
+  @override
+  String evSent(String a) {
+    return 'We have sent a verification link to:\n$a';
+  }
+
+  @override
+  String get evClick =>
+      'Please click the link in your email to unlock complete platform access.';
+
+  @override
+  String evCooldown(String a) {
+    return 'Resend Email in ${a}s';
+  }
+
+  @override
+  String get evResend => 'Resend Verification Email';
+
+  @override
+  String get evSwitch => 'Sign Out / Use Different Account';
+
+  @override
+  String get fpTitle => 'Forgot Password?';
+
+  @override
+  String get fpBody =>
+      'Enter the email address associated with your account to receive instructions to reset your password.';
+
+  @override
+  String get fpSent =>
+      'If an account exists for this email address, a password reset link has been sent. Please check your inbox.';
+
+  @override
+  String get fpEmail => 'EMAIL ADDRESS';
+
+  @override
+  String get fpEmailHint => 'user@email.com';
+
+  @override
+  String fpCooldown(String a) {
+    return 'Resend Link in ${a}s';
+  }
+
+  @override
+  String get fpSend => 'Send Reset Link';
+
+  @override
+  String get plOpenFailed => 'Could not open the payment page.';
+
+  @override
+  String get plReauth =>
+      'For security, please sign out and sign back in, then try again.';
+
+  @override
+  String get plGeneric => 'Something went wrong. Please try again.';
+
+  @override
+  String get plBack => 'Back';
+
+  @override
+  String get plTitle => 'Plans & Billing';
+
+  @override
+  String get plNoOrg => 'Select an organization to see its plan.';
+
+  @override
+  String plIntro(String a) {
+    return 'Plans apply to $a. Voters never pay and are never blocked from voting. Ads never appear on ballot, receipt, verification or admin screens.';
+  }
+
+  @override
+  String get plOwnerOnly => 'Only the organization owner can change the plan.';
+
+  @override
+  String get plSoon => 'Online upgrade coming soon';
+
+  @override
+  String get plOpening => 'Opening…';
+
+  @override
+  String get plUpgrade => 'Upgrade to Pro';
+
+  @override
+  String get plManage => 'Manage or cancel subscription';
+
+  @override
+  String get plContact => 'Contact sales';
+
+  @override
+  String get plCurrent => 'CURRENT';
+
+  @override
+  String get spLogo => 'Kivora Logo';
+
+  @override
+  String get spTag => 'Enterprise Multi-Tenant E-Voting';
+
+  @override
+  String get spBadge => 'Server-Authorized & Tenant-Isolated';
+
+  @override
+  String get spInit => 'Initializing secure session...';
+
+  @override
+  String get spErrTitle => 'Connection Error';
+
+  @override
+  String get spErrBody => 'Failed to connect to Kivora services.';
+
+  @override
+  String get spRetry => 'Retry Connection';
+
+  @override
+  String get sclProfile => 'Complete organization profile';
+
+  @override
+  String get sclMembers => 'Add members';
+
+  @override
+  String get sclDepts => 'Set up departments';
+
+  @override
+  String get sclFirst => 'Create your first voting event';
+
+  @override
+  String get sclTitle => 'Get your organization ready';
+
+  @override
+  String get sclDismiss => 'Dismiss';
+
+  @override
+  String sclProgress(String a, String b) {
+    return '$a of $b completed';
+  }
 }

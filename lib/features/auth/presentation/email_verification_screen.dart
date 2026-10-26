@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +9,9 @@ import '../../../core/utils/error_utils.dart';
 import '../../../core/widgets/inline_error_banner.dart';
 import '../../../services/auth_service.dart';
 
-String _friendlyAuthError(Object e) =>
-    e is FirebaseAuthException ? mapFirebaseAuthError(e) : 'Something went wrong. Please try again.';
+String _friendlyAuthError(Object e) => e is FirebaseAuthException
+    ? mapFirebaseAuthError(e)
+    : 'Something went wrong. Please try again.';
 
 class EmailVerificationScreen extends ConsumerStatefulWidget {
   const EmailVerificationScreen({super.key, this.onVerified, this.onSignOut});
@@ -18,10 +20,12 @@ class EmailVerificationScreen extends ConsumerStatefulWidget {
   final VoidCallback? onSignOut;
 
   @override
-  ConsumerState<EmailVerificationScreen> createState() => _EmailVerificationScreenState();
+  ConsumerState<EmailVerificationScreen> createState() =>
+      _EmailVerificationScreenState();
 }
 
-class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScreen> {
+class _EmailVerificationScreenState
+    extends ConsumerState<EmailVerificationScreen> {
   bool _isChecking = false;
   bool _isResending = false;
   int _cooldownSeconds = 0;
@@ -60,11 +64,12 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
     });
 
     try {
-      final isVerified = await ref.read(authServiceProvider).checkEmailVerified();
+      final isVerified =
+          await ref.read(authServiceProvider).checkEmailVerified();
       if (mounted) {
         if (isVerified) {
           setState(() {
-            _message = 'Email verified successfully!';
+            _message = AppLocalizations.of(context).evOk;
             _isChecking = false;
           });
           if (widget.onVerified != null) {
@@ -72,7 +77,7 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
           }
         } else {
           setState(() {
-            _error = 'Email is not verified yet. Please check your inbox and click the verification link.';
+            _error = AppLocalizations.of(context).evNot;
             _isChecking = false;
           });
         }
@@ -80,7 +85,8 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = 'Could not check verification status: ${_friendlyAuthError(e)}';
+          _error = AppLocalizations.of(context)
+              .evCheckFailed((_friendlyAuthError(e)).toString());
           _isChecking = false;
         });
       }
@@ -100,7 +106,7 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
       await ref.read(authServiceProvider).sendEmailVerification();
       if (mounted) {
         setState(() {
-          _message = 'A new verification email has been sent. Please check your inbox.';
+          _message = AppLocalizations.of(context).evResent;
           _isResending = false;
         });
         _startCooldown(30);
@@ -108,7 +114,8 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = 'Failed to resend email: ${_friendlyAuthError(e)}';
+          _error = AppLocalizations.of(context)
+              .evResendFailed((_friendlyAuthError(e)).toString());
           _isResending = false;
         });
       }
@@ -124,16 +131,17 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
 
   @override
   Widget build(BuildContext context) {
-    final userEmail = ref.watch(authServiceProvider).currentUser?.email ?? 'your email address';
+    final userEmail = ref.watch(authServiceProvider).currentUser?.email ??
+        AppLocalizations.of(context).evYourEmail;
     final kc = KivoraColors.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Verify Email'),
+        title: Text(AppLocalizations.of(context).evTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            tooltip: 'Sign Out',
+            tooltip: AppLocalizations.of(context).evSignOut,
             onPressed: _signOut,
           ),
         ],
@@ -153,7 +161,7 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'Verify Your Email Address',
+                  AppLocalizations.of(context).evHeading,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -163,7 +171,7 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'We have sent a verification link to:\n$userEmail',
+                  AppLocalizations.of(context).evSent(userEmail.toString()),
                   style: TextStyle(
                     color: kc.textSecondary,
                     fontSize: 15,
@@ -173,7 +181,7 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Please click the link in your email to unlock complete platform access.',
+                  AppLocalizations.of(context).evClick,
                   style: TextStyle(
                     color: kc.textSecondary,
                     fontSize: 13,
@@ -181,33 +189,32 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
-                
                 if (_message != null) ...[
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: AppTheme.success.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppTheme.success.withValues(alpha: 0.3)),
+                      border: Border.all(
+                          color: AppTheme.success.withValues(alpha: 0.3)),
                     ),
                     child: Row(
                       children: [
                         Icon(Icons.check_circle_outline, color: kc.successText),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: Text(_message!, style: TextStyle(color: kc.successText)),
+                          child: Text(_message!,
+                              style: TextStyle(color: kc.successText)),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 16),
                 ],
-
                 if (_error != null) ...[
                   InlineErrorBanner(message: _error!),
                   const SizedBox(height: 16),
                 ],
-
                 ElevatedButton.icon(
                   onPressed: _isChecking ? null : _checkStatus,
                   icon: _isChecking
@@ -221,7 +228,9 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
                 ),
                 const SizedBox(height: 12),
                 OutlinedButton.icon(
-                  onPressed: (_isResending || _cooldownSeconds > 0) ? null : _resendEmail,
+                  onPressed: (_isResending || _cooldownSeconds > 0)
+                      ? null
+                      : _resendEmail,
                   icon: _isResending
                       ? const SizedBox(
                           height: 18,
@@ -230,13 +239,14 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
                         )
                       : const Icon(Icons.send_outlined),
                   label: Text(_cooldownSeconds > 0
-                      ? 'Resend Email in ${_cooldownSeconds}s'
-                      : 'Resend Verification Email'),
+                      ? AppLocalizations.of(context)
+                          .evCooldown(_cooldownSeconds.toString())
+                      : AppLocalizations.of(context).evResend),
                 ),
                 const SizedBox(height: 24),
                 TextButton(
                   onPressed: _signOut,
-                  child: const Text('Sign Out / Use Different Account'),
+                  child: Text(AppLocalizations.of(context).evSwitch),
                 ),
               ],
             ),

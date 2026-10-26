@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,6 +35,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
   bool _busy = false;
 
   Future<void> _openStripe(String callable, String orgId) async {
+    final l = AppLocalizations.of(context);
     setState(() => _busy = true);
     try {
       final result = await FirebaseService()
@@ -41,17 +43,20 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
           .httpsCallable(callable)
           .call({'organizationId': orgId});
       final url = (result.data as Map?)?['url'] as String?;
-      if (url == null || !await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication)) {
-        throw Exception('Could not open the payment page.');
+      if (url == null ||
+          !await launchUrl(Uri.parse(url),
+              mode: LaunchMode.externalApplication)) {
+        throw Exception(l.plOpenFailed);
       }
     } catch (e) {
       if (!mounted) return;
       final message = e is FirebaseFunctionsException
           ? (isRecentAuthError(e)
-              ? 'For security, please sign out and sign back in, then try again.'
-              : (e.message ?? 'Something went wrong. Please try again.'))
+              ? l.plReauth
+              : (e.message ?? l.plGeneric))
           : friendlyError(e);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -60,7 +65,8 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
   @override
   Widget build(BuildContext context) {
     final kc = KivoraColors.of(context);
-    final ctx = ref.watch(activeOrganizationContextProvider).valueOrNull?.context;
+    final ctx =
+        ref.watch(activeOrganizationContextProvider).valueOrNull?.context;
     final current = ref.watch(activePlanProvider);
     final isOwner = ctx?.member.role == OrganizationRole.owner;
 
@@ -78,21 +84,22 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
                   style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
                   onPressed: () => context.go('/home'),
                   icon: const Icon(Icons.arrow_back_rounded, size: 18),
-                  label: const Text('Back'),
+                  label: Text(AppLocalizations.of(context).plBack),
                 ),
                 Semantics(
                   header: true,
-                  child: Text('Plans & Billing',
+                  child: Text(AppLocalizations.of(context).plTitle,
                       style: TextStyle(
-                          fontSize: 26, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: kc.textPrimary)),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   ctx == null
-                      ? 'Select an organization to see its plan.'
-                      : 'Plans apply to ${ctx.organization.name}. Voters never pay and are never '
-                          'blocked from voting. Ads never appear on ballot, receipt, '
-                          'verification or admin screens.',
+                      ? AppLocalizations.of(context).plNoOrg
+                      : AppLocalizations.of(context)
+                          .plIntro(ctx.organization.name.toString()),
                   style: TextStyle(color: kc.textSecondary, height: 1.4),
                 ),
                 const SizedBox(height: 20),
@@ -100,12 +107,13 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
                   _PlanCard(
                     plan: plan,
                     isCurrent: plan.id == current,
-                    action: _action(plan, current, isOwner, ctx?.organization.id),
+                    action:
+                        _action(plan, current, isOwner, ctx?.organization.id),
                   ),
                   const SizedBox(height: 14),
                 ],
                 if (!isOwner && ctx != null)
-                  Text('Only the organization owner can change the plan.',
+                  Text(AppLocalizations.of(context).plOwnerOnly,
                       style: TextStyle(color: kc.textSecondary, fontSize: 14)),
               ],
             ),
@@ -118,31 +126,39 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
   Widget? _action(PlanInfo plan, PlanId current, bool isOwner, String? orgId) {
     if (orgId == null || plan.id == current) return null;
     if (!_billingEnabled && plan.id == PlanId.pro) {
-      return const KivoraButton(
+      return KivoraButton(
         type: KivoraButtonType.secondary,
-        label: 'Online upgrade coming soon',
+        label: AppLocalizations.of(context).plSoon,
         icon: Icons.schedule_rounded,
         onPressed: null,
       );
     }
     if (plan.id == PlanId.pro && current == PlanId.free) {
       return KivoraButton(
-        label: _busy ? 'Opening…' : 'Upgrade to Pro',
+        label: _busy
+            ? AppLocalizations.of(context).plOpening
+            : AppLocalizations.of(context).plUpgrade,
         icon: Icons.workspace_premium_outlined,
-        onPressed: (!isOwner || _busy) ? null : () => _openStripe('createCheckoutSession', orgId),
+        onPressed: (!isOwner || _busy)
+            ? null
+            : () => _openStripe('createCheckoutSession', orgId),
       );
     }
     if (plan.id == PlanId.free && current == PlanId.pro) {
       return KivoraButton(
         type: KivoraButtonType.secondary,
-        label: _busy ? 'Opening…' : 'Manage or cancel subscription',
-        onPressed: (!isOwner || _busy) ? null : () => _openStripe('createBillingPortalSession', orgId),
+        label: _busy
+            ? AppLocalizations.of(context).plOpening
+            : AppLocalizations.of(context).plManage,
+        onPressed: (!isOwner || _busy)
+            ? null
+            : () => _openStripe('createBillingPortalSession', orgId),
       );
     }
     if (plan.id == PlanId.enterprise && _salesEmail.isNotEmpty) {
       return KivoraButton(
         type: KivoraButtonType.secondary,
-        label: 'Contact sales',
+        label: AppLocalizations.of(context).plContact,
         onPressed: () => launchUrl(Uri(scheme: 'mailto', path: _salesEmail)),
       );
     }
@@ -178,18 +194,22 @@ class _PlanCard extends StatelessWidget {
                 children: [
                   Text(plan.name,
                       style: TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: kc.textPrimary)),
                   if (isCurrent)
                     StatusBadge(
-                      label: 'CURRENT',
-                      backgroundColor: AppTheme.primaryBlue.withValues(alpha: kc.isDark ? 0.16 : 0.10),
+                      label: AppLocalizations.of(context).plCurrent,
+                      backgroundColor: AppTheme.primaryBlue
+                          .withValues(alpha: kc.isDark ? 0.16 : 0.10),
                       textColor: kc.accentText,
                       icon: Icons.check_circle_rounded,
                     ),
                 ],
               ),
               Text(plan.priceLabel,
-                  style: TextStyle(fontWeight: FontWeight.w600, color: kc.textSecondary)),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600, color: kc.textSecondary)),
             ],
           ),
           const SizedBox(height: 12),
@@ -202,7 +222,8 @@ class _PlanCard extends StatelessWidget {
                   Icon(Icons.check_rounded, size: 18, color: kc.successText),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(f, style: TextStyle(color: kc.textPrimary, fontSize: 14)),
+                    child: Text(f,
+                        style: TextStyle(color: kc.textPrimary, fontSize: 14)),
                   ),
                 ],
               ),

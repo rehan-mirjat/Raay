@@ -1,3 +1,4 @@
+import '../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -129,7 +130,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             // rounded corners, background, and glow, so it's shown directly
             // rather than nested inside another decorative container.
             Semantics(
-              label: 'Kivora Logo',
+              label: AppLocalizations.of(context).spLogo,
               child: Container(
                 width: 96,
                 height: 96,
@@ -169,7 +170,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             ),
             const SizedBox(height: 6),
             Text(
-              'Enterprise Multi-Tenant E-Voting',
+              AppLocalizations.of(context).spTag,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -203,7 +204,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           ),
           const SizedBox(width: 6),
           Text(
-            'Server-Authorized & Tenant-Isolated',
+            AppLocalizations.of(context).spBadge,
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
@@ -229,7 +230,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         ),
         const SizedBox(height: 14),
         Text(
-          'Initializing secure session...',
+          AppLocalizations.of(context).spInit,
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w500,
@@ -268,7 +269,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           ),
           const SizedBox(height: 12),
           Text(
-            'Connection Error',
+            AppLocalizations.of(context).spErrTitle,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -277,7 +278,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           ),
           const SizedBox(height: 6),
           Text(
-            widget.errorMessage ?? 'Failed to connect to Kivora services.',
+            widget.errorMessage ?? AppLocalizations.of(context).spErrBody,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,
@@ -290,7 +291,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             ElevatedButton.icon(
               onPressed: widget.onRetry,
               icon: const Icon(Icons.refresh_rounded, size: 18),
-              label: const Text('Retry Connection'),
+              label: Text(AppLocalizations.of(context).spRetry),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primaryBlue,
                 foregroundColor: Colors.white,

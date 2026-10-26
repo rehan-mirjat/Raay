@@ -104,12 +104,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     color: KivoraColors.of(context).successText, size: 64),
                 const SizedBox(height: 24),
                 Text(
-                  'Registration Successful',
+                  AppLocalizations.of(context).rgDoneTitle,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'Your Kivora identity has been securely generated. You may now sign in using your credentials.',
+                Text(
+                  AppLocalizations.of(context).rgDoneBody,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
@@ -128,7 +128,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       });
                     }
                   },
-                  child: const Text('Return to Login'),
+                  child: Text(AppLocalizations.of(context).rgReturn),
                 ),
               ],
             ),
@@ -204,28 +204,33 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             LayoutBuilder(
                               builder: (context, constraints) {
                                 final firstName = KivoraTextField(
-                                  label: 'First name',
+                                  label:
+                                      AppLocalizations.of(context).rgFirstLabel,
                                   controller: _firstNameController,
                                   textInputAction: TextInputAction.next,
                                   autofillHints: const [
                                     AutofillHints.givenName
                                   ],
-                                  hint: 'First',
+                                  hint:
+                                      AppLocalizations.of(context).rgFirstHint,
                                   prefixIcon: KivoraIcons.user,
-                                  validator: (v) =>
-                                      Validators.required(v, 'First Name'),
+                                  validator: (v) => Validators.required(
+                                      v,
+                                      AppLocalizations.of(context)
+                                          .rgFirstField),
                                 );
                                 final lastName = KivoraTextField(
-                                  label: 'Last name',
+                                  label:
+                                      AppLocalizations.of(context).rgLastLabel,
                                   controller: _lastNameController,
                                   textInputAction: TextInputAction.next,
                                   autofillHints: const [
                                     AutofillHints.familyName
                                   ],
-                                  hint: 'Last',
+                                  hint: AppLocalizations.of(context).rgLastHint,
                                   prefixIcon: KivoraIcons.user,
-                                  validator: (v) =>
-                                      Validators.required(v, 'Last Name'),
+                                  validator: (v) => Validators.required(v,
+                                      AppLocalizations.of(context).rgLastField),
                                 );
                                 if (constraints.maxWidth < 400) {
                                   return Column(children: [
@@ -243,18 +248,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             ),
                             const SizedBox(height: 16),
                             KivoraTextField(
-                              label: 'Email address',
+                              label: AppLocalizations.of(context).rgEmailLabel,
                               controller: _emailController,
                               textInputAction: TextInputAction.next,
                               autofillHints: const [AutofillHints.email],
-                              hint: 'user@email.com',
+                              hint: AppLocalizations.of(context).rgEmailHint,
                               prefixIcon: KivoraIcons.mail,
                               keyboardType: TextInputType.emailAddress,
                               validator: Validators.email,
                             ),
                             const SizedBox(height: 16),
                             KivoraTextField(
-                              label: 'Password',
+                              label: AppLocalizations.of(context).rgPassword,
                               controller: _passwordController,
                               obscureText: _obscurePassword,
                               textInputAction: TextInputAction.next,
@@ -279,7 +284,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             ),
                             const SizedBox(height: 16),
                             KivoraTextField(
-                              label: 'Confirm Password',
+                              label: AppLocalizations.of(context).rgConfirm,
                               controller: _confirmPasswordController,
                               obscureText: _obscureConfirmPassword,
                               textInputAction: TextInputAction.done,

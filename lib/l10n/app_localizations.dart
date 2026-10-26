@@ -8477,6 +8477,648 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Log out'**
   String get shLogout;
+
+  /// No description provided for @hsThanks.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for your feedback! We have received your message.'**
+  String get hsThanks;
+
+  /// No description provided for @hsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send feedback. Please check your connection and try again.'**
+  String get hsFailed;
+
+  /// No description provided for @hsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Support'**
+  String get hsTitle;
+
+  /// No description provided for @hsFaq.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequently Asked Questions'**
+  String get hsFaq;
+
+  /// No description provided for @hsQ1.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I cast my vote?'**
+  String get hsQ1;
+
+  /// No description provided for @hsA1.
+  ///
+  /// In en, this message translates to:
+  /// **'You can cast your vote by selecting an active election from your organization dashboard and following the on-screen instructions.'**
+  String get hsA1;
+
+  /// No description provided for @hsQ2.
+  ///
+  /// In en, this message translates to:
+  /// **'Are my votes anonymous?'**
+  String get hsQ2;
+
+  /// No description provided for @hsA2.
+  ///
+  /// In en, this message translates to:
+  /// **'In an anonymous election, your ballot choice is never linked to your account - the system can confirm you voted without recording what you chose. Identifiable elections are clearly labeled before you vote. See the Trust & Transparency Center for full detail on what your receipt does and doesn\'t prove.'**
+  String get hsA2;
+
+  /// No description provided for @hsQ3.
+  ///
+  /// In en, this message translates to:
+  /// **'How can I change my profile information?'**
+  String get hsQ3;
+
+  /// No description provided for @hsA3.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigate to the Account Settings page from the top-right profile dropdown menu to update your personal details.'**
+  String get hsA3;
+
+  /// No description provided for @hsGuidance.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Guidance'**
+  String get hsGuidance;
+
+  /// No description provided for @hsVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify a receipt'**
+  String get hsVerify;
+
+  /// No description provided for @hsVerifyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Check that a ballot receipt was recorded. This never shows how anyone voted.'**
+  String get hsVerifyBody;
+
+  /// No description provided for @hsTrust.
+  ///
+  /// In en, this message translates to:
+  /// **'Trust & transparency'**
+  String get hsTrust;
+
+  /// No description provided for @hsTrustBody.
+  ///
+  /// In en, this message translates to:
+  /// **'How Kivora protects ballot privacy and what is recorded.'**
+  String get hsTrustBody;
+
+  /// No description provided for @hsSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Feedback or Contact Support'**
+  String get hsSend;
+
+  /// No description provided for @hsCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'CATEGORY'**
+  String get hsCategory;
+
+  /// No description provided for @hsSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'SUBJECT'**
+  String get hsSubject;
+
+  /// No description provided for @hsSubjectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What is this regarding?'**
+  String get hsSubjectHint;
+
+  /// No description provided for @hsSubjectField.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get hsSubjectField;
+
+  /// No description provided for @hsReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'RECEIPT ID (OPTIONAL)'**
+  String get hsReceipt;
+
+  /// No description provided for @hsReceiptHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a receipt ID if this relates to a specific vote'**
+  String get hsReceiptHint;
+
+  /// No description provided for @hsReceiptNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Never include your ballot choice here - a receipt confirms your vote was recorded, it does not reveal what you selected.'**
+  String get hsReceiptNote;
+
+  /// No description provided for @hsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'MESSAGE'**
+  String get hsMessage;
+
+  /// No description provided for @hsMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please describe your issue or share your feedback...'**
+  String get hsMessageHint;
+
+  /// No description provided for @hsMessageField.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get hsMessageField;
+
+  /// No description provided for @hsSending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending...'**
+  String get hsSending;
+
+  /// No description provided for @hsSendButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Message'**
+  String get hsSendButton;
+
+  /// No description provided for @rvfTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Public Receipt Verification'**
+  String get rvfTitle;
+
+  /// No description provided for @rvfHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify ballot receipt'**
+  String get rvfHeading;
+
+  /// No description provided for @rvfIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the receipt hash from your receipt to confirm the server recorded it. This checks that a matching receipt exists. It does not show how anyone voted, and it does not independently prove inclusion in the final tally.'**
+  String get rvfIntro;
+
+  /// No description provided for @rvfHashLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt hash'**
+  String get rvfHashLabel;
+
+  /// No description provided for @rvfHashHint.
+  ///
+  /// In en, this message translates to:
+  /// **'64-character hash (letters a-f and digits)'**
+  String get rvfHashHint;
+
+  /// No description provided for @rvfVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify receipt'**
+  String get rvfVerify;
+
+  /// No description provided for @rvfOkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt verified'**
+  String get rvfOkTitle;
+
+  /// No description provided for @rvfOkBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A matching receipt was found, so the server recorded this ballot. This does not independently prove inclusion in the final tally.'**
+  String get rvfOkBody;
+
+  /// No description provided for @rvfNoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching receipt'**
+  String get rvfNoTitle;
+
+  /// No description provided for @rvfNoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The service is working and has no receipt with this hash. Check that you copied the whole hash from your receipt.'**
+  String get rvfNoBody;
+
+  /// No description provided for @rvfBadTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'That is not a valid receipt hash'**
+  String get rvfBadTitle;
+
+  /// No description provided for @rvfBadBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A receipt hash is exactly 64 characters: digits 0-9 and letters a-f. Nothing was sent to the server.'**
+  String get rvfBadBody;
+
+  /// No description provided for @rvfRateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many lookups'**
+  String get rvfRateTitle;
+
+  /// No description provided for @rvfRateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait a minute before trying again.'**
+  String get rvfRateBody;
+
+  /// No description provided for @rvfDownTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification is unavailable right now'**
+  String get rvfDownTitle;
+
+  /// No description provided for @rvfDownBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not reach the verification service, so we cannot say whether your receipt exists. This is not a \"not found\" result. Check your connection and try again.'**
+  String get rvfDownBody;
+
+  /// No description provided for @rvfRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get rvfRetry;
+
+  /// No description provided for @rgDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration Successful'**
+  String get rgDoneTitle;
+
+  /// No description provided for @rgDoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Kivora identity has been securely generated. You may now sign in using your credentials.'**
+  String get rgDoneBody;
+
+  /// No description provided for @rgReturn.
+  ///
+  /// In en, this message translates to:
+  /// **'Return to Login'**
+  String get rgReturn;
+
+  /// No description provided for @rgFirstLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get rgFirstLabel;
+
+  /// No description provided for @rgFirstHint.
+  ///
+  /// In en, this message translates to:
+  /// **'First'**
+  String get rgFirstHint;
+
+  /// No description provided for @rgFirstField.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get rgFirstField;
+
+  /// No description provided for @rgLastLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name'**
+  String get rgLastLabel;
+
+  /// No description provided for @rgLastHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Last'**
+  String get rgLastHint;
+
+  /// No description provided for @rgLastField.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get rgLastField;
+
+  /// No description provided for @rgEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email address'**
+  String get rgEmailLabel;
+
+  /// No description provided for @rgEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'user@email.com'**
+  String get rgEmailHint;
+
+  /// No description provided for @rgPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get rgPassword;
+
+  /// No description provided for @rgConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get rgConfirm;
+
+  /// No description provided for @evYourEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'your email address'**
+  String get evYourEmail;
+
+  /// No description provided for @evOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Email verified successfully!'**
+  String get evOk;
+
+  /// No description provided for @evNot.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is not verified yet. Please check your inbox and click the verification link.'**
+  String get evNot;
+
+  /// No description provided for @evCheckFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not check verification status: {a}'**
+  String evCheckFailed(String a);
+
+  /// No description provided for @evResent.
+  ///
+  /// In en, this message translates to:
+  /// **'A new verification email has been sent. Please check your inbox.'**
+  String get evResent;
+
+  /// No description provided for @evResendFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to resend email: {a}'**
+  String evResendFailed(String a);
+
+  /// No description provided for @evTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Email'**
+  String get evTitle;
+
+  /// No description provided for @evSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out'**
+  String get evSignOut;
+
+  /// No description provided for @evHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Your Email Address'**
+  String get evHeading;
+
+  /// No description provided for @evSent.
+  ///
+  /// In en, this message translates to:
+  /// **'We have sent a verification link to:\n{a}'**
+  String evSent(String a);
+
+  /// No description provided for @evClick.
+  ///
+  /// In en, this message translates to:
+  /// **'Please click the link in your email to unlock complete platform access.'**
+  String get evClick;
+
+  /// No description provided for @evCooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend Email in {a}s'**
+  String evCooldown(String a);
+
+  /// No description provided for @evResend.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend Verification Email'**
+  String get evResend;
+
+  /// No description provided for @evSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out / Use Different Account'**
+  String get evSwitch;
+
+  /// No description provided for @fpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password?'**
+  String get fpTitle;
+
+  /// No description provided for @fpBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the email address associated with your account to receive instructions to reset your password.'**
+  String get fpBody;
+
+  /// No description provided for @fpSent.
+  ///
+  /// In en, this message translates to:
+  /// **'If an account exists for this email address, a password reset link has been sent. Please check your inbox.'**
+  String get fpSent;
+
+  /// No description provided for @fpEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'EMAIL ADDRESS'**
+  String get fpEmail;
+
+  /// No description provided for @fpEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'user@email.com'**
+  String get fpEmailHint;
+
+  /// No description provided for @fpCooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend Link in {a}s'**
+  String fpCooldown(String a);
+
+  /// No description provided for @fpSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Reset Link'**
+  String get fpSend;
+
+  /// No description provided for @plOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the payment page.'**
+  String get plOpenFailed;
+
+  /// No description provided for @plReauth.
+  ///
+  /// In en, this message translates to:
+  /// **'For security, please sign out and sign back in, then try again.'**
+  String get plReauth;
+
+  /// No description provided for @plGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get plGeneric;
+
+  /// No description provided for @plBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get plBack;
+
+  /// No description provided for @plTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans & Billing'**
+  String get plTitle;
+
+  /// No description provided for @plNoOrg.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an organization to see its plan.'**
+  String get plNoOrg;
+
+  /// No description provided for @plIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans apply to {a}. Voters never pay and are never blocked from voting. Ads never appear on ballot, receipt, verification or admin screens.'**
+  String plIntro(String a);
+
+  /// No description provided for @plOwnerOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the organization owner can change the plan.'**
+  String get plOwnerOnly;
+
+  /// No description provided for @plSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Online upgrade coming soon'**
+  String get plSoon;
+
+  /// No description provided for @plOpening.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening…'**
+  String get plOpening;
+
+  /// No description provided for @plUpgrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Pro'**
+  String get plUpgrade;
+
+  /// No description provided for @plManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage or cancel subscription'**
+  String get plManage;
+
+  /// No description provided for @plContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact sales'**
+  String get plContact;
+
+  /// No description provided for @plCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'CURRENT'**
+  String get plCurrent;
+
+  /// No description provided for @spLogo.
+  ///
+  /// In en, this message translates to:
+  /// **'Kivora Logo'**
+  String get spLogo;
+
+  /// No description provided for @spTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Enterprise Multi-Tenant E-Voting'**
+  String get spTag;
+
+  /// No description provided for @spBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Server-Authorized & Tenant-Isolated'**
+  String get spBadge;
+
+  /// No description provided for @spInit.
+  ///
+  /// In en, this message translates to:
+  /// **'Initializing secure session...'**
+  String get spInit;
+
+  /// No description provided for @spErrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Error'**
+  String get spErrTitle;
+
+  /// No description provided for @spErrBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to connect to Kivora services.'**
+  String get spErrBody;
+
+  /// No description provided for @spRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry Connection'**
+  String get spRetry;
+
+  /// No description provided for @sclProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete organization profile'**
+  String get sclProfile;
+
+  /// No description provided for @sclMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Add members'**
+  String get sclMembers;
+
+  /// No description provided for @sclDepts.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up departments'**
+  String get sclDepts;
+
+  /// No description provided for @sclFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first voting event'**
+  String get sclFirst;
+
+  /// No description provided for @sclTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get your organization ready'**
+  String get sclTitle;
+
+  /// No description provided for @sclDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get sclDismiss;
+
+  /// No description provided for @sclProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} of {b} completed'**
+  String sclProgress(String a, String b);
 }
 
 class _AppLocalizationsDelegate

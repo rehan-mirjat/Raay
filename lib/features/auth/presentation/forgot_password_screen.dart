@@ -113,9 +113,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               color: isMobile ? Colors.transparent : null,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: isMobile
-                    ? BorderSide.none
-                    : BorderSide(color: kc.border),
+                side: isMobile ? BorderSide.none : BorderSide(color: kc.border),
               ),
               child: Padding(
                 padding: EdgeInsets.all(isMobile ? 16 : 36),
@@ -132,7 +130,8 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: AppTheme.primaryBlue.withValues(alpha: 0.15),
+                                color: AppTheme.primaryBlue
+                                    .withValues(alpha: 0.15),
                                 blurRadius: 16,
                                 offset: const Offset(0, 6),
                               ),
@@ -148,7 +147,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                       ),
                       SizedBox(height: isMobile ? 16 : 20),
                       Text(
-                        'Forgot Password?',
+                        AppLocalizations.of(context).fpTitle,
                         style:
                             Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
@@ -157,11 +156,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Enter the email address associated with your account to receive instructions to reset your password.',
+                        AppLocalizations.of(context).fpBody,
                         style: TextStyle(
-                            color: kc.textSecondary,
-                            fontSize: 13,
-                            height: 1.5),
+                            color: kc.textSecondary, fontSize: 13, height: 1.5),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: isMobile ? 20 : 28),
@@ -181,9 +178,10 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
-                                  'If an account exists for this email address, a password reset link has been sent. Please check your inbox.',
+                                  AppLocalizations.of(context).fpSent,
                                   style: TextStyle(
-                                      color: KivoraColors.of(context).successText,
+                                      color:
+                                          KivoraColors.of(context).successText,
                                       fontSize: 13,
                                       height: 1.4),
                                 ),
@@ -197,7 +195,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Text('EMAIL ADDRESS',
+                              Text(AppLocalizations.of(context).fpEmail,
                                   style: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 11,
@@ -209,10 +207,11 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                                 textInputAction: TextInputAction.done,
                                 onFieldSubmitted: (_) => _submit(),
                                 autofillHints: const [AutofillHints.email],
-                                decoration: const InputDecoration(
-                                  hintText: 'user@email.com',
-                                  prefixIcon:
-                                      Icon(Icons.email_outlined, size: 20),
+                                decoration: InputDecoration(
+                                  hintText:
+                                      AppLocalizations.of(context).fpEmailHint,
+                                  prefixIcon: const Icon(Icons.email_outlined,
+                                      size: 20),
                                 ),
                                 keyboardType: TextInputType.emailAddress,
                                 validator: Validators.email,
@@ -233,13 +232,14 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                               ? const SizedBox(
                                   height: 16,
                                   width: 16,
-                                  child: CircularProgressIndicator(
-                                      strokeWidth: 2),
+                                  child:
+                                      CircularProgressIndicator(strokeWidth: 2),
                                 )
                               : const Icon(Icons.shield_outlined, size: 18),
                           label: Text(_cooldownSeconds > 0
-                              ? 'Resend Link in ${_cooldownSeconds}s'
-                              : 'Send Reset Link'),
+                              ? AppLocalizations.of(context)
+                                  .fpCooldown(_cooldownSeconds.toString())
+                              : AppLocalizations.of(context).fpSend),
                         ),
                       ],
                       const SizedBox(height: 24),
@@ -249,12 +249,16 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
                             Text(AppLocalizations.of(context).authRemembered,
-                                style: TextStyle(color: kc.textSecondary, fontSize: 14)),
+                                style: TextStyle(
+                                    color: kc.textSecondary, fontSize: 14)),
                             TextButton(
-                              style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                              style: TextButton.styleFrom(
+                                  minimumSize: const Size(48, 48)),
                               onPressed: widget.onBackToLoginTap,
-                              child: Text(AppLocalizations.of(context).authSignIn,
-                                  style: const TextStyle(fontWeight: FontWeight.bold)),
+                              child: Text(
+                                  AppLocalizations.of(context).authSignIn,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold)),
                             ),
                           ],
                         ),

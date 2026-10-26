@@ -4677,4 +4677,355 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shLogout => 'تسجيل الخروج';
+
+  @override
+  String get hsThanks => 'شكرًا على ملاحظاتك! لقد استلمنا رسالتك.';
+
+  @override
+  String get hsFailed =>
+      'تعذّر إرسال الملاحظات. تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get hsTitle => 'المساعدة والدعم';
+
+  @override
+  String get hsFaq => 'الأسئلة الشائعة';
+
+  @override
+  String get hsQ1 => 'كيف أدلي بصوتي؟';
+
+  @override
+  String get hsA1 =>
+      'يمكنك التصويت باختيار انتخاب نشط من لوحة مؤسستك واتباع التعليمات على الشاشة.';
+
+  @override
+  String get hsQ2 => 'هل أصواتي سرية؟';
+
+  @override
+  String get hsA2 =>
+      'في الانتخاب السري لا يُربط اختيارك بحسابك أبدًا - يستطيع النظام تأكيد أنك صوّتت دون تسجيل ما اخترته. تُوسم الانتخابات المعرّفة بوضوح قبل التصويت. راجع مركز الثقة والشفافية لتفاصيل ما يثبته إيصالك وما لا يثبته.';
+
+  @override
+  String get hsQ3 => 'كيف أغيّر معلومات ملفي الشخصي؟';
+
+  @override
+  String get hsA3 =>
+      'انتقل إلى صفحة إعدادات الحساب من قائمة الملف الشخصي أعلى اليمين لتحديث بياناتك.';
+
+  @override
+  String get hsGuidance => 'المساعدة والإرشاد';
+
+  @override
+  String get hsVerify => 'التحقق من إيصال';
+
+  @override
+  String get hsVerifyBody =>
+      'تحقق من تسجيل إيصال الاقتراع. هذا لا يكشف أبدًا كيف صوّت أحد.';
+
+  @override
+  String get hsTrust => 'الثقة والشفافية';
+
+  @override
+  String get hsTrustBody => 'كيف تحمي Kivora خصوصية الاقتراع وما الذي يُسجَّل.';
+
+  @override
+  String get hsSend => 'إرسال ملاحظات أو التواصل مع الدعم';
+
+  @override
+  String get hsCategory => 'الفئة';
+
+  @override
+  String get hsSubject => 'الموضوع';
+
+  @override
+  String get hsSubjectHint => 'ما موضوع هذا الطلب؟';
+
+  @override
+  String get hsSubjectField => 'الموضوع';
+
+  @override
+  String get hsReceipt => 'معرّف الإيصال (اختياري)';
+
+  @override
+  String get hsReceiptHint => 'الصق معرّف الإيصال إن كان متعلقًا بتصويت محدد';
+
+  @override
+  String get hsReceiptNote =>
+      'لا تذكر اختيارك هنا أبدًا - الإيصال يؤكد تسجيل صوتك ولا يكشف ما اخترته.';
+
+  @override
+  String get hsMessage => 'الرسالة';
+
+  @override
+  String get hsMessageHint => 'يرجى وصف مشكلتك أو مشاركة ملاحظاتك...';
+
+  @override
+  String get hsMessageField => 'الرسالة';
+
+  @override
+  String get hsSending => 'جارٍ الإرسال...';
+
+  @override
+  String get hsSendButton => 'إرسال الرسالة';
+
+  @override
+  String get rvfTitle => 'التحقق العام من الإيصال';
+
+  @override
+  String get rvfHeading => 'التحقق من إيصال الاقتراع';
+
+  @override
+  String get rvfIntro =>
+      'أدخل تجزئة الإيصال للتأكد من أن الخادم سجّله. يتحقق هذا من وجود إيصال مطابق فقط. لا يكشف كيف صوّت أحد، ولا يثبت بشكل مستقل الإدراج في الفرز النهائي.';
+
+  @override
+  String get rvfHashLabel => 'تجزئة الإيصال';
+
+  @override
+  String get rvfHashHint => 'تجزئة من 64 حرفًا (أحرف a-f وأرقام)';
+
+  @override
+  String get rvfVerify => 'التحقق من الإيصال';
+
+  @override
+  String get rvfOkTitle => 'تم التحقق من الإيصال';
+
+  @override
+  String get rvfOkBody =>
+      'عُثر على إيصال مطابق، أي أن الخادم سجّل هذا الاقتراع. هذا لا يثبت بشكل مستقل الإدراج في الفرز النهائي.';
+
+  @override
+  String get rvfNoTitle => 'لا يوجد إيصال مطابق';
+
+  @override
+  String get rvfNoBody =>
+      'الخدمة تعمل ولا يوجد إيصال بهذه التجزئة. تأكد من نسخ التجزئة كاملة من إيصالك.';
+
+  @override
+  String get rvfBadTitle => 'هذه ليست تجزئة إيصال صالحة';
+
+  @override
+  String get rvfBadBody =>
+      'تجزئة الإيصال مكوّنة من 64 حرفًا بالضبط: أرقام 0-9 وأحرف a-f. لم يُرسَل شيء إلى الخادم.';
+
+  @override
+  String get rvfRateTitle => 'عمليات بحث كثيرة';
+
+  @override
+  String get rvfRateBody => 'يرجى الانتظار دقيقة قبل المحاولة مرة أخرى.';
+
+  @override
+  String get rvfDownTitle => 'التحقق غير متاح الآن';
+
+  @override
+  String get rvfDownBody =>
+      'تعذّر الوصول إلى خدمة التحقق، لذا لا يمكننا القول إن كان إيصالك موجودًا. هذه ليست نتيجة \"غير موجود\". تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get rvfRetry => 'حاول مرة أخرى';
+
+  @override
+  String get rgDoneTitle => 'تم التسجيل بنجاح';
+
+  @override
+  String get rgDoneBody =>
+      'تم إنشاء هويتك في Kivora بأمان. يمكنك الآن تسجيل الدخول ببياناتك.';
+
+  @override
+  String get rgReturn => 'العودة إلى تسجيل الدخول';
+
+  @override
+  String get rgFirstLabel => 'الاسم الأول';
+
+  @override
+  String get rgFirstHint => 'الأول';
+
+  @override
+  String get rgFirstField => 'الاسم الأول';
+
+  @override
+  String get rgLastLabel => 'اسم العائلة';
+
+  @override
+  String get rgLastHint => 'الأخير';
+
+  @override
+  String get rgLastField => 'اسم العائلة';
+
+  @override
+  String get rgEmailLabel => 'عنوان البريد الإلكتروني';
+
+  @override
+  String get rgEmailHint => 'user@email.com';
+
+  @override
+  String get rgPassword => 'كلمة المرور';
+
+  @override
+  String get rgConfirm => 'تأكيد كلمة المرور';
+
+  @override
+  String get evYourEmail => 'عنوان بريدك الإلكتروني';
+
+  @override
+  String get evOk => 'تم التحقق من البريد الإلكتروني بنجاح!';
+
+  @override
+  String get evNot =>
+      'لم يتم التحقق من البريد بعد. تحقق من صندوق الوارد وانقر على رابط التحقق.';
+
+  @override
+  String evCheckFailed(String a) {
+    return 'تعذّر التحقق من حالة التوثيق: $a';
+  }
+
+  @override
+  String get evResent => 'تم إرسال بريد تحقق جديد. تحقق من صندوق الوارد.';
+
+  @override
+  String evResendFailed(String a) {
+    return 'تعذّر إعادة إرسال البريد: $a';
+  }
+
+  @override
+  String get evTitle => 'التحقق من البريد الإلكتروني';
+
+  @override
+  String get evSignOut => 'تسجيل الخروج';
+
+  @override
+  String get evHeading => 'تحقق من عنوان بريدك الإلكتروني';
+
+  @override
+  String evSent(String a) {
+    return 'أرسلنا رابط التحقق إلى:\n$a';
+  }
+
+  @override
+  String get evClick => 'انقر على الرابط في بريدك لفتح كامل صلاحيات المنصة.';
+
+  @override
+  String evCooldown(String a) {
+    return 'إعادة إرسال البريد خلال $a ث';
+  }
+
+  @override
+  String get evResend => 'إعادة إرسال بريد التحقق';
+
+  @override
+  String get evSwitch => 'تسجيل الخروج / استخدام حساب آخر';
+
+  @override
+  String get fpTitle => 'نسيت كلمة المرور؟';
+
+  @override
+  String get fpBody =>
+      'أدخل عنوان البريد المرتبط بحسابك لتلقي تعليمات إعادة تعيين كلمة المرور.';
+
+  @override
+  String get fpSent =>
+      'إذا كان هناك حساب بهذا البريد، فقد أُرسل رابط إعادة تعيين كلمة المرور. تحقق من صندوق الوارد.';
+
+  @override
+  String get fpEmail => 'عنوان البريد الإلكتروني';
+
+  @override
+  String get fpEmailHint => 'user@email.com';
+
+  @override
+  String fpCooldown(String a) {
+    return 'إعادة إرسال الرابط خلال $a ث';
+  }
+
+  @override
+  String get fpSend => 'إرسال رابط إعادة التعيين';
+
+  @override
+  String get plOpenFailed => 'تعذّر فتح صفحة الدفع.';
+
+  @override
+  String get plReauth =>
+      'لأسباب أمنية، سجّل الخروج ثم الدخول مجددًا وحاول مرة أخرى.';
+
+  @override
+  String get plGeneric => 'حدث خطأ ما. حاول مرة أخرى.';
+
+  @override
+  String get plBack => 'رجوع';
+
+  @override
+  String get plTitle => 'الخطط والفوترة';
+
+  @override
+  String get plNoOrg => 'اختر مؤسسة لعرض خطتها.';
+
+  @override
+  String plIntro(String a) {
+    return 'تنطبق الخطط على $a. لا يدفع الناخبون أبدًا ولا يُمنعون من التصويت. لا تظهر الإعلانات أبدًا في شاشات الاقتراع أو الإيصال أو التحقق أو الإدارة.';
+  }
+
+  @override
+  String get plOwnerOnly => 'يمكن لمالك المؤسسة فقط تغيير الخطة.';
+
+  @override
+  String get plSoon => 'الترقية عبر الإنترنت قريبًا';
+
+  @override
+  String get plOpening => 'جارٍ الفتح…';
+
+  @override
+  String get plUpgrade => 'الترقية إلى Pro';
+
+  @override
+  String get plManage => 'إدارة الاشتراك أو إلغاؤه';
+
+  @override
+  String get plContact => 'التواصل مع المبيعات';
+
+  @override
+  String get plCurrent => 'الحالية';
+
+  @override
+  String get spLogo => 'شعار Kivora';
+
+  @override
+  String get spTag => 'تصويت إلكتروني للمؤسسات متعدد المستأجرين';
+
+  @override
+  String get spBadge => 'مرخّص من الخادم ومعزول لكل مستأجر';
+
+  @override
+  String get spInit => 'جارٍ تهيئة جلسة آمنة...';
+
+  @override
+  String get spErrTitle => 'خطأ في الاتصال';
+
+  @override
+  String get spErrBody => 'تعذّر الاتصال بخدمات Kivora.';
+
+  @override
+  String get spRetry => 'إعادة محاولة الاتصال';
+
+  @override
+  String get sclProfile => 'أكمل ملف المؤسسة';
+
+  @override
+  String get sclMembers => 'أضف أعضاء';
+
+  @override
+  String get sclDepts => 'أعدّ الأقسام';
+
+  @override
+  String get sclFirst => 'أنشئ أول حدث تصويت لك';
+
+  @override
+  String get sclTitle => 'جهّز مؤسستك';
+
+  @override
+  String get sclDismiss => 'تجاهل';
+
+  @override
+  String sclProgress(String a, String b) {
+    return 'اكتمل $a من $b';
+  }
 }

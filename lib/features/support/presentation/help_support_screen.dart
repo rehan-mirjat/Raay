@@ -1,5 +1,7 @@
+import '../../../l10n/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../../platform/domain/platform_report.dart' show reportCategoryText;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -62,9 +64,8 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                'Thank you for your feedback! We have received your message.'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context).hsThanks),
             backgroundColor: AppTheme.success,
           ),
         );
@@ -74,9 +75,8 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                'Failed to send feedback. Please check your connection and try again.'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context).hsFailed),
             backgroundColor: AppTheme.error,
           ),
         );
@@ -100,7 +100,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Help & Support',
+                  AppLocalizations.of(context).hsTitle,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: KivoraColors.textPrimaryOf(context),
@@ -110,7 +110,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
 
                 // FAQ Section
                 Text(
-                  'Frequently Asked Questions',
+                  AppLocalizations.of(context).hsFaq,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -119,26 +119,23 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                 ),
                 const SizedBox(height: 16),
                 _buildFaqItem(
-                  question: 'How do I cast my vote?',
-                  answer:
-                      'You can cast your vote by selecting an active election from your organization dashboard and following the on-screen instructions.',
+                  question: AppLocalizations.of(context).hsQ1,
+                  answer: AppLocalizations.of(context).hsA1,
                 ),
                 _buildFaqItem(
-                  question: 'Are my votes anonymous?',
-                  answer:
-                      'In an anonymous election, your ballot choice is never linked to your account - the system can confirm you voted without recording what you chose. Identifiable elections are clearly labeled before you vote. See the Trust & Transparency Center for full detail on what your receipt does and doesn\'t prove.',
+                  question: AppLocalizations.of(context).hsQ2,
+                  answer: AppLocalizations.of(context).hsA2,
                 ),
                 _buildFaqItem(
-                  question: 'How can I change my profile information?',
-                  answer:
-                      'Navigate to the Account Settings page from the top-right profile dropdown menu to update your personal details.',
+                  question: AppLocalizations.of(context).hsQ3,
+                  answer: AppLocalizations.of(context).hsA3,
                 ),
 
                 const SizedBox(height: 32),
 
                 // Getting Started
                 Text(
-                  'Help & Guidance',
+                  AppLocalizations.of(context).hsGuidance,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -150,10 +147,9 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                   minTileHeight: 56,
                   leading: Icon(Icons.verified_outlined,
                       color: KivoraColors.of(context).accentText),
-                  title: const Text('Verify a receipt',
-                      style: TextStyle(fontWeight: FontWeight.w600)),
-                  subtitle: const Text(
-                      'Check that a ballot receipt was recorded. This never shows how anyone voted.'),
+                  title: Text(AppLocalizations.of(context).hsVerify,
+                      style: const TextStyle(fontWeight: FontWeight.w600)),
+                  subtitle: Text(AppLocalizations.of(context).hsVerifyBody),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () => context.go('/receipt-verify'),
                 ),
@@ -161,10 +157,9 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                   minTileHeight: 56,
                   leading: Icon(Icons.policy_outlined,
                       color: KivoraColors.of(context).accentText),
-                  title: const Text('Trust & transparency',
-                      style: TextStyle(fontWeight: FontWeight.w600)),
-                  subtitle: const Text(
-                      'How Kivora protects ballot privacy and what is recorded.'),
+                  title: Text(AppLocalizations.of(context).hsTrust,
+                      style: const TextStyle(fontWeight: FontWeight.w600)),
+                  subtitle: Text(AppLocalizations.of(context).hsTrustBody),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () => context.go('/transparency'),
                 ),
@@ -172,7 +167,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
 
                 // Feedback Form
                 Text(
-                  'Send Feedback or Contact Support',
+                  AppLocalizations.of(context).hsSend,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -194,7 +189,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            'CATEGORY',
+                            AppLocalizations.of(context).hsCategory,
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
@@ -207,13 +202,17 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                             isExpanded: true,
                             initialValue: _category,
                             items: _kReportCategories
-                                .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                                .map((c) => DropdownMenuItem(
+                                    value: c,
+                                    child: Text(reportCategoryText(
+                                        AppLocalizations.of(context), c))))
                                 .toList(),
-                            onChanged: (v) => setState(() => _category = v ?? _category),
+                            onChanged: (v) =>
+                                setState(() => _category = v ?? _category),
                           ),
                           const SizedBox(height: 20),
                           Text(
-                            'SUBJECT',
+                            AppLocalizations.of(context).hsSubject,
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
@@ -224,16 +223,17 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                           const SizedBox(height: 6),
                           TextFormField(
                             controller: _subjectController,
-                            decoration: const InputDecoration(
-                              hintText: 'What is this regarding?',
+                            decoration: InputDecoration(
+                              hintText:
+                                  AppLocalizations.of(context).hsSubjectHint,
                             ),
-                            validator: (value) =>
-                                Validators.required(value, 'Subject'),
+                            validator: (value) => Validators.required(value,
+                                AppLocalizations.of(context).hsSubjectField),
                           ),
                           if (_category == 'Election issue') ...[
                             const SizedBox(height: 20),
                             Text(
-                              'RECEIPT ID (OPTIONAL)',
+                              AppLocalizations.of(context).hsReceipt,
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
@@ -244,20 +244,22 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                             const SizedBox(height: 6),
                             TextFormField(
                               controller: _receiptRefController,
-                              decoration: const InputDecoration(
-                                hintText: 'Paste a receipt ID if this relates to a specific vote',
+                              decoration: InputDecoration(
+                                hintText:
+                                    AppLocalizations.of(context).hsReceiptHint,
                               ),
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Never include your ballot choice here - a receipt confirms your vote was recorded, it does not reveal what you selected.',
+                              AppLocalizations.of(context).hsReceiptNote,
                               style: TextStyle(
-                                  fontSize: 11, color: KivoraColors.textSecondaryOf(context)),
+                                  fontSize: 11,
+                                  color: KivoraColors.textSecondaryOf(context)),
                             ),
                           ],
                           const SizedBox(height: 20),
                           Text(
-                            'MESSAGE',
+                            AppLocalizations.of(context).hsMessage,
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
@@ -269,12 +271,12 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                           TextFormField(
                             controller: _messageController,
                             maxLines: 5,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               hintText:
-                                  'Please describe your issue or share your feedback...',
+                                  AppLocalizations.of(context).hsMessageHint,
                             ),
-                            validator: (value) =>
-                                Validators.required(value, 'Message'),
+                            validator: (value) => Validators.required(value,
+                                AppLocalizations.of(context).hsMessageField),
                           ),
                           const SizedBox(height: 24),
                           Align(
@@ -289,8 +291,8 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                                           color: Colors.white, strokeWidth: 2))
                                   : const Icon(Icons.send_rounded, size: 18),
                               label: Text(_isSubmitting
-                                  ? 'Sending...'
-                                  : 'Send Message'),
+                                  ? AppLocalizations.of(context).hsSending
+                                  : AppLocalizations.of(context).hsSendButton),
                               style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 24, vertical: 12),
@@ -337,7 +339,9 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
             child: Text(
               answer,
               style: TextStyle(
-                  color: KivoraColors.textSecondaryOf(context), height: 1.5, fontSize: 14),
+                  color: KivoraColors.textSecondaryOf(context),
+                  height: 1.5,
+                  fontSize: 14),
             ),
           ),
         ],

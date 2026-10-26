@@ -136,8 +136,7 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'For your security, please verify it\'s you to continue'
-                    '${user?.email != null ? ' as ${user!.email}' : ''}.',
+                    'For your security, please verify it\'s you to continue${user?.email != null ? ' as ${user!.email}' : ''}.',
                     style: TextStyle(
                         fontSize: 14, color: KivoraColors.textSecondaryOf(context), height: 1.4),
                     textAlign: TextAlign.center,

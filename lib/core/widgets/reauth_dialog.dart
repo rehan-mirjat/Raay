@@ -14,8 +14,7 @@ import '../theme/kivora_colors.dart';
 Future<bool> showReauthDialog(
   BuildContext context,
   WidgetRef ref, {
-  String reason = 'For security, this action requires you to have signed in '
-      'within the last 15 minutes. Please verify your identity to continue.',
+  String reason = 'For security, this action requires you to have signed in within the last 15 minutes. Please verify your identity to continue.',
 }) async {
   final authService = ref.read(authServiceProvider);
   final isGoogleUser = authService.currentUser?.providerData
