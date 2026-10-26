@@ -6059,4 +6059,116 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cdCreate => 'Create';
+
+  @override
+  String get teReason =>
+      'Enrolling two-factor authentication requires you to have signed in recently. Please verify your identity to continue.';
+
+  @override
+  String get teStartFailed =>
+      'Could not start two-factor enrollment. Please try again.';
+
+  @override
+  String get teEnter6 => 'Enter the 6-digit code from your app.';
+
+  @override
+  String get teBadCode =>
+      'That code is incorrect or expired. Try the latest code from your app.';
+
+  @override
+  String get teVerifyFailed => 'Could not verify that code.';
+
+  @override
+  String get teTitle => 'Set up two-factor authentication';
+
+  @override
+  String get teStep1 =>
+      '1. Scan this QR code with an authenticator app (Google Authenticator, Authy, 1Password, etc.).';
+
+  @override
+  String get teManual => 'Can\'t scan? Enter this key manually:';
+
+  @override
+  String get teStep2 => '2. Enter the 6-digit code it generates:';
+
+  @override
+  String get teCode => 'Verification code';
+
+  @override
+  String get teCancel => 'Cancel';
+
+  @override
+  String get teEnable => 'Enable 2FA';
+
+  @override
+  String get tcEnter6 => 'Enter the 6-digit code from your app.';
+
+  @override
+  String get tcBadCode =>
+      'That code is incorrect or expired. Try the latest code from your app.';
+
+  @override
+  String get tcVerifyFailed => 'Could not verify that code.';
+
+  @override
+  String get tcTitle => 'Two-factor verification';
+
+  @override
+  String get tcBody =>
+      'Enter the 6-digit code from your authenticator app to finish signing in.';
+
+  @override
+  String get tcCode => 'Verification code';
+
+  @override
+  String get tcCancel => 'Cancel';
+
+  @override
+  String get tcVerify => 'Verify';
+
+  @override
+  String get slPassword => 'Enter your password to continue.';
+
+  @override
+  String get slWelcome => 'Welcome back';
+
+  @override
+  String slVerifyAs(String a) {
+    return 'For your security, please verify it\'s you to continue as $a.';
+  }
+
+  @override
+  String get slVerify =>
+      'For your security, please verify it\'s you to continue.';
+
+  @override
+  String get slPasswordLabel => 'Password';
+
+  @override
+  String get slGoogle => 'Verify with Google';
+
+  @override
+  String get slVerifyBtn => 'Verify';
+
+  @override
+  String get slSignOut => 'Sign out instead';
+
+  @override
+  String get raReason =>
+      'For security, this action requires you to have signed in within the last 15 minutes. Please verify your identity to continue.';
+
+  @override
+  String get raTitle => 'Verify it\'s you';
+
+  @override
+  String get raPassword => 'Password';
+
+  @override
+  String get raCancel => 'Cancel';
+
+  @override
+  String get raGoogle => 'Verify with Google';
+
+  @override
+  String get raVerify => 'Verify';
 }

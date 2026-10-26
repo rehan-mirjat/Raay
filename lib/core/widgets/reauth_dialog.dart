@@ -1,3 +1,4 @@
+import '../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,7 +15,7 @@ import '../theme/kivora_colors.dart';
 Future<bool> showReauthDialog(
   BuildContext context,
   WidgetRef ref, {
-  String reason = 'For security, this action requires you to have signed in within the last 15 minutes. Please verify your identity to continue.',
+  String? reason,
 }) async {
   final authService = ref.read(authServiceProvider);
   final isGoogleUser = authService.currentUser?.providerData
@@ -58,50 +59,56 @@ Future<bool> showReauthDialog(
           // act on a dialog that's already gone).
           canPop: !isVerifying,
           child: AlertDialog(
-          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-          scrollable: true,
-          title: const Text('Verify it\'s you'),
-          content: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 360),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(reason),
-                const SizedBox(height: 16),
-                if (!isGoogleUser)
-                  TextField(
-                    controller: passwordController,
-                    obscureText: true,
-                    autofocus: true,
-                    enabled: !isVerifying,
-                    decoration: const InputDecoration(labelText: 'Password'),
-                    onSubmitted: (_) => verify(),
-                  ),
-                if (dialogError != null) ...[
-                  const SizedBox(height: 8),
-                  Text(dialogError!,
-                      style: TextStyle(color: KivoraColors.of(context).errorText)),
+            insetPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            scrollable: true,
+            title: Text(AppLocalizations.of(context).raTitle),
+            content: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 360),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(reason ?? AppLocalizations.of(dialogContext).raReason),
+                  const SizedBox(height: 16),
+                  if (!isGoogleUser)
+                    TextField(
+                      controller: passwordController,
+                      obscureText: true,
+                      autofocus: true,
+                      enabled: !isVerifying,
+                      decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context).raPassword),
+                      onSubmitted: (_) => verify(),
+                    ),
+                  if (dialogError != null) ...[
+                    const SizedBox(height: 8),
+                    Text(dialogError!,
+                        style: TextStyle(
+                            color: KivoraColors.of(context).errorText)),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed:
-                  isVerifying ? null : () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: isVerifying ? null : verify,
-              child: isVerifying
-                  ? const SizedBox(
-                      height: 16,
-                      width: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2))
-                  : Text(isGoogleUser ? 'Verify with Google' : 'Verify'),
-            ),
-          ],
+            actions: [
+              TextButton(
+                onPressed: isVerifying
+                    ? null
+                    : () => Navigator.of(dialogContext).pop(false),
+                child: Text(AppLocalizations.of(context).raCancel),
+              ),
+              ElevatedButton(
+                onPressed: isVerifying ? null : verify,
+                child: isVerifying
+                    ? const SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2))
+                    : Text(isGoogleUser
+                        ? AppLocalizations.of(context).raGoogle
+                        : AppLocalizations.of(context).raVerify),
+              ),
+            ],
           ),
         );
       },

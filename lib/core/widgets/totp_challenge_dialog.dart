@@ -1,3 +1,4 @@
+import '../../l10n/app_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,8 @@ Future<UserCredential?> showTotpChallengeDialog(
         Future<void> verify() async {
           final code = codeController.text.trim();
           if (code.length != 6) {
-            setDialogState(() => dialogError = 'Enter the 6-digit code from your app.');
+            setDialogState(
+                () => dialogError = AppLocalizations.of(context).tcEnter6);
             return;
           }
           setDialogState(() {
@@ -42,7 +44,8 @@ Future<UserCredential?> showTotpChallengeDialog(
             dialogError = null;
           });
           try {
-            final assertion = await TotpMultiFactorGenerator.getAssertionForSignIn(
+            final assertion =
+                await TotpMultiFactorGenerator.getAssertionForSignIn(
               hint.uid,
               code,
             );
@@ -53,14 +56,14 @@ Future<UserCredential?> showTotpChallengeDialog(
             setDialogState(() {
               isVerifying = false;
               dialogError = e.code == 'invalid-verification-code'
-                  ? 'That code is incorrect or expired. Try the latest code from your app.'
-                  : (e.message ?? 'Could not verify that code.');
+                  ? AppLocalizations.of(context).tcBadCode
+                  : (e.message ?? AppLocalizations.of(context).tcVerifyFailed);
             });
           } catch (_) {
             if (!dialogContext.mounted) return;
             setDialogState(() {
               isVerifying = false;
-              dialogError = 'Could not verify that code.';
+              dialogError = AppLocalizations.of(context).tcVerifyFailed;
             });
           }
         }
@@ -68,57 +71,59 @@ Future<UserCredential?> showTotpChallengeDialog(
         return PopScope(
           canPop: !isVerifying,
           child: AlertDialog(
-          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-          scrollable: true,
-          title: const Text('Two-factor verification'),
-          content: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 360),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Enter the 6-digit code from your authenticator app to finish signing in.',
-                  style: TextStyle(fontSize: 13),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: codeController,
-                  autofocus: true,
-                  enabled: !isVerifying,
-                  keyboardType: TextInputType.number,
-                  maxLength: 6,
-                  decoration: const InputDecoration(
-                    labelText: 'Verification code',
-                    counterText: '',
+            insetPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            scrollable: true,
+            title: Text(AppLocalizations.of(context).tcTitle),
+            content: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 360),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppLocalizations.of(context).tcBody,
+                    style: const TextStyle(fontSize: 13),
                   ),
-                  onSubmitted: (_) => verify(),
-                ),
-                if (dialogError != null) ...[
-                  const SizedBox(height: 8),
-                  Text(dialogError!,
-                      style: TextStyle(color: KivoraColors.of(context).errorText)),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: codeController,
+                    autofocus: true,
+                    enabled: !isVerifying,
+                    keyboardType: TextInputType.number,
+                    maxLength: 6,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context).tcCode,
+                      counterText: '',
+                    ),
+                    onSubmitted: (_) => verify(),
+                  ),
+                  if (dialogError != null) ...[
+                    const SizedBox(height: 8),
+                    Text(dialogError!,
+                        style: TextStyle(
+                            color: KivoraColors.of(context).errorText)),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: isVerifying
-                  ? null
-                  : () => Navigator.of(dialogContext).pop(null),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: isVerifying ? null : verify,
-              child: isVerifying
-                  ? const SizedBox(
-                      height: 16,
-                      width: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2))
-                  : const Text('Verify'),
-            ),
-          ],
+            actions: [
+              TextButton(
+                onPressed: isVerifying
+                    ? null
+                    : () => Navigator.of(dialogContext).pop(null),
+                child: Text(AppLocalizations.of(context).tcCancel),
+              ),
+              ElevatedButton(
+                onPressed: isVerifying ? null : verify,
+                child: isVerifying
+                    ? const SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2))
+                    : Text(AppLocalizations.of(context).tcVerify),
+              ),
+            ],
           ),
         );
       },

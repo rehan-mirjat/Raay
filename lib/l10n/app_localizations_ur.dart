@@ -6043,4 +6043,116 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get cdCreate => 'بنائیں';
+
+  @override
+  String get teReason =>
+      'دو مرحلہ تصدیق فعال کرنے کے لیے ضروری ہے کہ آپ نے حال ہی میں سائن اِن کیا ہو۔ جاری رکھنے کے لیے اپنی شناخت کی تصدیق کریں۔';
+
+  @override
+  String get teStartFailed =>
+      'دو مرحلہ تصدیق شروع نہیں ہو سکی۔ دوبارہ کوشش کریں۔';
+
+  @override
+  String get teEnter6 => 'اپنی ایپ سے 6 ہندسوں کا کوڈ درج کریں۔';
+
+  @override
+  String get teBadCode =>
+      'یہ کوڈ غلط یا ختم ہو چکا ہے۔ اپنی ایپ کا تازہ کوڈ آزمائیں۔';
+
+  @override
+  String get teVerifyFailed => 'اس کوڈ کی تصدیق نہیں ہو سکی۔';
+
+  @override
+  String get teTitle => 'دو مرحلہ تصدیق ترتیب دیں';
+
+  @override
+  String get teStep1 =>
+      '1۔ اس QR کوڈ کو اتھنٹیکیٹر ایپ (Google Authenticator، Authy، 1Password وغیرہ) سے اسکین کریں۔';
+
+  @override
+  String get teManual => 'اسکین نہیں ہو رہا؟ یہ کلید دستی طور پر درج کریں:';
+
+  @override
+  String get teStep2 => '2۔ یہ جو 6 ہندسوں کا کوڈ بنائے وہ درج کریں:';
+
+  @override
+  String get teCode => 'تصدیقی کوڈ';
+
+  @override
+  String get teCancel => 'منسوخ کریں';
+
+  @override
+  String get teEnable => '2FA فعال کریں';
+
+  @override
+  String get tcEnter6 => 'اپنی ایپ سے 6 ہندسوں کا کوڈ درج کریں۔';
+
+  @override
+  String get tcBadCode =>
+      'یہ کوڈ غلط یا ختم ہو چکا ہے۔ اپنی ایپ کا تازہ کوڈ آزمائیں۔';
+
+  @override
+  String get tcVerifyFailed => 'اس کوڈ کی تصدیق نہیں ہو سکی۔';
+
+  @override
+  String get tcTitle => 'دو مرحلہ تصدیق';
+
+  @override
+  String get tcBody =>
+      'سائن اِن مکمل کرنے کے لیے اپنی اتھنٹیکیٹر ایپ سے 6 ہندسوں کا کوڈ درج کریں۔';
+
+  @override
+  String get tcCode => 'تصدیقی کوڈ';
+
+  @override
+  String get tcCancel => 'منسوخ کریں';
+
+  @override
+  String get tcVerify => 'تصدیق کریں';
+
+  @override
+  String get slPassword => 'جاری رکھنے کے لیے اپنا پاس ورڈ درج کریں۔';
+
+  @override
+  String get slWelcome => 'خوش آمدید';
+
+  @override
+  String slVerifyAs(String a) {
+    return 'آپ کی سیکیورٹی کے لیے، $a کے طور پر جاری رکھنے کی خاطر اپنی شناخت کی تصدیق کریں۔';
+  }
+
+  @override
+  String get slVerify =>
+      'آپ کی سیکیورٹی کے لیے، جاری رکھنے کی خاطر اپنی شناخت کی تصدیق کریں۔';
+
+  @override
+  String get slPasswordLabel => 'پاس ورڈ';
+
+  @override
+  String get slGoogle => 'Google سے تصدیق کریں';
+
+  @override
+  String get slVerifyBtn => 'تصدیق کریں';
+
+  @override
+  String get slSignOut => 'اس کے بجائے سائن آؤٹ کریں';
+
+  @override
+  String get raReason =>
+      'سیکیورٹی کے لیے اس کارروائی کے واسطے ضروری ہے کہ آپ نے پچھلے 15 منٹ میں سائن اِن کیا ہو۔ جاری رکھنے کے لیے اپنی شناخت کی تصدیق کریں۔';
+
+  @override
+  String get raTitle => 'اپنی شناخت کی تصدیق کریں';
+
+  @override
+  String get raPassword => 'پاس ورڈ';
+
+  @override
+  String get raCancel => 'منسوخ کریں';
+
+  @override
+  String get raGoogle => 'Google سے تصدیق کریں';
+
+  @override
+  String get raVerify => 'تصدیق کریں';
 }

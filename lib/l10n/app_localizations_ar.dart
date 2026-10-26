@@ -5987,4 +5987,114 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cdCreate => 'إنشاء';
+
+  @override
+  String get teReason =>
+      'يتطلب تفعيل التحقق بخطوتين أن تكون قد سجّلت الدخول مؤخرًا. يرجى تأكيد هويتك للمتابعة.';
+
+  @override
+  String get teStartFailed => 'تعذّر بدء تفعيل التحقق بخطوتين. حاول مرة أخرى.';
+
+  @override
+  String get teEnter6 => 'أدخل الرمز المكوّن من 6 أرقام من تطبيقك.';
+
+  @override
+  String get teBadCode =>
+      'هذا الرمز غير صحيح أو منتهي الصلاحية. جرّب أحدث رمز من تطبيقك.';
+
+  @override
+  String get teVerifyFailed => 'تعذّر التحقق من هذا الرمز.';
+
+  @override
+  String get teTitle => 'إعداد التحقق بخطوتين';
+
+  @override
+  String get teStep1 =>
+      '1. امسح رمز QR هذا بتطبيق مصادقة (Google Authenticator أو Authy أو 1Password وغيرها).';
+
+  @override
+  String get teManual => 'لا يمكنك المسح؟ أدخل هذا المفتاح يدويًا:';
+
+  @override
+  String get teStep2 => '2. أدخل الرمز المكوّن من 6 أرقام الذي يولّده:';
+
+  @override
+  String get teCode => 'رمز التحقق';
+
+  @override
+  String get teCancel => 'إلغاء';
+
+  @override
+  String get teEnable => 'تفعيل التحقق بخطوتين';
+
+  @override
+  String get tcEnter6 => 'أدخل الرمز المكوّن من 6 أرقام من تطبيقك.';
+
+  @override
+  String get tcBadCode =>
+      'هذا الرمز غير صحيح أو منتهي الصلاحية. جرّب أحدث رمز من تطبيقك.';
+
+  @override
+  String get tcVerifyFailed => 'تعذّر التحقق من هذا الرمز.';
+
+  @override
+  String get tcTitle => 'التحقق بخطوتين';
+
+  @override
+  String get tcBody =>
+      'أدخل الرمز المكوّن من 6 أرقام من تطبيق المصادقة لإكمال تسجيل الدخول.';
+
+  @override
+  String get tcCode => 'رمز التحقق';
+
+  @override
+  String get tcCancel => 'إلغاء';
+
+  @override
+  String get tcVerify => 'تحقق';
+
+  @override
+  String get slPassword => 'أدخل كلمة المرور للمتابعة.';
+
+  @override
+  String get slWelcome => 'مرحبًا بعودتك';
+
+  @override
+  String slVerifyAs(String a) {
+    return 'حفاظةً لحسابك، يرجى تأكيد هويتك للمتابعة باسم $a.';
+  }
+
+  @override
+  String get slVerify => 'حفاظةً لحسابك، يرجى تأكيد هويتك للمتابعة.';
+
+  @override
+  String get slPasswordLabel => 'كلمة المرور';
+
+  @override
+  String get slGoogle => 'التحقق عبر Google';
+
+  @override
+  String get slVerifyBtn => 'تحقق';
+
+  @override
+  String get slSignOut => 'تسجيل الخروج بدلًا من ذلك';
+
+  @override
+  String get raReason =>
+      'لأسباب أمنية يتطلب هذا الإجراء أن تكون قد سجّلت الدخول خلال آخر 15 دقيقة. يرجى تأكيد هويتك للمتابعة.';
+
+  @override
+  String get raTitle => 'تأكيد هويتك';
+
+  @override
+  String get raPassword => 'كلمة المرور';
+
+  @override
+  String get raCancel => 'إلغاء';
+
+  @override
+  String get raGoogle => 'التحقق عبر Google';
+
+  @override
+  String get raVerify => 'تحقق';
 }

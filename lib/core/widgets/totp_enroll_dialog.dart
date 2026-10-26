@@ -1,3 +1,4 @@
+import '../../l10n/app_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,8 +29,7 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
     final reauthed = await showReauthDialog(
       context,
       ref,
-      reason:
-          'Enrolling two-factor authentication requires you to have signed in recently. Please verify your identity to continue.',
+      reason: AppLocalizations.of(context).teReason,
     );
     if (!reauthed || !context.mounted) return false;
     session = await user.multiFactor.getSession();
@@ -45,8 +45,8 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
     );
   } catch (_) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Could not start two-factor enrollment. Please try again.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context).teStartFailed)));
     }
     return false;
   }
@@ -69,7 +69,8 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
         Future<void> confirm() async {
           final code = codeController.text.trim();
           if (code.length != 6) {
-            setDialogState(() => dialogError = 'Enter the 6-digit code from your app.');
+            setDialogState(
+                () => dialogError = AppLocalizations.of(context).teEnter6);
             return;
           }
           setDialogState(() {
@@ -77,8 +78,9 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
             dialogError = null;
           });
           try {
-            final assertion = await TotpMultiFactorGenerator
-                .getAssertionForEnrollment(secret, code);
+            final assertion =
+                await TotpMultiFactorGenerator.getAssertionForEnrollment(
+                    secret, code);
             await user.multiFactor.enroll(
               assertion,
               displayName: 'Authenticator app',
@@ -89,14 +91,14 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
             setDialogState(() {
               isVerifying = false;
               dialogError = e.code == 'invalid-verification-code'
-                  ? 'That code is incorrect or expired. Try the latest code from your app.'
-                  : (e.message ?? 'Could not verify that code.');
+                  ? AppLocalizations.of(context).teBadCode
+                  : (e.message ?? AppLocalizations.of(context).teVerifyFailed);
             });
           } catch (_) {
             if (!dialogContext.mounted) return;
             setDialogState(() {
               isVerifying = false;
-              dialogError = 'Could not verify that code.';
+              dialogError = AppLocalizations.of(context).teVerifyFailed;
             });
           }
         }
@@ -104,91 +106,97 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
         return PopScope(
           canPop: !isVerifying,
           child: AlertDialog(
-          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-          title: const Text('Set up two-factor authentication'),
-          content: SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 360),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '1. Scan this QR code with an authenticator app (Google Authenticator, Authy, 1Password, etc.).',
-                    style: TextStyle(fontSize: 13),
-                  ),
-                  const SizedBox(height: 12),
-                  Center(
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: KivoraColors.borderOf(context)),
-                      ),
-                      child: QrImageView(
-                        data: qrCodeUrl,
-                        version: QrVersions.auto,
-                        size: 180,
+            insetPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            title: Text(AppLocalizations.of(context).teTitle),
+            content: SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 360),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context).teStep1,
+                      style: const TextStyle(fontSize: 13),
+                    ),
+                    const SizedBox(height: 12),
+                    Center(
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border:
+                              Border.all(color: KivoraColors.borderOf(context)),
+                        ),
+                        child: QrImageView(
+                          data: qrCodeUrl,
+                          version: QrVersions.auto,
+                          size: 180,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Can\'t scan? Enter this key manually:',
-                    style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
-                  ),
-                  const SizedBox(height: 4),
-                  SelectableText(
-                    secret.secretKey,
-                    style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.2),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    '2. Enter the 6-digit code it generates:',
-                    style: TextStyle(fontSize: 13),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: codeController,
-                    autofocus: true,
-                    enabled: !isVerifying,
-                    keyboardType: TextInputType.number,
-                    maxLength: 6,
-                    decoration: const InputDecoration(
-                      labelText: 'Verification code',
-                      counterText: '',
+                    const SizedBox(height: 12),
+                    Text(
+                      AppLocalizations.of(context).teManual,
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: KivoraColors.textSecondaryOf(context)),
                     ),
-                    onSubmitted: (_) => confirm(),
-                  ),
-                  if (dialogError != null) ...[
+                    const SizedBox(height: 4),
+                    SelectableText(
+                      secret.secretKey,
+                      style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      AppLocalizations.of(context).teStep2,
+                      style: const TextStyle(fontSize: 13),
+                    ),
                     const SizedBox(height: 8),
-                    Text(dialogError!, style: TextStyle(color: KivoraColors.of(context).errorText)),
+                    TextField(
+                      controller: codeController,
+                      autofocus: true,
+                      enabled: !isVerifying,
+                      keyboardType: TextInputType.number,
+                      maxLength: 6,
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context).teCode,
+                        counterText: '',
+                      ),
+                      onSubmitted: (_) => confirm(),
+                    ),
+                    if (dialogError != null) ...[
+                      const SizedBox(height: 8),
+                      Text(dialogError!,
+                          style: TextStyle(
+                              color: KivoraColors.of(context).errorText)),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: isVerifying
-                  ? null
-                  : () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: isVerifying ? null : confirm,
-              child: isVerifying
-                  ? const SizedBox(
-                      height: 16,
-                      width: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2))
-                  : const Text('Enable 2FA'),
-            ),
-          ],
+            actions: [
+              TextButton(
+                onPressed: isVerifying
+                    ? null
+                    : () => Navigator.of(dialogContext).pop(false),
+                child: Text(AppLocalizations.of(context).teCancel),
+              ),
+              ElevatedButton(
+                onPressed: isVerifying ? null : confirm,
+                child: isVerifying
+                    ? const SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2))
+                    : Text(AppLocalizations.of(context).teEnable),
+              ),
+            ],
           ),
         );
       },

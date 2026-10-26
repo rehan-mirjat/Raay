@@ -2933,5 +2933,46 @@
   "cdDescHint": "Brief summary of the department...",
   "cdCancel": "Cancel",
   "cdUpdate": "Update",
-  "cdCreate": "Create"
+  "cdCreate": "Create",
+  "teReason": "Enrolling two-factor authentication requires you to have signed in recently. Please verify your identity to continue.",
+  "teStartFailed": "Could not start two-factor enrollment. Please try again.",
+  "teEnter6": "Enter the 6-digit code from your app.",
+  "teBadCode": "That code is incorrect or expired. Try the latest code from your app.",
+  "teVerifyFailed": "Could not verify that code.",
+  "teTitle": "Set up two-factor authentication",
+  "teStep1": "1. Scan this QR code with an authenticator app (Google Authenticator, Authy, 1Password, etc.).",
+  "teManual": "Can't scan? Enter this key manually:",
+  "teStep2": "2. Enter the 6-digit code it generates:",
+  "teCode": "Verification code",
+  "teCancel": "Cancel",
+  "teEnable": "Enable 2FA",
+  "tcEnter6": "Enter the 6-digit code from your app.",
+  "tcBadCode": "That code is incorrect or expired. Try the latest code from your app.",
+  "tcVerifyFailed": "Could not verify that code.",
+  "tcTitle": "Two-factor verification",
+  "tcBody": "Enter the 6-digit code from your authenticator app to finish signing in.",
+  "tcCode": "Verification code",
+  "tcCancel": "Cancel",
+  "tcVerify": "Verify",
+  "slPassword": "Enter your password to continue.",
+  "slWelcome": "Welcome back",
+  "slVerifyAs": "For your security, please verify it's you to continue as {a}.",
+  "@slVerifyAs": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "slVerify": "For your security, please verify it's you to continue.",
+  "slPasswordLabel": "Password",
+  "slGoogle": "Verify with Google",
+  "slVerifyBtn": "Verify",
+  "slSignOut": "Sign out instead",
+  "raReason": "For security, this action requires you to have signed in within the last 15 minutes. Please verify your identity to continue.",
+  "raTitle": "Verify it's you",
+  "raPassword": "Password",
+  "raCancel": "Cancel",
+  "raGoogle": "Verify with Google",
+  "raVerify": "Verify"
 }

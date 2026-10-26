@@ -1,3 +1,4 @@
+import '../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -47,7 +48,7 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
 
   Future<void> _verify() async {
     if (!_isGoogleUser && _passwordController.text.isEmpty) {
-      setState(() => _error = 'Enter your password to continue.');
+      setState(() => _error = AppLocalizations.of(context).slPassword);
       return;
     }
     setState(() {
@@ -61,9 +62,8 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
         ref.read(sessionLockProvider.notifier).unlock();
       }
     } on MfaRequiredException catch (e) {
-      final credential = mounted
-          ? await showTotpChallengeDialog(context, e.resolver)
-          : null;
+      final credential =
+          mounted ? await showTotpChallengeDialog(context, e.resolver) : null;
       if (!mounted) return;
       if (credential != null) {
         ref.read(sessionLockProvider.notifier).unlock();
@@ -92,7 +92,10 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
   }
 
   bool get _isGoogleUser =>
-      ref.read(authServiceProvider).currentUser?.providerData
+      ref
+          .read(authServiceProvider)
+          .currentUser
+          ?.providerData
           .any((p) => p.providerId == 'google.com') ??
       false;
 
@@ -127,7 +130,7 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Welcome back',
+                    AppLocalizations.of(context).slWelcome,
                     style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -136,9 +139,14 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'For your security, please verify it\'s you to continue${user?.email != null ? ' as ${user!.email}' : ''}.',
+                    (user?.email != null
+                        ? AppLocalizations.of(context)
+                            .slVerifyAs(user!.email.toString())
+                        : AppLocalizations.of(context).slVerify),
                     style: TextStyle(
-                        fontSize: 14, color: KivoraColors.textSecondaryOf(context), height: 1.4),
+                        fontSize: 14,
+                        color: KivoraColors.textSecondaryOf(context),
+                        height: 1.4),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 28),
@@ -148,7 +156,9 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                       obscureText: true,
                       autofocus: true,
                       enabled: !busy,
-                      decoration: const InputDecoration(labelText: 'Password'),
+                      decoration: InputDecoration(
+                          labelText:
+                              AppLocalizations.of(context).slPasswordLabel),
                       onSubmitted: (_) => _verify(),
                     ),
                     const SizedBox(height: 16),
@@ -172,7 +182,9 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                               width: 18,
                               child: CircularProgressIndicator(
                                   color: Colors.white, strokeWidth: 2))
-                          : Text(isGoogleUser ? 'Verify with Google' : 'Verify'),
+                          : Text(isGoogleUser
+                              ? AppLocalizations.of(context).slGoogle
+                              : AppLocalizations.of(context).slVerifyBtn),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -183,7 +195,7 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                             height: 16,
                             width: 16,
                             child: CircularProgressIndicator(strokeWidth: 2))
-                        : const Text('Sign out instead'),
+                        : Text(AppLocalizations.of(context).slSignOut),
                   ),
                 ],
               ),

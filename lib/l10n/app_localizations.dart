@@ -10859,6 +10859,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create'**
   String get cdCreate;
+
+  /// No description provided for @teReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Enrolling two-factor authentication requires you to have signed in recently. Please verify your identity to continue.'**
+  String get teReason;
+
+  /// No description provided for @teStartFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not start two-factor enrollment. Please try again.'**
+  String get teStartFailed;
+
+  /// No description provided for @teEnter6.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 6-digit code from your app.'**
+  String get teEnter6;
+
+  /// No description provided for @teBadCode.
+  ///
+  /// In en, this message translates to:
+  /// **'That code is incorrect or expired. Try the latest code from your app.'**
+  String get teBadCode;
+
+  /// No description provided for @teVerifyFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not verify that code.'**
+  String get teVerifyFailed;
+
+  /// No description provided for @teTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up two-factor authentication'**
+  String get teTitle;
+
+  /// No description provided for @teStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Scan this QR code with an authenticator app (Google Authenticator, Authy, 1Password, etc.).'**
+  String get teStep1;
+
+  /// No description provided for @teManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t scan? Enter this key manually:'**
+  String get teManual;
+
+  /// No description provided for @teStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'2. Enter the 6-digit code it generates:'**
+  String get teStep2;
+
+  /// No description provided for @teCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code'**
+  String get teCode;
+
+  /// No description provided for @teCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get teCancel;
+
+  /// No description provided for @teEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable 2FA'**
+  String get teEnable;
+
+  /// No description provided for @tcEnter6.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 6-digit code from your app.'**
+  String get tcEnter6;
+
+  /// No description provided for @tcBadCode.
+  ///
+  /// In en, this message translates to:
+  /// **'That code is incorrect or expired. Try the latest code from your app.'**
+  String get tcBadCode;
+
+  /// No description provided for @tcVerifyFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not verify that code.'**
+  String get tcVerifyFailed;
+
+  /// No description provided for @tcTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Two-factor verification'**
+  String get tcTitle;
+
+  /// No description provided for @tcBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 6-digit code from your authenticator app to finish signing in.'**
+  String get tcBody;
+
+  /// No description provided for @tcCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code'**
+  String get tcCode;
+
+  /// No description provided for @tcCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get tcCancel;
+
+  /// No description provided for @tcVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get tcVerify;
+
+  /// No description provided for @slPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password to continue.'**
+  String get slPassword;
+
+  /// No description provided for @slWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get slWelcome;
+
+  /// No description provided for @slVerifyAs.
+  ///
+  /// In en, this message translates to:
+  /// **'For your security, please verify it\'s you to continue as {a}.'**
+  String slVerifyAs(String a);
+
+  /// No description provided for @slVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'For your security, please verify it\'s you to continue.'**
+  String get slVerify;
+
+  /// No description provided for @slPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get slPasswordLabel;
+
+  /// No description provided for @slGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify with Google'**
+  String get slGoogle;
+
+  /// No description provided for @slVerifyBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get slVerifyBtn;
+
+  /// No description provided for @slSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out instead'**
+  String get slSignOut;
+
+  /// No description provided for @raReason.
+  ///
+  /// In en, this message translates to:
+  /// **'For security, this action requires you to have signed in within the last 15 minutes. Please verify your identity to continue.'**
+  String get raReason;
+
+  /// No description provided for @raTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify it\'s you'**
+  String get raTitle;
+
+  /// No description provided for @raPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get raPassword;
+
+  /// No description provided for @raCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get raCancel;
+
+  /// No description provided for @raGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify with Google'**
+  String get raGoogle;
+
+  /// No description provided for @raVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get raVerify;
 }
 
 class _AppLocalizationsDelegate
