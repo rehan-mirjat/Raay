@@ -5561,4 +5561,154 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ldHelpOpen => 'افتح مركز الشفافية';
+
+  @override
+  String get obSkip => 'تخطّي';
+
+  @override
+  String get obYourOrg => 'مؤسستك';
+
+  @override
+  String get obCreate => 'إنشاء مؤسسة';
+
+  @override
+  String get obCreateSub => 'ابدأ مساحة لمجتمعك';
+
+  @override
+  String get obJoin => 'الانضمام إلى مؤسسة';
+
+  @override
+  String get obJoinSub => 'استخدم رمزك أو دعوتك';
+
+  @override
+  String get obInviteNote => 'تُدخلك الدعوة مباشرة.';
+
+  @override
+  String get obTag1 => 'مجتمعك، متّصلًا';
+
+  @override
+  String get obTitle1 => 'أنشئ أو انضم\nإلى مؤسسة';
+
+  @override
+  String get obBody1 =>
+      'اجمع أفرادك. أنشئ بيتًا لانتخاباتك واستطلاعاتك، أو انضم برمز دعوة.';
+
+  @override
+  String get obCallout1 => 'بيت واحد للقرارات المشتركة';
+
+  @override
+  String get obCallout1b =>
+      'اربط أعضاءك وانتخاباتك واستطلاعاتك في مؤسسة واحدة.';
+
+  @override
+  String get obNext => 'التالي';
+
+  @override
+  String get obExample => 'اقتراع تجريبي';
+
+  @override
+  String get obStudent => 'مجلس الطلاب 2026';
+
+  @override
+  String get obPresident => 'الرئيس · اختر مرشحًا واحدًا';
+
+  @override
+  String get obAlex => 'أليكس مورغان';
+
+  @override
+  String get obJordan => 'جوردن لي';
+
+  @override
+  String get obReview => 'مراجعة الصوت';
+
+  @override
+  String get obTag2 => 'كل صوت مهم';
+
+  @override
+  String get obTitle2 => 'صوّت بثقة';
+
+  @override
+  String get obBody2 =>
+      'اجعل صوتك مؤثرًا في الانتخابات والاستطلاعات. راجع خياراتك واختر ثم أرسل صوتك.';
+
+  @override
+  String get obCallout2 => 'يبقى اختيارك خاصًا';
+
+  @override
+  String get obCallout2b =>
+      'الاقتراع الخاص يحمي اختياراتك ويُبقي العملية خاضعة للمساءلة.';
+
+  @override
+  String get obControls => 'ضوابط المؤسسة';
+
+  @override
+  String get obCodes => 'رموز الانضمام';
+
+  @override
+  String get obCodesSub => 'إنشاء وإلغاء';
+
+  @override
+  String get obLog => 'سجل النشاط';
+
+  @override
+  String get obLogAdded => 'تمت إضافة عضو';
+
+  @override
+  String get obLogElection => 'تم إنشاء انتخاب';
+
+  @override
+  String get obTag3 => 'قواعد واضحة. سجلات واضحة.';
+
+  @override
+  String get obTitle3 => 'ابقَ متحكمًا';
+
+  @override
+  String get obBody3 =>
+      'ضع قواعد واضحة لمؤسستك. أدر رموز الانضمام وتابع الإجراءات المهمة في سجل النشاط.';
+
+  @override
+  String get obCallout3 => 'اختيارات خاصة. إجراءات خاضعة للمساءلة.';
+
+  @override
+  String get obCallout3b =>
+      'تحدد قواعد الأهلية من يستطيع المشاركة. وتحتفظ سجلات النشاط بالإجراءات الإدارية.';
+
+  @override
+  String get obContinue => 'متابعة';
+
+  @override
+  String get obComm => 'مجتمعك';
+
+  @override
+  String get obCommSub => 'مكان مشترك لاتخاذ القرار';
+
+  @override
+  String get obElections => 'الانتخابات';
+
+  @override
+  String get obPolls => 'الاستطلاعات';
+
+  @override
+  String get obTag4 => 'قرارات أفضل، معًا.';
+
+  @override
+  String get obTitle4 => 'امنح مؤسستك\nصوتًا.';
+
+  @override
+  String get obBody4 =>
+      'أنشئ بيتًا لانتخاباتك واستطلاعاتك. أضف أعضاءك وتقدّموا معًا مع Kivora.';
+
+  @override
+  String get obGetStarted => 'ابدأ الآن';
+
+  @override
+  String get obHaveAccount => 'لدي حساب بالفعل';
+
+  @override
+  String obPage(String a) {
+    return '$a من 3';
+  }
+
+  @override
+  String get obBack => 'رجوع';
 }

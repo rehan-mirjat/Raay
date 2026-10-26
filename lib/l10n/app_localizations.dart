@@ -10073,6 +10073,288 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open the Transparency Center'**
   String get ldHelpOpen;
+
+  /// No description provided for @obSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get obSkip;
+
+  /// No description provided for @obYourOrg.
+  ///
+  /// In en, this message translates to:
+  /// **'Your organization'**
+  String get obYourOrg;
+
+  /// No description provided for @obCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an organization'**
+  String get obCreate;
+
+  /// No description provided for @obCreateSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a space for your community'**
+  String get obCreateSub;
+
+  /// No description provided for @obJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Join an organization'**
+  String get obJoin;
+
+  /// No description provided for @obJoinSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Use your code or invitation'**
+  String get obJoinSub;
+
+  /// No description provided for @obInviteNote.
+  ///
+  /// In en, this message translates to:
+  /// **'An invitation brings you right in.'**
+  String get obInviteNote;
+
+  /// No description provided for @obTag1.
+  ///
+  /// In en, this message translates to:
+  /// **'YOUR COMMUNITY, CONNECTED'**
+  String get obTag1;
+
+  /// No description provided for @obTitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'Create or join\nan organization'**
+  String get obTitle1;
+
+  /// No description provided for @obBody1.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring your people together. Create a home for your elections and polls, or join with an invitation code.'**
+  String get obBody1;
+
+  /// No description provided for @obCallout1.
+  ///
+  /// In en, this message translates to:
+  /// **'One home for shared decisions'**
+  String get obCallout1;
+
+  /// No description provided for @obCallout1b.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your members, elections and polls in one organization.'**
+  String get obCallout1b;
+
+  /// No description provided for @obNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get obNext;
+
+  /// No description provided for @obExample.
+  ///
+  /// In en, this message translates to:
+  /// **'EXAMPLE BALLOT'**
+  String get obExample;
+
+  /// No description provided for @obStudent.
+  ///
+  /// In en, this message translates to:
+  /// **'Student council 2026'**
+  String get obStudent;
+
+  /// No description provided for @obPresident.
+  ///
+  /// In en, this message translates to:
+  /// **'President · Choose one candidate'**
+  String get obPresident;
+
+  /// No description provided for @obAlex.
+  ///
+  /// In en, this message translates to:
+  /// **'Alex Morgan'**
+  String get obAlex;
+
+  /// No description provided for @obJordan.
+  ///
+  /// In en, this message translates to:
+  /// **'Jordan Lee'**
+  String get obJordan;
+
+  /// No description provided for @obReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Review vote'**
+  String get obReview;
+
+  /// No description provided for @obTag2.
+  ///
+  /// In en, this message translates to:
+  /// **'EVERY VOICE MATTERS'**
+  String get obTag2;
+
+  /// No description provided for @obTitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Vote with confidence'**
+  String get obTitle2;
+
+  /// No description provided for @obBody2.
+  ///
+  /// In en, this message translates to:
+  /// **'Make your voice count in elections and polls. Review your options, choose, and submit your vote.'**
+  String get obBody2;
+
+  /// No description provided for @obCallout2.
+  ///
+  /// In en, this message translates to:
+  /// **'Your choice stays private'**
+  String get obCallout2;
+
+  /// No description provided for @obCallout2b.
+  ///
+  /// In en, this message translates to:
+  /// **'Private ballots protect your choices while keeping the process accountable.'**
+  String get obCallout2b;
+
+  /// No description provided for @obControls.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization controls'**
+  String get obControls;
+
+  /// No description provided for @obCodes.
+  ///
+  /// In en, this message translates to:
+  /// **'Joining codes'**
+  String get obCodes;
+
+  /// No description provided for @obCodesSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Create and revoke'**
+  String get obCodesSub;
+
+  /// No description provided for @obLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity log'**
+  String get obLog;
+
+  /// No description provided for @obLogAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Member added'**
+  String get obLogAdded;
+
+  /// No description provided for @obLogElection.
+  ///
+  /// In en, this message translates to:
+  /// **'Election created'**
+  String get obLogElection;
+
+  /// No description provided for @obTag3.
+  ///
+  /// In en, this message translates to:
+  /// **'CLEAR RULES. CLEAR RECORDS.'**
+  String get obTag3;
+
+  /// No description provided for @obTitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay in control'**
+  String get obTitle3;
+
+  /// No description provided for @obBody3.
+  ///
+  /// In en, this message translates to:
+  /// **'Set clear rules for your organization. Manage joining codes and follow important actions in the activity log.'**
+  String get obBody3;
+
+  /// No description provided for @obCallout3.
+  ///
+  /// In en, this message translates to:
+  /// **'Private choices. Accountable actions.'**
+  String get obCallout3;
+
+  /// No description provided for @obCallout3b.
+  ///
+  /// In en, this message translates to:
+  /// **'Eligibility rules control who can take part. Activity logs keep administrative actions on record.'**
+  String get obCallout3b;
+
+  /// No description provided for @obContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get obContinue;
+
+  /// No description provided for @obComm.
+  ///
+  /// In en, this message translates to:
+  /// **'Your community'**
+  String get obComm;
+
+  /// No description provided for @obCommSub.
+  ///
+  /// In en, this message translates to:
+  /// **'A shared place to decide'**
+  String get obCommSub;
+
+  /// No description provided for @obElections.
+  ///
+  /// In en, this message translates to:
+  /// **'Elections'**
+  String get obElections;
+
+  /// No description provided for @obPolls.
+  ///
+  /// In en, this message translates to:
+  /// **'Polls'**
+  String get obPolls;
+
+  /// No description provided for @obTag4.
+  ///
+  /// In en, this message translates to:
+  /// **'Better decisions, together.'**
+  String get obTag4;
+
+  /// No description provided for @obTitle4.
+  ///
+  /// In en, this message translates to:
+  /// **'Give your organization\na voice.'**
+  String get obTitle4;
+
+  /// No description provided for @obBody4.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a home for your elections and polls. Bring your members in, and move forward together with Kivora.'**
+  String get obBody4;
+
+  /// No description provided for @obGetStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get obGetStarted;
+
+  /// No description provided for @obHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'I already have an account'**
+  String get obHaveAccount;
+
+  /// No description provided for @obPage.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} of 3'**
+  String obPage(String a);
+
+  /// No description provided for @obBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get obBack;
 }
 
 class _AppLocalizationsDelegate

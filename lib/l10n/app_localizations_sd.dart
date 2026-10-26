@@ -5630,4 +5630,154 @@ class AppLocalizationsSd extends AppLocalizations {
 
   @override
   String get ldHelpOpen => 'Open the Transparency Center';
+
+  @override
+  String get obSkip => 'Skip';
+
+  @override
+  String get obYourOrg => 'Your organization';
+
+  @override
+  String get obCreate => 'Create an organization';
+
+  @override
+  String get obCreateSub => 'Start a space for your community';
+
+  @override
+  String get obJoin => 'Join an organization';
+
+  @override
+  String get obJoinSub => 'Use your code or invitation';
+
+  @override
+  String get obInviteNote => 'An invitation brings you right in.';
+
+  @override
+  String get obTag1 => 'YOUR COMMUNITY, CONNECTED';
+
+  @override
+  String get obTitle1 => 'Create or join\nan organization';
+
+  @override
+  String get obBody1 =>
+      'Bring your people together. Create a home for your elections and polls, or join with an invitation code.';
+
+  @override
+  String get obCallout1 => 'One home for shared decisions';
+
+  @override
+  String get obCallout1b =>
+      'Connect your members, elections and polls in one organization.';
+
+  @override
+  String get obNext => 'Next';
+
+  @override
+  String get obExample => 'EXAMPLE BALLOT';
+
+  @override
+  String get obStudent => 'Student council 2026';
+
+  @override
+  String get obPresident => 'President · Choose one candidate';
+
+  @override
+  String get obAlex => 'Alex Morgan';
+
+  @override
+  String get obJordan => 'Jordan Lee';
+
+  @override
+  String get obReview => 'Review vote';
+
+  @override
+  String get obTag2 => 'EVERY VOICE MATTERS';
+
+  @override
+  String get obTitle2 => 'Vote with confidence';
+
+  @override
+  String get obBody2 =>
+      'Make your voice count in elections and polls. Review your options, choose, and submit your vote.';
+
+  @override
+  String get obCallout2 => 'Your choice stays private';
+
+  @override
+  String get obCallout2b =>
+      'Private ballots protect your choices while keeping the process accountable.';
+
+  @override
+  String get obControls => 'Organization controls';
+
+  @override
+  String get obCodes => 'Joining codes';
+
+  @override
+  String get obCodesSub => 'Create and revoke';
+
+  @override
+  String get obLog => 'Activity log';
+
+  @override
+  String get obLogAdded => 'Member added';
+
+  @override
+  String get obLogElection => 'Election created';
+
+  @override
+  String get obTag3 => 'CLEAR RULES. CLEAR RECORDS.';
+
+  @override
+  String get obTitle3 => 'Stay in control';
+
+  @override
+  String get obBody3 =>
+      'Set clear rules for your organization. Manage joining codes and follow important actions in the activity log.';
+
+  @override
+  String get obCallout3 => 'Private choices. Accountable actions.';
+
+  @override
+  String get obCallout3b =>
+      'Eligibility rules control who can take part. Activity logs keep administrative actions on record.';
+
+  @override
+  String get obContinue => 'Continue';
+
+  @override
+  String get obComm => 'Your community';
+
+  @override
+  String get obCommSub => 'A shared place to decide';
+
+  @override
+  String get obElections => 'Elections';
+
+  @override
+  String get obPolls => 'Polls';
+
+  @override
+  String get obTag4 => 'Better decisions, together.';
+
+  @override
+  String get obTitle4 => 'Give your organization\na voice.';
+
+  @override
+  String get obBody4 =>
+      'Create a home for your elections and polls. Bring your members in, and move forward together with Kivora.';
+
+  @override
+  String get obGetStarted => 'Get started';
+
+  @override
+  String get obHaveAccount => 'I already have an account';
+
+  @override
+  String obPage(String a) {
+    return '$a of 3';
+  }
+
+  @override
+  String get obBack => 'Back';
 }

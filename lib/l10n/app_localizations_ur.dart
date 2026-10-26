@@ -5615,4 +5615,154 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get ldHelpOpen => 'شفافیت کا مرکز کھولیں';
+
+  @override
+  String get obSkip => 'چھوڑیں';
+
+  @override
+  String get obYourOrg => 'آپ کی تنظیم';
+
+  @override
+  String get obCreate => 'تنظیم بنائیں';
+
+  @override
+  String get obCreateSub => 'اپنی کمیونٹی کے لیے ایک جگہ شروع کریں';
+
+  @override
+  String get obJoin => 'تنظیم میں شامل ہوں';
+
+  @override
+  String get obJoinSub => 'اپنا کوڈ یا دعوت استعمال کریں';
+
+  @override
+  String get obInviteNote => 'دعوت آپ کو سیدھا اندر لے آتی ہے۔';
+
+  @override
+  String get obTag1 => 'آپ کی کمیونٹی، جڑی ہوئی';
+
+  @override
+  String get obTitle1 => 'تنظیم بنائیں یا\nشامل ہوں';
+
+  @override
+  String get obBody1 =>
+      'اپنے لوگوں کو اکٹھا کریں۔ اپنے انتخابات اور رائے شماریوں کے لیے ایک گھر بنائیں، یا دعوتی کوڈ سے شامل ہوں۔';
+
+  @override
+  String get obCallout1 => 'مشترکہ فیصلوں کے لیے ایک گھر';
+
+  @override
+  String get obCallout1b =>
+      'اپنے اراکین، انتخابات اور رائے شماریاں ایک تنظیم میں جوڑیں۔';
+
+  @override
+  String get obNext => 'اگلا';
+
+  @override
+  String get obExample => 'نمونہ بیلٹ';
+
+  @override
+  String get obStudent => 'طلبہ کونسل 2026';
+
+  @override
+  String get obPresident => 'صدر · ایک امیدوار منتخب کریں';
+
+  @override
+  String get obAlex => 'ایلکس مورگن';
+
+  @override
+  String get obJordan => 'جارڈن لی';
+
+  @override
+  String get obReview => 'ووٹ کا جائزہ لیں';
+
+  @override
+  String get obTag2 => 'ہر آواز اہم ہے';
+
+  @override
+  String get obTitle2 => 'اعتماد کے ساتھ ووٹ دیں';
+
+  @override
+  String get obBody2 =>
+      'انتخابات اور رائے شماریوں میں اپنی آواز کو اہم بنائیں۔ اپنے آپشنز دیکھیں، منتخب کریں، اور ووٹ جمع کریں۔';
+
+  @override
+  String get obCallout2 => 'آپ کا انتخاب نجی رہتا ہے';
+
+  @override
+  String get obCallout2b =>
+      'نجی بیلٹ آپ کے انتخاب کی حفاظت کرتے ہیں اور عمل کو جوابدہ رکھتے ہیں۔';
+
+  @override
+  String get obControls => 'تنظیم کے کنٹرول';
+
+  @override
+  String get obCodes => 'شمولیت کے کوڈ';
+
+  @override
+  String get obCodesSub => 'بنائیں اور منسوخ کریں';
+
+  @override
+  String get obLog => 'سرگرمی کا لاگ';
+
+  @override
+  String get obLogAdded => 'رکن شامل ہوا';
+
+  @override
+  String get obLogElection => 'انتخاب بنایا گیا';
+
+  @override
+  String get obTag3 => 'واضح اصول۔ واضح ریکارڈ۔';
+
+  @override
+  String get obTitle3 => 'کنٹرول اپنے ہاتھ میں رکھیں';
+
+  @override
+  String get obBody3 =>
+      'اپنی تنظیم کے لیے واضح اصول طے کریں۔ شمولیت کے کوڈ سنبھالیں اور اہم کارروائیاں سرگرمی کے لاگ میں دیکھیں۔';
+
+  @override
+  String get obCallout3 => 'نجی انتخاب۔ جوابدہ کارروائیاں۔';
+
+  @override
+  String get obCallout3b =>
+      'اہلیت کے اصول طے کرتے ہیں کہ کون شریک ہو سکتا ہے۔ سرگرمی کے لاگ انتظامی کارروائیوں کو ریکارڈ رکھتے ہیں۔';
+
+  @override
+  String get obContinue => 'جاری رکھیں';
+
+  @override
+  String get obComm => 'آپ کی کمیونٹی';
+
+  @override
+  String get obCommSub => 'فیصلے کے لیے مشترکہ جگہ';
+
+  @override
+  String get obElections => 'انتخابات';
+
+  @override
+  String get obPolls => 'رائے شماریاں';
+
+  @override
+  String get obTag4 => 'بہتر فیصلے، ساتھ مل کر۔';
+
+  @override
+  String get obTitle4 => 'اپنی تنظیم کو\nآواز دیں۔';
+
+  @override
+  String get obBody4 =>
+      'اپنے انتخابات اور رائے شماریوں کے لیے گھر بنائیں۔ اپنے اراکین کو شامل کریں، اور Kivora کے ساتھ مل کر آگے بڑھیں۔';
+
+  @override
+  String get obGetStarted => 'شروع کریں';
+
+  @override
+  String get obHaveAccount => 'میرا اکاؤنٹ پہلے سے ہے';
+
+  @override
+  String obPage(String a) {
+    return '$a / 3';
+  }
+
+  @override
+  String get obBack => 'واپس';
 }
