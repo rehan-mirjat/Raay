@@ -5092,4 +5092,143 @@ class AppLocalizationsEn extends AppLocalizations {
   String sclProgress(String a, String b) {
     return '$a of $b completed';
   }
+
+  @override
+  String get trS1Title => 'Election Lifecycle';
+
+  @override
+  String get trS1P1 =>
+      'Every election moves through a fixed sequence of states, enforced by the server, not the app: Draft → Scheduled → Active → Closed → Archived.';
+
+  @override
+  String get trS1P2 =>
+      'An election cannot accept ballots outside the Active state, and the server - not your device\'s clock - decides when that window opens and closes.';
+
+  @override
+  String get trS1P3 =>
+      'Draft elections are never visible to anyone except the organization\'s own owners and admins.';
+
+  @override
+  String get trS2Title => 'Voter Eligibility';
+
+  @override
+  String get trS2P1 =>
+      'Each election is configured with one eligibility rule: every active member of the organization, a specific list of departments, or a specific list of members.';
+
+  @override
+  String get trS2P2 =>
+      'Eligibility is re-checked by the server at the moment you submit a ballot. What the app shows you beforehand (such as a \"Vote Now\" button) is a convenience - it is never the actual authorization check.';
+
+  @override
+  String get trS3Title => 'How a Vote Is Processed';
+
+  @override
+  String get trS3P1 =>
+      'Casting a ballot runs as a single atomic server-side transaction: it verifies your session hasn\'t been revoked, confirms you\'re eligible and haven\'t already voted, and records your choice - all or nothing.';
+
+  @override
+  String get trS3P2 =>
+      'A duplicate submission (for example, from a retried request after a network error) is rejected by the server rather than counted twice, because each voter\'s participation record for a given election has a fixed, predictable ID that can only be created once.';
+
+  @override
+  String get trS4Title => 'Anonymous vs. Identifiable Voting';
+
+  @override
+  String get trS4P1 =>
+      'Anonymous elections: your ballot choice is stored without any field linking it back to your account. The system can confirm you participated (to prevent double-voting) without recording what you chose.';
+
+  @override
+  String get trS4P2 =>
+      'Identifiable elections: your choice is recorded against your account. This mode exists for governance contexts that require attributable votes (for example, certain formal resolutions) and is clearly labeled before you vote.';
+
+  @override
+  String get trS4P3 =>
+      'An election\'s privacy mode is fixed when it\'s created and shown to you before you ever select a choice.';
+
+  @override
+  String get trS5Title => 'Vote Receipts';
+
+  @override
+  String get trS5P1 =>
+      'After voting, you receive a receipt: a receipt ID and a cryptographic hash generated from your ballot record at the moment it was recorded.';
+
+  @override
+  String get trS5P2 =>
+      'The receipt confirms your ballot was accepted and exists in the system\'s records. It is not a copy of your ballot choice, and in an anonymous election it cannot be used by anyone - including Kivora administrators - to determine what you selected.';
+
+  @override
+  String get trS6Title => 'What Receipt Verification Does and Does Not Prove';
+
+  @override
+  String get trS6P1 =>
+      'Verifying a receipt confirms that a ballot matching that receipt exists in the ledger. That is the full extent of what it proves.';
+
+  @override
+  String get trS6P2 =>
+      'It does NOT prove who cast that ballot, what choice was selected, that no other issue occurred elsewhere in the process, or provide independent cryptographic audit of the full tally beyond what is described here. Treat it as a record-existence check, not a formal proof of election integrity.';
+
+  @override
+  String get trS7Title => 'When Results Become Available';
+
+  @override
+  String get trS7P1 =>
+      'Results are calculated after an election closes, and are only visible to ordinary members once an organization admin explicitly publishes them.';
+
+  @override
+  String get trS7P2 =>
+      'Organization owners and admins may review computed results before publishing, in order to catch configuration problems - this is a normal part of the workflow, not evidence of hidden tallies.';
+
+  @override
+  String get trS8Title => 'Administrative Accountability';
+
+  @override
+  String get trS8P1 =>
+      'Sensitive administrative actions - publishing or closing an election, changing a member\'s role, granting Observer access, and similar actions - are written to an organization-scoped audit log, visible to that organization\'s owners and admins.';
+
+  @override
+  String get trS8P2 =>
+      'This is an operational log for the organization\'s own oversight, not a public, tamper-proof ledger - see \"Known Limitations\" below.';
+
+  @override
+  String get trS9Title => 'Privacy & Data Handling';
+
+  @override
+  String get trS9P1 =>
+      'Each organization\'s data is isolated from every other organization at the server level; membership in one organization never grants visibility into another\'s elections, members, or results.';
+
+  @override
+  String get trS9P2 =>
+      'Observers (a limited, admin-granted capability) see only organization-wide aggregate turnout numbers for active elections and published results - never individual ballots, voter identities, or small-group breakdowns that could reveal how a specific person or small group voted.';
+
+  @override
+  String get trS9P3 =>
+      'On the Free plan, mobile app users may see banner ads on browsing screens (home, organizations, calendar, published results). Ads are served by a third-party ad network that may collect device identifiers according to your consent choices. Ads never appear on the ballot, receipt, receipt-verification, transparency or admin screens, and ad networks never receive your vote, your choice, or your receipt.';
+
+  @override
+  String get trS10Title => 'Known Limitations';
+
+  @override
+  String get trS10P1 =>
+      'Audit logs are ordinary database records, not a cryptographically tamper-evident ledger - they describe operational history, not mathematical proof against retroactive modification.';
+
+  @override
+  String get trS10P2 =>
+      'Kivora is not independently certified by any national or third-party election-standards body, and receipt verification is not a substitute for an independent cryptographic audit of the full tally.';
+
+  @override
+  String get trS10P3 =>
+      'Some interface languages are provided via machine-assisted translation pending native-speaker review - see Settings → Preferences → Language.';
+
+  @override
+  String get trTitle => 'Trust & Transparency Center';
+
+  @override
+  String get trHeading => 'How Kivora elections work';
+
+  @override
+  String get trIntro =>
+      'A plain-language explanation of what actually happens behind every election, written to match the real implementation - including its honest limitations.';
+
+  @override
+  String get trVerify => 'Verify a receipt';
 }

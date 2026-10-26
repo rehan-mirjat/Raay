@@ -9119,6 +9119,234 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{a} of {b} completed'**
   String sclProgress(String a, String b);
+
+  /// No description provided for @trS1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Election Lifecycle'**
+  String get trS1Title;
+
+  /// No description provided for @trS1P1.
+  ///
+  /// In en, this message translates to:
+  /// **'Every election moves through a fixed sequence of states, enforced by the server, not the app: Draft → Scheduled → Active → Closed → Archived.'**
+  String get trS1P1;
+
+  /// No description provided for @trS1P2.
+  ///
+  /// In en, this message translates to:
+  /// **'An election cannot accept ballots outside the Active state, and the server - not your device\'s clock - decides when that window opens and closes.'**
+  String get trS1P2;
+
+  /// No description provided for @trS1P3.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft elections are never visible to anyone except the organization\'s own owners and admins.'**
+  String get trS1P3;
+
+  /// No description provided for @trS2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Voter Eligibility'**
+  String get trS2Title;
+
+  /// No description provided for @trS2P1.
+  ///
+  /// In en, this message translates to:
+  /// **'Each election is configured with one eligibility rule: every active member of the organization, a specific list of departments, or a specific list of members.'**
+  String get trS2P1;
+
+  /// No description provided for @trS2P2.
+  ///
+  /// In en, this message translates to:
+  /// **'Eligibility is re-checked by the server at the moment you submit a ballot. What the app shows you beforehand (such as a \"Vote Now\" button) is a convenience - it is never the actual authorization check.'**
+  String get trS2P2;
+
+  /// No description provided for @trS3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'How a Vote Is Processed'**
+  String get trS3Title;
+
+  /// No description provided for @trS3P1.
+  ///
+  /// In en, this message translates to:
+  /// **'Casting a ballot runs as a single atomic server-side transaction: it verifies your session hasn\'t been revoked, confirms you\'re eligible and haven\'t already voted, and records your choice - all or nothing.'**
+  String get trS3P1;
+
+  /// No description provided for @trS3P2.
+  ///
+  /// In en, this message translates to:
+  /// **'A duplicate submission (for example, from a retried request after a network error) is rejected by the server rather than counted twice, because each voter\'s participation record for a given election has a fixed, predictable ID that can only be created once.'**
+  String get trS3P2;
+
+  /// No description provided for @trS4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Anonymous vs. Identifiable Voting'**
+  String get trS4Title;
+
+  /// No description provided for @trS4P1.
+  ///
+  /// In en, this message translates to:
+  /// **'Anonymous elections: your ballot choice is stored without any field linking it back to your account. The system can confirm you participated (to prevent double-voting) without recording what you chose.'**
+  String get trS4P1;
+
+  /// No description provided for @trS4P2.
+  ///
+  /// In en, this message translates to:
+  /// **'Identifiable elections: your choice is recorded against your account. This mode exists for governance contexts that require attributable votes (for example, certain formal resolutions) and is clearly labeled before you vote.'**
+  String get trS4P2;
+
+  /// No description provided for @trS4P3.
+  ///
+  /// In en, this message translates to:
+  /// **'An election\'s privacy mode is fixed when it\'s created and shown to you before you ever select a choice.'**
+  String get trS4P3;
+
+  /// No description provided for @trS5Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Vote Receipts'**
+  String get trS5Title;
+
+  /// No description provided for @trS5P1.
+  ///
+  /// In en, this message translates to:
+  /// **'After voting, you receive a receipt: a receipt ID and a cryptographic hash generated from your ballot record at the moment it was recorded.'**
+  String get trS5P1;
+
+  /// No description provided for @trS5P2.
+  ///
+  /// In en, this message translates to:
+  /// **'The receipt confirms your ballot was accepted and exists in the system\'s records. It is not a copy of your ballot choice, and in an anonymous election it cannot be used by anyone - including Kivora administrators - to determine what you selected.'**
+  String get trS5P2;
+
+  /// No description provided for @trS6Title.
+  ///
+  /// In en, this message translates to:
+  /// **'What Receipt Verification Does and Does Not Prove'**
+  String get trS6Title;
+
+  /// No description provided for @trS6P1.
+  ///
+  /// In en, this message translates to:
+  /// **'Verifying a receipt confirms that a ballot matching that receipt exists in the ledger. That is the full extent of what it proves.'**
+  String get trS6P1;
+
+  /// No description provided for @trS6P2.
+  ///
+  /// In en, this message translates to:
+  /// **'It does NOT prove who cast that ballot, what choice was selected, that no other issue occurred elsewhere in the process, or provide independent cryptographic audit of the full tally beyond what is described here. Treat it as a record-existence check, not a formal proof of election integrity.'**
+  String get trS6P2;
+
+  /// No description provided for @trS7Title.
+  ///
+  /// In en, this message translates to:
+  /// **'When Results Become Available'**
+  String get trS7Title;
+
+  /// No description provided for @trS7P1.
+  ///
+  /// In en, this message translates to:
+  /// **'Results are calculated after an election closes, and are only visible to ordinary members once an organization admin explicitly publishes them.'**
+  String get trS7P1;
+
+  /// No description provided for @trS7P2.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization owners and admins may review computed results before publishing, in order to catch configuration problems - this is a normal part of the workflow, not evidence of hidden tallies.'**
+  String get trS7P2;
+
+  /// No description provided for @trS8Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Administrative Accountability'**
+  String get trS8Title;
+
+  /// No description provided for @trS8P1.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensitive administrative actions - publishing or closing an election, changing a member\'s role, granting Observer access, and similar actions - are written to an organization-scoped audit log, visible to that organization\'s owners and admins.'**
+  String get trS8P1;
+
+  /// No description provided for @trS8P2.
+  ///
+  /// In en, this message translates to:
+  /// **'This is an operational log for the organization\'s own oversight, not a public, tamper-proof ledger - see \"Known Limitations\" below.'**
+  String get trS8P2;
+
+  /// No description provided for @trS9Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy & Data Handling'**
+  String get trS9Title;
+
+  /// No description provided for @trS9P1.
+  ///
+  /// In en, this message translates to:
+  /// **'Each organization\'s data is isolated from every other organization at the server level; membership in one organization never grants visibility into another\'s elections, members, or results.'**
+  String get trS9P1;
+
+  /// No description provided for @trS9P2.
+  ///
+  /// In en, this message translates to:
+  /// **'Observers (a limited, admin-granted capability) see only organization-wide aggregate turnout numbers for active elections and published results - never individual ballots, voter identities, or small-group breakdowns that could reveal how a specific person or small group voted.'**
+  String get trS9P2;
+
+  /// No description provided for @trS9P3.
+  ///
+  /// In en, this message translates to:
+  /// **'On the Free plan, mobile app users may see banner ads on browsing screens (home, organizations, calendar, published results). Ads are served by a third-party ad network that may collect device identifiers according to your consent choices. Ads never appear on the ballot, receipt, receipt-verification, transparency or admin screens, and ad networks never receive your vote, your choice, or your receipt.'**
+  String get trS9P3;
+
+  /// No description provided for @trS10Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Known Limitations'**
+  String get trS10Title;
+
+  /// No description provided for @trS10P1.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit logs are ordinary database records, not a cryptographically tamper-evident ledger - they describe operational history, not mathematical proof against retroactive modification.'**
+  String get trS10P1;
+
+  /// No description provided for @trS10P2.
+  ///
+  /// In en, this message translates to:
+  /// **'Kivora is not independently certified by any national or third-party election-standards body, and receipt verification is not a substitute for an independent cryptographic audit of the full tally.'**
+  String get trS10P2;
+
+  /// No description provided for @trS10P3.
+  ///
+  /// In en, this message translates to:
+  /// **'Some interface languages are provided via machine-assisted translation pending native-speaker review - see Settings → Preferences → Language.'**
+  String get trS10P3;
+
+  /// No description provided for @trTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trust & Transparency Center'**
+  String get trTitle;
+
+  /// No description provided for @trHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'How Kivora elections work'**
+  String get trHeading;
+
+  /// No description provided for @trIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'A plain-language explanation of what actually happens behind every election, written to match the real implementation - including its honest limitations.'**
+  String get trIntro;
+
+  /// No description provided for @trVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify a receipt'**
+  String get trVerify;
 }
 
 class _AppLocalizationsDelegate
