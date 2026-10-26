@@ -31,8 +31,8 @@ class HeroBanner extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppTheme.radiusCard + 6),
           gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: AlignmentDirectional.topStart,
+            end: AlignmentDirectional.bottomEnd,
             colors: [Color(0xFF0F2233), Color(0xFF0F3B4A), Color(0xFF0F766E)],
             stops: [0, 0.55, 1],
           ),
@@ -40,8 +40,8 @@ class HeroBanner extends StatelessWidget {
         ),
         child: Stack(children: [
           // Decorative light; never carries information.
-          Positioned(
-            right: -60,
+          PositionedDirectional(
+            end: -60,
             top: -80,
             child: ExcludeSemantics(
               child: Container(

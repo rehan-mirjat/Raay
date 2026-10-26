@@ -69,8 +69,8 @@ class AuthSplitLayout extends StatelessWidget {
             child: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+                  begin: AlignmentDirectional.topStart,
+                  end: AlignmentDirectional.bottomEnd,
                   colors: [
                     Color(0xFF0F2A3D), // Deep navy-teal
                     Color(0xFF0B1722), // Midnight navy
@@ -81,9 +81,9 @@ class AuthSplitLayout extends StatelessWidget {
               child: Stack(
                 children: [
                   // Teal glow top-left
-                  Positioned(
+                  PositionedDirectional(
                     top: -120,
-                    left: -80,
+                    start: -80,
                     child: Container(
                       width: 420,
                       height: 420,
@@ -94,9 +94,9 @@ class AuthSplitLayout extends StatelessWidget {
                     ),
                   ),
                   // Blue glow bottom-right
-                  Positioned(
+                  PositionedDirectional(
                     bottom: -80,
-                    right: -80,
+                    end: -80,
                     child: Container(
                       width: 300,
                       height: 300,

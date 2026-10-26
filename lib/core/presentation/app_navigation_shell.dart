@@ -881,9 +881,9 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                         : AppTheme.textSecondary),
               ),
               if (hasUnread)
-                Positioned(
+                PositionedDirectional(
                   top: -2,
-                  right: -2,
+                  end: -2,
                   child: Container(
                     padding: const EdgeInsets.all(2.5),
                     decoration: const BoxDecoration(

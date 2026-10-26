@@ -803,8 +803,8 @@ class _StepsTimelineState extends State<StepsTimeline> {
       SizedBox(
         height: _marker,
         child: Stack(children: [
-          Positioned(
-            left: railLeft,
+          PositionedDirectional(
+            start: railLeft,
             top: _marker / 2 - 2,
             width: railWidth,
             height: 4,
@@ -812,8 +812,8 @@ class _StepsTimelineState extends State<StepsTimeline> {
                 decoration: BoxDecoration(
                     color: kc.border, borderRadius: BorderRadius.circular(2))),
           ),
-          Positioned(
-            left: railLeft,
+          PositionedDirectional(
+            start: railLeft,
             top: _marker / 2 - 2,
             height: 4,
             child: AnimatedContainer(
@@ -827,7 +827,7 @@ class _StepsTimelineState extends State<StepsTimeline> {
             ),
           ),
           for (var i = 0; i < n; i++)
-            Positioned(left: pitch * i, top: 0, child: _markerFor(i)),
+            PositionedDirectional(start: pitch * i, top: 0, child: _markerFor(i)),
         ]),
       ),
       const SizedBox(height: 16),

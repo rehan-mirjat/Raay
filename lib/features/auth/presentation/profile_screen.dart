@@ -398,9 +398,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           )
                         : null,
                   ),
-                  Positioned(
+                  PositionedDirectional(
                     bottom: 0,
-                    right: 0,
+                    end: 0,
                     child: InkWell(
                       onTap: _isUploadingPhoto ? null : _pickAndUploadImage,
                       borderRadius: BorderRadius.circular(20),

@@ -70,8 +70,8 @@ class AppTheme {
   // ── Gradient Helpers ─────────────────────────────────────────────────────────
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [Color(0xFF0F766E), Color(0xFF0E7490)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
+    begin: AlignmentDirectional.topStart,
+    end: AlignmentDirectional.bottomEnd,
   );
 
   static const LinearGradient darkHeroGradient = LinearGradient(

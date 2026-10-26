@@ -203,7 +203,7 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                             customBorder: const CircleBorder(),
                             onTap: _isLoading ? null : _pickImage,
                             child: Stack(
-                              alignment: Alignment.bottomRight,
+                              alignment: AlignmentDirectional.bottomEnd,
                               children: [
                                 CandidateAvatar(
                                   radius: 42,

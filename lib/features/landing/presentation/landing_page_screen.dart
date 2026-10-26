@@ -878,8 +878,8 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(28),
           gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+              begin: AlignmentDirectional.topStart,
+              end: AlignmentDirectional.bottomEnd,
               colors: [AppTheme.primaryBlue, AppTheme.primaryBlueDark]),
         ),
         child: Column(children: [
@@ -952,7 +952,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
     Widget col(String title, List<Widget> links) =>
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
-            padding: const EdgeInsets.only(left: 4, bottom: 4),
+            padding: const EdgeInsetsDirectional.only(start: 4, bottom: 4),
             child: Text(title,
                 style: TextStyle(
                     fontSize: 13,
@@ -1089,10 +1089,10 @@ class _AmbientGlow extends StatelessWidget {
     return IgnorePointer(
       child: ExcludeSemantics(
         child: Stack(clipBehavior: Clip.hardEdge, children: [
-          Positioned(
-              top: -160, right: -120, child: orb(AppTheme.primaryBlue, 560)),
-          Positioned(
-              top: 380, left: -200, child: orb(AppTheme.accentTeal, 460)),
+          PositionedDirectional(
+              top: -160, end: -120, child: orb(AppTheme.primaryBlue, 560)),
+          PositionedDirectional(
+              top: 380, start: -200, child: orb(AppTheme.accentTeal, 460)),
         ]),
       ),
     );
