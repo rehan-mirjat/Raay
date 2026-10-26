@@ -1,3 +1,4 @@
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -12,7 +13,11 @@ class ScheduleStep extends ConsumerStatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
 
-  const ScheduleStep({super.key, required this.orgId, required this.onNext, required this.onBack});
+  const ScheduleStep(
+      {super.key,
+      required this.orgId,
+      required this.onNext,
+      required this.onBack});
 
   @override
   ConsumerState<ScheduleStep> createState() => _ScheduleStepState();
@@ -62,7 +67,8 @@ class _ScheduleStepState extends ConsumerState<ScheduleStep> {
     );
     if (time == null) return;
 
-    final selected = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+    final selected =
+        DateTime(date.year, date.month, date.day, time.hour, time.minute);
 
     if (!mounted) return;
 
@@ -78,89 +84,121 @@ class _ScheduleStepState extends ConsumerState<ScheduleStep> {
     final start = _startAt;
     final end = _endAt;
     if (start != null && end != null) {
-      ref.read(draftEventProvider(widget.orgId).notifier).updateSchedule(start, end);
+      ref
+          .read(draftEventProvider(widget.orgId).notifier)
+          .updateSchedule(start, end);
     }
   }
 
   void _validateAndProceed() {
     if (_startAt == null || _endAt == null) {
-      setState(() => _localError = 'Start and End times are required.');
+      setState(() => _localError = AppLocalizations.of(context).scRequired);
       return;
     }
 
     final now = DateTime.now();
     if (_startAt!.isBefore(now.subtract(const Duration(minutes: 1)))) {
-      setState(() => _localError = 'Start time cannot be in the past.');
+      setState(() => _localError = AppLocalizations.of(context).scPast);
       return;
     }
 
     if (_endAt!.difference(_startAt!).inMinutes < 5) {
-      setState(() => _localError = 'Voting window must be at least 5 minutes.');
+      setState(() => _localError = AppLocalizations.of(context).scShort);
       return;
     }
 
-    ref.read(draftEventProvider(widget.orgId).notifier).updateSchedule(_startAt!, _endAt!);
+    ref
+        .read(draftEventProvider(widget.orgId).notifier)
+        .updateSchedule(_startAt!, _endAt!);
     widget.onNext();
   }
 
   @override
   Widget build(BuildContext context) {
     final format = DateFormat('MMM d, yyyy - h:mm a');
-    final isDraft = ref.watch(draftEventProvider(widget.orgId)).status == VotingEventStatus.draft;
+    final isDraft = ref.watch(draftEventProvider(widget.orgId)).status ==
+        VotingEventStatus.draft;
     final kc = KivoraColors.of(context);
     final offset = DateTime.now().timeZoneOffset;
     final sign = offset.isNegative ? '-' : '+';
-    final zone = '${DateTime.now().timeZoneName} (UTC$sign${offset.inHours.abs().toString().padLeft(2, '0')}:${(offset.inMinutes.abs() % 60).toString().padLeft(2, '0')})';
+    final zone =
+        '${DateTime.now().timeZoneName} (UTC$sign${offset.inHours.abs().toString().padLeft(2, '0')}:${(offset.inMinutes.abs() % 60).toString().padLeft(2, '0')})';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (!isDraft)
-           Container(
-             padding: const EdgeInsets.all(12),
-             decoration: BoxDecoration(
-                 color: kc.surface,
-                 borderRadius: BorderRadius.circular(AppTheme.radiusInput),
-                 border: Border.all(color: kc.border)),
-             child: Text('Event is no longer a DRAFT. Schedule is strictly immutable.', style: TextStyle(color: kc.textSecondary)),
-           ),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+                color: kc.surface,
+                borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+                border: Border.all(color: kc.border)),
+            child: Text(AppLocalizations.of(context).scLocked,
+                style: TextStyle(color: kc.textSecondary)),
+          ),
         const SizedBox(height: 16),
-        const Text('Voting Schedule', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Text(AppLocalizations.of(context).scTitle,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
-        Text('Times are entered in your time zone: $zone. All times are evaluated securely against the server clock.', style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+        Text(AppLocalizations.of(context).scZoneNote(zone.toString()),
+            style: TextStyle(fontSize: 14, color: kc.textSecondary)),
         const SizedBox(height: 24),
-        
         ListTile(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide(color: kc.border)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              side: BorderSide(color: kc.border)),
           minVerticalPadding: 12,
-          title: const Text('Start Time'),
-          subtitle: Text(_startAt != null ? format.format(_startAt!) : 'Not set', style: TextStyle(color: _startAt != null ? KivoraColors.textPrimaryOf(context) : kc.errorText)),
+          title: Text(AppLocalizations.of(context).scStartTime),
+          subtitle: Text(
+              _startAt != null
+                  ? format.format(_startAt!)
+                  : AppLocalizations.of(context).scNotSet,
+              style: TextStyle(
+                  color: _startAt != null
+                      ? KivoraColors.textPrimaryOf(context)
+                      : kc.errorText)),
           trailing: const Icon(Icons.calendar_today),
           onTap: isDraft ? () => _pickDateTime(true) : null,
         ),
         const SizedBox(height: 16),
         ListTile(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide(color: kc.border)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              side: BorderSide(color: kc.border)),
           minVerticalPadding: 12,
-          title: const Text('End Time'),
-          subtitle: Text(_endAt != null ? format.format(_endAt!) : 'Not set', style: TextStyle(color: _endAt != null ? KivoraColors.textPrimaryOf(context) : kc.errorText)),
+          title: Text(AppLocalizations.of(context).scEndTime),
+          subtitle: Text(
+              _endAt != null
+                  ? format.format(_endAt!)
+                  : AppLocalizations.of(context).scNotSet,
+              style: TextStyle(
+                  color: _endAt != null
+                      ? KivoraColors.textPrimaryOf(context)
+                      : kc.errorText)),
           trailing: const Icon(Icons.calendar_today),
           onTap: isDraft ? () => _pickDateTime(false) : null,
         ),
-        
         if (_localError != null) ...[
           const SizedBox(height: 16),
-          Text(_localError!, style: TextStyle(color: kc.errorText, fontWeight: FontWeight.bold)),
+          Text(_localError!,
+              style:
+                  TextStyle(color: kc.errorText, fontWeight: FontWeight.bold)),
         ],
-
         const SizedBox(height: 32),
         Wrap(
           alignment: WrapAlignment.spaceBetween,
           spacing: 12,
           runSpacing: 12,
           children: [
-            TextButton(style: TextButton.styleFrom(minimumSize: const Size(48, 48)), onPressed: widget.onBack, child: const Text('Back')),
-            FilledButton(style: FilledButton.styleFrom(minimumSize: const Size(48, 48)), onPressed: isDraft ? _validateAndProceed : widget.onNext, child: const Text('Next: Eligibility')),
+            TextButton(
+                style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                onPressed: widget.onBack,
+                child: Text(AppLocalizations.of(context).scBack)),
+            FilledButton(
+                style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+                onPressed: isDraft ? _validateAndProceed : widget.onNext,
+                child: Text(AppLocalizations.of(context).scNext)),
           ],
         ),
       ],

@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -35,11 +36,12 @@ class ObserverDashboardScreen extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text('Observer Dashboard', style: TextStyle(color: kc.textPrimary)),
+        title: Text(AppLocalizations.of(context).obTitle,
+            style: TextStyle(color: kc.textPrimary)),
         iconTheme: IconThemeData(color: kc.textPrimary),
         actions: [
           IconButton(
-            tooltip: 'Trust & Transparency Center',
+            tooltip: AppLocalizations.of(context).obTransparency,
             icon: const Icon(Icons.verified_outlined),
             onPressed: () => context.go('/transparency'),
           ),
@@ -47,47 +49,57 @@ class ObserverDashboardScreen extends ConsumerWidget {
       ),
       body: orgState.when(
         loading: () => const LoadingView(),
-        error: (e, _) => const ErrorView(type: ErrorViewType.generic, message: 'We could not load this view. Check your connection and try again.'),
+        error: (e, _) => ErrorView(
+            type: ErrorViewType.generic,
+            message: AppLocalizations.of(context).obLoadError),
         data: (state) {
           final orgContext = state.context;
           if (orgContext == null) {
-            return const EmptyView(
+            return EmptyView(
               icon: KivoraIcons.building,
-              title: 'No active organization',
-              message: 'Select an organization to view its observer dashboard.',
+              title: AppLocalizations.of(context).obNoOrgTitle,
+              message: AppLocalizations.of(context).obNoOrgBody,
             );
           }
           if (!orgContext.member.isObserver) {
-            return const EmptyView(
+            return EmptyView(
               icon: KivoraIcons.lock,
-              title: 'Observer access required',
-              message:
-                  'This dashboard is only available to members granted observer access by an organization admin.',
+              title: AppLocalizations.of(context).obAccessTitle,
+              message: AppLocalizations.of(context).obAccessBody,
             );
           }
 
           final orgId = orgContext.organization.id;
           final eventsArgs = (orgId: orgId, includeDrafts: false);
-          final eventsAsync = ref.watch(organizationVotingEventsProvider(eventsArgs));
+          final eventsAsync =
+              ref.watch(organizationVotingEventsProvider(eventsArgs));
 
           return eventsAsync.when(
             loading: () => const LoadingView(),
-            error: (e, _) => const ErrorView(type: ErrorViewType.generic, message: 'We could not load this view. Check your connection and try again.'),
+            error: (e, _) => ErrorView(
+                type: ErrorViewType.generic,
+                message: AppLocalizations.of(context).obLoadError),
             data: (events) {
-              final sorted = [...events]..sort((a, b) => b.startAt.compareTo(a.startAt));
-              final active = sorted.where((e) => e.status == VotingEventStatus.active).toList();
-              final others = sorted.where((e) => e.status != VotingEventStatus.active).toList();
+              final sorted = [...events]
+                ..sort((a, b) => b.startAt.compareTo(a.startAt));
+              final active = sorted
+                  .where((e) => e.status == VotingEventStatus.active)
+                  .toList();
+              final others = sorted
+                  .where((e) => e.status != VotingEventStatus.active)
+                  .toList();
 
               if (sorted.isEmpty) {
-                return const EmptyView(
+                return EmptyView(
                   icon: KivoraIcons.vote,
-                  title: 'No elections yet',
-                  message: 'There are no published elections in this organization yet.',
+                  title: AppLocalizations.of(context).obNoElectionsTitle,
+                  message: AppLocalizations.of(context).obNoElectionsBody,
                 );
               }
 
               return SingleChildScrollView(
-                padding: EdgeInsets.all(ResponsiveLayout.isWide(context) ? 32 : 16),
+                padding:
+                    EdgeInsets.all(ResponsiveLayout.isWide(context) ? 32 : 16),
                 child: Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 900),
@@ -102,12 +114,15 @@ class ObserverDashboardScreen extends ConsumerWidget {
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.visibility_outlined, color: KivoraColors.of(context).accentText),
+                              Icon(Icons.visibility_outlined,
+                                  color: KivoraColors.of(context).accentText),
                               const SizedBox(width: 10),
                               Expanded(
                                 child: Text(
-                                  'You have read-only Observer access to ${orgContext.organization.name}. You see organization-wide aggregates only, never individual ballots, voter identities, or per-department breakdowns.',
-                                  style: TextStyle(fontSize: 12, color: kc.textPrimary),
+                                  AppLocalizations.of(context).obNote(
+                                      orgContext.organization.name.toString()),
+                                  style: TextStyle(
+                                      fontSize: 12, color: kc.textPrimary),
                                 ),
                               ),
                             ],
@@ -115,16 +130,20 @@ class ObserverDashboardScreen extends ConsumerWidget {
                         ),
                         const SizedBox(height: 24),
                         if (active.isNotEmpty) ...[
-                          Text('Active Elections',
+                          Text(AppLocalizations.of(context).obActive,
                               style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: kc.textPrimary)),
                           const SizedBox(height: 12),
                           ...active.map((e) => _ObserverEventTile(event: e)),
                           const SizedBox(height: 24),
                         ],
-                        Text('Election Timeline',
+                        Text(AppLocalizations.of(context).obTimeline,
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: kc.textPrimary)),
                         const SizedBox(height: 12),
                         ...others.map((e) => _TimelineTile(event: e)),
                       ],
@@ -164,7 +183,8 @@ class _ObserverEventTile extends ConsumerWidget {
             children: [
               Expanded(
                 child: Text(event.title,
-                    style: TextStyle(fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: kc.textPrimary)),
               ),
               StatusBadge.eventStatus(event.status.name),
             ],
@@ -172,16 +192,20 @@ class _ObserverEventTile extends ConsumerWidget {
           const SizedBox(height: 10),
           summaryAsync.when(
             loading: () => const LinearProgressIndicator(minHeight: 3),
-            error: (_, __) => Text('Aggregate turnout unavailable',
+            error: (_, __) => Text(
+                AppLocalizations.of(context).obTurnoutUnknown,
                 style: TextStyle(fontSize: 12, color: kc.textSecondary)),
             data: (summary) {
               if (summary == null) {
-                return Text('Aggregate turnout unavailable',
+                return Text(AppLocalizations.of(context).obTurnoutUnknown,
                     style: TextStyle(fontSize: 12, color: kc.textSecondary));
               }
               final eligible = (summary['eligibleCount'] as num?)?.toInt() ?? 0;
-              final voted = (summary['participationCount'] as num?)?.toInt() ?? 0;
-              final percent = ((summary['turnoutPercent'] as num?)?.toDouble() ?? 0).clamp(0, 100);
+              final voted =
+                  (summary['participationCount'] as num?)?.toInt() ?? 0;
+              final percent =
+                  ((summary['turnoutPercent'] as num?)?.toDouble() ?? 0)
+                      .clamp(0, 100);
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -195,7 +219,11 @@ class _ObserverEventTile extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  Text('$voted of $eligible eligible voters (${percent.toStringAsFixed(0)}%)',
+                  Text(
+                      AppLocalizations.of(context).obTurnout(
+                          voted.toString(),
+                          eligible.toString(),
+                          (percent.toStringAsFixed(0)).toString()),
                       style: TextStyle(fontSize: 12, color: kc.textSecondary)),
                 ],
               );
@@ -215,11 +243,13 @@ class _TimelineTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final kc = KivoraColors.of(context);
     final format = DateFormat('MMM d, yyyy');
-    final isResultsAvailable =
-        event.status == VotingEventStatus.closed || event.status == VotingEventStatus.archived;
+    final isResultsAvailable = event.status == VotingEventStatus.closed ||
+        event.status == VotingEventStatus.archived;
 
     return InkWell(
-      onTap: isResultsAvailable ? () => context.go('/elections/${event.id}/results') : null,
+      onTap: isResultsAvailable
+          ? () => context.go('/elections/${event.id}/results')
+          : null,
       borderRadius: BorderRadius.circular(10),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
@@ -232,8 +262,10 @@ class _TimelineTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(event.title,
-                      style: TextStyle(fontWeight: FontWeight.w600, color: kc.textPrimary)),
-                  Text('${format.format(event.startAt)} – ${format.format(event.endAt)}',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600, color: kc.textPrimary)),
+                  Text(
+                      '${format.format(event.startAt)} – ${format.format(event.endAt)}',
                       style: TextStyle(fontSize: 12, color: kc.textSecondary)),
                 ],
               ),

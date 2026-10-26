@@ -3959,4 +3959,485 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get imOrgLabel => 'تنظیم';
+
+  @override
+  String get vtCandidate => 'امیدواروں کا انتخاب';
+
+  @override
+  String get vtSingleChoice => 'واحد انتخاب کی رائے شماری';
+
+  @override
+  String get vtYesNo => 'ہاں/نہیں رائے شماری';
+
+  @override
+  String get etAll => 'تمام فعال اراکین';
+
+  @override
+  String get etMembers => 'منتخب اراکین';
+
+  @override
+  String get etDepartments => 'منتخب شعبے';
+
+  @override
+  String get ccLoadError =>
+      'ہم کمانڈ سینٹر لوڈ نہیں کر سکے۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔';
+
+  @override
+  String get ccNoOrgTitle => 'کوئی فعال تنظیم نہیں';
+
+  @override
+  String get ccNoOrgBody => 'کمانڈ سینٹر دیکھنے کے لیے ایک تنظیم منتخب کریں۔';
+
+  @override
+  String get ccAdminTitle => 'منتظم کی رسائی درکار ہے';
+
+  @override
+  String get ccAdminBody =>
+      'انتخابی کمانڈ سینٹر تنظیم کے مالکان اور منتظمین کے لیے ہے۔';
+
+  @override
+  String get ccElectionsError =>
+      'ہم انتخابات لوڈ نہیں کر سکے۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔';
+
+  @override
+  String get ccTitle => 'انتخابی کمانڈ سینٹر';
+
+  @override
+  String get ccSearch => 'تلاش';
+
+  @override
+  String get ccFilterDate => 'تاریخ کی حد سے فلٹر کریں';
+
+  @override
+  String get ccCreate => 'انتخاب بنائیں';
+
+  @override
+  String get ccSuspended =>
+      'یہ تنظیم معطل ہے۔ بحال ہونے تک انتخابات کا انتظام بند ہے۔';
+
+  @override
+  String get ccActiveTitle => 'فعال انتخابات کی نگرانی';
+
+  @override
+  String get ccActiveNone => 'اس وقت کوئی انتخاب فعال نہیں۔';
+
+  @override
+  String get ccUpcomingTitle => 'آنے والے انتخابات کا شیڈول';
+
+  @override
+  String get ccUpcomingNone => 'کوئی انتخاب شیڈول نہیں۔';
+
+  @override
+  String get ccAlerts => 'الرٹس';
+
+  @override
+  String ccNoVoters(String a) {
+    return '\"$a\" کے لیے کوئی اہل ووٹر مقرر نہیں۔';
+  }
+
+  @override
+  String get ccTasks => 'زیر التوا انتظامی کام';
+
+  @override
+  String get ccTasksNone => 'کوئی زیر التوا کام نہیں۔ سب کچھ مکمل ہے۔';
+
+  @override
+  String ccDraft(String a) {
+    return '\"$a\" ابھی مسودہ ہے اور شائع کرنے سے پہلے جائزے کی ضرورت ہے۔';
+  }
+
+  @override
+  String get ccInviteOne => '1 دعوت جواب کی منتظر ہے۔';
+
+  @override
+  String ccInviteMany(String a) {
+    return '$a دعوتیں جواب کی منتظر ہیں۔';
+  }
+
+  @override
+  String get ccMembership => 'رکنیت اور دعوتیں';
+
+  @override
+  String get ccTotalMembers => 'کل اراکین';
+
+  @override
+  String get ccPendingInvites => 'زیر التوا دعوتیں';
+
+  @override
+  String get ccRecent => 'حالیہ انتظامی سرگرمی';
+
+  @override
+  String get ccExport => 'رپورٹ ایکسپورٹ کریں (CSV)';
+
+  @override
+  String get ccStatTotal => 'کل انتخابات';
+
+  @override
+  String get ccStatActive => 'فعال';
+
+  @override
+  String get ccStatScheduled => 'شیڈول';
+
+  @override
+  String get ccStatClosed => 'بند';
+
+  @override
+  String get ccStatMembers => 'اراکین';
+
+  @override
+  String get ccStatMembersSub => 'تنظیم کے تمام اراکین';
+
+  @override
+  String get ccNoActivity => 'کوئی حالیہ سرگرمی نہیں۔';
+
+  @override
+  String get ccMonitor => 'نگرانی';
+
+  @override
+  String get ccTurnoutUnknown => 'براہِ راست شرکت کی شرح دستیاب نہیں';
+
+  @override
+  String ccTurnout(String a, String b, String c) {
+    return '$b میں سے $a نے ووٹ دیا ($c%)';
+  }
+
+  @override
+  String get biTemplateTitle => 'انتخاب کا سانچہ منتخب کریں';
+
+  @override
+  String get biTemplateBody =>
+      'انتخاب بنانا تیز کرنے کے لیے پہلے سے تیار سانچہ منتخب کریں۔';
+
+  @override
+  String get biT1Name => 'ایگزیکٹو / بورڈ کا انتخاب';
+
+  @override
+  String get biT1Sub => 'امیدواروں کا انتخاب • گمنام بیلٹ';
+
+  @override
+  String get biT1Title => 'ایگزیکٹو بورڈ کا انتخاب';
+
+  @override
+  String get biT1Desc =>
+      'ایگزیکٹو بورڈ کے نمائندے منتخب کرنے کا سالانہ انتخاب۔ بیلٹ مکمل طور پر گمنام ہیں۔';
+
+  @override
+  String get biT2Name => 'پالیسی / قرارداد پر ووٹ';
+
+  @override
+  String get biT2Sub => 'ہاں/نہیں رائے شماری • گمنام بیلٹ';
+
+  @override
+  String get biT2Title => 'تنظیم کی پالیسی کی قرارداد';
+
+  @override
+  String get biT2Desc =>
+      'تنظیم کے ضوابط میں مجوزہ ترمیم پر ووٹ دیں۔ ووٹ دینے سے پہلے منسلک دستاویزات کا جائزہ لیں۔';
+
+  @override
+  String get biT3Name => 'کمیونٹی کی رائے شماری';
+
+  @override
+  String get biT3Sub => 'واحد انتخاب کی رائے شماری • شناخت کے ساتھ';
+
+  @override
+  String get biT3Title => 'کمیونٹی کی رائے کا سروے';
+
+  @override
+  String get biT3Desc =>
+      'آنے والے اقدامات پر کمیونٹی کی رائے جمع کرنے کا مختصر سروے۔';
+
+  @override
+  String get biLocked =>
+      'انتخاب اب مسودہ نہیں رہا۔ بنیادی معلومات تبدیل نہیں ہو سکتیں۔';
+
+  @override
+  String get biTitle => 'انتخاب کی تفصیلات';
+
+  @override
+  String get biSubtitle => 'اپنے انتخاب کی بنیادی معلومات فراہم کریں۔';
+
+  @override
+  String get biUseTemplate => 'سانچہ استعمال کریں';
+
+  @override
+  String get biTitleLabel => 'انتخاب کا عنوان *';
+
+  @override
+  String get biTitleHint => 'مثلاً سالانہ ٹیم کا انتخاب';
+
+  @override
+  String get biTitleInvalid => 'عنوان 3 سے 100 حروف کا ہونا چاہیے۔';
+
+  @override
+  String get biDescLabel => 'تفصیل *';
+
+  @override
+  String get biDescHint =>
+      'اس انتخاب کا مقصد، پس منظر اور اہم تفصیلات بیان کریں...';
+
+  @override
+  String get biDescRequired => 'تفصیل ضروری ہے۔';
+
+  @override
+  String get biDescLong => 'تفصیل 500 حروف سے زیادہ نہیں ہو سکتی۔';
+
+  @override
+  String get biVotingType => 'ووٹنگ کی قسم';
+
+  @override
+  String get biTypeCandidate => 'امیدواروں کا انتخاب';
+
+  @override
+  String get biTypeCandidateSub =>
+      'ووٹر فہرست میں سے ایک امیدوار منتخب کرتے ہیں۔';
+
+  @override
+  String get biTypeSingle => 'واحد انتخاب کی رائے شماری';
+
+  @override
+  String get biTypeSingleSub => 'ووٹر فہرست میں سے ایک آپشن منتخب کرتے ہیں۔';
+
+  @override
+  String get biTypeYesNo => 'ہاں/نہیں رائے شماری';
+
+  @override
+  String get biTypeYesNoSub => 'ووٹر کسی تجویز کو منظور یا مسترد کرتے ہیں۔';
+
+  @override
+  String get biPrivacy => 'بیلٹ کی رازداری';
+
+  @override
+  String get biAnonymous => 'گمنام';
+
+  @override
+  String get biIdentifiable => 'شناخت کے ساتھ';
+
+  @override
+  String get biAnonymousNote => 'ووٹر کی شناخت بیلٹ سے الگ رکھی جاتی ہے۔';
+
+  @override
+  String get biIdentifiableNote =>
+      'ہر بیلٹ ووٹر کے اکاؤنٹ سے منسلک ہوتا ہے۔ ووٹر تصدیق سے پہلے یہ نوٹس دیکھیں گے۔';
+
+  @override
+  String get biNext => 'اگلا: شیڈول';
+
+  @override
+  String get elLocked =>
+      'انتخاب اب مسودہ نہیں رہا۔ اہلیت کی ترتیب تبدیل نہیں ہو سکتی۔';
+
+  @override
+  String get elTitle => 'ووٹر کی اہلیت';
+
+  @override
+  String get elWho => 'کون ووٹ دے سکتا ہے؟';
+
+  @override
+  String get elAll => 'تمام فعال اراکین';
+
+  @override
+  String get elDepts => 'منتخب شعبے';
+
+  @override
+  String get elMembers => 'منتخب اراکین';
+
+  @override
+  String get elBack => 'واپس';
+
+  @override
+  String get elCreateDraft => 'مسودہ بنائیں اور جاری رکھیں';
+
+  @override
+  String get elNext => 'اگلا: انتخابات کے آپشن';
+
+  @override
+  String get elListError =>
+      'ہم یہ فہرست لوڈ نہیں کر سکے۔ واپس جا کر دوبارہ کوشش کریں۔';
+
+  @override
+  String get elNoDepts => 'اس تنظیم میں کوئی شعبہ نہیں ملا۔';
+
+  @override
+  String get elNoMembers => 'کوئی فعال رکن نہیں ملا۔';
+
+  @override
+  String elSelected(String a, String b) {
+    return '$b فعال اراکین میں سے $a منتخب';
+  }
+
+  @override
+  String get elCsv => 'CSV سے بڑی تعداد میں درآمد';
+
+  @override
+  String get rvPublishTitle => 'یہ انتخاب شائع کریں؟';
+
+  @override
+  String get rvPublishBody =>
+      'اہل اراکین اسے شیڈول کے مطابق دیکھیں گے۔ شائع کرنے کے بعد آپ اس کی تفصیلات، شیڈول یا اہلیت نہیں بدل سکیں گے۔';
+
+  @override
+  String get rvKeepEditing => 'ترمیم جاری رکھیں';
+
+  @override
+  String get rvPublish => 'شائع کریں';
+
+  @override
+  String get rvPublished => 'انتخاب شائع ہو گیا۔';
+
+  @override
+  String get rvReauth =>
+      'سیکیورٹی کے لیے، انتخاب شائع کرنے کے لیے آپ کا پچھلے 15 منٹ میں سائن اِن ہونا ضروری ہے۔ جاری رکھنے کے لیے اپنی شناخت کی تصدیق کریں۔';
+
+  @override
+  String get rvPublishFailed => 'ہم انتخاب شائع نہیں کر سکے۔ دوبارہ کوشش کریں۔';
+
+  @override
+  String get rvChoicesError =>
+      'ہم آپشنز لوڈ نہیں کر سکے۔ واپس جا کر دوبارہ کوشش کریں۔';
+
+  @override
+  String get rvCheckTitle => 'عنوان مقرر ہے';
+
+  @override
+  String get rvCheckDesc => 'تفصیل شامل ہے';
+
+  @override
+  String get rvCheckSchedule => 'ووٹنگ کا وقت مقرر ہے';
+
+  @override
+  String get rvCheckPrivacyId => 'رازداری کا طریقہ مقرر (شناخت کے ساتھ)';
+
+  @override
+  String get rvCheckPrivacyAnon => 'رازداری کا طریقہ مقرر (گمنام)';
+
+  @override
+  String rvCheckChoices(String a) {
+    return 'امیدوار/آپشنز مقرر ($a)';
+  }
+
+  @override
+  String rvCheckEligibility(String a) {
+    return 'اہلیت کے اصول درست ($a)';
+  }
+
+  @override
+  String get rvTitle => 'جائزہ اور اشاعت';
+
+  @override
+  String get rvChecklist => 'انتخاب کی تیاری کی فہرست';
+
+  @override
+  String get rvTitleLabel => 'عنوان';
+
+  @override
+  String get rvStart => 'آغاز';
+
+  @override
+  String get rvEnd => 'اختتام';
+
+  @override
+  String get rvChoices => 'آپشنز';
+
+  @override
+  String rvItems(String a) {
+    return '$a آئٹم مقرر';
+  }
+
+  @override
+  String get rvIncomplete =>
+      'شائع کرنے سے پہلے اوپر کی فہرست کے تمام ضروری آئٹم مکمل کریں۔';
+
+  @override
+  String get rvBack => 'واپس';
+
+  @override
+  String get rvPublishButton => 'انتخاب شائع کریں';
+
+  @override
+  String get rvOptional => ' (اختیاری)';
+
+  @override
+  String get scRequired => 'آغاز اور اختتام کا وقت ضروری ہے۔';
+
+  @override
+  String get scPast => 'آغاز کا وقت ماضی میں نہیں ہو سکتا۔';
+
+  @override
+  String get scShort => 'ووٹنگ کی مدت کم از کم 5 منٹ ہونی چاہیے۔';
+
+  @override
+  String get scLocked => 'انتخاب اب مسودہ نہیں رہا۔ شیڈول تبدیل نہیں ہو سکتا۔';
+
+  @override
+  String get scTitle => 'ووٹنگ کا شیڈول';
+
+  @override
+  String scZoneNote(String a) {
+    return 'اوقات آپ کے ٹائم زون میں درج ہوتے ہیں: $a۔ تمام اوقات کی جانچ محفوظ طریقے سے سرور کی گھڑی کے مطابق ہوتی ہے۔';
+  }
+
+  @override
+  String get scStartTime => 'آغاز کا وقت';
+
+  @override
+  String get scNotSet => 'مقرر نہیں';
+
+  @override
+  String get scEndTime => 'اختتام کا وقت';
+
+  @override
+  String get scBack => 'واپس';
+
+  @override
+  String get scNext => 'اگلا: اہلیت';
+
+  @override
+  String get obTitle => 'مبصر ڈیش بورڈ';
+
+  @override
+  String get obTransparency => 'اعتماد اور شفافیت کا مرکز';
+
+  @override
+  String get obLoadError =>
+      'ہم یہ منظر لوڈ نہیں کر سکے۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔';
+
+  @override
+  String get obNoOrgTitle => 'کوئی فعال تنظیم نہیں';
+
+  @override
+  String get obNoOrgBody => 'مبصر ڈیش بورڈ دیکھنے کے لیے ایک تنظیم منتخب کریں۔';
+
+  @override
+  String get obAccessTitle => 'مبصر کی رسائی درکار ہے';
+
+  @override
+  String get obAccessBody =>
+      'یہ ڈیش بورڈ صرف ان اراکین کے لیے ہے جنہیں تنظیم کے منتظم نے مبصر کی رسائی دی ہو۔';
+
+  @override
+  String get obNoElectionsTitle => 'ابھی کوئی انتخاب نہیں';
+
+  @override
+  String get obNoElectionsBody =>
+      'اس تنظیم میں ابھی کوئی شائع شدہ انتخاب نہیں۔';
+
+  @override
+  String obNote(String a) {
+    return 'آپ کو $a تک صرف پڑھنے والی مبصر رسائی حاصل ہے۔ آپ صرف تنظیم بھر کے مجموعی اعداد دیکھتے ہیں، انفرادی بیلٹ، ووٹرز کی شناخت یا شعبہ وار تفصیل کبھی نہیں۔';
+  }
+
+  @override
+  String get obActive => 'فعال انتخابات';
+
+  @override
+  String get obTimeline => 'انتخابات کا ٹائم لائن';
+
+  @override
+  String get obTurnoutUnknown => 'مجموعی شرکت کی شرح دستیاب نہیں';
+
+  @override
+  String obTurnout(String a, String b, String c) {
+    return '$b اہل ووٹرز میں سے $a ($c%)';
+  }
 }

@@ -1,5 +1,7 @@
+import '../../../l10n/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../../../core/utils/audit_action_label.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -66,31 +68,34 @@ class _ElectionCommandCenterScreenState
         loading: () => const LoadingView(),
         error: (e, _) => ErrorView(
           type: ErrorViewType.generic,
-          message: 'We could not load the command center. Check your connection and try again.',
+          message: AppLocalizations.of(context).ccLoadError,
           onRetry: () => ref.invalidate(activeOrganizationContextProvider),
         ),
         data: (state) {
           final orgContext = state.context;
           if (orgContext == null) {
-            return const EmptyView(
+            return EmptyView(
               icon: KivoraIcons.building,
-              title: 'No active organization',
-              message: 'Select an organization to view its command center.',
+              title: AppLocalizations.of(context).ccNoOrgTitle,
+              message: AppLocalizations.of(context).ccNoOrgBody,
             );
           }
           if (!orgContext.member.role.isAdmin) {
-            return const EmptyView(
+            return EmptyView(
               icon: KivoraIcons.lock,
-              title: 'Administrator access required',
-              message: 'The election command center is available to organization owners and admins.',
+              title: AppLocalizations.of(context).ccAdminTitle,
+              message: AppLocalizations.of(context).ccAdminBody,
             );
           }
 
           final orgId = orgContext.organization.id;
           final eventsArgs = (orgId: orgId, includeDrafts: true);
-          final eventsAsync = ref.watch(organizationVotingEventsProvider(eventsArgs));
-          final membersAsync = ref.watch(organizationMembersDirectoryProvider(orgId));
-          final pendingInvitesAsync = ref.watch(pendingInvitationsProvider(orgId));
+          final eventsAsync =
+              ref.watch(organizationVotingEventsProvider(eventsArgs));
+          final membersAsync =
+              ref.watch(organizationMembersDirectoryProvider(orgId));
+          final pendingInvitesAsync =
+              ref.watch(pendingInvitationsProvider(orgId));
           final auditAsync = ref.watch(organizationAuditLogsProvider(orgId));
 
           return RefreshIndicator(
@@ -101,22 +106,27 @@ class _ElectionCommandCenterScreenState
             },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.all(ResponsiveLayout.isWide(context) ? 32 : 16),
+              padding:
+                  EdgeInsets.all(ResponsiveLayout.isWide(context) ? 32 : 16),
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 1300),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      _buildHeader(context,
-                          orgContext.organization.status == OrganizationStatus.suspended),
+                      _buildHeader(
+                          context,
+                          orgContext.organization.status ==
+                              OrganizationStatus.suspended),
                       const SizedBox(height: 24),
                       eventsAsync.when(
                         loading: () => const LoadingView(),
                         error: (e, _) => ErrorView(
                           type: ErrorViewType.generic,
-                          message: 'We could not load elections. Check your connection and try again.',
-                          onRetry: () => ref.invalidate(organizationVotingEventsProvider),
+                          message:
+                              AppLocalizations.of(context).ccElectionsError,
+                          onRetry: () =>
+                              ref.invalidate(organizationVotingEventsProvider),
                         ),
                         data: (events) => _buildBody(
                           context,
@@ -153,7 +163,7 @@ class _ElectionCommandCenterScreenState
           children: [
             Semantics(
               header: true,
-              child: Text('Election Command Center',
+              child: Text(AppLocalizations.of(context).ccTitle,
                   style: TextStyle(
                       fontSize: isDesktop ? 26 : 22,
                       fontWeight: FontWeight.bold,
@@ -164,22 +174,25 @@ class _ElectionCommandCenterScreenState
               spacing: 4,
               children: [
                 IconButton(
-                  tooltip: 'Search',
-                  constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                  tooltip: AppLocalizations.of(context).ccSearch,
+                  constraints:
+                      const BoxConstraints(minWidth: 48, minHeight: 48),
                   icon: const Icon(KivoraIcons.search),
                   onPressed: () => showGlobalSearch(context),
                 ),
                 IconButton(
-                  tooltip: 'Filter by date range',
-                  constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                  tooltip: AppLocalizations.of(context).ccFilterDate,
+                  constraints:
+                      const BoxConstraints(minWidth: 48, minHeight: 48),
                   icon: const Icon(Icons.date_range_outlined),
                   onPressed: _pickDateRange,
                 ),
                 FilledButton.icon(
-                  style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+                  style:
+                      FilledButton.styleFrom(minimumSize: const Size(48, 48)),
                   onPressed: () => context.go('/admin/events/new'),
                   icon: const Icon(KivoraIcons.plus, size: 18),
-                  label: const Text('Create election'),
+                  label: Text(AppLocalizations.of(context).ccCreate),
                 ),
               ],
             ),
@@ -216,8 +229,11 @@ class _ElectionCommandCenterScreenState
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'This organization is suspended. Election management is disabled until it is reinstated.',
-                    style: TextStyle(color: kc.textPrimary, fontWeight: FontWeight.bold, fontSize: 14),
+                    AppLocalizations.of(context).ccSuspended,
+                    style: TextStyle(
+                        color: kc.textPrimary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14),
                   ),
                 ),
               ],
@@ -243,19 +259,29 @@ class _ElectionCommandCenterScreenState
         : allEvents
             .where((e) =>
                 !e.startAt.isBefore(_dateRange!.start) &&
-                !e.startAt.isAfter(_dateRange!.end.add(const Duration(days: 1))))
+                !e.startAt
+                    .isAfter(_dateRange!.end.add(const Duration(days: 1))))
             .toList();
 
-    final active = filteredByDate.where((e) => e.status == VotingEventStatus.active).toList();
-    final scheduled = filteredByDate.where((e) => e.status == VotingEventStatus.scheduled).toList()
+    final active = filteredByDate
+        .where((e) => e.status == VotingEventStatus.active)
+        .toList();
+    final scheduled = filteredByDate
+        .where((e) => e.status == VotingEventStatus.scheduled)
+        .toList()
       ..sort((a, b) => a.startAt.compareTo(b.startAt));
-    final drafts = filteredByDate.where((e) => e.status == VotingEventStatus.draft).toList();
+    final drafts = filteredByDate
+        .where((e) => e.status == VotingEventStatus.draft)
+        .toList();
     final closed = filteredByDate
-        .where((e) => e.status == VotingEventStatus.closed || e.status == VotingEventStatus.archived)
+        .where((e) =>
+            e.status == VotingEventStatus.closed ||
+            e.status == VotingEventStatus.archived)
         .toList();
 
     final misconfigured = filteredByDate.where((e) =>
-        (e.status == VotingEventStatus.scheduled || e.status == VotingEventStatus.active) &&
+        (e.status == VotingEventStatus.scheduled ||
+            e.status == VotingEventStatus.active) &&
         e.eligibilityType != EligibilityType.allMembers &&
         e.eligibilityDepartmentIds.isEmpty &&
         e.eligibilityUserIds.isEmpty);
@@ -270,20 +296,28 @@ class _ElectionCommandCenterScreenState
       children: [
         _panelCard(
           context,
-          title: 'Active Election Monitoring',
+          title: AppLocalizations.of(context).ccActiveTitle,
           icon: Icons.sensors_rounded,
           child: active.isEmpty
-              ? _emptyPanelText(context, 'No elections are currently active.')
-              : Column(children: active.map((e) => _ActiveEventTile(event: e)).toList()),
+              ? _emptyPanelText(
+                  context, AppLocalizations.of(context).ccActiveNone)
+              : Column(
+                  children:
+                      active.map((e) => _ActiveEventTile(event: e)).toList()),
         ),
         const SizedBox(height: 20),
         _panelCard(
           context,
-          title: 'Upcoming Election Schedule',
+          title: AppLocalizations.of(context).ccUpcomingTitle,
           icon: Icons.schedule_rounded,
           child: scheduled.isEmpty
-              ? _emptyPanelText(context, 'No elections are scheduled.')
-              : Column(children: scheduled.take(5).map((e) => EventCard(event: e)).toList()),
+              ? _emptyPanelText(
+                  context, AppLocalizations.of(context).ccUpcomingNone)
+              : Column(
+                  children: scheduled
+                      .take(5)
+                      .map((e) => EventCard(event: e))
+                      .toList()),
         ),
       ],
     );
@@ -296,13 +330,14 @@ class _ElectionCommandCenterScreenState
             padding: const EdgeInsets.only(bottom: 20),
             child: _panelCard(
               context,
-              title: 'Alerts',
+              title: AppLocalizations.of(context).ccAlerts,
               icon: Icons.warning_amber_rounded,
               accentColor: KivoraColors.of(context).errorText,
               child: Column(
                 children: misconfigured
                     .map((e) => _AlertTile(
-                          text: '"${e.title}" has no eligible voters configured.',
+                          text: AppLocalizations.of(context)
+                              .ccNoVoters(e.title.toString()),
                           onTap: () => context.go('/admin/events/${e.id}/edit'),
                         ))
                     .toList(),
@@ -311,20 +346,25 @@ class _ElectionCommandCenterScreenState
           ),
         _panelCard(
           context,
-          title: 'Pending Administrative Tasks',
+          title: AppLocalizations.of(context).ccTasks,
           icon: Icons.checklist_rounded,
           child: (drafts.isEmpty && (pendingInvites ?? 0) == 0)
-              ? _emptyPanelText(context, 'No pending tasks. You\'re all caught up.')
+              ? _emptyPanelText(
+                  context, AppLocalizations.of(context).ccTasksNone)
               : Column(
                   children: [
                     for (final d in drafts)
                       _AlertTile(
-                        text: '"${d.title}" is still a draft and needs review before publishing.',
+                        text: AppLocalizations.of(context)
+                            .ccDraft(d.title.toString()),
                         onTap: () => context.go('/admin/events/${d.id}/review'),
                       ),
                     if ((pendingInvites ?? 0) > 0)
                       _AlertTile(
-                        text: pendingInvites == 1 ? '1 invitation is awaiting a response.' : '$pendingInvites invitations are awaiting a response.',
+                        text: pendingInvites == 1
+                            ? AppLocalizations.of(context).ccInviteOne
+                            : AppLocalizations.of(context)
+                                .ccInviteMany(pendingInvites.toString()),
                         onTap: () => context.go('/orgs/members'),
                       ),
                   ],
@@ -333,13 +373,19 @@ class _ElectionCommandCenterScreenState
         const SizedBox(height: 20),
         _panelCard(
           context,
-          title: 'Membership & Invitations',
+          title: AppLocalizations.of(context).ccMembership,
           icon: Icons.groups_rounded,
           child: Column(
             children: [
-              _summaryRow(context, 'Total members', totalMembers?.toString() ?? '—',
+              _summaryRow(
+                  context,
+                  AppLocalizations.of(context).ccTotalMembers,
+                  totalMembers?.toString() ?? '—',
                   () => context.go('/orgs/members')),
-              _summaryRow(context, 'Pending invitations', pendingInvites?.toString() ?? '—',
+              _summaryRow(
+                  context,
+                  AppLocalizations.of(context).ccPendingInvites,
+                  pendingInvites?.toString() ?? '—',
                   () => context.go('/orgs/members')),
             ],
           ),
@@ -347,7 +393,7 @@ class _ElectionCommandCenterScreenState
         const SizedBox(height: 20),
         _panelCard(
           context,
-          title: 'Recent Administrative Activity',
+          title: AppLocalizations.of(context).ccRecent,
           icon: Icons.history_rounded,
           child: _buildRecentActivity(context, auditSnapshot),
         ),
@@ -364,7 +410,7 @@ class _ElectionCommandCenterScreenState
                 ? null
                 : () => exportEventsReportCsv(filteredByDate, organizationName),
             icon: const Icon(Icons.file_download_outlined, size: 18),
-            label: const Text('Export report (CSV)'),
+            label: Text(AppLocalizations.of(context).ccExport),
           ),
         ),
         statsRow,
@@ -395,37 +441,50 @@ class _ElectionCommandCenterScreenState
   ) {
     return [
       KivoraMetricCard(
-          title: 'Total Elections', value: '${all.length}', icon: KivoraIcons.vote),
+          title: AppLocalizations.of(context).ccStatTotal,
+          value: '${all.length}',
+          icon: KivoraIcons.vote),
       KivoraMetricCard(
-          title: 'Active', value: '${active.length}', icon: Icons.sensors_rounded, iconColor: KivoraColors.of(context).successText),
+          title: AppLocalizations.of(context).ccStatActive,
+          value: '${active.length}',
+          icon: Icons.sensors_rounded,
+          iconColor: KivoraColors.of(context).successText),
       KivoraMetricCard(
-          title: 'Scheduled', value: '${scheduled.length}', icon: Icons.schedule_rounded, iconColor: AppTheme.accentGold),
+          title: AppLocalizations.of(context).ccStatScheduled,
+          value: '${scheduled.length}',
+          icon: Icons.schedule_rounded,
+          iconColor: AppTheme.accentGold),
       KivoraMetricCard(
-          title: 'Closed', value: '${closed.length}', icon: Icons.task_alt_rounded, iconColor: AppTheme.textSecondary),
+          title: AppLocalizations.of(context).ccStatClosed,
+          value: '${closed.length}',
+          icon: Icons.task_alt_rounded,
+          iconColor: AppTheme.textSecondary),
       KivoraMetricCard(
-          title: 'Members',
+          title: AppLocalizations.of(context).ccStatMembers,
           value: totalMembers?.toString() ?? '—',
           icon: KivoraIcons.users,
-          subtitle: 'All organization members',
+          subtitle: AppLocalizations.of(context).ccStatMembersSub,
           iconColor: AppTheme.secondaryBlue),
     ];
   }
 
   Widget _buildRecentActivity(BuildContext context, dynamic auditSnapshot) {
     final kc = KivoraColors.of(context);
-    if (auditSnapshot == null) return _emptyPanelText(context, 'No recent activity.');
+    if (auditSnapshot == null) {
+      return _emptyPanelText(
+          context, AppLocalizations.of(context).ccNoActivity);
+    }
     final docs = (auditSnapshot.docs as List).take(6).toList();
-    if (docs.isEmpty) return _emptyPanelText(context, 'No recent activity.');
-
-    String titleCase(String raw) {
-      final words = raw.replaceAll('_', ' ').toLowerCase().split(' ');
-      return words.map((w) => w.isEmpty ? w : '${w[0].toUpperCase()}${w.substring(1)}').join(' ');
+    if (docs.isEmpty) {
+      return _emptyPanelText(
+          context, AppLocalizations.of(context).ccNoActivity);
     }
 
     return Column(
       children: docs.map<Widget>((doc) {
         final data = doc.data() as Map<String, dynamic>;
-        final action = titleCase(data['action'] as String? ?? 'Admin action');
+        final action = auditActionText(
+            AppLocalizations.of(context), data['action'] as String? ?? '');
         final ts = data['timestamp'];
         final date = ts is Timestamp ? ts.toDate() : null;
         return Padding(
@@ -451,7 +510,8 @@ class _ElectionCommandCenterScreenState
     );
   }
 
-  Widget _summaryRow(BuildContext context, String label, String value, VoidCallback onTap) {
+  Widget _summaryRow(
+      BuildContext context, String label, String value, VoidCallback onTap) {
     final kc = KivoraColors.of(context);
     return InkWell(
       onTap: onTap,
@@ -460,8 +520,12 @@ class _ElectionCommandCenterScreenState
         constraints: const BoxConstraints(minHeight: 48),
         child: Row(
           children: [
-            Expanded(child: Text(label, style: TextStyle(fontSize: 14, color: kc.textSecondary))),
-            Text(value, style: TextStyle(fontWeight: FontWeight.bold, color: kc.textPrimary)),
+            Expanded(
+                child: Text(label,
+                    style: TextStyle(fontSize: 14, color: kc.textSecondary))),
+            Text(value,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, color: kc.textPrimary)),
             const SizedBox(width: 4),
             Icon(Icons.chevron_right, size: 20, color: kc.textSecondary),
           ],
@@ -474,7 +538,8 @@ class _ElectionCommandCenterScreenState
     final kc = KivoraColors.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Text(text, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+      child:
+          Text(text, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
     );
   }
 
@@ -500,14 +565,18 @@ class _ElectionCommandCenterScreenState
         children: [
           Row(
             children: [
-              Icon(icon, size: 20, color: color == AppTheme.primaryBlue ? kc.accentText : color),
+              Icon(icon,
+                  size: 20,
+                  color: color == AppTheme.primaryBlue ? kc.accentText : color),
               const SizedBox(width: 8),
               Expanded(
                 child: Semantics(
                   header: true,
                   child: Text(title,
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16, color: kc.textPrimary)),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: kc.textPrimary)),
                 ),
               ),
             ],
@@ -539,7 +608,9 @@ class _AlertTile extends StatelessWidget {
             children: [
               Icon(Icons.arrow_right_rounded, size: 22, color: kc.warningText),
               const SizedBox(width: 6),
-              Expanded(child: Text(text, style: TextStyle(fontSize: 14, color: kc.textPrimary))),
+              Expanded(
+                  child: Text(text,
+                      style: TextStyle(fontSize: 14, color: kc.textPrimary))),
             ],
           ),
         ),
@@ -577,27 +648,33 @@ class _ActiveEventTile extends ConsumerWidget {
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 480),
                 child: Text(event.title,
-                    style: TextStyle(fontWeight: FontWeight.bold, color: kc.textPrimary)),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: kc.textPrimary)),
               ),
               TextButton(
                 style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
-                onPressed: () => context.go('/admin/events/${event.id}/monitor'),
-                child: const Text('Monitor'),
+                onPressed: () =>
+                    context.go('/admin/events/${event.id}/monitor'),
+                child: Text(AppLocalizations.of(context).ccMonitor),
               ),
             ],
           ),
           summaryAsync.when(
             loading: () => const LinearProgressIndicator(minHeight: 3),
-            error: (_, __) => Text('Live turnout unavailable',
+            error: (_, __) => Text(
+                AppLocalizations.of(context).ccTurnoutUnknown,
                 style: TextStyle(fontSize: 14, color: kc.textSecondary)),
             data: (summary) {
               if (summary == null) {
-                return Text('Live turnout unavailable',
+                return Text(AppLocalizations.of(context).ccTurnoutUnknown,
                     style: TextStyle(fontSize: 12, color: kc.textSecondary));
               }
               final eligible = (summary['eligibleCount'] as num?)?.toInt() ?? 0;
-              final voted = (summary['participationCount'] as num?)?.toInt() ?? 0;
-              final percent = ((summary['turnoutPercent'] as num?)?.toDouble() ?? 0).clamp(0, 100);
+              final voted =
+                  (summary['participationCount'] as num?)?.toInt() ?? 0;
+              final percent =
+                  ((summary['turnoutPercent'] as num?)?.toDouble() ?? 0)
+                      .clamp(0, 100);
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -612,7 +689,11 @@ class _ActiveEventTile extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  Text('$voted of $eligible voted (${percent.toStringAsFixed(0)}%)',
+                  Text(
+                      AppLocalizations.of(context).ccTurnout(
+                          voted.toString(),
+                          eligible.toString(),
+                          (percent.toStringAsFixed(0)).toString()),
                       style: TextStyle(fontSize: 14, color: kc.textSecondary)),
                 ],
               );

@@ -3922,4 +3922,478 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get imOrgLabel => 'المؤسسة';
+
+  @override
+  String get vtCandidate => 'انتخاب مرشحين';
+
+  @override
+  String get vtSingleChoice => 'استطلاع اختيار واحد';
+
+  @override
+  String get vtYesNo => 'استطلاع نعم/لا';
+
+  @override
+  String get etAll => 'جميع الأعضاء النشطين';
+
+  @override
+  String get etMembers => 'أعضاء محددون';
+
+  @override
+  String get etDepartments => 'أقسام محددة';
+
+  @override
+  String get ccLoadError =>
+      'تعذّر تحميل مركز القيادة. تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get ccNoOrgTitle => 'لا توجد مؤسسة نشطة';
+
+  @override
+  String get ccNoOrgBody => 'اختر مؤسسة لعرض مركز القيادة الخاص بها.';
+
+  @override
+  String get ccAdminTitle => 'يلزم صلاحية المسؤول';
+
+  @override
+  String get ccAdminBody =>
+      'مركز قيادة الانتخابات متاح لمالكي المؤسسة ومسؤوليها.';
+
+  @override
+  String get ccElectionsError =>
+      'تعذّر تحميل الانتخابات. تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get ccTitle => 'مركز قيادة الانتخابات';
+
+  @override
+  String get ccSearch => 'بحث';
+
+  @override
+  String get ccFilterDate => 'تصفية حسب نطاق التاريخ';
+
+  @override
+  String get ccCreate => 'إنشاء انتخاب';
+
+  @override
+  String get ccSuspended =>
+      'هذه المؤسسة معلّقة. إدارة الانتخابات معطّلة حتى إعادتها.';
+
+  @override
+  String get ccActiveTitle => 'مراقبة الانتخابات النشطة';
+
+  @override
+  String get ccActiveNone => 'لا توجد انتخابات نشطة حاليًا.';
+
+  @override
+  String get ccUpcomingTitle => 'جدول الانتخابات القادمة';
+
+  @override
+  String get ccUpcomingNone => 'لا توجد انتخابات مجدولة.';
+
+  @override
+  String get ccAlerts => 'التنبيهات';
+
+  @override
+  String ccNoVoters(String a) {
+    return 'لم يُحدَّد ناخبون مؤهلون لـ \"$a\".';
+  }
+
+  @override
+  String get ccTasks => 'المهام الإدارية المعلّقة';
+
+  @override
+  String get ccTasksNone => 'لا مهام معلّقة. كل شيء مكتمل.';
+
+  @override
+  String ccDraft(String a) {
+    return '\"$a\" ما زال مسودة ويحتاج مراجعة قبل النشر.';
+  }
+
+  @override
+  String get ccInviteOne => 'دعوة واحدة بانتظار الرد.';
+
+  @override
+  String ccInviteMany(String a) {
+    return '$a دعوات بانتظار الرد.';
+  }
+
+  @override
+  String get ccMembership => 'العضوية والدعوات';
+
+  @override
+  String get ccTotalMembers => 'إجمالي الأعضاء';
+
+  @override
+  String get ccPendingInvites => 'دعوات معلّقة';
+
+  @override
+  String get ccRecent => 'النشاط الإداري الأخير';
+
+  @override
+  String get ccExport => 'تصدير التقرير (CSV)';
+
+  @override
+  String get ccStatTotal => 'إجمالي الانتخابات';
+
+  @override
+  String get ccStatActive => 'نشطة';
+
+  @override
+  String get ccStatScheduled => 'مجدولة';
+
+  @override
+  String get ccStatClosed => 'مغلقة';
+
+  @override
+  String get ccStatMembers => 'الأعضاء';
+
+  @override
+  String get ccStatMembersSub => 'جميع أعضاء المؤسسة';
+
+  @override
+  String get ccNoActivity => 'لا يوجد نشاط حديث.';
+
+  @override
+  String get ccMonitor => 'مراقبة';
+
+  @override
+  String get ccTurnoutUnknown => 'نسبة المشاركة المباشرة غير متاحة';
+
+  @override
+  String ccTurnout(String a, String b, String c) {
+    return 'صوّت $a من $b ($c%)';
+  }
+
+  @override
+  String get biTemplateTitle => 'اختر قالب الانتخاب';
+
+  @override
+  String get biTemplateBody => 'اختر قالبًا جاهزًا لتسريع إنشاء الانتخاب.';
+
+  @override
+  String get biT1Name => 'انتخاب المجلس التنفيذي';
+
+  @override
+  String get biT1Sub => 'انتخاب مرشحين • اقتراع سري';
+
+  @override
+  String get biT1Title => 'انتخاب المجلس التنفيذي';
+
+  @override
+  String get biT1Desc =>
+      'انتخاب سنوي لاختيار ممثلي المجلس التنفيذي. الاقتراع سري تمامًا.';
+
+  @override
+  String get biT2Name => 'التصويت على سياسة / قرار';
+
+  @override
+  String get biT2Sub => 'استطلاع نعم/لا • اقتراع سري';
+
+  @override
+  String get biT2Title => 'قرار سياسة المؤسسة';
+
+  @override
+  String get biT2Desc =>
+      'صوّت على التعديل المقترح للائحة المؤسسة. يرجى مراجعة المستندات المرفقة قبل التصويت.';
+
+  @override
+  String get biT3Name => 'استطلاع رأي المجتمع';
+
+  @override
+  String get biT3Sub => 'استطلاع اختيار واحد • معرّف الهوية';
+
+  @override
+  String get biT3Title => 'استبيان آراء المجتمع';
+
+  @override
+  String get biT3Desc =>
+      'استبيان قصير لجمع آراء المجتمع حول المبادرات القادمة.';
+
+  @override
+  String get biLocked =>
+      'لم يعد الانتخاب مسودة. لا يمكن تغيير المعلومات الأساسية.';
+
+  @override
+  String get biTitle => 'تفاصيل الانتخاب';
+
+  @override
+  String get biSubtitle => 'قدّم المعلومات الأساسية عن انتخابك.';
+
+  @override
+  String get biUseTemplate => 'استخدام قالب';
+
+  @override
+  String get biTitleLabel => 'عنوان الانتخاب *';
+
+  @override
+  String get biTitleHint => 'مثلاً اختيار الفريق السنوي';
+
+  @override
+  String get biTitleInvalid => 'يجب أن يتراوح العنوان بين 3 و100 حرف.';
+
+  @override
+  String get biDescLabel => 'الوصف *';
+
+  @override
+  String get biDescHint => 'صف الغرض والسياق والتفاصيل المهمة لهذا الانتخاب...';
+
+  @override
+  String get biDescRequired => 'الوصف مطلوب.';
+
+  @override
+  String get biDescLong => 'لا يمكن أن يتجاوز الوصف 500 حرف.';
+
+  @override
+  String get biVotingType => 'نوع التصويت';
+
+  @override
+  String get biTypeCandidate => 'انتخاب مرشحين';
+
+  @override
+  String get biTypeCandidateSub => 'يختار الناخبون مرشحًا واحدًا من القائمة.';
+
+  @override
+  String get biTypeSingle => 'استطلاع اختيار واحد';
+
+  @override
+  String get biTypeSingleSub => 'يختار الناخبون خيارًا واحدًا من القائمة.';
+
+  @override
+  String get biTypeYesNo => 'استطلاع نعم/لا';
+
+  @override
+  String get biTypeYesNoSub => 'يوافق الناخبون على مقترح أو يرفضونه.';
+
+  @override
+  String get biPrivacy => 'خصوصية الاقتراع';
+
+  @override
+  String get biAnonymous => 'سري';
+
+  @override
+  String get biIdentifiable => 'معرّف الهوية';
+
+  @override
+  String get biAnonymousNote => 'تُخزَّن هوية الناخب منفصلة عن الاقتراع.';
+
+  @override
+  String get biIdentifiableNote =>
+      'يرتبط كل اقتراع بحساب الناخب. سيرى الناخبون هذا التنبيه قبل التأكيد.';
+
+  @override
+  String get biNext => 'التالي: الجدول';
+
+  @override
+  String get elLocked =>
+      'لم يعد الانتخاب مسودة. لا يمكن تغيير إعدادات الأهلية.';
+
+  @override
+  String get elTitle => 'أهلية الناخبين';
+
+  @override
+  String get elWho => 'من يستطيع التصويت؟';
+
+  @override
+  String get elAll => 'جميع الأعضاء النشطين';
+
+  @override
+  String get elDepts => 'أقسام محددة';
+
+  @override
+  String get elMembers => 'أعضاء محددون';
+
+  @override
+  String get elBack => 'رجوع';
+
+  @override
+  String get elCreateDraft => 'إنشاء مسودة والمتابعة';
+
+  @override
+  String get elNext => 'التالي: الخيارات';
+
+  @override
+  String get elListError => 'تعذّر تحميل هذه القائمة. ارجع وحاول مرة أخرى.';
+
+  @override
+  String get elNoDepts => 'لم يُعثر على أقسام في هذه المؤسسة.';
+
+  @override
+  String get elNoMembers => 'لم يُعثر على أعضاء نشطين.';
+
+  @override
+  String elSelected(String a, String b) {
+    return '$a محدد من $b أعضاء نشطين';
+  }
+
+  @override
+  String get elCsv => 'استيراد جماعي من CSV';
+
+  @override
+  String get rvPublishTitle => 'نشر هذا الانتخاب؟';
+
+  @override
+  String get rvPublishBody =>
+      'سيراه الأعضاء المؤهلون وفق الجدول. بعد النشر لا يمكنك تغيير تفاصيله أو جدوله أو أهليته.';
+
+  @override
+  String get rvKeepEditing => 'متابعة التحرير';
+
+  @override
+  String get rvPublish => 'نشر';
+
+  @override
+  String get rvPublished => 'تم نشر الانتخاب.';
+
+  @override
+  String get rvReauth =>
+      'لأسباب أمنية، يتطلب نشر الانتخاب أن تكون قد سجّلت الدخول خلال آخر 15 دقيقة. يرجى التحقق من هويتك للمتابعة.';
+
+  @override
+  String get rvPublishFailed => 'تعذّر نشر الانتخاب. حاول مرة أخرى.';
+
+  @override
+  String get rvChoicesError => 'تعذّر تحميل الخيارات. ارجع وحاول مرة أخرى.';
+
+  @override
+  String get rvCheckTitle => 'تم تحديد العنوان';
+
+  @override
+  String get rvCheckDesc => 'تمت إضافة الوصف';
+
+  @override
+  String get rvCheckSchedule => 'تمت جدولة فترة التصويت';
+
+  @override
+  String get rvCheckPrivacyId => 'تم تحديد وضع الخصوصية (معرّف الهوية)';
+
+  @override
+  String get rvCheckPrivacyAnon => 'تم تحديد وضع الخصوصية (سري)';
+
+  @override
+  String rvCheckChoices(String a) {
+    return 'تم تحديد المرشحين/الخيارات ($a)';
+  }
+
+  @override
+  String rvCheckEligibility(String a) {
+    return 'قواعد الأهلية صالحة ($a)';
+  }
+
+  @override
+  String get rvTitle => 'المراجعة والنشر';
+
+  @override
+  String get rvChecklist => 'قائمة إعداد الانتخاب';
+
+  @override
+  String get rvTitleLabel => 'العنوان';
+
+  @override
+  String get rvStart => 'البداية';
+
+  @override
+  String get rvEnd => 'النهاية';
+
+  @override
+  String get rvChoices => 'الخيارات';
+
+  @override
+  String rvItems(String a) {
+    return 'تم تحديد $a عناصر';
+  }
+
+  @override
+  String get rvIncomplete => 'أكمل كل عناصر القائمة المطلوبة أعلاه قبل النشر.';
+
+  @override
+  String get rvBack => 'رجوع';
+
+  @override
+  String get rvPublishButton => 'نشر الانتخاب';
+
+  @override
+  String get rvOptional => ' (اختياري)';
+
+  @override
+  String get scRequired => 'وقت البداية والنهاية مطلوبان.';
+
+  @override
+  String get scPast => 'لا يمكن أن يكون وقت البداية في الماضي.';
+
+  @override
+  String get scShort => 'يجب ألا تقل فترة التصويت عن 5 دقائق.';
+
+  @override
+  String get scLocked => 'لم يعد الانتخاب مسودة. لا يمكن تغيير الجدول.';
+
+  @override
+  String get scTitle => 'جدول التصويت';
+
+  @override
+  String scZoneNote(String a) {
+    return 'تُدخَل الأوقات بتوقيت منطقتك: $a. تُقيَّم جميع الأوقات بأمان وفق ساعة الخادم.';
+  }
+
+  @override
+  String get scStartTime => 'وقت البداية';
+
+  @override
+  String get scNotSet => 'غير محدد';
+
+  @override
+  String get scEndTime => 'وقت النهاية';
+
+  @override
+  String get scBack => 'رجوع';
+
+  @override
+  String get scNext => 'التالي: الأهلية';
+
+  @override
+  String get obTitle => 'لوحة المراقب';
+
+  @override
+  String get obTransparency => 'مركز الثقة والشفافية';
+
+  @override
+  String get obLoadError =>
+      'تعذّر تحميل هذا العرض. تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get obNoOrgTitle => 'لا توجد مؤسسة نشطة';
+
+  @override
+  String get obNoOrgBody => 'اختر مؤسسة لعرض لوحة المراقب.';
+
+  @override
+  String get obAccessTitle => 'يلزم صلاحية المراقب';
+
+  @override
+  String get obAccessBody =>
+      'هذه اللوحة متاحة فقط للأعضاء الذين منحهم مسؤول المؤسسة صلاحية المراقب.';
+
+  @override
+  String get obNoElectionsTitle => 'لا توجد انتخابات بعد';
+
+  @override
+  String get obNoElectionsBody => 'لا توجد انتخابات منشورة في هذه المؤسسة بعد.';
+
+  @override
+  String obNote(String a) {
+    return 'لديك صلاحية مراقب للقراءة فقط في $a. ترى إجماليات المؤسسة فقط، ولا ترى الأصوات الفردية أو هويات الناخبين أو تفاصيل الأقسام.';
+  }
+
+  @override
+  String get obActive => 'الانتخابات النشطة';
+
+  @override
+  String get obTimeline => 'الجدول الزمني للانتخابات';
+
+  @override
+  String get obTurnoutUnknown => 'إجمالي المشاركة غير متاح';
+
+  @override
+  String obTurnout(String a, String b, String c) {
+    return '$a من $b ناخبين مؤهلين ($c%)';
+  }
 }

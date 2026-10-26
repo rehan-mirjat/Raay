@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../l10n/app_localizations.dart';
 
 enum VotingType { candidateElection, singleChoicePoll, yesNoPoll }
 enum PrivacyMode { anonymous, identifiable }
@@ -11,6 +12,12 @@ extension VotingTypeLabel on VotingType {
         VotingType.singleChoicePoll => 'Single-choice poll',
         VotingType.yesNoPoll => 'Yes/No poll',
       };
+
+  String localized(AppLocalizations l) => switch (this) {
+        VotingType.candidateElection => l.vtCandidate,
+        VotingType.singleChoicePoll => l.vtSingleChoice,
+        VotingType.yesNoPoll => l.vtYesNo,
+      };
 }
 
 extension EligibilityTypeLabel on EligibilityType {
@@ -18,6 +25,12 @@ extension EligibilityTypeLabel on EligibilityType {
         EligibilityType.allMembers => 'All active members',
         EligibilityType.selectedMembers => 'Selected members',
         EligibilityType.selectedDepartments => 'Selected departments',
+      };
+
+  String localized(AppLocalizations l) => switch (this) {
+        EligibilityType.allMembers => l.etAll,
+        EligibilityType.selectedMembers => l.etMembers,
+        EligibilityType.selectedDepartments => l.etDepartments,
       };
 }
 

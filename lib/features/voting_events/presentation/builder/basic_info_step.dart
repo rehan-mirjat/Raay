@@ -1,3 +1,4 @@
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -47,8 +48,9 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
 
   void _syncDraft() {
     if (!mounted) return;
-    ref.read(draftEventProvider(widget.orgId).notifier).updateBasicInfo(
-          _titleCtrl.text, _descCtrl.text, _type, _privacyMode);
+    ref
+        .read(draftEventProvider(widget.orgId).notifier)
+        .updateBasicInfo(_titleCtrl.text, _descCtrl.text, _type, _privacyMode);
   }
 
   @override
@@ -89,10 +91,10 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Select Election Template',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    Text(
+                      AppLocalizations.of(context).biTemplateTitle,
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     IconButton(
                       icon: const Icon(Icons.close),
@@ -102,7 +104,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Choose a pre-configured template to speed up your election creation.',
+                  AppLocalizations.of(context).biTemplateBody,
                   style: TextStyle(
                       fontSize: 13,
                       color: KivoraColors.textSecondaryOf(context)),
@@ -111,13 +113,13 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                 ListTile(
                   leading: Icon(Icons.stars_rounded,
                       color: KivoraColors.of(context).accentText),
-                  title: const Text('Executive / Board Election',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: const Text('Candidate Election • Anonymous Ballot'),
+                  title: Text(AppLocalizations.of(context).biT1Name,
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text(AppLocalizations.of(context).biT1Sub),
                   onTap: () {
                     _applyTemplate(
-                      'Executive Board Election',
-                      'Annual election to select executive board representatives. Ballots are strictly anonymous.',
+                      AppLocalizations.of(context).biT1Title,
+                      AppLocalizations.of(context).biT1Desc,
                       VotingType.candidateElection,
                       PrivacyMode.anonymous,
                     );
@@ -128,13 +130,13 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                 ListTile(
                   leading: const Icon(Icons.gavel_rounded,
                       color: AppTheme.accentTeal),
-                  title: const Text('Policy / Resolution Vote',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: const Text('Yes/No Poll • Anonymous Ballot'),
+                  title: Text(AppLocalizations.of(context).biT2Name,
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text(AppLocalizations.of(context).biT2Sub),
                   onTap: () {
                     _applyTemplate(
-                      'Organization Policy Resolution',
-                      'Vote on the proposed amendment to organization bylaws. Please review the attached documentation before voting.',
+                      AppLocalizations.of(context).biT2Title,
+                      AppLocalizations.of(context).biT2Desc,
                       VotingType.yesNoPoll,
                       PrivacyMode.anonymous,
                     );
@@ -145,13 +147,13 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                 ListTile(
                   leading: const Icon(Icons.poll_rounded,
                       color: AppTheme.accentGold),
-                  title: const Text('Community Opinion Poll',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: const Text('Single-Choice Poll • Identifiable'),
+                  title: Text(AppLocalizations.of(context).biT3Name,
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text(AppLocalizations.of(context).biT3Sub),
                   onTap: () {
                     _applyTemplate(
-                      'Community Feedback Survey',
-                      'Short survey to collect community sentiment on upcoming initiatives.',
+                      AppLocalizations.of(context).biT3Title,
+                      AppLocalizations.of(context).biT3Desc,
                       VotingType.singleChoicePoll,
                       PrivacyMode.identifiable,
                     );
@@ -208,7 +210,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'Event is no longer a DRAFT. Basic info is strictly immutable.',
+                              AppLocalizations.of(context).biLocked,
                               style: TextStyle(
                                   color: KivoraColors.textSecondaryOf(context),
                                   fontSize: 13),
@@ -233,7 +235,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Election details',
+                              AppLocalizations.of(context).biTitle,
                               style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -241,7 +243,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              'Provide the basic information about your election.',
+                              AppLocalizations.of(context).biSubtitle,
                               style: TextStyle(
                                   fontSize: 14, color: kc.textSecondary),
                             ),
@@ -255,7 +257,8 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                           onPressed: () => _showTemplateSelector(context),
                           icon:
                               const Icon(Icons.auto_awesome_rounded, size: 18),
-                          label: const Text('Use template'),
+                          label:
+                              Text(AppLocalizations.of(context).biUseTemplate),
                         ),
                     ],
                   ),
@@ -267,7 +270,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                     children: [
                       Expanded(
                           child: Text(
-                        'Event Title *',
+                        AppLocalizations.of(context).biTitleLabel,
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
@@ -287,15 +290,15 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                     controller: _titleCtrl,
                     enabled: isDraft,
                     maxLength: 100,
-                    decoration: const InputDecoration(
-                      hintText: 'e.g. Annual Team Selection',
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context).biTitleHint,
                       counterText: '',
                     ),
                     validator: (v) {
                       if (v == null ||
                           v.trim().length < 3 ||
                           v.trim().length > 100) {
-                        return 'Title must be 3-100 characters.';
+                        return AppLocalizations.of(context).biTitleInvalid;
                       }
                       return null;
                     },
@@ -308,7 +311,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                     children: [
                       Expanded(
                           child: Text(
-                        'Description *',
+                        AppLocalizations.of(context).biDescLabel,
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
@@ -329,17 +332,16 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                     enabled: isDraft,
                     maxLines: 4,
                     maxLength: 500,
-                    decoration: const InputDecoration(
-                      hintText:
-                          'Describe the purpose, context and important details about this event...',
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context).biDescHint,
                       counterText: '',
                     ),
                     validator: (v) {
                       if (v == null || v.trim().isEmpty) {
-                        return 'Description is required.';
+                        return AppLocalizations.of(context).biDescRequired;
                       }
                       if (v.trim().length > 500) {
-                        return 'Description cannot exceed 500 characters.';
+                        return AppLocalizations.of(context).biDescLong;
                       }
                       return null;
                     },
@@ -348,7 +350,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
 
                   // Voting Type
                   Text(
-                    'Voting Type',
+                    AppLocalizations.of(context).biVotingType,
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
@@ -368,25 +370,27 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                         children: [
                           _buildVotingTypeOption(
                             type: VotingType.candidateElection,
-                            title: 'Candidate Election',
+                            title: AppLocalizations.of(context).biTypeCandidate,
                             subtitle:
-                                'Voters select one candidate from a roster.',
+                                AppLocalizations.of(context).biTypeCandidateSub,
                             icon: Icons.person_outline_rounded,
                             width: cardWidth,
                             enabled: isDraft,
                           ),
                           _buildVotingTypeOption(
                             type: VotingType.singleChoicePoll,
-                            title: 'Single-Choice Poll',
-                            subtitle: 'Voters select one option from a list.',
+                            title: AppLocalizations.of(context).biTypeSingle,
+                            subtitle:
+                                AppLocalizations.of(context).biTypeSingleSub,
                             icon: Icons.format_list_bulleted_rounded,
                             width: cardWidth,
                             enabled: isDraft,
                           ),
                           _buildVotingTypeOption(
                             type: VotingType.yesNoPoll,
-                            title: 'Yes/No Poll',
-                            subtitle: 'Voters approve or reject a proposal.',
+                            title: AppLocalizations.of(context).biTypeYesNo,
+                            subtitle:
+                                AppLocalizations.of(context).biTypeYesNoSub,
                             icon: Icons.check_box_outlined,
                             width: cardWidth,
                             enabled: isDraft,
@@ -399,7 +403,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
 
                   // Ballot Privacy Dropdown
                   Text(
-                    'Ballot privacy',
+                    AppLocalizations.of(context).biPrivacy,
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
@@ -413,14 +417,15 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                     decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.shield_outlined, size: 20),
                     ),
-                    items: const [
+                    items: [
                       DropdownMenuItem(
                         value: PrivacyMode.anonymous,
-                        child: Text('Anonymous'),
+                        child: Text(AppLocalizations.of(context).biAnonymous),
                       ),
                       DropdownMenuItem(
                         value: PrivacyMode.identifiable,
-                        child: Text('Identifiable'),
+                        child:
+                            Text(AppLocalizations.of(context).biIdentifiable),
                       ),
                     ],
                     onChanged: isDraft
@@ -435,8 +440,8 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                   const SizedBox(height: 6),
                   Text(
                     _privacyMode == PrivacyMode.anonymous
-                        ? 'Voter identity is stored separately from the ballot.'
-                        : 'Each ballot is associated with the voter’s account. Voters will see this notice before confirming.',
+                        ? AppLocalizations.of(context).biAnonymousNote
+                        : AppLocalizations.of(context).biIdentifiableNote,
                     style: TextStyle(
                         fontSize: 14,
                         color: KivoraColors.textSecondaryOf(context)),
@@ -466,7 +471,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                             },
                             style: FilledButton.styleFrom(
                                 minimumSize: const Size(48, 48)),
-                            child: const Text('Next: Schedule'),
+                            child: Text(AppLocalizations.of(context).biNext),
                           ),
                         ],
                       )),

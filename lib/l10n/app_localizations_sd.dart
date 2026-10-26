@@ -3965,4 +3965,489 @@ class AppLocalizationsSd extends AppLocalizations {
 
   @override
   String get imOrgLabel => 'Organization';
+
+  @override
+  String get vtCandidate => 'Candidate election';
+
+  @override
+  String get vtSingleChoice => 'Single-choice poll';
+
+  @override
+  String get vtYesNo => 'Yes/No poll';
+
+  @override
+  String get etAll => 'All active members';
+
+  @override
+  String get etMembers => 'Selected members';
+
+  @override
+  String get etDepartments => 'Selected departments';
+
+  @override
+  String get ccLoadError =>
+      'We could not load the command center. Check your connection and try again.';
+
+  @override
+  String get ccNoOrgTitle => 'No active organization';
+
+  @override
+  String get ccNoOrgBody =>
+      'Select an organization to view its command center.';
+
+  @override
+  String get ccAdminTitle => 'Administrator access required';
+
+  @override
+  String get ccAdminBody =>
+      'The election command center is available to organization owners and admins.';
+
+  @override
+  String get ccElectionsError =>
+      'We could not load elections. Check your connection and try again.';
+
+  @override
+  String get ccTitle => 'Election Command Center';
+
+  @override
+  String get ccSearch => 'Search';
+
+  @override
+  String get ccFilterDate => 'Filter by date range';
+
+  @override
+  String get ccCreate => 'Create election';
+
+  @override
+  String get ccSuspended =>
+      'This organization is suspended. Election management is disabled until it is reinstated.';
+
+  @override
+  String get ccActiveTitle => 'Active Election Monitoring';
+
+  @override
+  String get ccActiveNone => 'No elections are currently active.';
+
+  @override
+  String get ccUpcomingTitle => 'Upcoming Election Schedule';
+
+  @override
+  String get ccUpcomingNone => 'No elections are scheduled.';
+
+  @override
+  String get ccAlerts => 'Alerts';
+
+  @override
+  String ccNoVoters(String a) {
+    return '\"$a\" has no eligible voters configured.';
+  }
+
+  @override
+  String get ccTasks => 'Pending Administrative Tasks';
+
+  @override
+  String get ccTasksNone => 'No pending tasks. You\'re all caught up.';
+
+  @override
+  String ccDraft(String a) {
+    return '\"$a\" is still a draft and needs review before publishing.';
+  }
+
+  @override
+  String get ccInviteOne => '1 invitation is awaiting a response.';
+
+  @override
+  String ccInviteMany(String a) {
+    return '$a invitations are awaiting a response.';
+  }
+
+  @override
+  String get ccMembership => 'Membership & Invitations';
+
+  @override
+  String get ccTotalMembers => 'Total members';
+
+  @override
+  String get ccPendingInvites => 'Pending invitations';
+
+  @override
+  String get ccRecent => 'Recent Administrative Activity';
+
+  @override
+  String get ccExport => 'Export report (CSV)';
+
+  @override
+  String get ccStatTotal => 'Total Elections';
+
+  @override
+  String get ccStatActive => 'Active';
+
+  @override
+  String get ccStatScheduled => 'Scheduled';
+
+  @override
+  String get ccStatClosed => 'Closed';
+
+  @override
+  String get ccStatMembers => 'Members';
+
+  @override
+  String get ccStatMembersSub => 'All organization members';
+
+  @override
+  String get ccNoActivity => 'No recent activity.';
+
+  @override
+  String get ccMonitor => 'Monitor';
+
+  @override
+  String get ccTurnoutUnknown => 'Live turnout unavailable';
+
+  @override
+  String ccTurnout(String a, String b, String c) {
+    return '$a of $b voted ($c%)';
+  }
+
+  @override
+  String get biTemplateTitle => 'Select Election Template';
+
+  @override
+  String get biTemplateBody =>
+      'Choose a pre-configured template to speed up your election creation.';
+
+  @override
+  String get biT1Name => 'Executive / Board Election';
+
+  @override
+  String get biT1Sub => 'Candidate Election • Anonymous Ballot';
+
+  @override
+  String get biT1Title => 'Executive Board Election';
+
+  @override
+  String get biT1Desc =>
+      'Annual election to select executive board representatives. Ballots are strictly anonymous.';
+
+  @override
+  String get biT2Name => 'Policy / Resolution Vote';
+
+  @override
+  String get biT2Sub => 'Yes/No Poll • Anonymous Ballot';
+
+  @override
+  String get biT2Title => 'Organization Policy Resolution';
+
+  @override
+  String get biT2Desc =>
+      'Vote on the proposed amendment to organization bylaws. Please review the attached documentation before voting.';
+
+  @override
+  String get biT3Name => 'Community Opinion Poll';
+
+  @override
+  String get biT3Sub => 'Single-Choice Poll • Identifiable';
+
+  @override
+  String get biT3Title => 'Community Feedback Survey';
+
+  @override
+  String get biT3Desc =>
+      'Short survey to collect community sentiment on upcoming initiatives.';
+
+  @override
+  String get biLocked =>
+      'Event is no longer a DRAFT. Basic info is strictly immutable.';
+
+  @override
+  String get biTitle => 'Election details';
+
+  @override
+  String get biSubtitle => 'Provide the basic information about your election.';
+
+  @override
+  String get biUseTemplate => 'Use template';
+
+  @override
+  String get biTitleLabel => 'Event Title *';
+
+  @override
+  String get biTitleHint => 'e.g. Annual Team Selection';
+
+  @override
+  String get biTitleInvalid => 'Title must be 3-100 characters.';
+
+  @override
+  String get biDescLabel => 'Description *';
+
+  @override
+  String get biDescHint =>
+      'Describe the purpose, context and important details about this event...';
+
+  @override
+  String get biDescRequired => 'Description is required.';
+
+  @override
+  String get biDescLong => 'Description cannot exceed 500 characters.';
+
+  @override
+  String get biVotingType => 'Voting Type';
+
+  @override
+  String get biTypeCandidate => 'Candidate Election';
+
+  @override
+  String get biTypeCandidateSub => 'Voters select one candidate from a roster.';
+
+  @override
+  String get biTypeSingle => 'Single-Choice Poll';
+
+  @override
+  String get biTypeSingleSub => 'Voters select one option from a list.';
+
+  @override
+  String get biTypeYesNo => 'Yes/No Poll';
+
+  @override
+  String get biTypeYesNoSub => 'Voters approve or reject a proposal.';
+
+  @override
+  String get biPrivacy => 'Ballot privacy';
+
+  @override
+  String get biAnonymous => 'Anonymous';
+
+  @override
+  String get biIdentifiable => 'Identifiable';
+
+  @override
+  String get biAnonymousNote =>
+      'Voter identity is stored separately from the ballot.';
+
+  @override
+  String get biIdentifiableNote =>
+      'Each ballot is associated with the voter’s account. Voters will see this notice before confirming.';
+
+  @override
+  String get biNext => 'Next: Schedule';
+
+  @override
+  String get elLocked =>
+      'Event is no longer a DRAFT. Eligibility configuration is strictly immutable.';
+
+  @override
+  String get elTitle => 'Voter Eligibility';
+
+  @override
+  String get elWho => 'Who can vote?';
+
+  @override
+  String get elAll => 'All Active Members';
+
+  @override
+  String get elDepts => 'Selected Departments';
+
+  @override
+  String get elMembers => 'Selected Members';
+
+  @override
+  String get elBack => 'Back';
+
+  @override
+  String get elCreateDraft => 'Create Draft & Continue';
+
+  @override
+  String get elNext => 'Next: Choices';
+
+  @override
+  String get elListError =>
+      'We could not load this list. Go back and try again.';
+
+  @override
+  String get elNoDepts => 'No departments found in this organization.';
+
+  @override
+  String get elNoMembers => 'No active members found.';
+
+  @override
+  String elSelected(String a, String b) {
+    return '$a selected of $b active members';
+  }
+
+  @override
+  String get elCsv => 'CSV Bulk Import';
+
+  @override
+  String get rvPublishTitle => 'Publish this election?';
+
+  @override
+  String get rvPublishBody =>
+      'Eligible members will see it according to the schedule. After publishing you can no longer change its details, schedule or eligibility.';
+
+  @override
+  String get rvKeepEditing => 'Keep editing';
+
+  @override
+  String get rvPublish => 'Publish';
+
+  @override
+  String get rvPublished => 'Election published.';
+
+  @override
+  String get rvReauth =>
+      'For security, publishing an election requires you to have signed in within the last 15 minutes. Please verify your identity to continue.';
+
+  @override
+  String get rvPublishFailed =>
+      'We could not publish the election. Please try again.';
+
+  @override
+  String get rvChoicesError =>
+      'We could not load the choices. Go back and try again.';
+
+  @override
+  String get rvCheckTitle => 'Title configured';
+
+  @override
+  String get rvCheckDesc => 'Description added';
+
+  @override
+  String get rvCheckSchedule => 'Voting window scheduled';
+
+  @override
+  String get rvCheckPrivacyId => 'Privacy mode set (Identifiable)';
+
+  @override
+  String get rvCheckPrivacyAnon => 'Privacy mode set (Anonymous)';
+
+  @override
+  String rvCheckChoices(String a) {
+    return 'Candidates/options configured ($a)';
+  }
+
+  @override
+  String rvCheckEligibility(String a) {
+    return 'Eligibility rules valid ($a)';
+  }
+
+  @override
+  String get rvTitle => 'Review & Publish';
+
+  @override
+  String get rvChecklist => 'ELECTION SETUP CHECKLIST';
+
+  @override
+  String get rvTitleLabel => 'Title';
+
+  @override
+  String get rvStart => 'Start At';
+
+  @override
+  String get rvEnd => 'End At';
+
+  @override
+  String get rvChoices => 'Choices';
+
+  @override
+  String rvItems(String a) {
+    return '$a items configured';
+  }
+
+  @override
+  String get rvIncomplete =>
+      'Complete every required checklist item above before publishing.';
+
+  @override
+  String get rvBack => 'Back';
+
+  @override
+  String get rvPublishButton => 'Publish election';
+
+  @override
+  String get rvOptional => ' (optional)';
+
+  @override
+  String get scRequired => 'Start and End times are required.';
+
+  @override
+  String get scPast => 'Start time cannot be in the past.';
+
+  @override
+  String get scShort => 'Voting window must be at least 5 minutes.';
+
+  @override
+  String get scLocked =>
+      'Event is no longer a DRAFT. Schedule is strictly immutable.';
+
+  @override
+  String get scTitle => 'Voting Schedule';
+
+  @override
+  String scZoneNote(String a) {
+    return 'Times are entered in your time zone: $a. All times are evaluated securely against the server clock.';
+  }
+
+  @override
+  String get scStartTime => 'Start Time';
+
+  @override
+  String get scNotSet => 'Not set';
+
+  @override
+  String get scEndTime => 'End Time';
+
+  @override
+  String get scBack => 'Back';
+
+  @override
+  String get scNext => 'Next: Eligibility';
+
+  @override
+  String get obTitle => 'Observer Dashboard';
+
+  @override
+  String get obTransparency => 'Trust & Transparency Center';
+
+  @override
+  String get obLoadError =>
+      'We could not load this view. Check your connection and try again.';
+
+  @override
+  String get obNoOrgTitle => 'No active organization';
+
+  @override
+  String get obNoOrgBody =>
+      'Select an organization to view its observer dashboard.';
+
+  @override
+  String get obAccessTitle => 'Observer access required';
+
+  @override
+  String get obAccessBody =>
+      'This dashboard is only available to members granted observer access by an organization admin.';
+
+  @override
+  String get obNoElectionsTitle => 'No elections yet';
+
+  @override
+  String get obNoElectionsBody =>
+      'There are no published elections in this organization yet.';
+
+  @override
+  String obNote(String a) {
+    return 'You have read-only Observer access to $a. You see organization-wide aggregates only, never individual ballots, voter identities, or per-department breakdowns.';
+  }
+
+  @override
+  String get obActive => 'Active Elections';
+
+  @override
+  String get obTimeline => 'Election Timeline';
+
+  @override
+  String get obTurnoutUnknown => 'Aggregate turnout unavailable';
+
+  @override
+  String obTurnout(String a, String b, String c) {
+    return '$a of $b eligible voters ($c%)';
+  }
 }

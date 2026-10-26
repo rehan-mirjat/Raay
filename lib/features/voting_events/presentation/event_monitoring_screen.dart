@@ -538,8 +538,8 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
         row(l10n.monWindow, '${formatDeadline(context, event.startAt)} – ${formatDeadline(context, event.endAt)}'),
         row(l10n.monBallotType,
             event.privacyMode == PrivacyMode.identifiable ? l10n.monIdentifiable : l10n.monAnonymous),
-        row(l10n.monEligibility, event.eligibilityType.label),
-        row(l10n.monVotingType, event.votingType.label),
+        row(l10n.monEligibility, event.eligibilityType.localized(l10n)),
+        row(l10n.monVotingType, event.votingType.localized(l10n)),
       ]),
     );
   }

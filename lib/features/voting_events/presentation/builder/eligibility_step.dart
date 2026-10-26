@@ -1,3 +1,4 @@
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kivora/core/theme/kivora_icons.dart';
@@ -74,29 +75,29 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
                 color: KivoraColors.surfaceOf(context),
                 borderRadius: BorderRadius.circular(AppTheme.radiusInput),
                 border: Border.all(color: KivoraColors.borderOf(context))),
-            child: Text(
-                'Event is no longer a DRAFT. Eligibility configuration is strictly immutable.',
+            child: Text(AppLocalizations.of(context).elLocked,
                 style: TextStyle(color: KivoraColors.textSecondaryOf(context))),
           ),
         const SizedBox(height: 16),
-        const Text('Voter Eligibility',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Text(AppLocalizations.of(context).elTitle,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 16),
         DropdownButtonFormField<EligibilityType>(
           isExpanded: true,
           // ignore: deprecated_member_use
           value: _type,
-          decoration: const InputDecoration(labelText: 'Who can vote?'),
-          items: const [
+          decoration:
+              InputDecoration(labelText: AppLocalizations.of(context).elWho),
+          items: [
             DropdownMenuItem(
                 value: EligibilityType.allMembers,
-                child: Text('All Active Members')),
+                child: Text(AppLocalizations.of(context).elAll)),
             DropdownMenuItem(
                 value: EligibilityType.selectedDepartments,
-                child: Text('Selected Departments')),
+                child: Text(AppLocalizations.of(context).elDepts)),
             DropdownMenuItem(
                 value: EligibilityType.selectedMembers,
-                child: Text('Selected Members')),
+                child: Text(AppLocalizations.of(context).elMembers)),
           ],
           onChanged: isDraft
               ? (v) {
@@ -142,15 +143,15 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
             TextButton(
                 style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
                 onPressed: draftState.isLoading ? null : widget.onBack,
-                child: const Text('Back')),
+                child: Text(AppLocalizations.of(context).elBack)),
             FilledButton(
               style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
               onPressed: draftState.isLoading
                   ? null
                   : (isDraft ? _submit : widget.onNext),
               child: Text(draftState.serverEventId == null
-                  ? 'Create Draft & Continue'
-                  : 'Next: Choices'),
+                  ? AppLocalizations.of(context).elCreateDraft
+                  : AppLocalizations.of(context).elNext),
             ),
           ],
         ),
@@ -162,10 +163,10 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
     final deptsAsync = ref.watch(activeOrganizationDepartmentsProvider);
     return deptsAsync.when(
       loading: () => const LoadingView(),
-      error: (e, _) => const Text('We could not load this list. Go back and try again.'),
+      error: (e, _) => Text(AppLocalizations.of(context).elListError),
       data: (depts) {
         if (depts.isEmpty) {
-          return const Text('No departments found in this organization.');
+          return Text(AppLocalizations.of(context).elNoDepts);
         }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,12 +199,12 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
         ref.watch(organizationMembersDirectoryProvider(widget.orgId));
     return membersAsync.when(
       loading: () => const LoadingView(),
-      error: (e, _) => const Text('We could not load this list. Go back and try again.'),
+      error: (e, _) => Text(AppLocalizations.of(context).elListError),
       data: (members) {
         final activeMembers =
             members.where((m) => m['status'] == 'active').toList();
         if (activeMembers.isEmpty) {
-          return const Text('No active members found.');
+          return Text(AppLocalizations.of(context).elNoMembers);
         }
 
         return Column(
@@ -216,14 +217,17 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
               runSpacing: 8,
               children: [
                 Text(
-                  '${_selectedUsers.length} selected of ${activeMembers.length} active members',
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                  AppLocalizations.of(context).elSelected(
+                      _selectedUsers.length.toString(),
+                      activeMembers.length.toString()),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600, fontSize: 14),
                 ),
                 if (isDraft)
                   KivoraButton(
                     type: KivoraButtonType.ghost,
                     icon: KivoraIcons.fileSpreadsheet,
-                    label: 'CSV Bulk Import',
+                    label: AppLocalizations.of(context).elCsv,
                     isExpanded: false,
                     onPressed: () async {
                       final matchedUids = await showDialog<List<String>>(
@@ -235,7 +239,8 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
                       if (matchedUids != null && mounted) {
                         setState(() {
                           // Merge imported UIDs with existing selected users
-                          _selectedUsers = {..._selectedUsers, ...matchedUids}.toList();
+                          _selectedUsers =
+                              {..._selectedUsers, ...matchedUids}.toList();
                         });
                         _saveSelection();
                       }

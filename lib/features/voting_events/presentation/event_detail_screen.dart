@@ -82,7 +82,7 @@ class EventDetailScreen extends ConsumerWidget {
                         StatusBadge.eventStatus(event.status.name),
                         StatusBadge.privacyMode(event.privacyMode.name),
                         StatusBadge(
-                          label: event.votingType.label,
+                          label: event.votingType.localized(l10n),
                           backgroundColor: Theme.of(context)
                               .colorScheme
                               .primary
@@ -394,7 +394,7 @@ class EventDetailsCard extends ConsumerWidget {
           Divider(height: 1, color: kc.border),
           _row(context, Icons.how_to_vote_outlined, l10n.evType, event.votingType.label),
           Divider(height: 1, color: kc.border),
-          _row(context, Icons.groups_outlined, l10n.evWho, event.eligibilityType.label),
+          _row(context, Icons.groups_outlined, l10n.evWho, event.eligibilityType.localized(l10n)),
           Divider(height: 1, color: kc.border),
           _row(context, Icons.schedule_rounded, started ? l10n.evOpened : l10n.evOpens,
               formatDeadline(context, event.startAt)),

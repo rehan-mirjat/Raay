@@ -7073,6 +7073,882 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Organization'**
   String get imOrgLabel;
+
+  /// No description provided for @vtCandidate.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate election'**
+  String get vtCandidate;
+
+  /// No description provided for @vtSingleChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Single-choice poll'**
+  String get vtSingleChoice;
+
+  /// No description provided for @vtYesNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes/No poll'**
+  String get vtYesNo;
+
+  /// No description provided for @etAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All active members'**
+  String get etAll;
+
+  /// No description provided for @etMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected members'**
+  String get etMembers;
+
+  /// No description provided for @etDepartments.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected departments'**
+  String get etDepartments;
+
+  /// No description provided for @ccLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the command center. Check your connection and try again.'**
+  String get ccLoadError;
+
+  /// No description provided for @ccNoOrgTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No active organization'**
+  String get ccNoOrgTitle;
+
+  /// No description provided for @ccNoOrgBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an organization to view its command center.'**
+  String get ccNoOrgBody;
+
+  /// No description provided for @ccAdminTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Administrator access required'**
+  String get ccAdminTitle;
+
+  /// No description provided for @ccAdminBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The election command center is available to organization owners and admins.'**
+  String get ccAdminBody;
+
+  /// No description provided for @ccElectionsError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load elections. Check your connection and try again.'**
+  String get ccElectionsError;
+
+  /// No description provided for @ccTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Election Command Center'**
+  String get ccTitle;
+
+  /// No description provided for @ccSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get ccSearch;
+
+  /// No description provided for @ccFilterDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by date range'**
+  String get ccFilterDate;
+
+  /// No description provided for @ccCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create election'**
+  String get ccCreate;
+
+  /// No description provided for @ccSuspended.
+  ///
+  /// In en, this message translates to:
+  /// **'This organization is suspended. Election management is disabled until it is reinstated.'**
+  String get ccSuspended;
+
+  /// No description provided for @ccActiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Election Monitoring'**
+  String get ccActiveTitle;
+
+  /// No description provided for @ccActiveNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No elections are currently active.'**
+  String get ccActiveNone;
+
+  /// No description provided for @ccUpcomingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming Election Schedule'**
+  String get ccUpcomingTitle;
+
+  /// No description provided for @ccUpcomingNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No elections are scheduled.'**
+  String get ccUpcomingNone;
+
+  /// No description provided for @ccAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts'**
+  String get ccAlerts;
+
+  /// No description provided for @ccNoVoters.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{a}\" has no eligible voters configured.'**
+  String ccNoVoters(String a);
+
+  /// No description provided for @ccTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Administrative Tasks'**
+  String get ccTasks;
+
+  /// No description provided for @ccTasksNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No pending tasks. You\'re all caught up.'**
+  String get ccTasksNone;
+
+  /// No description provided for @ccDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{a}\" is still a draft and needs review before publishing.'**
+  String ccDraft(String a);
+
+  /// No description provided for @ccInviteOne.
+  ///
+  /// In en, this message translates to:
+  /// **'1 invitation is awaiting a response.'**
+  String get ccInviteOne;
+
+  /// No description provided for @ccInviteMany.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} invitations are awaiting a response.'**
+  String ccInviteMany(String a);
+
+  /// No description provided for @ccMembership.
+  ///
+  /// In en, this message translates to:
+  /// **'Membership & Invitations'**
+  String get ccMembership;
+
+  /// No description provided for @ccTotalMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Total members'**
+  String get ccTotalMembers;
+
+  /// No description provided for @ccPendingInvites.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending invitations'**
+  String get ccPendingInvites;
+
+  /// No description provided for @ccRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Administrative Activity'**
+  String get ccRecent;
+
+  /// No description provided for @ccExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export report (CSV)'**
+  String get ccExport;
+
+  /// No description provided for @ccStatTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Elections'**
+  String get ccStatTotal;
+
+  /// No description provided for @ccStatActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get ccStatActive;
+
+  /// No description provided for @ccStatScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get ccStatScheduled;
+
+  /// No description provided for @ccStatClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get ccStatClosed;
+
+  /// No description provided for @ccStatMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Members'**
+  String get ccStatMembers;
+
+  /// No description provided for @ccStatMembersSub.
+  ///
+  /// In en, this message translates to:
+  /// **'All organization members'**
+  String get ccStatMembersSub;
+
+  /// No description provided for @ccNoActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent activity.'**
+  String get ccNoActivity;
+
+  /// No description provided for @ccMonitor.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitor'**
+  String get ccMonitor;
+
+  /// No description provided for @ccTurnoutUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Live turnout unavailable'**
+  String get ccTurnoutUnknown;
+
+  /// No description provided for @ccTurnout.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} of {b} voted ({c}%)'**
+  String ccTurnout(String a, String b, String c);
+
+  /// No description provided for @biTemplateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Election Template'**
+  String get biTemplateTitle;
+
+  /// No description provided for @biTemplateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a pre-configured template to speed up your election creation.'**
+  String get biTemplateBody;
+
+  /// No description provided for @biT1Name.
+  ///
+  /// In en, this message translates to:
+  /// **'Executive / Board Election'**
+  String get biT1Name;
+
+  /// No description provided for @biT1Sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate Election • Anonymous Ballot'**
+  String get biT1Sub;
+
+  /// No description provided for @biT1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Executive Board Election'**
+  String get biT1Title;
+
+  /// No description provided for @biT1Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Annual election to select executive board representatives. Ballots are strictly anonymous.'**
+  String get biT1Desc;
+
+  /// No description provided for @biT2Name.
+  ///
+  /// In en, this message translates to:
+  /// **'Policy / Resolution Vote'**
+  String get biT2Name;
+
+  /// No description provided for @biT2Sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes/No Poll • Anonymous Ballot'**
+  String get biT2Sub;
+
+  /// No description provided for @biT2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization Policy Resolution'**
+  String get biT2Title;
+
+  /// No description provided for @biT2Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Vote on the proposed amendment to organization bylaws. Please review the attached documentation before voting.'**
+  String get biT2Desc;
+
+  /// No description provided for @biT3Name.
+  ///
+  /// In en, this message translates to:
+  /// **'Community Opinion Poll'**
+  String get biT3Name;
+
+  /// No description provided for @biT3Sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Single-Choice Poll • Identifiable'**
+  String get biT3Sub;
+
+  /// No description provided for @biT3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Community Feedback Survey'**
+  String get biT3Title;
+
+  /// No description provided for @biT3Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Short survey to collect community sentiment on upcoming initiatives.'**
+  String get biT3Desc;
+
+  /// No description provided for @biLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Event is no longer a DRAFT. Basic info is strictly immutable.'**
+  String get biLocked;
+
+  /// No description provided for @biTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Election details'**
+  String get biTitle;
+
+  /// No description provided for @biSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Provide the basic information about your election.'**
+  String get biSubtitle;
+
+  /// No description provided for @biUseTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Use template'**
+  String get biUseTemplate;
+
+  /// No description provided for @biTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Title *'**
+  String get biTitleLabel;
+
+  /// No description provided for @biTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Annual Team Selection'**
+  String get biTitleHint;
+
+  /// No description provided for @biTitleInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Title must be 3-100 characters.'**
+  String get biTitleInvalid;
+
+  /// No description provided for @biDescLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description *'**
+  String get biDescLabel;
+
+  /// No description provided for @biDescHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the purpose, context and important details about this event...'**
+  String get biDescHint;
+
+  /// No description provided for @biDescRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Description is required.'**
+  String get biDescRequired;
+
+  /// No description provided for @biDescLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Description cannot exceed 500 characters.'**
+  String get biDescLong;
+
+  /// No description provided for @biVotingType.
+  ///
+  /// In en, this message translates to:
+  /// **'Voting Type'**
+  String get biVotingType;
+
+  /// No description provided for @biTypeCandidate.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate Election'**
+  String get biTypeCandidate;
+
+  /// No description provided for @biTypeCandidateSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Voters select one candidate from a roster.'**
+  String get biTypeCandidateSub;
+
+  /// No description provided for @biTypeSingle.
+  ///
+  /// In en, this message translates to:
+  /// **'Single-Choice Poll'**
+  String get biTypeSingle;
+
+  /// No description provided for @biTypeSingleSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Voters select one option from a list.'**
+  String get biTypeSingleSub;
+
+  /// No description provided for @biTypeYesNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes/No Poll'**
+  String get biTypeYesNo;
+
+  /// No description provided for @biTypeYesNoSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Voters approve or reject a proposal.'**
+  String get biTypeYesNoSub;
+
+  /// No description provided for @biPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Ballot privacy'**
+  String get biPrivacy;
+
+  /// No description provided for @biAnonymous.
+  ///
+  /// In en, this message translates to:
+  /// **'Anonymous'**
+  String get biAnonymous;
+
+  /// No description provided for @biIdentifiable.
+  ///
+  /// In en, this message translates to:
+  /// **'Identifiable'**
+  String get biIdentifiable;
+
+  /// No description provided for @biAnonymousNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Voter identity is stored separately from the ballot.'**
+  String get biAnonymousNote;
+
+  /// No description provided for @biIdentifiableNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Each ballot is associated with the voter’s account. Voters will see this notice before confirming.'**
+  String get biIdentifiableNote;
+
+  /// No description provided for @biNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: Schedule'**
+  String get biNext;
+
+  /// No description provided for @elLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Event is no longer a DRAFT. Eligibility configuration is strictly immutable.'**
+  String get elLocked;
+
+  /// No description provided for @elTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Voter Eligibility'**
+  String get elTitle;
+
+  /// No description provided for @elWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Who can vote?'**
+  String get elWho;
+
+  /// No description provided for @elAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All Active Members'**
+  String get elAll;
+
+  /// No description provided for @elDepts.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected Departments'**
+  String get elDepts;
+
+  /// No description provided for @elMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected Members'**
+  String get elMembers;
+
+  /// No description provided for @elBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get elBack;
+
+  /// No description provided for @elCreateDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Draft & Continue'**
+  String get elCreateDraft;
+
+  /// No description provided for @elNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: Choices'**
+  String get elNext;
+
+  /// No description provided for @elListError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load this list. Go back and try again.'**
+  String get elListError;
+
+  /// No description provided for @elNoDepts.
+  ///
+  /// In en, this message translates to:
+  /// **'No departments found in this organization.'**
+  String get elNoDepts;
+
+  /// No description provided for @elNoMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'No active members found.'**
+  String get elNoMembers;
+
+  /// No description provided for @elSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} selected of {b} active members'**
+  String elSelected(String a, String b);
+
+  /// No description provided for @elCsv.
+  ///
+  /// In en, this message translates to:
+  /// **'CSV Bulk Import'**
+  String get elCsv;
+
+  /// No description provided for @rvPublishTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish this election?'**
+  String get rvPublishTitle;
+
+  /// No description provided for @rvPublishBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Eligible members will see it according to the schedule. After publishing you can no longer change its details, schedule or eligibility.'**
+  String get rvPublishBody;
+
+  /// No description provided for @rvKeepEditing.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep editing'**
+  String get rvKeepEditing;
+
+  /// No description provided for @rvPublish.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get rvPublish;
+
+  /// No description provided for @rvPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Election published.'**
+  String get rvPublished;
+
+  /// No description provided for @rvReauth.
+  ///
+  /// In en, this message translates to:
+  /// **'For security, publishing an election requires you to have signed in within the last 15 minutes. Please verify your identity to continue.'**
+  String get rvReauth;
+
+  /// No description provided for @rvPublishFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not publish the election. Please try again.'**
+  String get rvPublishFailed;
+
+  /// No description provided for @rvChoicesError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the choices. Go back and try again.'**
+  String get rvChoicesError;
+
+  /// No description provided for @rvCheckTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title configured'**
+  String get rvCheckTitle;
+
+  /// No description provided for @rvCheckDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Description added'**
+  String get rvCheckDesc;
+
+  /// No description provided for @rvCheckSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Voting window scheduled'**
+  String get rvCheckSchedule;
+
+  /// No description provided for @rvCheckPrivacyId.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy mode set (Identifiable)'**
+  String get rvCheckPrivacyId;
+
+  /// No description provided for @rvCheckPrivacyAnon.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy mode set (Anonymous)'**
+  String get rvCheckPrivacyAnon;
+
+  /// No description provided for @rvCheckChoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidates/options configured ({a})'**
+  String rvCheckChoices(String a);
+
+  /// No description provided for @rvCheckEligibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Eligibility rules valid ({a})'**
+  String rvCheckEligibility(String a);
+
+  /// No description provided for @rvTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review & Publish'**
+  String get rvTitle;
+
+  /// No description provided for @rvChecklist.
+  ///
+  /// In en, this message translates to:
+  /// **'ELECTION SETUP CHECKLIST'**
+  String get rvChecklist;
+
+  /// No description provided for @rvTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get rvTitleLabel;
+
+  /// No description provided for @rvStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start At'**
+  String get rvStart;
+
+  /// No description provided for @rvEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'End At'**
+  String get rvEnd;
+
+  /// No description provided for @rvChoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Choices'**
+  String get rvChoices;
+
+  /// No description provided for @rvItems.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} items configured'**
+  String rvItems(String a);
+
+  /// No description provided for @rvIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete every required checklist item above before publishing.'**
+  String get rvIncomplete;
+
+  /// No description provided for @rvBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get rvBack;
+
+  /// No description provided for @rvPublishButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish election'**
+  String get rvPublishButton;
+
+  /// No description provided for @rvOptional.
+  ///
+  /// In en, this message translates to:
+  /// **' (optional)'**
+  String get rvOptional;
+
+  /// No description provided for @scRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Start and End times are required.'**
+  String get scRequired;
+
+  /// No description provided for @scPast.
+  ///
+  /// In en, this message translates to:
+  /// **'Start time cannot be in the past.'**
+  String get scPast;
+
+  /// No description provided for @scShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Voting window must be at least 5 minutes.'**
+  String get scShort;
+
+  /// No description provided for @scLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Event is no longer a DRAFT. Schedule is strictly immutable.'**
+  String get scLocked;
+
+  /// No description provided for @scTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Voting Schedule'**
+  String get scTitle;
+
+  /// No description provided for @scZoneNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Times are entered in your time zone: {a}. All times are evaluated securely against the server clock.'**
+  String scZoneNote(String a);
+
+  /// No description provided for @scStartTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Time'**
+  String get scStartTime;
+
+  /// No description provided for @scNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get scNotSet;
+
+  /// No description provided for @scEndTime.
+  ///
+  /// In en, this message translates to:
+  /// **'End Time'**
+  String get scEndTime;
+
+  /// No description provided for @scBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get scBack;
+
+  /// No description provided for @scNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: Eligibility'**
+  String get scNext;
+
+  /// No description provided for @obTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Observer Dashboard'**
+  String get obTitle;
+
+  /// No description provided for @obTransparency.
+  ///
+  /// In en, this message translates to:
+  /// **'Trust & Transparency Center'**
+  String get obTransparency;
+
+  /// No description provided for @obLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load this view. Check your connection and try again.'**
+  String get obLoadError;
+
+  /// No description provided for @obNoOrgTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No active organization'**
+  String get obNoOrgTitle;
+
+  /// No description provided for @obNoOrgBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an organization to view its observer dashboard.'**
+  String get obNoOrgBody;
+
+  /// No description provided for @obAccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Observer access required'**
+  String get obAccessTitle;
+
+  /// No description provided for @obAccessBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This dashboard is only available to members granted observer access by an organization admin.'**
+  String get obAccessBody;
+
+  /// No description provided for @obNoElectionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No elections yet'**
+  String get obNoElectionsTitle;
+
+  /// No description provided for @obNoElectionsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no published elections in this organization yet.'**
+  String get obNoElectionsBody;
+
+  /// No description provided for @obNote.
+  ///
+  /// In en, this message translates to:
+  /// **'You have read-only Observer access to {a}. You see organization-wide aggregates only, never individual ballots, voter identities, or per-department breakdowns.'**
+  String obNote(String a);
+
+  /// No description provided for @obActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Elections'**
+  String get obActive;
+
+  /// No description provided for @obTimeline.
+  ///
+  /// In en, this message translates to:
+  /// **'Election Timeline'**
+  String get obTimeline;
+
+  /// No description provided for @obTurnoutUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Aggregate turnout unavailable'**
+  String get obTurnoutUnknown;
+
+  /// No description provided for @obTurnout.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} of {b} eligible voters ({c}%)'**
+  String obTurnout(String a, String b, String c);
 }
 
 class _AppLocalizationsDelegate

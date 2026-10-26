@@ -1,3 +1,4 @@
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,7 +8,8 @@ import '../../../../core/widgets/loading_view.dart';
 import '../../../../core/widgets/reauth_dialog.dart';
 import '../../data/voting_event_repository.dart';
 import '../providers/draft_event_provider.dart';
-import '../../../voting/presentation/cast_vote_screen.dart' show eventCandidatesProvider, eventPollOptionsProvider;
+import '../../../voting/presentation/cast_vote_screen.dart'
+    show eventCandidatesProvider, eventPollOptionsProvider;
 import '../voter_election_card.dart' show formatDeadline;
 import '../../domain/voting_event.dart';
 import '../../../../core/utils/error_utils.dart';
@@ -31,19 +33,18 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Publish this election?'),
-        content: const Text(
-            'Eligible members will see it according to the schedule. After publishing you can no longer change its details, schedule or eligibility.'),
+        title: Text(AppLocalizations.of(context).rvPublishTitle),
+        content: Text(AppLocalizations.of(context).rvPublishBody),
         actions: [
           TextButton(
             style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Keep editing'),
+            child: Text(AppLocalizations.of(context).rvKeepEditing),
           ),
           FilledButton(
             style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Publish'),
+            child: Text(AppLocalizations.of(context).rvPublish),
           ),
         ],
       ),
@@ -65,17 +66,15 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
       await ref.read(votingEventRepositoryProvider).publishVotingEvent(eventId);
       if (mounted) {
         ref.read(draftEventProvider(widget.orgId).notifier).reset();
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Election published.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(AppLocalizations.of(context).rvPublished)));
         // Navigate back to admin events dashboard
         context.go('/admin/events');
       }
     } on RequiresRecentAuthException {
       if (!mounted) return;
       final verified = await showReauthDialog(context, ref,
-          reason: 'For security, publishing an election requires you to have '
-              'signed in within the last 15 minutes. Please verify your '
-              'identity to continue.');
+          reason: AppLocalizations.of(context).rvReauth);
       if (!mounted) return;
       if (verified) {
         // Identity re-verified: retry the publish with the now-fresh session.
@@ -87,7 +86,8 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
       if (mounted) {
         setState(() {
           _isPublishing = false;
-          _error = friendlyError(e, fallback: 'We could not publish the election. Please try again.');
+          _error = friendlyError(e,
+              fallback: AppLocalizations.of(context).rvPublishFailed);
         });
       }
     }
@@ -106,12 +106,14 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
     final AsyncValue<int> countAsync = isCand
         ? ref.watch(eventCandidatesProvider(eventId)).whenData((v) => v.length)
         : isPoll
-            ? ref.watch(eventPollOptionsProvider(eventId)).whenData((v) => v.length)
+            ? ref
+                .watch(eventPollOptionsProvider(eventId))
+                .whenData((v) => v.length)
             : const AsyncValue.data(2); // Yes/No always has its two options
 
     return countAsync.when(
         loading: () => const LoadingView(),
-        error: (_, __) => Text('We could not load the choices. Go back and try again.',
+        error: (_, __) => Text(AppLocalizations.of(context).rvChoicesError,
             style: TextStyle(color: KivoraColors.of(context).errorText)),
         data: (count) {
           final hasChoices =
@@ -119,24 +121,31 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
           final hasSchedule = draft.startAt != null &&
               draft.endAt != null &&
               draft.endAt!.isAfter(draft.startAt!);
-          final hasEligibility = draft.eligibilityType == EligibilityType.allMembers ||
-              draft.selectedDepartmentIds.isNotEmpty ||
-              draft.selectedUserIds.isNotEmpty;
+          final hasEligibility =
+              draft.eligibilityType == EligibilityType.allMembers ||
+                  draft.selectedDepartmentIds.isNotEmpty ||
+                  draft.selectedUserIds.isNotEmpty;
           final hasTitle = draft.title.trim().isNotEmpty;
           final checklist = <_ChecklistItem>[
-            _ChecklistItem('Title configured', hasTitle),
-            _ChecklistItem(
-                'Description added',
+            _ChecklistItem(AppLocalizations.of(context).rvCheckTitle, hasTitle),
+            _ChecklistItem(AppLocalizations.of(context).rvCheckDesc,
                 draft.description.trim().isNotEmpty,
                 optional: true),
-            _ChecklistItem('Voting window scheduled', hasSchedule),
             _ChecklistItem(
-                'Privacy mode set (${draft.privacyMode == PrivacyMode.identifiable ? 'Identifiable' : 'Anonymous'})',
+                AppLocalizations.of(context).rvCheckSchedule, hasSchedule),
+            _ChecklistItem(
+                draft.privacyMode == PrivacyMode.identifiable
+                    ? AppLocalizations.of(context).rvCheckPrivacyId
+                    : AppLocalizations.of(context).rvCheckPrivacyAnon,
                 true),
             _ChecklistItem(
-                'Candidates/options configured ($count)', hasChoices),
+                AppLocalizations.of(context).rvCheckChoices(count.toString()),
+                hasChoices),
             _ChecklistItem(
-                'Eligibility rules valid (${draft.eligibilityType.label})',
+                AppLocalizations.of(context).rvCheckEligibility((draft
+                        .eligibilityType
+                        .localized(AppLocalizations.of(context)))
+                    .toString()),
                 hasEligibility),
           ];
           final isReady = checklist.every((c) => c.done || c.optional);
@@ -144,10 +153,11 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text('Review & Publish',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(AppLocalizations.of(context).rvTitle,
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
-              Text('ELECTION SETUP CHECKLIST',
+              Text(AppLocalizations.of(context).rvChecklist,
                   style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
@@ -162,32 +172,38 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                   border: Border.all(color: KivoraColors.borderOf(context)),
                 ),
                 child: Column(
-                  children: checklist.map((c) => _checklistRow(context, c)).toList(),
+                  children:
+                      checklist.map((c) => _checklistRow(context, c)).toList(),
                 ),
               ),
               const SizedBox(height: 16),
-              _summaryRow('Title', draft.title),
               _summaryRow(
-                  'Start At',
+                  AppLocalizations.of(context).rvTitleLabel, draft.title),
+              _summaryRow(
+                  AppLocalizations.of(context).rvStart,
                   draft.startAt != null
                       ? formatDeadline(context, draft.startAt!)
                       : ''),
               _summaryRow(
-                  'End At',
+                  AppLocalizations.of(context).rvEnd,
                   draft.endAt != null
                       ? formatDeadline(context, draft.endAt!)
                       : ''),
-              _summaryRow('Choices', '$count items configured'),
+              _summaryRow(AppLocalizations.of(context).rvChoices,
+                  AppLocalizations.of(context).rvItems(count.toString())),
               if (!isReady) ...[
                 const SizedBox(height: 16),
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                      color: KivoraColors.of(context).warningText.withValues(alpha: 0.12),
+                      color: KivoraColors.of(context)
+                          .warningText
+                          .withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8)),
-                  child: Text(
-                      'Complete every required checklist item above before publishing.',
-                      style: TextStyle(color: KivoraColors.of(context).warningText, fontWeight: FontWeight.w600)),
+                  child: Text(AppLocalizations.of(context).rvIncomplete,
+                      style: TextStyle(
+                          color: KivoraColors.of(context).warningText,
+                          fontWeight: FontWeight.w600)),
                 ),
               ],
               if (_error != null) ...[
@@ -195,11 +211,15 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                      color: KivoraColors.of(context).errorText.withValues(alpha: 0.1),
+                      color: KivoraColors.of(context)
+                          .errorText
+                          .withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8)),
                   child: Semantics(
                     liveRegion: true,
-                    child: Text(_error!, style: TextStyle(color: KivoraColors.of(context).errorText)),
+                    child: Text(_error!,
+                        style: TextStyle(
+                            color: KivoraColors.of(context).errorText)),
                   ),
                 ),
               ],
@@ -210,18 +230,21 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                 runSpacing: 12,
                 children: [
                   TextButton(
-                      style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                      style:
+                          TextButton.styleFrom(minimumSize: const Size(48, 48)),
                       onPressed: _isPublishing ? null : widget.onBack,
-                      child: const Text('Back')),
+                      child: Text(AppLocalizations.of(context).rvBack)),
                   FilledButton(
-                    style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
-                    onPressed: _isPublishing || !isReady ? null : _confirmAndPublish,
+                    style:
+                        FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+                    onPressed:
+                        _isPublishing || !isReady ? null : _confirmAndPublish,
                     child: _isPublishing
                         ? const SizedBox(
                             height: 16,
                             width: 16,
                             child: CircularProgressIndicator(strokeWidth: 2))
-                        : const Text('Publish election'),
+                        : Text(AppLocalizations.of(context).rvPublishButton),
                   ),
                 ],
               ),
@@ -232,7 +255,9 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
 
   Widget _checklistRow(BuildContext context, _ChecklistItem item) {
     final kc = KivoraColors.of(context);
-    final color = item.done ? kc.successText : (item.optional ? kc.textSecondary : kc.errorText);
+    final color = item.done
+        ? kc.successText
+        : (item.optional ? kc.textSecondary : kc.errorText);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
@@ -240,17 +265,21 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
           Icon(
             item.done
                 ? Icons.check_circle_rounded
-                : (item.optional ? Icons.radio_button_unchecked : Icons.error_outline_rounded),
+                : (item.optional
+                    ? Icons.radio_button_unchecked
+                    : Icons.error_outline_rounded),
             size: 18,
             color: color,
           ),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              item.label + (item.optional && !item.done ? ' (optional)' : ''),
+              item.label +
+                  (item.optional && !item.done
+                      ? AppLocalizations.of(context).rvOptional
+                      : ''),
               style: TextStyle(
-                  fontSize: 14,
-                  color: KivoraColors.textPrimaryOf(context)),
+                  fontSize: 14, color: KivoraColors.textPrimaryOf(context)),
             ),
           ),
         ],

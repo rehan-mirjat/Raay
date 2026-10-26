@@ -2008,5 +2008,243 @@
   "mpRemoveBody": "They will lose access to this organization immediately.",
   "mpRemoved": "Member removed from organization.",
   "mpClose": "Close",
-  "imOrgLabel": "Organization"
+  "imOrgLabel": "Organization",
+  "vtCandidate": "Candidate election",
+  "vtSingleChoice": "Single-choice poll",
+  "vtYesNo": "Yes/No poll",
+  "etAll": "All active members",
+  "etMembers": "Selected members",
+  "etDepartments": "Selected departments",
+  "ccLoadError": "We could not load the command center. Check your connection and try again.",
+  "ccNoOrgTitle": "No active organization",
+  "ccNoOrgBody": "Select an organization to view its command center.",
+  "ccAdminTitle": "Administrator access required",
+  "ccAdminBody": "The election command center is available to organization owners and admins.",
+  "ccElectionsError": "We could not load elections. Check your connection and try again.",
+  "ccTitle": "Election Command Center",
+  "ccSearch": "Search",
+  "ccFilterDate": "Filter by date range",
+  "ccCreate": "Create election",
+  "ccSuspended": "This organization is suspended. Election management is disabled until it is reinstated.",
+  "ccActiveTitle": "Active Election Monitoring",
+  "ccActiveNone": "No elections are currently active.",
+  "ccUpcomingTitle": "Upcoming Election Schedule",
+  "ccUpcomingNone": "No elections are scheduled.",
+  "ccAlerts": "Alerts",
+  "ccNoVoters": "\"{a}\" has no eligible voters configured.",
+  "@ccNoVoters": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "ccTasks": "Pending Administrative Tasks",
+  "ccTasksNone": "No pending tasks. You're all caught up.",
+  "ccDraft": "\"{a}\" is still a draft and needs review before publishing.",
+  "@ccDraft": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "ccInviteOne": "1 invitation is awaiting a response.",
+  "ccInviteMany": "{a} invitations are awaiting a response.",
+  "@ccInviteMany": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "ccMembership": "Membership & Invitations",
+  "ccTotalMembers": "Total members",
+  "ccPendingInvites": "Pending invitations",
+  "ccRecent": "Recent Administrative Activity",
+  "ccExport": "Export report (CSV)",
+  "ccStatTotal": "Total Elections",
+  "ccStatActive": "Active",
+  "ccStatScheduled": "Scheduled",
+  "ccStatClosed": "Closed",
+  "ccStatMembers": "Members",
+  "ccStatMembersSub": "All organization members",
+  "ccNoActivity": "No recent activity.",
+  "ccMonitor": "Monitor",
+  "ccTurnoutUnknown": "Live turnout unavailable",
+  "ccTurnout": "{a} of {b} voted ({c}%)",
+  "@ccTurnout": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      },
+      "c": {
+        "type": "String"
+      }
+    }
+  },
+  "biTemplateTitle": "Select Election Template",
+  "biTemplateBody": "Choose a pre-configured template to speed up your election creation.",
+  "biT1Name": "Executive / Board Election",
+  "biT1Sub": "Candidate Election • Anonymous Ballot",
+  "biT1Title": "Executive Board Election",
+  "biT1Desc": "Annual election to select executive board representatives. Ballots are strictly anonymous.",
+  "biT2Name": "Policy / Resolution Vote",
+  "biT2Sub": "Yes/No Poll • Anonymous Ballot",
+  "biT2Title": "Organization Policy Resolution",
+  "biT2Desc": "Vote on the proposed amendment to organization bylaws. Please review the attached documentation before voting.",
+  "biT3Name": "Community Opinion Poll",
+  "biT3Sub": "Single-Choice Poll • Identifiable",
+  "biT3Title": "Community Feedback Survey",
+  "biT3Desc": "Short survey to collect community sentiment on upcoming initiatives.",
+  "biLocked": "Event is no longer a DRAFT. Basic info is strictly immutable.",
+  "biTitle": "Election details",
+  "biSubtitle": "Provide the basic information about your election.",
+  "biUseTemplate": "Use template",
+  "biTitleLabel": "Event Title *",
+  "biTitleHint": "e.g. Annual Team Selection",
+  "biTitleInvalid": "Title must be 3-100 characters.",
+  "biDescLabel": "Description *",
+  "biDescHint": "Describe the purpose, context and important details about this event...",
+  "biDescRequired": "Description is required.",
+  "biDescLong": "Description cannot exceed 500 characters.",
+  "biVotingType": "Voting Type",
+  "biTypeCandidate": "Candidate Election",
+  "biTypeCandidateSub": "Voters select one candidate from a roster.",
+  "biTypeSingle": "Single-Choice Poll",
+  "biTypeSingleSub": "Voters select one option from a list.",
+  "biTypeYesNo": "Yes/No Poll",
+  "biTypeYesNoSub": "Voters approve or reject a proposal.",
+  "biPrivacy": "Ballot privacy",
+  "biAnonymous": "Anonymous",
+  "biIdentifiable": "Identifiable",
+  "biAnonymousNote": "Voter identity is stored separately from the ballot.",
+  "biIdentifiableNote": "Each ballot is associated with the voter’s account. Voters will see this notice before confirming.",
+  "biNext": "Next: Schedule",
+  "elLocked": "Event is no longer a DRAFT. Eligibility configuration is strictly immutable.",
+  "elTitle": "Voter Eligibility",
+  "elWho": "Who can vote?",
+  "elAll": "All Active Members",
+  "elDepts": "Selected Departments",
+  "elMembers": "Selected Members",
+  "elBack": "Back",
+  "elCreateDraft": "Create Draft & Continue",
+  "elNext": "Next: Choices",
+  "elListError": "We could not load this list. Go back and try again.",
+  "elNoDepts": "No departments found in this organization.",
+  "elNoMembers": "No active members found.",
+  "elSelected": "{a} selected of {b} active members",
+  "@elSelected": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "elCsv": "CSV Bulk Import",
+  "rvPublishTitle": "Publish this election?",
+  "rvPublishBody": "Eligible members will see it according to the schedule. After publishing you can no longer change its details, schedule or eligibility.",
+  "rvKeepEditing": "Keep editing",
+  "rvPublish": "Publish",
+  "rvPublished": "Election published.",
+  "rvReauth": "For security, publishing an election requires you to have signed in within the last 15 minutes. Please verify your identity to continue.",
+  "rvPublishFailed": "We could not publish the election. Please try again.",
+  "rvChoicesError": "We could not load the choices. Go back and try again.",
+  "rvCheckTitle": "Title configured",
+  "rvCheckDesc": "Description added",
+  "rvCheckSchedule": "Voting window scheduled",
+  "rvCheckPrivacyId": "Privacy mode set (Identifiable)",
+  "rvCheckPrivacyAnon": "Privacy mode set (Anonymous)",
+  "rvCheckChoices": "Candidates/options configured ({a})",
+  "@rvCheckChoices": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "rvCheckEligibility": "Eligibility rules valid ({a})",
+  "@rvCheckEligibility": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "rvTitle": "Review & Publish",
+  "rvChecklist": "ELECTION SETUP CHECKLIST",
+  "rvTitleLabel": "Title",
+  "rvStart": "Start At",
+  "rvEnd": "End At",
+  "rvChoices": "Choices",
+  "rvItems": "{a} items configured",
+  "@rvItems": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "rvIncomplete": "Complete every required checklist item above before publishing.",
+  "rvBack": "Back",
+  "rvPublishButton": "Publish election",
+  "rvOptional": " (optional)",
+  "scRequired": "Start and End times are required.",
+  "scPast": "Start time cannot be in the past.",
+  "scShort": "Voting window must be at least 5 minutes.",
+  "scLocked": "Event is no longer a DRAFT. Schedule is strictly immutable.",
+  "scTitle": "Voting Schedule",
+  "scZoneNote": "Times are entered in your time zone: {a}. All times are evaluated securely against the server clock.",
+  "@scZoneNote": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "scStartTime": "Start Time",
+  "scNotSet": "Not set",
+  "scEndTime": "End Time",
+  "scBack": "Back",
+  "scNext": "Next: Eligibility",
+  "obTitle": "Observer Dashboard",
+  "obTransparency": "Trust & Transparency Center",
+  "obLoadError": "We could not load this view. Check your connection and try again.",
+  "obNoOrgTitle": "No active organization",
+  "obNoOrgBody": "Select an organization to view its observer dashboard.",
+  "obAccessTitle": "Observer access required",
+  "obAccessBody": "This dashboard is only available to members granted observer access by an organization admin.",
+  "obNoElectionsTitle": "No elections yet",
+  "obNoElectionsBody": "There are no published elections in this organization yet.",
+  "obNote": "You have read-only Observer access to {a}. You see organization-wide aggregates only, never individual ballots, voter identities, or per-department breakdowns.",
+  "@obNote": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "obActive": "Active Elections",
+  "obTimeline": "Election Timeline",
+  "obTurnoutUnknown": "Aggregate turnout unavailable",
+  "obTurnout": "{a} of {b} eligible voters ({c}%)",
+  "@obTurnout": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      },
+      "c": {
+        "type": "String"
+      }
+    }
+  }
 }
