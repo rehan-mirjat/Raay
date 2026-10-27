@@ -6171,4 +6171,75 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get raVerify => 'Verify';
+
+  @override
+  String get phTitle => 'Platform health';
+
+  @override
+  String get phSubtitle => 'Live checks for the platform API and Firestore.';
+
+  @override
+  String get phRun => 'Run checks';
+
+  @override
+  String get phUnavailTitle => 'Health check unavailable';
+
+  @override
+  String get phUnavailBody =>
+      'The platform health endpoint did not respond. Retry to check it again.';
+
+  @override
+  String get phOkTitle => 'Verified services are responding';
+
+  @override
+  String get phBadTitle => 'A service needs attention';
+
+  @override
+  String get phFunctions => 'Cloud Functions';
+
+  @override
+  String get phFunctionsOk => 'This health request completed successfully.';
+
+  @override
+  String get phFirestore => 'Firestore';
+
+  @override
+  String get phProbeFailed =>
+      'The read probe failed. No application data was returned.';
+
+  @override
+  String get phCoverage => 'Monitoring coverage';
+
+  @override
+  String get phCoverageBody =>
+      'Storage, email delivery, push delivery, and client devices are not probed by this check.';
+
+  @override
+  String get phOperational => 'Operational';
+
+  @override
+  String get phDown => 'Unavailable';
+
+  @override
+  String get phProbeOk => 'Read probe completed.';
+
+  @override
+  String phProbeOkMs(String a) {
+    return 'Read probe completed in ${a}ms.';
+  }
+
+  @override
+  String phLast(String a) {
+    return 'Last checked $a';
+  }
+
+  @override
+  String get ntLoadError =>
+      'Could not load notifications. Check your connection and try again.';
+
+  @override
+  String get ntUpdateFailed => 'Could not update notifications. Try again.';
+
+  @override
+  String get navPlatformHealth => 'Platform health';
 }

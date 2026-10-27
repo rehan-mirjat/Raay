@@ -19,7 +19,10 @@ export const getPlatformAnalytics = onCall(async (request) => {
   const organizations = db.collection("organizations");
   const members = db.collection("organizationMembers");
   const events = db.collection("votingEvents");
-  const reports = db.collection("platformReports");
+  // Help & support submissions and the platform reports screen both use
+  // `userReports`; counting the unused `platformReports` collection would
+  // silently report zero even when there are open reports to review.
+  const reports = db.collection("userReports");
 
   const [
     userCount,
@@ -31,7 +34,7 @@ export const getPlatformAnalytics = onCall(async (request) => {
     activeMemberCount,
     eventCount,
     activeEvents,
-    pendingReports,
+    openReports,
   ] = await Promise.all([
     count(db.collection("users")),
     count(organizations),
@@ -42,7 +45,7 @@ export const getPlatformAnalytics = onCall(async (request) => {
     count(members.where("status", "==", "active")),
     count(events),
     count(events.where("status", "in", ["ACTIVE", "active"])),
-    count(reports.where("status", "==", "pending")),
+    count(reports.where("status", "==", "open")),
   ]);
 
   return {
@@ -57,6 +60,6 @@ export const getPlatformAnalytics = onCall(async (request) => {
     activeMembers: activeMemberCount,
     votingEvents: eventCount,
     activeVotingEvents: activeEvents,
-    pendingReports,
+    openReports,
   };
 });

@@ -6155,4 +6155,75 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get raVerify => 'تصدیق کریں';
+
+  @override
+  String get phTitle => 'پلیٹ فارم کی صحت';
+
+  @override
+  String get phSubtitle => 'پلیٹ فارم API اور Firestore کی براہ راست جانچ۔';
+
+  @override
+  String get phRun => 'جانچ چلائیں';
+
+  @override
+  String get phUnavailTitle => 'صحت کی جانچ دستیاب نہیں';
+
+  @override
+  String get phUnavailBody =>
+      'پلیٹ فارم ہیلتھ اینڈ پوائنٹ نے جواب نہیں دیا۔ دوبارہ جانچنے کے لیے دوبارہ کوشش کریں۔';
+
+  @override
+  String get phOkTitle => 'جانچی گئی سروسز جواب دے رہی ہیں';
+
+  @override
+  String get phBadTitle => 'ایک سروس پر توجہ درکار ہے';
+
+  @override
+  String get phFunctions => 'Cloud Functions';
+
+  @override
+  String get phFunctionsOk => 'یہ ہیلتھ درخواست کامیابی سے مکمل ہوئی۔';
+
+  @override
+  String get phFirestore => 'Firestore';
+
+  @override
+  String get phProbeFailed =>
+      'ریڈ پروب ناکام ہوا۔ ایپلیکیشن کا کوئی ڈیٹا واپس نہیں آیا۔';
+
+  @override
+  String get phCoverage => 'نگرانی کا دائرہ';
+
+  @override
+  String get phCoverageBody =>
+      'اس جانچ میں اسٹوریج، ای میل ڈیلیوری، پش ڈیلیوری اور کلائنٹ ڈیوائسز کی جانچ شامل نہیں۔';
+
+  @override
+  String get phOperational => 'فعال';
+
+  @override
+  String get phDown => 'دستیاب نہیں';
+
+  @override
+  String get phProbeOk => 'جانچ کامیابی سے مکمل ہوئی۔';
+
+  @override
+  String phProbeOkMs(String a) {
+    return 'ریڈ پروب $a ملی سیکنڈ میں مکمل ہوا۔';
+  }
+
+  @override
+  String phLast(String a) {
+    return 'آخری جانچ $a';
+  }
+
+  @override
+  String get ntLoadError =>
+      'اطلاعات لوڈ نہیں ہو سکیں۔ اپنا کنکشن دیکھیں اور دوبارہ کوشش کریں۔';
+
+  @override
+  String get ntUpdateFailed => 'اطلاعات اپ ڈیٹ نہیں ہو سکیں۔ دوبارہ کوشش کریں۔';
+
+  @override
+  String get navPlatformHealth => 'پلیٹ فارم کی صحت';
 }

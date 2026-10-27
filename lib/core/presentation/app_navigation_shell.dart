@@ -46,6 +46,7 @@ String _navLabel(AppLocalizations l10n, NavId id) => switch (id) {
       NavId.help => l10n.navHelp,
       NavId.platform => l10n.navPlatformOrganizations,
       NavId.platformOverview => l10n.navPlatformOverview,
+      NavId.platformHealth => l10n.navPlatformHealth,
       NavId.platformReports => l10n.navPlatformReports,
       NavId.platformAudit => l10n.navPlatformAudit,
       NavId.joiningCodes => l10n.navJoiningCodes,
@@ -910,6 +911,8 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
         ),
         onSelected: (value) {
           if (value == 'view_all') {
+            context.go('/notifications');
+          } else if (value == 'invitation') {
             context.go('/orgs/invitations');
           } else if (value == 'mark_read') {
             ref.invalidate(memberInvitationsProvider);
@@ -993,7 +996,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                 final role = item['role'] as String? ?? 'member';
 
                 return PopupMenuItem<String>(
-                  value: 'view_all',
+                  value: 'invitation',
                   child: SizedBox(
                     width: menuWidth,
                     child: Container(

@@ -2974,5 +2974,40 @@
   "raPassword": "Password",
   "raCancel": "Cancel",
   "raGoogle": "Verify with Google",
-  "raVerify": "Verify"
+  "raVerify": "Verify",
+  "phTitle": "Platform health",
+  "phSubtitle": "Live checks for the platform API and Firestore.",
+  "phRun": "Run checks",
+  "phUnavailTitle": "Health check unavailable",
+  "phUnavailBody": "The platform health endpoint did not respond. Retry to check it again.",
+  "phOkTitle": "Verified services are responding",
+  "phBadTitle": "A service needs attention",
+  "phFunctions": "Cloud Functions",
+  "phFunctionsOk": "This health request completed successfully.",
+  "phFirestore": "Firestore",
+  "phProbeFailed": "The read probe failed. No application data was returned.",
+  "phCoverage": "Monitoring coverage",
+  "phCoverageBody": "Storage, email delivery, push delivery, and client devices are not probed by this check.",
+  "phOperational": "Operational",
+  "phDown": "Unavailable",
+  "phProbeOk": "Read probe completed.",
+  "phProbeOkMs": "Read probe completed in {a}ms.",
+  "@phProbeOkMs": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "phLast": "Last checked {a}",
+  "@phLast": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "ntLoadError": "Could not load notifications. Check your connection and try again.",
+  "ntUpdateFailed": "Could not update notifications. Try again.",
+  "navPlatformHealth": "Platform health"
 }

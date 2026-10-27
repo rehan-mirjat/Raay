@@ -11063,6 +11063,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Verify'**
   String get raVerify;
+
+  /// No description provided for @phTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform health'**
+  String get phTitle;
+
+  /// No description provided for @phSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live checks for the platform API and Firestore.'**
+  String get phSubtitle;
+
+  /// No description provided for @phRun.
+  ///
+  /// In en, this message translates to:
+  /// **'Run checks'**
+  String get phRun;
+
+  /// No description provided for @phUnavailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Health check unavailable'**
+  String get phUnavailTitle;
+
+  /// No description provided for @phUnavailBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The platform health endpoint did not respond. Retry to check it again.'**
+  String get phUnavailBody;
+
+  /// No description provided for @phOkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified services are responding'**
+  String get phOkTitle;
+
+  /// No description provided for @phBadTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A service needs attention'**
+  String get phBadTitle;
+
+  /// No description provided for @phFunctions.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud Functions'**
+  String get phFunctions;
+
+  /// No description provided for @phFunctionsOk.
+  ///
+  /// In en, this message translates to:
+  /// **'This health request completed successfully.'**
+  String get phFunctionsOk;
+
+  /// No description provided for @phFirestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Firestore'**
+  String get phFirestore;
+
+  /// No description provided for @phProbeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The read probe failed. No application data was returned.'**
+  String get phProbeFailed;
+
+  /// No description provided for @phCoverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitoring coverage'**
+  String get phCoverage;
+
+  /// No description provided for @phCoverageBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage, email delivery, push delivery, and client devices are not probed by this check.'**
+  String get phCoverageBody;
+
+  /// No description provided for @phOperational.
+  ///
+  /// In en, this message translates to:
+  /// **'Operational'**
+  String get phOperational;
+
+  /// No description provided for @phDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get phDown;
+
+  /// No description provided for @phProbeOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Read probe completed.'**
+  String get phProbeOk;
+
+  /// No description provided for @phProbeOkMs.
+  ///
+  /// In en, this message translates to:
+  /// **'Read probe completed in {a}ms.'**
+  String phProbeOkMs(String a);
+
+  /// No description provided for @phLast.
+  ///
+  /// In en, this message translates to:
+  /// **'Last checked {a}'**
+  String phLast(String a);
+
+  /// No description provided for @ntLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load notifications. Check your connection and try again.'**
+  String get ntLoadError;
+
+  /// No description provided for @ntUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update notifications. Try again.'**
+  String get ntUpdateFailed;
+
+  /// No description provided for @navPlatformHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform health'**
+  String get navPlatformHealth;
 }
 
 class _AppLocalizationsDelegate

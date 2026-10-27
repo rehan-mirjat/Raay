@@ -28,6 +28,12 @@ class PlatformOverviewScreen extends ConsumerWidget {
       actions: [
         OutlinedButton.icon(
           style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+          onPressed: () => context.go('/platform/health'),
+          icon: const Icon(Icons.monitor_heart_outlined, size: 18),
+          label: Text(AppLocalizations.of(context).navPlatformHealth),
+        ),
+        OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
           onPressed: () {
             ref.invalidate(platformAnalyticsProvider);
             ref.invalidate(openReportCountProvider);

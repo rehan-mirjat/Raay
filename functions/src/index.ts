@@ -74,6 +74,7 @@ export * from "./voting/remindNonVoters";
 export * from "./platform/listOrganizations";
 export * from "./platform/reviewOrganization";
 export * from "./platform/getPlatformAnalytics";
+export * from "./platform/getPlatformHealth";
 export * from "./platform/listPlatformUsers";
 export * from "./admin/createAdmin";
 export * from "./admin/removeAdmin";

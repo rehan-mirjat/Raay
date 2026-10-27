@@ -21,6 +21,7 @@ enum NavId {
   platform,
   platformAccounts,
   platformOverview,
+  platformHealth,
   platformReports,
   platformAudit,
 }
@@ -88,6 +89,8 @@ const _joiningCodes = NavDestination(NavId.joiningCodes, '/orgs/joining-codes',
     Icons.qr_code_2_outlined, Icons.qr_code_2_rounded);
 const _platformOverview = NavDestination(NavId.platformOverview, '/platform',
     Icons.space_dashboard_outlined, Icons.space_dashboard_rounded);
+const _platformHealth = NavDestination(NavId.platformHealth, '/platform/health',
+    Icons.monitor_heart_outlined, Icons.monitor_heart_rounded);
 const _platform = NavDestination(NavId.platform, '/platform/organizations',
     Icons.domain_outlined, Icons.domain_rounded);
 const _platformAccounts = NavDestination(
@@ -111,6 +114,7 @@ NavModel navModelFor({
   final platform = isPlatformAdmin
       ? const [
           _platformOverview,
+          _platformHealth,
           _platform,
           _platformAccounts,
           _platformReports,

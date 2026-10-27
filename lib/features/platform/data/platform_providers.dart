@@ -6,6 +6,16 @@ import '../domain/platform_report.dart';
 
 const kPlatformPageSize = 50;
 
+/// Live, read-only diagnostics from the platform health callable.
+final platformHealthProvider =
+    FutureProvider.autoDispose<Map<String, dynamic>>((ref) async {
+  final response = await FirebaseService()
+      .functions
+      .httpsCallable('getPlatformHealth')
+      .call();
+  return Map<String, dynamic>.from(response.data as Map);
+});
+
 /// Aggregate counts from the `getPlatformAnalytics` callable (platform admins
 /// only; the server checks the claim).
 final platformAnalyticsProvider =

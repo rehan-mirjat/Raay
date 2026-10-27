@@ -79,7 +79,7 @@ class PlatformPage extends ConsumerWidget {
                             ]),
                       ),
                       if (actions.isNotEmpty)
-                        Row(mainAxisSize: MainAxisSize.min, children: actions),
+                        Wrap(spacing: 8, runSpacing: 8, children: actions),
                     ],
                   ),
                   const SizedBox(height: 20),

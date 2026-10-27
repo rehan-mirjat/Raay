@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../widgets/loading_view.dart';
+import '../notifications/notification_inbox_screen.dart';
 import '../../features/support/presentation/help_support_screen.dart';
 import '../../features/landing/presentation/landing_page_screen.dart';
 import '../../features/onboarding/presentation/mobile_onboarding_screen.dart';
@@ -22,6 +23,7 @@ import '../../features/organizations/presentation/platform_admin_screen.dart';
 import '../../features/platform/presentation/platform_audit_screen.dart';
 import '../../features/platform/presentation/platform_overview_screen.dart';
 import '../../features/platform/presentation/platform_reports_screen.dart';
+import '../../features/platform/presentation/platform_health_screen.dart';
 import '../../features/organizations/presentation/membership_directory_screen.dart';
 import '../../features/departments/presentation/department_members_screen.dart';
 import '../../features/departments/presentation/departments_screen.dart';
@@ -303,6 +305,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     const HomeScreen(key: ValueKey('home_screen')),
               ),
               GoRoute(
+                path: '/notifications',
+                builder: (context, state) => const NotificationInboxScreen(),
+              ),
+              GoRoute(
                 path: '/plans',
                 builder: (context, state) => const PlansScreen(),
               ),
@@ -329,6 +335,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'audit',
                     builder: (context, state) => const PlatformAuditScreen(),
+                  ),
+                  GoRoute(
+                    path: 'health',
+                    builder: (context, state) => const PlatformHealthScreen(),
                   ),
                 ],
               ),

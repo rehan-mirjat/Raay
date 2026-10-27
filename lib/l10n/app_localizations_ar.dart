@@ -6097,4 +6097,74 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get raVerify => 'تحقق';
+
+  @override
+  String get phTitle => 'سلامة المنصة';
+
+  @override
+  String get phSubtitle => 'فحوصات مباشرة لواجهة المنصة وFirestore.';
+
+  @override
+  String get phRun => 'تشغيل الفحوصات';
+
+  @override
+  String get phUnavailTitle => 'فحص السلامة غير متاح';
+
+  @override
+  String get phUnavailBody =>
+      'لم تستجب نقطة فحص سلامة المنصة. أعد المحاولة للتحقق مرة أخرى.';
+
+  @override
+  String get phOkTitle => 'الخدمات التي تم فحصها تستجيب';
+
+  @override
+  String get phBadTitle => 'إحدى الخدمات تحتاج إلى انتباه';
+
+  @override
+  String get phFunctions => 'Cloud Functions';
+
+  @override
+  String get phFunctionsOk => 'اكتمل طلب الفحص هذا بنجاح.';
+
+  @override
+  String get phFirestore => 'Firestore';
+
+  @override
+  String get phProbeFailed => 'فشل فحص القراءة. لم تُرجَع أي بيانات للتطبيق.';
+
+  @override
+  String get phCoverage => 'نطاق المراقبة';
+
+  @override
+  String get phCoverageBody =>
+      'لا يفحص هذا الاختبار التخزين وتسليم البريد وتسليم الإشعارات وأجهزة العملاء.';
+
+  @override
+  String get phOperational => 'يعمل';
+
+  @override
+  String get phDown => 'غير متاح';
+
+  @override
+  String get phProbeOk => 'اكتمل فحص القراءة.';
+
+  @override
+  String phProbeOkMs(String a) {
+    return 'اكتمل فحص القراءة في $a مللي ثانية.';
+  }
+
+  @override
+  String phLast(String a) {
+    return 'آخر فحص $a';
+  }
+
+  @override
+  String get ntLoadError =>
+      'تعذّر تحميل الإشعارات. تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get ntUpdateFailed => 'تعذّر تحديث الإشعارات. حاول مرة أخرى.';
+
+  @override
+  String get navPlatformHealth => 'سلامة المنصة';
 }
