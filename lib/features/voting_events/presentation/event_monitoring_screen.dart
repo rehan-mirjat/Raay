@@ -8,7 +8,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/utils/error_utils.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../core/widgets/reauth_dialog.dart';
@@ -107,7 +107,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
           ),
           TextButton(
             style: TextButton.styleFrom(
-                minimumSize: const Size(48, 48), foregroundColor: KivoraColors.of(ctx).errorText),
+                minimumSize: const Size(48, 48), foregroundColor: RaayColors.of(ctx).errorText),
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(l10n.monCloseConfirm),
           ),
@@ -165,7 +165,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
     return l10n.monRemainMin(diff.inMinutes);
   }
 
-  BoxDecoration _card(KivoraColors kc) => BoxDecoration(
+  BoxDecoration _card(RaayColors kc) => BoxDecoration(
         color: kc.surface,
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
         border: Border.all(color: kc.border),
@@ -174,7 +174,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     // Stable provider: the stream is not recreated every 15s refresh.
     final event = ref.watch(singleVotingEventProvider(widget.eventId)).valueOrNull;
     final isDesktop = ResponsiveLayout.isWide(context);
@@ -234,7 +234,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
     return Scaffold(backgroundColor: kc.background, body: SafeArea(child: body));
   }
 
-  Widget _note(KivoraColors kc, IconData icon, String text, {Color? color}) {
+  Widget _note(RaayColors kc, IconData icon, String text, {Color? color}) {
     final c = color ?? kc.accentText;
     return Container(
       padding: const EdgeInsets.all(14),
@@ -251,7 +251,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
     );
   }
 
-  Widget _header(BuildContext context, AppLocalizations l10n, KivoraColors kc, VotingEvent? event) {
+  Widget _header(BuildContext context, AppLocalizations l10n, RaayColors kc, VotingEvent? event) {
     final secondsAgo = _refreshedAt == null ? 0 : DateTime.now().difference(_refreshedAt!).inSeconds;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       TextButton.icon(
@@ -303,7 +303,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
     ]);
   }
 
-  Widget _stats(BuildContext context, AppLocalizations l10n, KivoraColors kc) {
+  Widget _stats(BuildContext context, AppLocalizations l10n, RaayColors kc) {
     final eligible = (_summary?['eligibleCount'] as num?)?.toInt() ?? 0;
     final voted = (_summary?['participationCount'] as num?)?.toInt() ?? 0;
     final notYet = (eligible - voted).clamp(0, eligible);
@@ -347,7 +347,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
     ]);
   }
 
-  Widget _mini(KivoraColors kc, String label, String value, IconData icon, String caption) {
+  Widget _mini(RaayColors kc, String label, String value, IconData icon, String caption) {
     return Semantics(
       container: true,
       label: '$label: $value. $caption',
@@ -371,8 +371,9 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
     );
   }
 
-  Widget _mainGrid(BuildContext context, AppLocalizations l10n, KivoraColors kc, VotingEvent? event, bool isDesktop) {
+  Widget _mainGrid(BuildContext context, AppLocalizations l10n, RaayColors kc, VotingEvent? event, bool isDesktop) {
     final left = Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      if (_summary?['detailsUnavailable'] == true) Padding(padding: const EdgeInsets.only(bottom: 12), child: Text(l10n.monDetailsUnavailable, style: TextStyle(color: kc.textSecondary))),
       _chart(l10n, kc),
       const SizedBox(height: 16),
       _departments(l10n, kc),
@@ -391,7 +392,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
     return Column(children: [left, const SizedBox(height: 16), right]);
   }
 
-  Widget _chart(AppLocalizations l10n, KivoraColors kc) {
+  Widget _chart(AppLocalizations l10n, RaayColors kc) {
     final history = (_summary?['participationHistory'] as List?) ?? const [];
     if (history.length < 2) {
       return Container(
@@ -470,7 +471,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
     );
   }
 
-  Widget _departments(AppLocalizations l10n, KivoraColors kc) {
+  Widget _departments(AppLocalizations l10n, RaayColors kc) {
     final rows = (_summary?['departmentBreakdown'] as List?) ?? const [];
     return Container(
       padding: const EdgeInsets.all(20),
@@ -492,7 +493,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
     );
   }
 
-  Widget _deptRow(AppLocalizations l10n, KivoraColors kc, Map<String, dynamic> row) {
+  Widget _deptRow(AppLocalizations l10n, RaayColors kc, Map<String, dynamic> row) {
     final name = (row['name'] as String?) ?? l10n.monDeptFallback;
     final eligible = (row['eligible'] as num?)?.toInt() ?? 0;
     final participated = (row['participated'] as num?)?.toInt() ?? 0;
@@ -517,7 +518,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
     );
   }
 
-  Widget _details(BuildContext context, AppLocalizations l10n, KivoraColors kc, VotingEvent event) {
+  Widget _details(BuildContext context, AppLocalizations l10n, RaayColors kc, VotingEvent event) {
     Widget row(String label, String value) => Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -544,7 +545,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
     );
   }
 
-  Widget _boost(AppLocalizations l10n, KivoraColors kc) {
+  Widget _boost(AppLocalizations l10n, RaayColors kc) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: _card(kc),
@@ -574,7 +575,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
     );
   }
 
-  Widget _closeEarly(BuildContext context, AppLocalizations l10n, KivoraColors kc) {
+  Widget _closeEarly(BuildContext context, AppLocalizations l10n, RaayColors kc) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(

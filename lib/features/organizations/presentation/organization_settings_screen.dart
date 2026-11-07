@@ -9,7 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/navigation/exit_guard.dart';
 import '../../../core/widgets/error_view.dart';
@@ -105,7 +105,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           ),
           TextButton(
             style: TextButton.styleFrom(
-                minimumSize: const Size(48, 48), foregroundColor: KivoraColors.of(ctx).errorText),
+                minimumSize: const Size(48, 48), foregroundColor: RaayColors.of(ctx).errorText),
             onPressed: () => Navigator.pop(ctx, 'discard'),
             child: Text(AppLocalizations.of(context).orgSetDiscard),
           ),
@@ -152,7 +152,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
         }
       },
       child: Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: RaayColors.backgroundOf(context),
       body: state.when(
         skipLoadingOnReload: true,
         loading: () => LoadingView(message: AppLocalizations.of(context).orgSetLoading),
@@ -217,13 +217,13 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                       AppLocalizations.of(context).orgSetTitle,
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: KivoraColors.textPrimaryOf(context),
+                            color: RaayColors.textPrimaryOf(context),
                           ),
                     ),
                     const SizedBox(height: 6),
                     Text(
                       AppLocalizations.of(context).orgSetSubtitle(org.name.toString()),
-                      style: TextStyle(color: KivoraColors.textSecondaryOf(context), fontSize: 14),
+                      style: TextStyle(color: RaayColors.textSecondaryOf(context), fontSize: 14),
                     ),
                     const SizedBox(height: 28),
 
@@ -300,9 +300,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     return Container(
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
+        color: RaayColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: KivoraColors.borderOf(context)),
+        border: Border.all(color: RaayColors.borderOf(context)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),
@@ -316,12 +316,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
         children: [
           Text(
             AppLocalizations.of(context).orgSetDetails,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: RaayColors.textPrimaryOf(context)),
           ),
           const SizedBox(height: 4),
           Text(
             AppLocalizations.of(context).orgSetDetailsBody,
-            style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context)),
+            style: TextStyle(fontSize: 13, color: RaayColors.textSecondaryOf(context)),
           ),
           const SizedBox(height: 24),
 
@@ -329,9 +329,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(child: Text(AppLocalizations.of(context).orgSetNameLabel, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)))),
+              Expanded(child: Text(AppLocalizations.of(context).orgSetNameLabel, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: RaayColors.textPrimaryOf(context)))),
               const SizedBox(width: 8),
-              Text('${_name.text.length} / 100', style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
+              Text('${_name.text.length} / 100', style: TextStyle(fontSize: 12, color: RaayColors.textSecondaryOf(context))),
             ],
           ),
           const SizedBox(height: 6),
@@ -354,9 +354,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(child: Text(AppLocalizations.of(context).orgSetDescription, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)))),
+              Expanded(child: Text(AppLocalizations.of(context).orgSetDescription, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: RaayColors.textPrimaryOf(context)))),
               const SizedBox(width: 8),
-              Text('${_description.text.length} / 500', style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
+              Text('${_description.text.length} / 500', style: TextStyle(fontSize: 12, color: RaayColors.textSecondaryOf(context))),
             ],
           ),
           const SizedBox(height: 6),
@@ -372,12 +372,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           const SizedBox(height: 6),
           Text(
             AppLocalizations.of(context).orgSetDescriptionHelp,
-            style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context)),
+            style: TextStyle(fontSize: 11, color: RaayColors.textSecondaryOf(context)),
           ),
           const SizedBox(height: 20),
 
           // Website
-          Text(AppLocalizations.of(context).orgSetWebsite, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context))),
+          Text(AppLocalizations.of(context).orgSetWebsite, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: RaayColors.textPrimaryOf(context))),
           const SizedBox(height: 6),
           TextFormField(
             controller: _website,
@@ -401,9 +401,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     return Container(
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
+        color: RaayColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: KivoraColors.borderOf(context)),
+        border: Border.all(color: RaayColors.borderOf(context)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),
@@ -422,14 +422,14 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
             children: [
               Text(
                 AppLocalizations.of(context).orgSetLogo,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: RaayColors.textPrimaryOf(context)),
               ),
               Text(
                 hasLogo ? AppLocalizations.of(context).orgSetLogoActive : AppLocalizations.of(context).orgSetLogoNone,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: hasLogo ? KivoraColors.of(context).successText : KivoraColors.textSecondaryOf(context),
+                  color: hasLogo ? RaayColors.of(context).successText : RaayColors.textSecondaryOf(context),
                 ),
               ),
             ],
@@ -440,9 +440,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: KivoraColors.surfaceOf(context),
+              color: RaayColors.surfaceOf(context),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: KivoraColors.borderOf(context), width: 1.2),
+              border: Border.all(color: RaayColors.borderOf(context), width: 1.2),
             ),
             child: Row(
               children: [
@@ -453,13 +453,13 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                   decoration: BoxDecoration(
                     color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: KivoraColors.borderOf(context)),
+                    border: Border.all(color: RaayColors.borderOf(context)),
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: hasLogo
                       ? _logoImage(32)
                       : Center(
-                          child: Icon(Icons.business_rounded, size: 32, color: KivoraColors.of(context).accentText),
+                          child: Icon(Icons.business_rounded, size: 32, color: RaayColors.of(context).accentText),
                         ),
                 ),
                 const SizedBox(width: 20),
@@ -500,7 +500,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                               borderRadius: BorderRadius.circular(6),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                                child: Text(AppLocalizations.of(context).orgSetRemove, style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context), fontWeight: FontWeight.bold)),
+                                child: Text(AppLocalizations.of(context).orgSetRemove, style: TextStyle(fontSize: 13, color: RaayColors.textSecondaryOf(context), fontWeight: FontWeight.bold)),
                               ),
                             ),
                         ],
@@ -508,7 +508,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                       const SizedBox(height: 8),
                       Text(
                         AppLocalizations.of(context).orgSetLogoHelp,
-                        style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.3),
+                        style: TextStyle(fontSize: 12, color: RaayColors.textSecondaryOf(context), height: 1.3),
                       ),
                     ],
                   ),
@@ -533,9 +533,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
+        color: RaayColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: KivoraColors.borderOf(context)),
+        border: Border.all(color: RaayColors.borderOf(context)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),
@@ -549,12 +549,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
         children: [
           Text(
             AppLocalizations.of(context).orgSetPreviewTitle,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: RaayColors.textPrimaryOf(context)),
           ),
           const SizedBox(height: 4),
           Text(
             AppLocalizations.of(context).orgSetPreviewBody,
-            style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
+            style: TextStyle(fontSize: 12, color: RaayColors.textSecondaryOf(context)),
           ),
           const SizedBox(height: 20),
 
@@ -562,9 +562,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: KivoraColors.surfaceOf(context),
+              color: RaayColors.surfaceOf(context),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: KivoraColors.borderOf(context)),
+              border: Border.all(color: RaayColors.borderOf(context)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -581,7 +581,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                   child: hasLogo
                       ? _logoImage(24)
                       : Center(
-                          child: Icon(Icons.business_rounded, size: 24, color: KivoraColors.of(context).accentText),
+                          child: Icon(Icons.business_rounded, size: 24, color: RaayColors.of(context).accentText),
                         ),
                 ),
                 const SizedBox(height: 16),
@@ -593,7 +593,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                     Expanded(
                       child: Text(
                         nameStr,
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: RaayColors.textPrimaryOf(context)),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -604,7 +604,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                         color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text(AppLocalizations.of(context).orgSetPreviewRole, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: KivoraColors.of(context).accentText)),
+                      child: Text(AppLocalizations.of(context).orgSetPreviewRole, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: RaayColors.of(context).accentText)),
                     ),
                   ],
                 ),
@@ -612,7 +612,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
 
                 Text(
                   descStr,
-                  style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context), height: 1.4),
+                  style: TextStyle(fontSize: 13, color: RaayColors.textSecondaryOf(context), height: 1.4),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -620,12 +620,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
 
                 Row(
                   children: [
-                    Icon(Icons.language_rounded, size: 14, color: KivoraColors.textSecondaryOf(context)),
+                    Icon(Icons.language_rounded, size: 14, color: RaayColors.textSecondaryOf(context)),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         websiteStr,
-                        style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
+                        style: TextStyle(fontSize: 12, color: RaayColors.textSecondaryOf(context)),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -633,7 +633,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                   ],
                 ),
                 const SizedBox(height: 16),
-                Divider(height: 1, color: KivoraColors.borderOf(context)),
+                Divider(height: 1, color: RaayColors.borderOf(context)),
                 const SizedBox(height: 16),
 
                 // Static preview of a button, not a control.
@@ -658,12 +658,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
 
           Row(
             children: [
-              Icon(Icons.info_outline_rounded, size: 14, color: KivoraColors.textSecondaryOf(context)),
+              Icon(Icons.info_outline_rounded, size: 14, color: RaayColors.textSecondaryOf(context)),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   AppLocalizations.of(context).orgSetPreviewNote,
-                  style: TextStyle(fontSize: 11, color: KivoraColors.textSecondaryOf(context), height: 1.3),
+                  style: TextStyle(fontSize: 11, color: RaayColors.textSecondaryOf(context), height: 1.3),
                 ),
               ),
             ],
@@ -680,14 +680,14 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
+        color: RaayColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: KivoraColors.borderOf(context)),
+        border: Border.all(color: RaayColors.borderOf(context)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.verified_user_outlined, size: 20, color: KivoraColors.of(context).accentText),
+          Icon(Icons.verified_user_outlined, size: 20, color: RaayColors.of(context).accentText),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
@@ -695,12 +695,12 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               children: [
                 Text(
                   AppLocalizations.of(context).orgSetNotPermTitle,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: RaayColors.textPrimaryOf(context)),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   AppLocalizations.of(context).orgSetNotPermBody,
-                  style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context), height: 1.4),
+                  style: TextStyle(fontSize: 12, color: RaayColors.textSecondaryOf(context), height: 1.4),
                 ),
               ],
             ),
@@ -717,9 +717,9 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
+        color: RaayColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: KivoraColors.borderOf(context)),
+        border: Border.all(color: RaayColors.borderOf(context)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.06),
@@ -745,14 +745,14 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
               children: [
                 Text(
                   AppLocalizations.of(context).orgSetDirtyTitle,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: KivoraColors.textPrimaryOf(context)),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: RaayColors.textPrimaryOf(context)),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   _pendingLogo != null
                       ? AppLocalizations.of(context).orgSetDirtyLogo
                       : AppLocalizations.of(context).orgSetDirtyBody,
-                  style: TextStyle(fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
+                  style: TextStyle(fontSize: 12, color: RaayColors.textSecondaryOf(context)),
                 ),
               ],
             ),
@@ -829,7 +829,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
   /// The staged logo if there is one, otherwise the saved one.
   Widget _logoImage(double iconSize) {
     final fallback = Center(
-      child: Icon(Icons.business_rounded, size: iconSize, color: KivoraColors.of(context).accentText),
+      child: Icon(Icons.business_rounded, size: iconSize, color: RaayColors.of(context).accentText),
     );
     final pending = _pendingLogo;
     if (pending != null) {
@@ -920,7 +920,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
         children: [
           Row(
             children: [
-              Icon(Icons.warning_amber_rounded, color: KivoraColors.of(context).errorText, size: 22),
+              Icon(Icons.warning_amber_rounded, color: RaayColors.of(context).errorText, size: 22),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -928,7 +928,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: KivoraColors.of(context).errorText,
+                    color: RaayColors.of(context).errorText,
                   ),
                 ),
               ),
@@ -937,18 +937,18 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           const SizedBox(height: 6),
           Text(
             AppLocalizations.of(context).orgSetDangerBody,
-            style: TextStyle(fontSize: 13, color: KivoraColors.textSecondaryOf(context), height: 1.4),
+            style: TextStyle(fontSize: 13, color: RaayColors.textSecondaryOf(context), height: 1.4),
           ),
           const SizedBox(height: 20),
           OutlinedButton.icon(
             onPressed: () => _confirmDeleteOrganization(org),
-            icon: Icon(Icons.delete_forever_rounded, color: KivoraColors.of(context).errorText, size: 18),
+            icon: Icon(Icons.delete_forever_rounded, color: RaayColors.of(context).errorText, size: 18),
             label: Text(AppLocalizations.of(context).orgSetDelete,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: KivoraColors.of(context).errorText, fontWeight: FontWeight.bold)),
+                style: TextStyle(color: RaayColors.of(context).errorText, fontWeight: FontWeight.bold)),
             style: OutlinedButton.styleFrom(
               minimumSize: const Size.fromHeight(48),
-              side: BorderSide(color: KivoraColors.of(context).errorText),
+              side: BorderSide(color: RaayColors.of(context).errorText),
             ),
           ),
         ],
@@ -973,7 +973,7 @@ class _OrganizationSettingsScreenState extends ConsumerState<OrganizationSetting
           ),
           TextButton(
             style: TextButton.styleFrom(
-                minimumSize: const Size(48, 48), foregroundColor: KivoraColors.of(ctx).errorText),
+                minimumSize: const Size(48, 48), foregroundColor: RaayColors.of(ctx).errorText),
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(AppLocalizations.of(context).orgSetDelete),
           ),

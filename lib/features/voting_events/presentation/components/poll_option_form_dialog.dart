@@ -1,12 +1,12 @@
 import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kivora/core/theme/app_theme.dart';
-import 'package:kivora/core/theme/kivora_icons.dart';
-import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
-import 'package:kivora/core/widgets/ui_kit/kivora_text_field.dart';
+import 'package:raay/core/theme/app_theme.dart';
+import 'package:raay/core/theme/raay_icons.dart';
+import 'package:raay/core/widgets/ui_kit/raay_button.dart';
+import 'package:raay/core/widgets/ui_kit/raay_text_field.dart';
 
-import '../../../../core/theme/kivora_colors.dart';
+import '../../../../core/theme/raay_colors.dart';
 import '../../../../core/widgets/inline_error_banner.dart';
 import '../../data/poll_option_repository.dart';
 import '../../domain/poll_option.dart';
@@ -89,7 +89,7 @@ class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.sizeOf(context).width;
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -117,8 +117,8 @@ class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
                                   AppTheme.primaryBlue.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Icon(KivoraIcons.listChecks,
-                                color: KivoraColors.of(context).accentText,
+                            child: Icon(RaayIcons.listChecks,
+                                color: RaayColors.of(context).accentText,
                                 size: 20),
                           ),
                           const SizedBox(width: 12),
@@ -135,13 +135,13 @@ class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
                         ],
                       ),
                       IconButton(
-                        icon: const Icon(KivoraIcons.x, size: 20),
+                        icon: const Icon(RaayIcons.x, size: 20),
                         onPressed: () => Navigator.pop(context),
                       ),
                     ],
                   ),
                   const SizedBox(height: 20),
-                  KivoraTextField(
+                  RaayTextField(
                     controller: _labelCtrl,
                     label: AppLocalizations.of(context).pfLabel,
                     hint: AppLocalizations.of(context).pfLabelHint,
@@ -150,7 +150,7 @@ class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
                         : null,
                   ),
                   const SizedBox(height: 16),
-                  KivoraTextField(
+                  RaayTextField(
                     controller: _descCtrl,
                     label: AppLocalizations.of(context).pfDesc,
                     hint: AppLocalizations.of(context).pfDescHint,
@@ -164,8 +164,8 @@ class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
                   Row(
                     children: [
                       Expanded(
-                        child: KivoraButton(
-                          type: KivoraButtonType.secondary,
+                        child: RaayButton(
+                          type: RaayButtonType.secondary,
                           label: AppLocalizations.of(context).pfCancel,
                           onPressed:
                               _isLoading ? null : () => Navigator.pop(context),
@@ -173,7 +173,7 @@ class _PollOptionFormDialogState extends ConsumerState<PollOptionFormDialog> {
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: KivoraButton(
+                        child: RaayButton(
                           label: widget.existingOption == null
                               ? AppLocalizations.of(context).pfAdd
                               : AppLocalizations.of(context).pfSave,

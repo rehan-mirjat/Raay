@@ -1,4 +1,4 @@
-import { onCall } from "firebase-functions/v2/https";
+import { HttpsError, onCall } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
 import {
   CALLABLE_OPTIONS, ELIGIBILITY_TYPES, EVENT_STATUS, VOTING_TYPES,
@@ -15,7 +15,7 @@ export const createVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
   rejectUnknownKeys(data, [
     "organizationId", "title", "description", "votingType",
     "eligibilityType", "eligibilityDepartmentIds", "eligibilityUserIds",
-    "startAt", "endAt", "privacyMode",
+    "startAt", "endAt", "privacyMode", "ballotMode",
   ], "createVotingEvent");
 
   // ---- Input validation (no database access yet) ----
@@ -23,6 +23,10 @@ export const createVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
   const title = requiredString(data.title, "Title", 3, 100);
   const description = optionalString(data.description, "Description", 1000, { multiline: true });
   const votingType = oneOf(data.votingType, VOTING_TYPES, "votingType");
+  const ballotMode = data.ballotMode === undefined ? "SINGLE" : oneOf(data.ballotMode, ["SINGLE", "MULTI_CONTEST"] as const, "ballotMode");
+  if (ballotMode === "MULTI_CONTEST" && votingType !== "CANDIDATE_ELECTION") {
+    throw new HttpsError("invalid-argument", "Multi-contest mode requires a candidate election.");
+  }
   const eligibilityType = oneOf(data.eligibilityType, ELIGIBILITY_TYPES, "eligibilityType");
   const privacyMode = data.privacyMode === undefined || data.privacyMode === null
     ? "ANONYMOUS"
@@ -65,6 +69,8 @@ export const createVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
         title,
         description,
         votingType,
+        ballotMode,
+        ...(ballotMode === "MULTI_CONTEST" ? { contests: [] } : {}),
         privacyMode,
         maxSelections: 1, // V1: single selection contract
         eligibilityType,

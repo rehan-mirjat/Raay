@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
-import '../../../core/theme/kivora_icons.dart';
+import '../../../core/theme/raay_colors.dart';
+import '../../../core/theme/raay_icons.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/inline_error_banner.dart';
 import '../data/organization_repository.dart';
@@ -188,9 +188,9 @@ class _JoinOrganizationScreenState
               constraints: const BoxConstraints(maxWidth: 520),
               child: Container(
                 decoration: BoxDecoration(
-                  color: KivoraColors.surfaceOf(context),
+                  color: RaayColors.surfaceOf(context),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: KivoraColors.borderOf(context)),
+                  border: Border.all(color: RaayColors.borderOf(context)),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.04),
@@ -233,12 +233,12 @@ class _JoinOrganizationScreenState
                 child: Icon(
                   Icons.key_outlined,
                   size: 24,
-                  color: KivoraColors.of(context).accentText,
+                  color: RaayColors.of(context).accentText,
                 ),
               ),
               IconButton(
                 icon: Icon(Icons.close_rounded,
-                    color: KivoraColors.textSecondaryOf(context)),
+                    color: RaayColors.textSecondaryOf(context)),
                 tooltip: AppLocalizations.of(context).joClose,
                 onPressed: _handleCancel,
               ),
@@ -250,14 +250,14 @@ class _JoinOrganizationScreenState
             AppLocalizations.of(context).joTitle,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: KivoraColors.textPrimaryOf(context),
+                  color: RaayColors.textPrimaryOf(context),
                 ),
           ),
           const SizedBox(height: 8),
           Text(
             AppLocalizations.of(context).joSubtitle,
             style: TextStyle(
-                color: KivoraColors.textSecondaryOf(context),
+                color: RaayColors.textSecondaryOf(context),
                 fontSize: 14,
                 height: 1.4),
           ),
@@ -268,7 +268,7 @@ class _JoinOrganizationScreenState
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.bold,
-              color: KivoraColors.textPrimaryOf(context),
+              color: RaayColors.textPrimaryOf(context),
               letterSpacing: 0.5,
             ),
           ),
@@ -290,12 +290,12 @@ class _JoinOrganizationScreenState
           Text(
             AppLocalizations.of(context).joCodeHelp,
             style: TextStyle(
-                fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
+                fontSize: 12, color: RaayColors.textSecondaryOf(context)),
           ),
           const SizedBox(height: 12),
           TextButton.icon(
             onPressed: () => context.go('/orgs/join/scan'),
-            icon: const Icon(KivoraIcons.qrCode, size: 18),
+            icon: const Icon(RaayIcons.qrCode, size: 18),
             label: Text(AppLocalizations.of(context).joScan),
             style: TextButton.styleFrom(padding: EdgeInsets.zero),
           ),
@@ -312,7 +312,7 @@ class _JoinOrganizationScreenState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Icon(Icons.info_outline_rounded,
-                    color: KivoraColors.of(context).accentText, size: 18),
+                    color: RaayColors.of(context).accentText, size: 18),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(
@@ -323,14 +323,14 @@ class _JoinOrganizationScreenState
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
-                            color: KivoraColors.textPrimaryOf(context)),
+                            color: RaayColors.textPrimaryOf(context)),
                       ),
                       const SizedBox(height: 2),
                       Text(
                         AppLocalizations.of(context).joNoCodeBody,
                         style: TextStyle(
                             fontSize: 12,
-                            color: KivoraColors.textSecondaryOf(context),
+                            color: RaayColors.textSecondaryOf(context),
                             height: 1.4),
                       ),
                     ],
@@ -344,7 +344,7 @@ class _JoinOrganizationScreenState
           Text(
             AppLocalizations.of(context).joReviewNote,
             style: TextStyle(
-                fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
+                fontSize: 12, color: RaayColors.textSecondaryOf(context)),
           ),
 
           if (_error != null) ...[
@@ -401,12 +401,12 @@ class _JoinOrganizationScreenState
               child: Icon(
                 Icons.domain_verification_outlined,
                 size: 24,
-                color: KivoraColors.of(context).accentText,
+                color: RaayColors.of(context).accentText,
               ),
             ),
             IconButton(
               icon: Icon(Icons.close_rounded,
-                  color: KivoraColors.textSecondaryOf(context)),
+                  color: RaayColors.textSecondaryOf(context)),
               tooltip: AppLocalizations.of(context).joClose,
               onPressed: _handleCancel,
             ),
@@ -417,14 +417,14 @@ class _JoinOrganizationScreenState
           AppLocalizations.of(context).joConfirmTitle,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: KivoraColors.textPrimaryOf(context),
+                color: RaayColors.textPrimaryOf(context),
               ),
         ),
         const SizedBox(height: 8),
         Text(
           AppLocalizations.of(context).joConfirmBody,
           style: TextStyle(
-              color: KivoraColors.textSecondaryOf(context),
+              color: RaayColors.textSecondaryOf(context),
               fontSize: 14,
               height: 1.4),
         ),
@@ -432,9 +432,9 @@ class _JoinOrganizationScreenState
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: KivoraColors.backgroundOf(context),
+            color: RaayColors.backgroundOf(context),
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: KivoraColors.borderOf(context)),
+            border: Border.all(color: RaayColors.borderOf(context)),
           ),
           child: Row(
             children: [
@@ -446,7 +446,7 @@ class _JoinOrganizationScreenState
                     : null,
                 child: preview.logoUrl == null
                     ? Icon(Icons.business_outlined,
-                        color: KivoraColors.of(context).accentText)
+                        color: RaayColors.of(context).accentText)
                     : null,
               ),
               const SizedBox(width: 14),
@@ -459,7 +459,7 @@ class _JoinOrganizationScreenState
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: KivoraColors.textPrimaryOf(context)),
+                          color: RaayColors.textPrimaryOf(context)),
                     ),
                     const SizedBox(height: 4),
                     Row(
@@ -471,7 +471,7 @@ class _JoinOrganizationScreenState
                           size: 14,
                           color: preview.verified
                               ? AppTheme.success
-                              : KivoraColors.textSecondaryOf(context),
+                              : RaayColors.textSecondaryOf(context),
                         ),
                         const SizedBox(width: 4),
                         Text(
@@ -482,7 +482,7 @@ class _JoinOrganizationScreenState
                               fontSize: 12,
                               color: preview.verified
                                   ? AppTheme.success
-                                  : KivoraColors.textSecondaryOf(context)),
+                                  : RaayColors.textSecondaryOf(context)),
                         ),
                       ],
                     ),

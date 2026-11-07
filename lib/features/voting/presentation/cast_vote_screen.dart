@@ -1,3 +1,4 @@
+import '../../voting_events/presentation/components/multi_contest_ballot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +7,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../services/auth_service.dart';
@@ -51,6 +52,8 @@ class CastVoteScreen extends ConsumerStatefulWidget {
 enum _BallotStep { select, review }
 
 class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
+  bool _abstain = false;
+  final Map<String, String> _contestSelections = {};
   String? _selectedCandidateId;
   String? _selectedPollOptionId;
   String? _selectedChoiceName;
@@ -59,12 +62,21 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
   bool _isSubmitting = false;
   String? _errorMessage;
 
-  void _goToReview() {
-    if (_selectedCandidateId == null && _selectedPollOptionId == null) {
-      setState(() => _errorMessage = AppLocalizations.of(context).ballotSelectFirst);
+  bool _hasCompleteSelection(VotingEvent event) => (_abstain && event.allowAbstain) || (event.isMultiContest
+      ? event.contests.isNotEmpty && event.contests.every((c) => c.choices.any((choice) => choice.id == _contestSelections[c.id]))
+      : _selectedCandidateId != null || _selectedPollOptionId != null);
+
+  void _goToReview(VotingEvent event) {
+    if (!_hasCompleteSelection(event)) {
+      setState(() => _errorMessage = event.isMultiContest ? AppLocalizations.of(context).mcCompleteAll : AppLocalizations.of(context).ballotSelectFirst);
       return;
     }
     setState(() {
+      if (_abstain) {
+        _selectedChoiceName = AppLocalizations.of(context).ballotAbstain;
+      } else if (event.isMultiContest) {
+        _selectedChoiceName = event.contests.map((c) => '${c.title}: ${c.choices.firstWhere((choice) => choice.id == _contestSelections[c.id]).label}').join('\n');
+      }
       _errorMessage = null;
       _step = _BallotStep.review;
     });
@@ -72,7 +84,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
   Future<void> _submitBallot(VotingEvent event) async {
     if (_isSubmitting) return; // re-entry guard against rapid double-taps
-    if (_selectedCandidateId == null && _selectedPollOptionId == null) return;
+    if (!_hasCompleteSelection(event)) return;
 
     setState(() {
       _isSubmitting = true;
@@ -83,8 +95,10 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
       final receipt = await ref.read(votingRepositoryProvider).castVote(
             organizationId: event.organizationId,
             eventId: event.id,
-            candidateId: _selectedCandidateId,
-            pollOptionId: _selectedPollOptionId,
+            candidateId: _abstain ? null : _selectedCandidateId,
+            pollOptionId: _abstain ? null : _selectedPollOptionId,
+            abstain: _abstain,
+            contestSelections: event.isMultiContest && !_abstain ? Map.of(_contestSelections) : null,
           );
 
       if (mounted) {
@@ -154,9 +168,9 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
     final user = ref.watch(authServiceProvider).currentUser;
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: RaayColors.backgroundOf(context),
       appBar: AppBar(
-        backgroundColor: KivoraColors.backgroundOf(context),
+        backgroundColor: RaayColors.backgroundOf(context),
         title: Text(l10n.ballotTitle),
       ),
       body: eventAsync.when(
@@ -194,7 +208,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
   Widget _buildAlreadyVotedView(BuildContext context, VotingEvent event, String userId) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return SingleChildScrollView(
       padding: ResponsiveLayout.pagePadding(context),
       child: Center(
@@ -261,7 +275,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
   }
 
   Widget _banner(BuildContext context, {required IconData icon, required Color color, required String text}) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -288,7 +302,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
     // block the voter. The server transaction definitively accepts or rejects.
     final isWindowOpen = event.status == VotingEventStatus.active;
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final inReview = _step == _BallotStep.review;
     final pad = ResponsiveLayout.pagePadding(context);
 
@@ -304,6 +318,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _buildStepIndicator(context),
+                    if (event.quorumPercent != null)
+                      Text('${l10n.quorumLabel}: ${event.quorumPercent}%. ${l10n.quorumHint}'),
                     const SizedBox(height: 20),
                     if (!isWindowOpen) ...[
                       _banner(context,
@@ -379,12 +395,29 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                       Text(l10n.voteSelectionPrompt,
                           style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: kc.textSecondary)),
                       const SizedBox(height: 12),
-                      if (event.votingType == VotingType.candidateElection)
+                      if (event.isMultiContest) ...[
+                        Text(l10n.mcCompleteAll),
+                        MultiContestBallot(contests: event.contests, selections: _contestSelections,
+                          onChanged: (contestId, choiceId) => setState(() { _abstain = false; _contestSelections[contestId] = choiceId; _errorMessage = null; })),
+                      ] else if (event.votingType == VotingType.candidateElection)
                         _buildCandidateOptions(event)
                       else if (event.votingType == VotingType.yesNoPoll)
                         _buildYesNoOptions(event)
                       else
                         _buildPollOptions(event),
+                      if (event.allowAbstain)
+                        CheckboxListTile(
+                          value: _abstain,
+                          title: Text(l10n.ballotAbstain),
+                          subtitle: Text(l10n.ballotAbstainHint),
+                          onChanged: (value) => setState(() {
+                            _abstain = value == true;
+                            _selectedCandidateId = null;
+                            _selectedPollOptionId = null;
+                            _contestSelections.clear();
+                            _selectedChoiceName = null;
+                          }),
+                        ),
                     ] else
                       _buildReviewContent(context, event),
                   ],
@@ -401,7 +434,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
   /// Sticky bottom bar. The scroll view above sits in an Expanded, so the
   /// bar never covers content and moves above the keyboard / safe area.
   Widget _buildActionBar(BuildContext context, VotingEvent event, bool isWindowOpen) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     final inReview = _step == _BallotStep.review;
 
@@ -431,7 +464,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
             alignment: AlignmentDirectional.centerEnd,
             child: FilledButton.icon(
               style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
-              onPressed: !isWindowOpen ? null : _goToReview,
+              onPressed: !isWindowOpen ? null : () => _goToReview(event),
               icon: const Icon(Icons.arrow_forward_rounded, size: 18),
               label: Text(l10n.voteReviewBallot),
             ),
@@ -452,7 +485,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
   }
 
   Widget _buildStepIndicator(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     final isReview = _step == _BallotStep.review;
     final onPrimary = Theme.of(context).colorScheme.onPrimary;
@@ -498,7 +531,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
   }
 
   Widget _buildReviewContent(BuildContext context, VotingEvent event) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     final isIdentifiable = event.privacyMode == PrivacyMode.identifiable;
     final primary = Theme.of(context).colorScheme.primary;
@@ -543,7 +576,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
   }
 
   Widget _optionError(BuildContext context, String message, VoidCallback onRetry) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     return Column(children: [
       Text(message, style: TextStyle(color: kc.errorText)),
@@ -557,7 +590,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
   Widget _buildCandidateOptions(VotingEvent event) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final candidatesAsync = ref.watch(eventCandidatesProvider(event.id));
 
     return candidatesAsync.when(
@@ -575,6 +608,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                     ? '${l10n.ballotCandidate(cand.name)}, ${l10n.ballotSelectedSuffix}'
                     : l10n.ballotCandidate(cand.name),
                 onTap: () => setState(() {
+                  _abstain = false;
                   _selectedCandidateId = cand.id;
                   _selectedPollOptionId = null;
                   _selectedChoiceName = cand.name;
@@ -613,7 +647,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
   Widget _buildPollOptions(VotingEvent event) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final optionsAsync = ref.watch(eventPollOptionsProvider(event.id));
 
     return optionsAsync.when(
@@ -631,6 +665,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
                     ? '${l10n.ballotOption(opt.label)}, ${l10n.ballotSelectedSuffix}'
                     : l10n.ballotOption(opt.label),
                 onTap: () => setState(() {
+                  _abstain = false;
                   _selectedPollOptionId = opt.id;
                   _selectedCandidateId = null;
                   _selectedChoiceName = opt.label;
@@ -661,7 +696,7 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
 
   Widget _buildYesNoOptions(VotingEvent event) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Column(children: [
       _buildChoiceCard(
         id: '${event.id}_YES',
@@ -687,12 +722,13 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
     required IconData icon,
     required Color color,
   }) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final isSelected = _selectedPollOptionId == id;
     return _SelectableCard(
       isSelected: isSelected,
       semanticLabel: isSelected ? '$title, $subtitle, ${AppLocalizations.of(context).ballotSelectedSuffix}' : '$title, $subtitle',
       onTap: () => setState(() {
+        _abstain = false;
         _selectedPollOptionId = id;
         _selectedCandidateId = null;
         _selectedChoiceName = title;
@@ -732,7 +768,7 @@ class _RadioMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Icon(
       selected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
       color: selected ? kc.accentText : kc.textSecondary,
@@ -757,7 +793,7 @@ class _SelectableCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final primary = Theme.of(context).colorScheme.primary;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),

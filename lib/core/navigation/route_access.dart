@@ -8,16 +8,28 @@ enum RouteNeed { ownerOnly, manager }
 /// Longest-prefix rules. Paths not listed here need no organization role.
 const _rules = <(String, RouteNeed)>[
   ('/orgs/settings', RouteNeed.ownerOnly),
-  ('/plans', RouteNeed.ownerOnly),
+  ('/plans/legacy', RouteNeed.ownerOnly),
   ('/orgs/dashboard', RouteNeed.manager),
   ('/orgs/members', RouteNeed.manager),
   ('/orgs/departments', RouteNeed.manager),
   ('/orgs/audit', RouteNeed.manager),
+  ('/orgs/reports', RouteNeed.manager),
   ('/orgs/joining-codes', RouteNeed.manager),
+  ('/communications', RouteNeed.manager),
   ('/admin', RouteNeed.manager),
 ];
 
+/// Patterns for routes whose guarded segment is not a fixed prefix
+/// (e.g. `/elections/<id>/approvals`).
+final _patternRules = <(RegExp, RouteNeed)>[
+  (RegExp(r'^/elections/[^/]+/approvals(/|$)'), RouteNeed.manager),
+];
+
 RouteNeed? routeNeed(String location) {
+  final path = location.split('?').first;
+  for (final (pattern, need) in _patternRules) {
+    if (pattern.hasMatch(path)) return need;
+  }
   RouteNeed? best;
   var bestLen = -1;
   for (final (prefix, need) in _rules) {

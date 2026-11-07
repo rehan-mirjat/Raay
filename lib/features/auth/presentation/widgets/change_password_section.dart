@@ -6,7 +6,7 @@ import '../../../../core/utils/validators.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../services/auth_service.dart';
 import '../../../../core/utils/friendly_error.dart';
-import '../../../../core/theme/kivora_colors.dart';
+import '../../../../core/theme/raay_colors.dart';
 
 class ChangePasswordSection extends ConsumerStatefulWidget {
   const ChangePasswordSection({super.key});
@@ -102,13 +102,13 @@ class _ChangePasswordSectionState extends ConsumerState<ChangePasswordSection> {
                   child: Row(
                     children: [
                       Icon(Icons.check_circle_outline,
-                          color: KivoraColors.of(context).successText),
+                          color: RaayColors.of(context).successText),
                       const SizedBox(width: 12),
                       Expanded(
                           child: Text(_successMessage!,
                               style: TextStyle(
                                   color:
-                                      KivoraColors.of(context).successText))),
+                                      RaayColors.of(context).successText))),
                     ],
                   ),
                 ),
@@ -126,12 +126,12 @@ class _ChangePasswordSectionState extends ConsumerState<ChangePasswordSection> {
                   child: Row(
                     children: [
                       Icon(Icons.error_outline,
-                          color: KivoraColors.of(context).errorText),
+                          color: RaayColors.of(context).errorText),
                       const SizedBox(width: 12),
                       Expanded(
                           child: Text(_error!,
                               style: TextStyle(
-                                  color: KivoraColors.of(context).errorText))),
+                                  color: RaayColors.of(context).errorText))),
                     ],
                   ),
                 ),

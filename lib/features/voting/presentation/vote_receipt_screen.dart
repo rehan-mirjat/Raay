@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../domain/vote_receipt.dart';
 
@@ -24,7 +24,7 @@ class VoteReceiptScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final locale = Localizations.localeOf(context).toString();
     String time;
     try {
@@ -159,7 +159,7 @@ class _Note extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -195,7 +195,7 @@ class DetailTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

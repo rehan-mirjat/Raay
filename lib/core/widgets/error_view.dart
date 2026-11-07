@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../theme/app_theme.dart';
-import '../../core/theme/kivora_colors.dart';
+import '../../core/theme/raay_colors.dart';
 
 enum ErrorViewType {
   organizationRequired,
@@ -113,10 +113,10 @@ class ErrorView extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 520),
           child: Container(
             decoration: BoxDecoration(
-              color: KivoraColors.surfaceOf(context),
+              color: RaayColors.surfaceOf(context),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: KivoraColors.borderOf(context),
+                color: RaayColors.borderOf(context),
               ),
             ),
             child: Column(
@@ -161,7 +161,7 @@ class ErrorView extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: KivoraColors.textPrimaryOf(context),
+                          color: RaayColors.textPrimaryOf(context),
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -169,7 +169,7 @@ class ErrorView extends StatelessWidget {
                         message ?? '',
                         style: TextStyle(
                           fontSize: 14,
-                          color: KivoraColors.textSecondaryOf(context),
+                          color: RaayColors.textSecondaryOf(context),
                           height: 1.5,
                         ),
                       ),
@@ -177,12 +177,12 @@ class ErrorView extends StatelessWidget {
                   ),
                 ),
                 if (onRetry != null || onSecondaryAction != null) ...[
-                  Divider(height: 1, color: KivoraColors.borderOf(context)),
+                  Divider(height: 1, color: RaayColors.borderOf(context)),
                   Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 24, vertical: 16),
                     decoration: BoxDecoration(
-                      color: KivoraColors.surfaceOf(context),
+                      color: RaayColors.surfaceOf(context),
                       borderRadius: const BorderRadius.vertical(
                           bottom: Radius.circular(16)),
                     ),
@@ -198,9 +198,9 @@ class ErrorView extends StatelessWidget {
                             style: OutlinedButton.styleFrom(
                               minimumSize: const Size(48, 48),
                               foregroundColor:
-                                  KivoraColors.textSecondaryOf(context),
+                                  RaayColors.textSecondaryOf(context),
                               side: BorderSide(
-                                  color: KivoraColors.borderOf(context)),
+                                  color: RaayColors.borderOf(context)),
                             ),
                             child: Text(secondaryActionLabel!),
                           ),

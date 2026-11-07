@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/widgets/stat_tile.dart';
 import '../data/platform_providers.dart';
 import '../domain/platform_audit_entry.dart';
@@ -44,7 +44,7 @@ class PlatformOverviewScreen extends ConsumerWidget {
         ),
       ],
       builder: (context) {
-        final kc = KivoraColors.of(context);
+        final kc = RaayColors.of(context);
         final analytics = ref.watch(platformAnalyticsProvider);
         final reports = ref.watch(openReportCountProvider);
         final m = analytics.valueOrNull;
@@ -170,7 +170,7 @@ class _Alert extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -202,7 +202,7 @@ class _SectionError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return PlatformPanel(
       title: AppLocalizations.of(context).plUnavailable,
       child: Row(children: [
@@ -221,7 +221,7 @@ class _RecentActivity extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final entries = ref.watch(platformAuditProvider(5));
     final dir = ref.watch(platformDirectoryProvider).valueOrNull ??
         const PlatformDirectory();
@@ -249,7 +249,7 @@ class AuditEntryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final target = entry.organizationId != null
         ? directory.org(entry.organizationId!)
         : entry.targetUid != null

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import '../../features/voting_events/presentation/voter_portal_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kivora/core/theme/kivora_icons.dart';
+import 'package:raay/core/theme/raay_icons.dart';
 
 import '../theme/app_theme.dart';
-import '../theme/kivora_colors.dart';
-import '../widgets/ui_kit/kivora_button.dart';
-import '../widgets/ui_kit/kivora_card.dart';
+import '../theme/raay_colors.dart';
+import '../widgets/ui_kit/raay_button.dart';
+import '../widgets/ui_kit/raay_card.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../features/organizations/domain/organization_enums.dart';
@@ -32,12 +32,14 @@ class HomeScreen extends ConsumerWidget {
       ),
       data: (orgState) {
         final orgContext = orgState.context;
-        if (orgState.selectionState == ActiveOrgSelectionState.noOrganizations ||
+        if (orgState.selectionState ==
+                ActiveOrgSelectionState.noOrganizations ||
             orgContext == null) {
           return const _EmptyPlatformWelcome();
         }
         final role = orgContext.member.role;
-        final isAdmin = role == OrganizationRole.owner || role == OrganizationRole.admin;
+        final isAdmin =
+            role == OrganizationRole.owner || role == OrganizationRole.admin;
         // Voters land on their elections; owners/admins on the one Overview.
         if (!isAdmin) return const VoterPortalScreen(embedded: true);
         return AdminOverviewScreen(orgContext: orgContext);
@@ -51,11 +53,12 @@ class _EmptyPlatformWelcome extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final kc = KivoraColors.of(context);
+    final l10n = AppLocalizations.of(context);
+    final kc = RaayColors.of(context);
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 500),
-        child: KivoraCard(
+        child: RaayCard(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -65,12 +68,12 @@ class _EmptyPlatformWelcome extends ConsumerWidget {
                   color: AppTheme.primaryBlue.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(KivoraIcons.building2,
-                    size: 48, color: KivoraColors.of(context).accentText),
+                child: Icon(RaayIcons.building2,
+                    size: 48, color: RaayColors.of(context).accentText),
               ),
               const SizedBox(height: 24),
               Text(
-                'Welcome to Kivora',
+                l10n.homeNoOrgTitle,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
@@ -80,7 +83,7 @@ class _EmptyPlatformWelcome extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                'You are not currently a member of any organization. Join an existing workspace or create a new one to begin participating in secure elections.',
+                l10n.homeNoOrgBody,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
@@ -89,16 +92,16 @@ class _EmptyPlatformWelcome extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 32),
-              KivoraButton(
-                icon: KivoraIcons.plus,
-                label: 'Create Organization',
+              RaayButton(
+                icon: RaayIcons.plus,
+                label: l10n.homeCreateOrg,
                 onPressed: () => context.go('/orgs/create'),
               ),
               const SizedBox(height: 12),
-              KivoraButton(
-                type: KivoraButtonType.secondary,
-                icon: KivoraIcons.logIn,
-                label: 'Join via Code',
+              RaayButton(
+                type: RaayButtonType.secondary,
+                icon: RaayIcons.logIn,
+                label: l10n.homeJoinByCode,
                 onPressed: () => context.go('/orgs/join'),
               ),
             ],

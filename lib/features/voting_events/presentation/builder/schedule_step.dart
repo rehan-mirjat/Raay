@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/theme/kivora_colors.dart';
+import '../../../../core/theme/raay_colors.dart';
 import '../../domain/voting_event.dart';
 import '../providers/draft_event_provider.dart';
 
@@ -118,7 +118,7 @@ class _ScheduleStepState extends ConsumerState<ScheduleStep> {
     final format = DateFormat('MMM d, yyyy - h:mm a');
     final isDraft = ref.watch(draftEventProvider(widget.orgId)).status ==
         VotingEventStatus.draft;
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final offset = DateTime.now().timeZoneOffset;
     final sign = offset.isNegative ? '-' : '+';
     final zone =
@@ -156,7 +156,7 @@ class _ScheduleStepState extends ConsumerState<ScheduleStep> {
                   : AppLocalizations.of(context).scNotSet,
               style: TextStyle(
                   color: _startAt != null
-                      ? KivoraColors.textPrimaryOf(context)
+                      ? RaayColors.textPrimaryOf(context)
                       : kc.errorText)),
           trailing: const Icon(Icons.calendar_today),
           onTap: isDraft ? () => _pickDateTime(true) : null,
@@ -174,7 +174,7 @@ class _ScheduleStepState extends ConsumerState<ScheduleStep> {
                   : AppLocalizations.of(context).scNotSet,
               style: TextStyle(
                   color: _endAt != null
-                      ? KivoraColors.textPrimaryOf(context)
+                      ? RaayColors.textPrimaryOf(context)
                       : kc.errorText)),
           trailing: const Icon(Icons.calendar_today),
           onTap: isDraft ? () => _pickDateTime(false) : null,

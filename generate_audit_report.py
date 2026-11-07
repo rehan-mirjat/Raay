@@ -6,7 +6,7 @@ def create_report():
     doc = docx.Document()
     
     # Title
-    title = doc.add_heading('Kivora Secure e-Voting Platform', 0)
+    title = doc.add_heading('raay Secure e-Voting Platform', 0)
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     subtitle = doc.add_heading('Complete Project Logic, Frontend, & Security Audit', 1)
     subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -17,7 +17,7 @@ def create_report():
     # 1. Executive Summary
     doc.add_heading('1. Executive Summary', level=1)
     doc.add_paragraph(
-        "This read-only audit evaluates the current state of the Kivora Secure e-Voting Platform. "
+        "This read-only audit evaluates the current state of the raay Secure e-Voting Platform. "
         "The project demonstrates a robust, server-authoritative security model using Firebase Cloud Functions "
         "and strict Firestore rules. The frontend utilizes a modern Flutter stack (Riverpod, go_router) with a "
         "feature-driven architecture.\n\n"
@@ -71,7 +71,7 @@ def create_report():
         ("Splash Screen", "lib/core/presentation/splash_screen.dart", "Functional, standard.", "Low"),
         ("Onboarding Screen", "lib/features/onboarding/...", "Functional, standard.", "Low"),
         ("Landing Page", "lib/features/landing/...", "Functional, standard.", "Low"),
-        ("Login & Register", "lib/features/auth/...", "Premium UI Implemented (Split Layout, Kivora Kit).", "Complete"),
+        ("Login & Register", "lib/features/auth/...", "Premium UI Implemented (Split Layout, raay Kit).", "Complete"),
         ("Home Dashboard", "lib/core/presentation/home_screen.dart", "Functional but uses generic Material 3 UI. Lacks premium grid/charts.", "High"),
         ("AppNavigationShell", "lib/core/presentation/...", "Premium UI Implemented (Responsive Sidebar/BottomNav).", "Complete"),
         ("Org Dashboard", "lib/features/organizations/...", "Functional, generic lists. Needs multi-column layout.", "High"),
@@ -99,7 +99,7 @@ def create_report():
     doc.add_paragraph("Desktop UI/UX: The newly refactored AppNavigationShell successfully implements a premium collapsible sidebar and top-bar. However, the inner dashboards (Home, Org) fail to utilize horizontal space, resulting in stretched list views instead of advanced multi-panel grids.")
     doc.add_paragraph("Android UI/UX: The floating bottom navigation works perfectly. Forms in the Auth flow are responsive. Touch targets are adequate, but haptic feedback and micro-interactions (e.g., Lucide icon animations) are missing.")
     doc.add_paragraph("Tablet: Tablet currently defaults to stretched mobile views or cramped desktop views. Breakpoints in ResponsiveLayout require dedicated tablet (600px-1024px) handling for dual-pane layouts.")
-    doc.add_paragraph("Theming: KivoraColors and AppTheme successfully manage Dark/Light modes, but legacy screens still contain hardcoded Colors.* references that break in Dark Mode.")
+    doc.add_paragraph("Theming: raayColors and AppTheme successfully manage Dark/Light modes, but legacy screens still contain hardcoded Colors.* references that break in Dark Mode.")
 
     # 9. Feature Gap Matrix
     doc.add_heading('7. Feature Gap Matrix', level=1)
@@ -139,7 +139,7 @@ def create_report():
     # 14. Prioritized Implementation Roadmap
     doc.add_heading('10. Prioritized Implementation Roadmap', level=1)
     doc.add_paragraph("Phase 1: Complete Premium UI Refactoring (Priority: Critical)\n"
-                      "  - Refactor HomeScreen, OrganizationListScreen, and OrganizationDashboardScreen using KivoraCard, KivoraMetricCard, and FlChart grids.\n"
+                      "  - Refactor HomeScreen, OrganizationListScreen, and OrganizationDashboardScreen using raayCard, raayMetricCard, and FlChart grids.\n"
                       "Phase 2: Election Management Engine (Priority: High)\n"
                       "  - Build CSV Bulk Import tool and Event Templates.\n"
                       "Phase 3: Public Verifiability (Priority: High)\n"
@@ -148,7 +148,7 @@ def create_report():
                       "  - Replace Stream.periodic with real-time snapshots, fix hardcoded colors, add widget tests.")
 
     # Save
-    doc.save('artifacts/Kivora_Complete_Project_Logic_Frontend_Security_Audit.docx')
+    doc.save('artifacts/raay_Complete_Project_Logic_Frontend_Security_Audit.docx')
     print("DOCX successfully generated.")
 
 if __name__ == "__main__":

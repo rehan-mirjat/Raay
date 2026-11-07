@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/layout/responsive.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/theme/kivora_colors.dart';
+import '../../../../core/theme/raay_colors.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/loading_view.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -61,6 +61,11 @@ class AdminEventDashboardScreen extends ConsumerStatefulWidget {
 class _AdminEventDashboardScreenState extends ConsumerState<AdminEventDashboardScreen> {
   EventFilter _filter = EventFilter.all;
   String _searchQuery = '';
+  String? _organizationId;
+  EventCursor? _after;
+  final List<EventCursor?> _history = [];
+
+  void _resetPage() { _after = null; _history.clear(); }
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +83,7 @@ class _AdminEventDashboardScreenState extends ConsumerState<AdminEventDashboardS
     }
 
     final orgId = orgContext.organization.id;
+    if (_organizationId != orgId) { _organizationId = orgId; _resetPage(); _filter = EventFilter.all; _searchQuery = ''; }
 
     if (orgContext.organization.status == OrganizationStatus.suspended) {
       return Scaffold(
@@ -97,7 +103,7 @@ class _AdminEventDashboardScreenState extends ConsumerState<AdminEventDashboardS
     // Stable provider: the stream is not recreated on rebuild, so typing in the
     // search box never flashes the loading state.
     final eventsAsync =
-        ref.watch(organizationVotingEventsProvider((orgId: orgId, includeDrafts: true)));
+        ref.watch(organizationEventPageProvider((orgId: orgId, includeDrafts: true, status: _filter.status?.name.toUpperCase(), after: _after, size: 50)));
     final lifecycleState = ref.watch(eventLifecycleProvider);
 
     ref.listen<EventLifecycleState>(eventLifecycleProvider, (prev, next) {
@@ -107,7 +113,7 @@ class _AdminEventDashboardScreenState extends ConsumerState<AdminEventDashboardS
     });
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: RaayColors.backgroundOf(context),
       body: Stack(
         children: [
           eventsAsync.when(
@@ -115,14 +121,14 @@ class _AdminEventDashboardScreenState extends ConsumerState<AdminEventDashboardS
             error: (_, __) => ErrorView(
               type: ErrorViewType.generic,
               message: l10n.adminLoadError,
-              onRetry: () => ref.invalidate(organizationVotingEventsProvider),
+              onRetry: () => ref.invalidate(organizationEventPageProvider),
             ),
-            data: (events) => _buildBody(context, l10n, events),
+            data: (page) => _buildBody(context, l10n, page),
           ),
           if (lifecycleState.isLoading)
             Positioned.fill(
               child: ColoredBox(
-                color: KivoraColors.backgroundOf(context).withValues(alpha: 0.8),
+                color: RaayColors.backgroundOf(context).withValues(alpha: 0.8),
                 child: LoadingView(message: l10n.adminProcessing),
               ),
             ),
@@ -131,8 +137,9 @@ class _AdminEventDashboardScreenState extends ConsumerState<AdminEventDashboardS
     );
   }
 
-  Widget _buildBody(BuildContext context, AppLocalizations l10n, List<VotingEvent> events) {
-    final kc = KivoraColors.of(context);
+  Widget _buildBody(BuildContext context, AppLocalizations l10n, EventPage page) {
+    final events = page.events;
+    final kc = RaayColors.of(context);
     final isDesktop = ResponsiveLayout.isWide(context);
     final filtered = filterEvents(events, _filter, _searchQuery);
 
@@ -178,7 +185,7 @@ class _AdminEventDashboardScreenState extends ConsumerState<AdminEventDashboardS
     );
 
     final List<Widget> content;
-    if (events.isEmpty) {
+    if (events.isEmpty && _filter == EventFilter.all && _searchQuery.isEmpty && _after == null) {
       content = [_EmptyState(l10n: l10n)];
     } else {
       content = [
@@ -208,7 +215,13 @@ class _AdminEventDashboardScreenState extends ConsumerState<AdminEventDashboardS
           constraints: const BoxConstraints(maxWidth: ResponsiveLayout.maxContentWidth),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [header, const SizedBox(height: 24), ...content],
+            children: [header, const SizedBox(height: 24), ...content,
+              const SizedBox(height: 20), Text(l10n.eventPageScope), const SizedBox(height: 12),
+              Wrap(spacing: 12, runSpacing: 8, children: [
+                OutlinedButton(onPressed: _history.isEmpty ? null : () => setState(() { _after = _history.removeLast(); }), child: Text(l10n.orgReportPrevious)),
+                OutlinedButton(onPressed: !page.hasMore || page.next == null ? null : () => setState(() { _history.add(_after); _after = page.next; }), child: Text(l10n.orgReportNext)),
+              ]),
+            ],
           ),
         ),
       ),
@@ -217,6 +230,7 @@ class _AdminEventDashboardScreenState extends ConsumerState<AdminEventDashboardS
 
   Widget _filters(BuildContext context, AppLocalizations l10n, List<VotingEvent> events) {
     final search = TextField(
+      key: ValueKey('event-search-$_organizationId'),
       onChanged: (v) => setState(() => _searchQuery = v),
       decoration: InputDecoration(
         hintText: l10n.adminSearchEvents,
@@ -232,9 +246,9 @@ class _AdminEventDashboardScreenState extends ConsumerState<AdminEventDashboardS
             materialTapTargetSize: MaterialTapTargetSize.padded,
             showCheckmark: true,
             label: Text(
-                '${f.label(l10n)} ${f == EventFilter.all ? events.length : events.where((e) => e.status == f.status).length}'),
+                f.label(l10n)),
             selected: _filter == f,
-            onSelected: (_) => setState(() => _filter = f),
+            onSelected: (_) => setState(() { _filter = f; _resetPage(); }),
           ),
       ],
     );
@@ -259,7 +273,7 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final steps = [
       (Icons.tune_rounded, l10n.adminGuideTitle1, l10n.adminGuideBody1),
       (Icons.people_outline_rounded, l10n.adminGuideTitle2, l10n.adminGuideBody2),

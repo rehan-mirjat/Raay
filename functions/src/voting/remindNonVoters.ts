@@ -40,7 +40,7 @@ export const remindNonVoters = onCall(CALLABLE_OPTIONS, async (request) => {
   await enforceRateLimit(db, eventId, "remindNonVoters", 3, 60 * 60 * 1000);
 
   const [eligibleMembers, participationSnap] = await Promise.all([
-    getEligibleMembers(db, organizationId, event),
+    getEligibleMembers(db, organizationId, eventId, event),
     db.collection("participation")
       .where("organizationId", "==", organizationId)
       .where("votingEventId", "==", eventId)
@@ -53,7 +53,7 @@ export const remindNonVoters = onCall(CALLABLE_OPTIONS, async (request) => {
     if (typeof data.userId === "string") votedUserIds.add(data.userId);
   });
 
-  const nonVoters = eligibleMembers.filter((m) => !votedUserIds.has(m.userId));
+  const nonVoters = eligibleMembers.filter((m) => m.active !== false && !votedUserIds.has(m.userId));
   if (nonVoters.length === 0) {
     return { status: "success", remindedCount: 0 };
   }

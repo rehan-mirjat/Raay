@@ -6,8 +6,8 @@ import 'package:intl/intl.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
-import '../../../core/theme/kivora_icons.dart';
+import '../../../core/theme/raay_colors.dart';
+import '../../../core/theme/raay_icons.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
@@ -28,7 +28,7 @@ class ObserverDashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final orgState = ref.watch(activeOrganizationContextProvider);
 
     return Scaffold(
@@ -56,14 +56,14 @@ class ObserverDashboardScreen extends ConsumerWidget {
           final orgContext = state.context;
           if (orgContext == null) {
             return EmptyView(
-              icon: KivoraIcons.building,
+              icon: RaayIcons.building,
               title: AppLocalizations.of(context).obNoOrgTitle,
               message: AppLocalizations.of(context).obNoOrgBody,
             );
           }
           if (!orgContext.member.isObserver) {
             return EmptyView(
-              icon: KivoraIcons.lock,
+              icon: RaayIcons.lock,
               title: AppLocalizations.of(context).obAccessTitle,
               message: AppLocalizations.of(context).obAccessBody,
             );
@@ -91,7 +91,7 @@ class ObserverDashboardScreen extends ConsumerWidget {
 
               if (sorted.isEmpty) {
                 return EmptyView(
-                  icon: KivoraIcons.vote,
+                  icon: RaayIcons.vote,
                   title: AppLocalizations.of(context).obNoElectionsTitle,
                   message: AppLocalizations.of(context).obNoElectionsBody,
                 );
@@ -115,7 +115,7 @@ class ObserverDashboardScreen extends ConsumerWidget {
                           child: Row(
                             children: [
                               Icon(Icons.visibility_outlined,
-                                  color: KivoraColors.of(context).accentText),
+                                  color: RaayColors.of(context).accentText),
                               const SizedBox(width: 10),
                               Expanded(
                                 child: Text(
@@ -165,7 +165,7 @@ class _ObserverEventTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final summaryAsync = ref.watch(eventMonitoringSummaryProvider(event.id));
 
     return Container(
@@ -215,7 +215,7 @@ class _ObserverEventTile extends ConsumerWidget {
                       value: eligible == 0 ? 0 : (voted / eligible).clamp(0, 1),
                       minHeight: 6,
                       backgroundColor: kc.border,
-                      color: KivoraColors.of(context).successText,
+                      color: RaayColors.of(context).successText,
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -241,7 +241,7 @@ class _TimelineTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final format = DateFormat('MMM d, yyyy');
     final isResultsAvailable = event.status == VotingEventStatus.closed ||
         event.status == VotingEventStatus.archived;

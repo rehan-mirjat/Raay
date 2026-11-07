@@ -13,13 +13,32 @@ class ElectionResults {
     required this.eligible,
     required this.turnout,
     required this.published,
-  });
+    this.contests = const [],
+    this.abstentionCount = 0,
+    int? validVotes,
+    this.quorumPercent,
+    this.quorumMet,
+  }) : validVotes = validVotes ?? total;
 
+  final int abstentionCount;
+  final int validVotes;
+  final int? quorumPercent;
+  final bool? quorumMet;
+  Outcome? get outcome => quorumMet == false ? null : outcomeFor(rows, validVotes);
+
+  final List<ContestResult> contests;
   final List<ResultRow> rows;
   final int total;
   final int eligible;
   final double turnout;
   final bool published;
+}
+
+class ContestResult {
+  const ContestResult({required this.id, required this.title, required this.results});
+  final String id;
+  final String title;
+  final ElectionResults results;
 }
 
 num? _num(Object? v) => v is num ? v : null;
@@ -37,7 +56,19 @@ ElectionResults parseElectionResults(Map<String, dynamic> data) {
       percent: (_num(v['percent'])?.toDouble() ?? 0).clamp(0, 100).toDouble(),
     );
   }).toList();
+  final rawContests = data['contests'];
+  final contests = (rawContests is List ? rawContests : const []).whereType<Map>().map((raw) {
+    final item = Map<String, dynamic>.from(raw);
+    return ContestResult(id: item['contestId']?.toString() ?? '', title: item['title']?.toString() ?? '', results: parseElectionResults({
+      ...item, 'quorumMet': data['quorumMet'], 'quorumPercent': data['quorumPercent'], 'contests': const [], 'eligibleCount': data['eligibleCount'], 'turnoutPercent': data['turnoutPercent'], 'published': data['published'],
+    }));
+  }).toList();
   return ElectionResults(
+    contests: contests,
+    abstentionCount: _num(data['abstentionCount'])?.toInt() ?? 0,
+    validVotes: _num(data['validVotes'])?.toInt(),
+    quorumPercent: _num(data['quorumPercent'])?.toInt(),
+    quorumMet: data['quorumMet'] is bool ? data['quorumMet'] as bool : null,
     rows: rows,
     total: _num(data['totalVotes'])?.toInt() ?? 0,
     eligible: _num(data['eligibleCount'] ?? data['eligibleVoterCount'])?.toInt() ?? 0,
@@ -78,12 +109,22 @@ String resultsCsv({
   final b = StringBuffer()
     ..writeln('Election Title,${csvCell(title)}')
     ..writeln('Ballots Counted,${results.total}')
+    ..writeln('Valid Choice Ballots,${results.validVotes}')
+    ..writeln('Abstentions,${results.abstentionCount}')
+    ..writeln('Quorum Percent,${results.quorumPercent ?? 'Disabled'}')
+    ..writeln('Quorum Met,${results.quorumMet ?? 'Not required'}')
+    ..writeln('Percentage Basis,Valid choice ballots excluding abstentions')
     ..writeln('Eligible Voters,${results.eligible}')
     ..writeln('Turnout,${results.turnout.toStringAsFixed(1)}%')
     ..writeln()
-    ..writeln('Choice / Option,Votes,Percentage');
+    ..writeln(results.contests.isEmpty ? 'Choice / Option,Votes,Percentage' : 'Contest,Choice / Option,Votes,Percentage');
   for (final r in results.rows) {
     b.writeln('${csvCell(r.name)},${r.votes},${r.percent.toStringAsFixed(2)}%');
+  }
+  for (final contest in results.contests) {
+    for (final row in contest.results.rows) {
+      b.writeln('${csvCell(contest.title)},${csvCell(row.name)},${row.votes},${row.percent.toStringAsFixed(2)}%');
+    }
   }
   return b.toString();
 }

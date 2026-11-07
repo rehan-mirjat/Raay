@@ -17,13 +17,15 @@ import 'core/router/app_router.dart';
 import 'core/deep_link/deep_link_handler.dart';
 import 'core/presentation/session_lock_screen.dart';
 import 'core/presentation/splash_screen.dart';
-import 'core/theme/kivora_colors.dart';
+import 'core/theme/raay_colors.dart';
 import 'core/session/session_lock_provider.dart';
 import 'features/organizations/presentation/providers/organization_providers.dart';
 import 'features/onboarding/providers/onboarding_providers.dart';
 import 'firebase_options.dart';
 import 'services/auth_service.dart';
 import 'services/firebase_service.dart';
+import 'services/app_check_service.dart';
+import 'core/updates/app_update_gate.dart';
 
 import 'core/theme/fallback_localizations.dart';
 
@@ -47,10 +49,11 @@ Future<void> main() async {
       await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     }
     await FirebaseService.initialize();
+    await AppCheckService.initialize(emulator: FirebaseService.isEmulatorMode);
     await _initCrashlytics();
   } catch (e) {
     debugPrint('Startup failed: $e');
-    initError = 'Kivora could not start. Check your connection and try again.';
+    initError = 'Raay could not start. Check your connection and try again.';
   }
 
   final prefs = await SharedPreferences.getInstance();
@@ -135,6 +138,7 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
         await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
       }
       await FirebaseService.initialize();
+      await AppCheckService.initialize(emulator: FirebaseService.isEmulatorMode);
       await _initCrashlytics();
       _deepLinkHandler ??= DeepLinkHandler(ref)..start();
       setState(() {
@@ -143,7 +147,7 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
     } catch (e) {
       setState(() {
         debugPrint('Retry failed: $e');
-        _initError = 'Kivora could not start. Check your connection and try again.';
+        _initError = 'Raay could not start. Check your connection and try again.';
         _isRetrying = false;
       });
     }
@@ -153,7 +157,7 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
   Widget build(BuildContext context) {
     if (_initError != null || _isRetrying) {
       return MaterialApp(
-        title: 'Kivora',
+        title: 'Raay',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
@@ -188,7 +192,7 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
     }
 
     return MaterialApp.router(
-      title: 'Kivora',
+      title: 'Raay',
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
       darkTheme: darkTheme,
@@ -221,7 +225,8 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
             child: content,
           );
         }
-        return ColoredBox(color: KivoraColors.backgroundOf(context), child: content);
+        return ColoredBox(color: RaayColors.backgroundOf(context),
+            child: AppUpdateGate(child: content));
       },
     );
   }
@@ -233,7 +238,7 @@ class UnsupportedPlatformApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Kivora',
+      title: 'Raay',
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(

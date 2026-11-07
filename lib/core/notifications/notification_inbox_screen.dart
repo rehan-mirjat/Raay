@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/layout/responsive.dart';
-import '../../core/theme/kivora_colors.dart';
+import '../../core/theme/raay_colors.dart';
 import '../../core/utils/date_text.dart';
 import '../../core/widgets/error_view.dart';
 import '../../core/widgets/loading_view.dart';
@@ -28,7 +28,7 @@ class _NotificationInboxScreenState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final inbox = ref.watch(notificationInboxProvider(_limit));
     final wide = ResponsiveLayout.isWide(context);
 
@@ -178,7 +178,7 @@ class _NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Material(
       color: kc.surface,
       borderRadius: BorderRadius.circular(16),

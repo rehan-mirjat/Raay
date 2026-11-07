@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../core/widgets/status_badge.dart';
@@ -61,7 +61,7 @@ class OrganizationListScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: RaayColors.backgroundOf(context),
       bottomNavigationBar: const AdBanner(),
       body: body,
     );
@@ -76,7 +76,7 @@ class _OrgGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final isDesktop = ResponsiveLayout.isWide(context);
 
     return SingleChildScrollView(
@@ -180,7 +180,7 @@ class OrgCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     final primary = Theme.of(context).colorScheme.primary;
 
@@ -272,7 +272,7 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     return Center(
       child: SingleChildScrollView(

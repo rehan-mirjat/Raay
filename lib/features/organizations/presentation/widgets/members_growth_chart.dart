@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/theme/kivora_colors.dart';
+import '../../../../core/theme/raay_colors.dart';
 import '../../domain/member_growth_point.dart';
 import '../providers/organization_providers.dart';
 
@@ -25,9 +25,9 @@ class MembersGrowthChart extends ConsumerWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
+        color: RaayColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: KivoraColors.borderOf(context)),
+        border: Border.all(color: RaayColors.borderOf(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,10 +41,10 @@ class MembersGrowthChart extends ConsumerWidget {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
-                      color: KivoraColors.textPrimaryOf(context))),
+                      color: RaayColors.textPrimaryOf(context))),
               Text('Last 30 days',
                   style: TextStyle(
-                      fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
+                      fontSize: 12, color: RaayColors.textSecondaryOf(context))),
             ],
           ),
           const SizedBox(height: 16),
@@ -60,7 +60,7 @@ class MembersGrowthChart extends ConsumerWidget {
                   child: Text('Could not load growth data',
                       style: TextStyle(
                           fontSize: 14,
-                          color: KivoraColors.textSecondaryOf(context)))),
+                          color: RaayColors.textSecondaryOf(context)))),
               data: (points) => _buildChart(context, points),
             ),
           ),
@@ -76,7 +76,7 @@ class MembersGrowthChart extends ConsumerWidget {
           'Not enough data yet - check back after a few days.',
           textAlign: TextAlign.center,
           style: TextStyle(
-              fontSize: 14, color: KivoraColors.textSecondaryOf(context)),
+              fontSize: 14, color: RaayColors.textSecondaryOf(context)),
         ),
       );
     }
@@ -97,7 +97,7 @@ class MembersGrowthChart extends ConsumerWidget {
           drawVerticalLine: false,
           horizontalInterval: (maxY <= 0 ? 10 : maxY * 1.2) / 4,
           getDrawingHorizontalLine: (_) => FlLine(
-            color: KivoraColors.borderOf(context),
+            color: RaayColors.borderOf(context),
             strokeWidth: 1,
           ),
         ),
@@ -110,7 +110,7 @@ class MembersGrowthChart extends ConsumerWidget {
               getTitlesWidget: (value, meta) => Text(
                 value.toInt().toString(),
                 style: TextStyle(
-                    fontSize: 10, color: KivoraColors.textSecondaryOf(context)),
+                    fontSize: 10, color: RaayColors.textSecondaryOf(context)),
               ),
             ),
           ),
@@ -129,7 +129,7 @@ class MembersGrowthChart extends ConsumerWidget {
                   child: Text(
                     format.format(points[i].date),
                     style: TextStyle(
-                        fontSize: 10, color: KivoraColors.textSecondaryOf(context)),
+                        fontSize: 10, color: RaayColors.textSecondaryOf(context)),
                   ),
                 );
               },

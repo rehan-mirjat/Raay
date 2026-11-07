@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/layout/responsive.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/theme/kivora_colors.dart';
+import '../../../../core/theme/raay_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class AuthSplitLayout extends StatelessWidget {
@@ -27,6 +27,7 @@ class AuthSplitLayout extends StatelessWidget {
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 leading: IconButton(
+                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
                   icon: Icon(Icons.arrow_back,
                       color: isDark
                           ? AppTheme.darkTextPrimary
@@ -45,11 +46,8 @@ class AuthSplitLayout extends StatelessWidget {
                   child: Text(
                     AppLocalizations.of(context).authTagline,
                     style: TextStyle(
-                        color: (isDark
-                                ? AppTheme.darkTextSecondary
-                                : AppTheme.darkTextSecondary)
-                            .withValues(alpha: isDark ? 0.5 : 0.4),
-                        fontSize: 10),
+                        color: RaayColors.of(context).textSecondary,
+                        fontSize: 11),
                   ),
                 ),
               ],
@@ -132,7 +130,7 @@ class AuthSplitLayout extends StatelessWidget {
                                       ),
                                       const SizedBox(width: 14),
                                       const Text(
-                                        'Kivora',
+                                        'Raay',
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 22,
@@ -268,7 +266,7 @@ class AuthSplitLayout extends StatelessWidget {
             child: Container(
               color: isDark
                   ? AppTheme.darkBackground
-                  : KivoraColors.backgroundOf(context),
+                  : RaayColors.backgroundOf(context),
               child: child,
             ),
           ),

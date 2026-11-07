@@ -89,6 +89,13 @@ service cloud.firestore {
     // USERS
     // =========================
 
+    // Public, non-sensitive update metadata. Console/Admin SDK only writes.
+    // Clients cannot enumerate release documents or change update requirements.
+    match /appReleases/{platform} {
+      allow get: if platform in ['android', 'ios'];
+      allow list, create, update, delete: if false;
+    }
+
     match /users/{userId} {
 
       allow read: if signedIn() && request.auth.uid == userId;
@@ -142,6 +149,13 @@ service cloud.firestore {
     match /organizations/{organizationId}/memberGrowthSnapshots/{date} {
       allow read: if isPlatformAdmin() || isActiveMember(organizationId);
       allow create, update, delete: if false;
+    }
+
+    // Organization-shared event templates are accessed only through the
+    // manageEventTemplates callable so role checks, field allowlists and audit
+    // logging cannot be bypassed with direct client reads or writes.
+    match /organizations/{organizationId}/eventTemplates/{templateId} {
+      allow read, create, update, delete: if false;
     }
 
     // Minimal public projection for join flow / verification-status screen.
@@ -209,6 +223,24 @@ service cloud.firestore {
     // VOTING EVENTS
     // =========================
 
+    match /nominationRounds/{roundId} {
+      allow read: if isActiveMember(resource.data.organizationId) && orgOperational(resource.data.organizationId);
+      allow write: if false;
+    }
+    match /electionApprovals/{approvalId} {
+      allow read: if isOwnerOrAdmin(resource.data.organizationId) && orgOperational(resource.data.organizationId);
+      allow write: if false;
+    }
+    match /communicationJobs/{jobId} {
+      allow read: if isOwnerOrAdmin(resource.data.organizationId) && orgOperational(resource.data.organizationId);
+      allow write: if false;
+    }
+    match /nominationApplications/{applicationId} {
+      allow read: if signedIn() && isActiveMember(resource.data.organizationId)
+        && orgOperational(resource.data.organizationId)
+        && (resource.data.userId == request.auth.uid || isOwnerOrAdmin(resource.data.organizationId));
+      allow write: if false;
+    }
     match /votingEvents/{eventId} {
       allow read: if canSeeEvent(resource.data.organizationId, resource.data.status);
       allow create, update, delete: if false;   // via functions
@@ -289,20 +321,20 @@ service cloud.firestore {
 
     match /eventResults/{eventId} {
 
-      // FIX: `resource` is null for a document that doesn't exist yet (the
-      // normal state right after an event closes, before an admin has
-      // triggered calculateResults) - referencing resource.data.X without
-      // this guard throws inside the rule and denies the read for EVERYONE,
-      // admins included, with no recovery path in the client. There is
-      // nothing to leak from a nonexistent document, so this branch is safe
-      // to allow for any signed-in user.
-      //
-      // Owners/Admins may review after closure (document only exists then).
-      // Members only see results once published.
+      // Before calculation, only the event's active Owner/Admin may observe
+      // the missing-document state. Allowing every signed-in user to read a
+      // missing result but denying an existing unpublished result reveals
+      // whether calculation has happened.
+      // Owners/Admins may review after closure; members only see published
+      // results.
       allow read: if signedIn()
-        && (resource == null
-            || isOwnerOrAdmin(resource.data.organizationId)
-            || (isActiveMember(resource.data.organizationId)
+        && ((resource == null
+             && exists(/databases/$(database)/documents/votingEvents/$(eventId))
+             && isOwnerOrAdmin(get(/databases/$(database)/documents/votingEvents/$(eventId)).data.organizationId))
+            || (resource != null
+                && isOwnerOrAdmin(resource.data.organizationId))
+            || (resource != null
+                && isActiveMember(resource.data.organizationId)
                 && resource.data.published == true));
 
       allow create, update, delete: if false;
@@ -310,12 +342,16 @@ service cloud.firestore {
 
     // Legacy/unused path (no function or client code writes or reads this
     // collection - eventResults above is the real one), kept locked down
-    // with the same not-yet-existing-document fix for defense in depth.
+    // with the same missing-document restriction for defense in depth.
     match /results/{eventId} {
       allow read: if signedIn()
-        && (resource == null
-            || isOwnerOrAdmin(resource.data.organizationId)
-            || (isActiveMember(resource.data.organizationId)
+        && ((resource == null
+             && exists(/databases/$(database)/documents/votingEvents/$(eventId))
+             && isOwnerOrAdmin(get(/databases/$(database)/documents/votingEvents/$(eventId)).data.organizationId))
+            || (resource != null
+                && isOwnerOrAdmin(resource.data.organizationId))
+            || (resource != null
+                && isActiveMember(resource.data.organizationId)
                 && resource.data.published == true));
 
       allow create, update, delete: if false;

@@ -1,10 +1,10 @@
 import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kivora/core/theme/kivora_colors.dart';
-import 'package:kivora/core/theme/kivora_icons.dart';
-import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
-import 'package:kivora/core/widgets/ui_kit/kivora_card.dart';
+import 'package:raay/core/theme/raay_colors.dart';
+import 'package:raay/core/theme/raay_icons.dart';
+import 'package:raay/core/widgets/ui_kit/raay_button.dart';
+import 'package:raay/core/widgets/ui_kit/raay_card.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/friendly_error.dart';
@@ -32,14 +32,14 @@ class PollOptionList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Stable provider: a stream created in build() reloads on every rebuild.
     final optsAsync = ref.watch(eventPollOptionsProvider(eventId));
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (isDraft)
-          KivoraButton(
-            icon: KivoraIcons.plus,
+          RaayButton(
+            icon: RaayIcons.plus,
             label: AppLocalizations.of(context).plsAdd,
             onPressed: () {
               showDialog(
@@ -55,7 +55,7 @@ class PollOptionList extends ConsumerWidget {
           loading: () => const LoadingView(),
           error: (_, __) => Column(children: [
             Text(AppLocalizations.of(context).plsLoadError,
-                style: TextStyle(color: KivoraColors.of(context).errorText)),
+                style: TextStyle(color: RaayColors.of(context).errorText)),
             TextButton(
               style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
               onPressed: () =>
@@ -100,7 +100,7 @@ class PollOptionList extends ConsumerWidget {
                 return Padding(
                   key: ValueKey(opt.id),
                   padding: const EdgeInsets.only(bottom: 12),
-                  child: KivoraCard(
+                  child: RaayCard(
                     padding: const EdgeInsets.all(16),
                     child: Row(
                       children: [
@@ -110,7 +110,7 @@ class PollOptionList extends ConsumerWidget {
                             child: Padding(
                               padding:
                                   const EdgeInsetsDirectional.only(end: 12.0),
-                              child: Icon(KivoraIcons.gripVertical,
+                              child: Icon(RaayIcons.gripVertical,
                                   color: kc.textSecondary, size: 18),
                             ),
                           ),
@@ -125,7 +125,7 @@ class PollOptionList extends ConsumerWidget {
                             child: Text(
                               '${i + 1}',
                               style: TextStyle(
-                                color: KivoraColors.of(context).accentText,
+                                color: RaayColors.of(context).accentText,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13,
                               ),
@@ -163,7 +163,7 @@ class PollOptionList extends ConsumerWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: const Icon(KivoraIcons.edit3, size: 18),
+                                icon: const Icon(RaayIcons.edit3, size: 18),
                                 onPressed: () {
                                   showDialog(
                                     context: context,
@@ -176,9 +176,9 @@ class PollOptionList extends ConsumerWidget {
                                 },
                               ),
                               IconButton(
-                                icon: Icon(KivoraIcons.trash2,
+                                icon: Icon(RaayIcons.trash2,
                                     size: 18,
-                                    color: KivoraColors.of(context).errorText),
+                                    color: RaayColors.of(context).errorText),
                                 onPressed: () async {
                                   final confirm = await showDialog<bool>(
                                       context: context,
@@ -205,7 +205,7 @@ class PollOptionList extends ConsumerWidget {
                                                     AppLocalizations.of(context)
                                                         .plsDelete,
                                                     style: TextStyle(
-                                                        color: KivoraColors.of(
+                                                        color: RaayColors.of(
                                                                 context)
                                                             .errorText)),
                                               ),

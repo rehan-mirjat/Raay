@@ -1,3 +1,7 @@
+import '../../features/billing/data/sales_repository.dart';
+import '../../features/billing/presentation/legacy_plans_screen.dart';
+import '../../features/nominations/nominations_screen.dart';
+import '../../features/communications/communication_center_screen.dart';
 import '../navigation/route_access.dart' show routeNeed, roleMayOpen;
 import '../../features/voting/presentation/receipt_verification_screen.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -5,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/support/support_reports_screen.dart';
+import '../../features/governance/election_approval_screen.dart';
 import '../widgets/loading_view.dart';
 import '../notifications/notification_inbox_screen.dart';
 import '../../features/support/presentation/help_support_screen.dart';
@@ -18,6 +24,7 @@ import '../../features/auth/presentation/profile_screen.dart';
 import '../../features/organizations/presentation/organization_list_screen.dart';
 import '../../features/organizations/presentation/organization_settings_screen.dart';
 import '../../features/organizations/presentation/organization_audit_screen.dart';
+import '../../features/organizations/presentation/organization_reports_screen.dart';
 import '../../features/organizations/presentation/platform_organizations_screen.dart';
 import '../../features/organizations/presentation/platform_admin_screen.dart';
 import '../../features/platform/presentation/platform_audit_screen.dart';
@@ -67,7 +74,7 @@ final GlobalKey<NavigatorState> _shellNavigatorSettingsKey =
 final GlobalKey<NavigatorState> _shellNavigatorAdminKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellAdmin');
 
-/// Holds an invitation token received via a kivora://invite deep link while
+/// Holds an invitation token received via a raay://invite deep link while
 /// the user is not yet signed in/verified, so RouterNotifier's redirect can
 /// send them to /invite once auth completes instead of dropping them at
 /// /home and losing the invitation. Cleared once the invite screen has
@@ -137,7 +144,7 @@ class RouterNotifier extends ChangeNotifier {
   /// Captures a token carried directly on the `/invite` URL (the shared
   /// https:// link opened in a browser) before an auth/verification redirect
   /// would otherwise strip it. On native this duplicates what
-  /// DeepLinkHandler already does for a kivora:// link, which is harmless -
+  /// DeepLinkHandler already does for a raay:// link, which is harmless -
   /// setting a StateProvider to its current value doesn't notify listeners
   /// again. On web, DeepLinkHandler never runs at all, so this is the only
   /// place the token gets captured.
@@ -166,6 +173,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
       final location = state.matchedLocation;
 
+      if (location == '/pricing') return null;
+
       if (notifier.isAuthLoading) {
         return '/splash';
       }
@@ -181,7 +190,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       final isInviteRoute = location == '/invite';
 
       if (isInviteRoute) {
-        notifier.captureInviteTokenIfPresent(state.uri.queryParameters['token']);
+        notifier
+            .captureInviteTokenIfPresent(state.uri.queryParameters['token']);
       }
 
       if (!isAuth) {
@@ -193,9 +203,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           return notifier.hasSeenIntro ? '/login' : null;
         }
         if (isUnauthRoute || isPublicLanding) return null;
-        return kIsWeb
-            ? '/'
-            : (notifier.hasSeenIntro ? '/login' : '/welcome');
+        return kIsWeb ? '/' : (notifier.hasSeenIntro ? '/login' : '/welcome');
       }
 
       if (!isVerified) {
@@ -207,6 +215,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         if (pendingToken != null && pendingToken.isNotEmpty) {
           return '/invite?token=${Uri.encodeQueryComponent(pendingToken)}';
         }
+        if (ref.read(pendingSalesOfferProvider) != null) return '/plans';
         return '/home';
       }
 
@@ -226,6 +235,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
+      GoRoute(
+          path: '/pricing',
+          builder: (context, state) => const PlansScreen(publicView: true)),
       GoRoute(
         path: '/',
         builder: (context, state) => const LandingPageScreen(),
@@ -278,6 +290,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/receipt',
+        // `extra` is lost on a browser refresh or deep link; send the user
+        // home instead of crashing on a failed cast.
+        redirect: (context, state) {
+          final extra = state.extra;
+          return extra is Map && extra['receipt'] is VoteReceipt
+              ? null
+              : '/home';
+        },
         builder: (context, state) {
           final extra = state.extra as Map<String, dynamic>? ?? {};
           final receipt = extra['receipt'] as VoteReceipt;
@@ -305,12 +325,25 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     const HomeScreen(key: ValueKey('home_screen')),
               ),
               GoRoute(
+                path: '/communications',
+                builder: (context, state) => const CommunicationCenterScreen(),
+              ),
+              GoRoute(
+                path: '/nominations',
+                builder: (context, state) => const NominationsScreen(),
+              ),
+              GoRoute(
                 path: '/notifications',
                 builder: (context, state) => const NotificationInboxScreen(),
               ),
               GoRoute(
                 path: '/plans',
                 builder: (context, state) => const PlansScreen(),
+                routes: [
+                  GoRoute(
+                      path: 'legacy',
+                      builder: (context, state) => const LegacyPlansScreen())
+                ],
               ),
               // Platform area lives inside the shell so the sidebar stays
               // visible. Access is checked here (redirect), on each screen
@@ -357,6 +390,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 ),
                 routes: [
                   GoRoute(
+                    path: 'approvals',
+                    builder: (context, state) => ElectionApprovalScreen(
+                        eventId: state.pathParameters['eventId']!),
+                  ),
+                  GoRoute(
                     path: 'results',
                     builder: (context, state) => EventResultsScreen(
                       eventId: state.pathParameters['eventId']!,
@@ -388,6 +426,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     path: 'audit',
                     builder: (context, state) =>
                         const OrganizationAuditScreen(),
+                  ),
+                  GoRoute(
+                    path: 'reports',
+                    builder: (context, state) =>
+                        const OrganizationReportsScreen(),
                   ),
                   GoRoute(
                     path: 'join',
@@ -465,6 +508,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               ),
               GoRoute(
                 path: '/help',
+                routes: [
+                  GoRoute(
+                      path: 'reports',
+                      builder: (context, state) => const SupportReportsScreen())
+                ],
                 builder: (context, state) => const HelpSupportScreen(),
               ),
             ],
@@ -474,7 +522,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/admin/command-center',
-                builder: (context, state) => const ElectionCommandCenterScreen(),
+                builder: (context, state) =>
+                    const ElectionCommandCenterScreen(),
               ),
               GoRoute(
                 path: '/admin/events',

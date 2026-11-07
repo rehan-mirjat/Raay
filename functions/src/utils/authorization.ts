@@ -93,6 +93,22 @@ export async function requireMfaEnrolled(uid: string): Promise<void> {
   }
 }
 
+/** Sensitive operations require an MFA-authenticated session, not enrollment alone.
+ * Call only after requireNotRevoked; auth contains Firebase-signed claims.
+ */
+export async function requireMfaVerified(auth: CallableRequest["auth"]): Promise<void> {
+  if (!auth) throw new HttpsError("unauthenticated", "Authentication required.");
+  await requireMfaEnrolled(auth.uid);
+  const factor = auth.token.firebase?.sign_in_second_factor;
+  if (factor !== "totp" && factor !== "phone") {
+    throw new HttpsError(
+      "failed-precondition",
+      "Sign out and sign back in using two-factor authentication before performing this action.",
+      { reason: "MFA_SESSION_REQUIRED" }
+    );
+  }
+}
+
 /** Blocks membership/department management while an organization is suspended (or otherwise non-operational). */
 export async function requireOperationalOrganization(
   db: Firestore,

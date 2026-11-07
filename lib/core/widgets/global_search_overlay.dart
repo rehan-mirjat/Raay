@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../navigation/exit_guard.dart';
+import '../navigation/nav_destinations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,7 +11,9 @@ import '../../features/organizations/presentation/providers/organization_provide
 import '../../features/organizations/domain/organization.dart';
 import '../../features/voting_events/data/voting_event_repository.dart';
 import '../theme/app_theme.dart';
-import '../theme/kivora_colors.dart';
+import '../theme/raay_colors.dart';
+import '../../services/auth_service.dart';
+import '../../features/organizations/domain/organization_enums.dart';
 
 // ─── Result model ─────────────────────────────────────────────────────────────
 
@@ -35,7 +38,7 @@ class _SearchResult {
 
 // ─── Static quick-nav items ───────────────────────────────────────────────────
 
-List<_SearchResult> _staticRoutes(AppLocalizations l) => [
+List<_SearchResult> _staticRoutes(AppLocalizations l, NavModel model) => [
       _SearchResult(
           title: l.gsHome,
           subtitle: l.gsHomeSub,
@@ -84,7 +87,10 @@ List<_SearchResult> _staticRoutes(AppLocalizations l) => [
           icon: Icons.mail_outline_rounded,
           route: '/orgs/invitations',
           category: _SearchCategory.route),
-    ];
+    ]
+        .where((result) =>
+            model.all.any((destination) => destination.route == result.route))
+        .toList();
 
 /// The subtitle shown (and searched) for a result. Orgs and events store only
 /// raw data; their wording is added here so it follows the app language.
@@ -109,12 +115,15 @@ String _eventStatusWord(AppLocalizations l, String name) => switch (name) {
 
 final _searchIndexProvider =
     FutureProvider.autoDispose<List<_SearchResult>>((ref) async {
+  // Watch the selected tenant and role: the index must follow org switches,
+  // and draft/member shortcuts must not linger from the previous context.
+  final activeCtx =
+      ref.watch(activeOrganizationContextProvider).valueOrNull?.context;
+  final isManager = activeCtx?.member.role.isAdmin ?? false;
   final orgs = await ref
       .watch(userOrganizationsProvider.future)
       .catchError((_) => <Organization>[]);
 
-  final activeCtx =
-      ref.read(activeOrganizationContextProvider).valueOrNull?.context;
   final orgId = activeCtx?.organization.id;
 
   final results = <_SearchResult>[];
@@ -134,7 +143,7 @@ final _searchIndexProvider =
     try {
       final repo = ref.read(votingEventRepositoryProvider);
       final events = await repo
-          .watchOrganizationVotingEvents(orgId, includeDrafts: true)
+          .watchOrganizationVotingEvents(orgId, includeDrafts: isManager)
           .first;
       for (final e in events.take(50)) {
         results.add(_SearchResult(
@@ -148,24 +157,26 @@ final _searchIndexProvider =
       }
     } catch (_) {}
 
-    try {
-      final repo = ref.read(organizationRepositoryProvider);
-      final result = await repo.getOrganizationMembers(organizationId: orgId);
-      final members = result.members;
-      for (final m in members.take(100)) {
-        final name = '${m['firstName'] ?? ''} ${m['lastName'] ?? ''}'.trim();
-        final email = m['email'] as String? ?? '';
-        if (name.isEmpty) continue;
-        results.add(_SearchResult(
-          title: name,
-          subtitle: email,
-          icon: Icons.person_rounded,
-          route: '/orgs/members',
-          category: _SearchCategory.member,
-          iconColor: AppTheme.secondaryBlue,
-        ));
-      }
-    } catch (_) {}
+    if (isManager) {
+      try {
+        final repo = ref.read(organizationRepositoryProvider);
+        final result = await repo.getOrganizationMembers(organizationId: orgId);
+        final members = result.members;
+        for (final m in members.take(100)) {
+          final name = '${m['firstName'] ?? ''} ${m['lastName'] ?? ''}'.trim();
+          final email = m['email'] as String? ?? '';
+          if (name.isEmpty) continue;
+          results.add(_SearchResult(
+            title: name,
+            subtitle: email,
+            icon: Icons.person_rounded,
+            route: '/orgs/members',
+            category: _SearchCategory.member,
+            iconColor: AppTheme.secondaryBlue,
+          ));
+        }
+      } catch (_) {}
+    }
   }
 
   return results;
@@ -212,14 +223,29 @@ class _GlobalSearchDialogState extends ConsumerState<_GlobalSearchDialog> {
 
   List<_SearchResult> _filter(List<_SearchResult> index) {
     final l = AppLocalizations.of(context);
-    if (_query.isEmpty) return _staticRoutes(l);
+    final activeCtx =
+        ref.watch(activeOrganizationContextProvider).valueOrNull?.context;
+    final memberRole = activeCtx?.member.role;
+    final isOwner = memberRole == OrganizationRole.owner;
+    final isManager = isOwner || memberRole == OrganizationRole.admin;
+    final isObserver = activeCtx?.member.isObserver ?? false;
+    final isPlatformAdmin =
+        ref.watch(platformAdminProvider).valueOrNull ?? false;
+    final model = navModelFor(
+      isManager: isManager,
+      isOwner: isOwner,
+      isObserver: isObserver,
+      isPlatformAdmin: isPlatformAdmin,
+    );
+    final shortcuts = _staticRoutes(l, model);
+    if (_query.isEmpty) return shortcuts;
     final q = _query.toLowerCase();
     final dynamic = index
         .where((r) =>
             r.title.toLowerCase().contains(q) ||
             _subtitleFor(l, r).toLowerCase().contains(q))
         .toList();
-    final stat = _staticRoutes(l)
+    final stat = shortcuts
         .where((r) =>
             r.title.toLowerCase().contains(q) ||
             r.subtitle.toLowerCase().contains(q))
@@ -261,7 +287,7 @@ class _GlobalSearchDialogState extends ConsumerState<_GlobalSearchDialog> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final indexAsync = ref.watch(_searchIndexProvider);
     final index = indexAsync.valueOrNull ?? [];
     final results = _filter(index);
@@ -347,6 +373,8 @@ class _GlobalSearchDialogState extends ConsumerState<_GlobalSearchDialog> {
                         ),
                         if (_query.isNotEmpty)
                           IconButton(
+                            tooltip: MaterialLocalizations.of(context)
+                                .deleteButtonTooltip,
                             onPressed: () => setState(() {
                               _ctrl.clear();
                               _query = '';
@@ -378,7 +406,12 @@ class _GlobalSearchDialogState extends ConsumerState<_GlobalSearchDialog> {
                 Divider(height: 1, color: kc.border),
 
                 // ── Results ──
-                if (results.isEmpty && _query.isNotEmpty)
+                if (indexAsync.isLoading && _query.isNotEmpty)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: LinearProgressIndicator(minHeight: 2),
+                  )
+                else if (results.isEmpty && _query.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.all(32),
                     child: Column(
@@ -424,13 +457,13 @@ class _GlobalSearchDialogState extends ConsumerState<_GlobalSearchDialog> {
                     children: [
                       const _Kbd('↑↓'),
                       const SizedBox(width: 4),
-                      Text('navigate',
+                      Text(AppLocalizations.of(context).searchHintNavigate,
                           style:
                               TextStyle(fontSize: 11, color: kc.textSecondary)),
                       const SizedBox(width: 12),
                       const _Kbd('↵'),
                       const SizedBox(width: 4),
-                      Text('open',
+                      Text(AppLocalizations.of(context).searchHintOpen,
                           style:
                               TextStyle(fontSize: 11, color: kc.textSecondary)),
                       const Spacer(),
@@ -468,7 +501,7 @@ class _ResultTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final selBg = isDark
         ? AppTheme.primaryBlue.withValues(alpha: 0.14)
         : AppTheme.primaryBlue.withValues(alpha: 0.08);
@@ -504,7 +537,7 @@ class _ResultTile extends StatelessWidget {
                 child: Icon(result.icon,
                     size: 16,
                     color: result.iconColor ??
-                        (isSelected ? AppTheme.primaryBlue : kc.textSecondary)),
+                        (isSelected ? kc.accentText : kc.textSecondary)),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -516,7 +549,7 @@ class _ResultTile extends StatelessWidget {
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                             color: isSelected
-                                ? AppTheme.primaryBlue
+                                ? kc.accentText
                                 : kc.textPrimary),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
@@ -529,7 +562,7 @@ class _ResultTile extends StatelessWidget {
               ),
               if (isSelected)
                 Icon(Icons.keyboard_return_rounded,
-                    size: 14, color: KivoraColors.of(context).accentText),
+                    size: 14, color: RaayColors.of(context).accentText),
             ],
           ),
         ),
@@ -544,7 +577,7 @@ class _Kbd extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
       decoration: BoxDecoration(

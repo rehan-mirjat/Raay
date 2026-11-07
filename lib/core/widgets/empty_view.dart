@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
-import '../../core/theme/kivora_colors.dart';
+import '../../core/theme/raay_colors.dart';
 
 class EmptyView extends StatelessWidget {
   final IconData icon;
@@ -41,7 +41,7 @@ class EmptyView extends StatelessWidget {
                 child: Icon(
                   icon,
                   size: 32,
-                  color: KivoraColors.of(context).accentText,
+                  color: RaayColors.of(context).accentText,
                 ),
               ),
               const SizedBox(height: 16),
@@ -50,7 +50,7 @@ class EmptyView extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: KivoraColors.textPrimaryOf(context),
+                  color: RaayColors.textPrimaryOf(context),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -59,7 +59,7 @@ class EmptyView extends StatelessWidget {
                 message,
                 style: TextStyle(
                   fontSize: 14,
-                  color: KivoraColors.textSecondaryOf(context),
+                  color: RaayColors.textSecondaryOf(context),
                   height: 1.4,
                 ),
                 textAlign: TextAlign.center,

@@ -3,8 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/onboarding/providers/onboarding_providers.dart';
 
-const _kReducedMotionKey = 'kivora_reduced_motion';
-const _kHighContrastKey = 'kivora_high_contrast';
+const _kReducedMotionKey = 'raay_reduced_motion';
+const _kHighContrastKey = 'raay_high_contrast';
 
 /// Package C3's "Reduce motion" setting. This is a USER PREFERENCE layered
 /// on top of (not a replacement for) the OS-level accessibility flag that

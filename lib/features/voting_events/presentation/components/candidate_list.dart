@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/theme/kivora_colors.dart';
-import '../../../../core/theme/kivora_icons.dart';
+import '../../../../core/theme/raay_colors.dart';
+import '../../../../core/theme/raay_icons.dart';
 import '../../../../core/utils/friendly_error.dart';
 import '../../../../core/widgets/loading_view.dart';
 import '../../../voting/presentation/cast_vote_screen.dart'
@@ -32,7 +32,7 @@ class CandidateList extends ConsumerWidget {
       BuildContext context, WidgetRef ref, Candidate cand) async {
     final messenger = ScaffoldMessenger.of(context);
     final l10nAsync_ = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final confirm = await showDialog<bool>(
       context: context,
       builder: (c) => AlertDialog(
@@ -66,7 +66,7 @@ class CandidateList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     // Stable provider: a stream created in build() would reload on every rebuild
     // (for example each time a dialog closes).
     final candsAsync = ref.watch(eventCandidatesProvider(eventId));
@@ -79,7 +79,7 @@ class CandidateList extends ConsumerWidget {
             alignment: AlignmentDirectional.centerStart,
             child: FilledButton.icon(
               style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
-              icon: const Icon(KivoraIcons.plus, size: 18),
+              icon: const Icon(RaayIcons.plus, size: 18),
               label: Text(AppLocalizations.of(context).clAdd),
               onPressed: () => showDialog<void>(
                 context: context,
@@ -162,7 +162,7 @@ class CandidateList extends ConsumerWidget {
     );
   }
 
-  Widget _note(KivoraColors kc, IconData icon, String text, {Color? color}) {
+  Widget _note(RaayColors kc, IconData icon, String text, {Color? color}) {
     final c = color ?? kc.accentText;
     return Container(
       padding: const EdgeInsets.all(12),
@@ -195,7 +195,7 @@ class _CandidateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -240,14 +240,14 @@ class _CandidateCard extends StatelessWidget {
                 tooltip:
                     AppLocalizations.of(context).clEdit(cand.name.toString()),
                 constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-                icon: const Icon(KivoraIcons.edit3, size: 20),
+                icon: const Icon(RaayIcons.edit3, size: 20),
                 onPressed: onEdit,
               ),
               IconButton(
                 tooltip: AppLocalizations.of(context)
                     .clRemoveName(cand.name.toString()),
                 constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-                icon: Icon(KivoraIcons.trash2, size: 20, color: kc.errorText),
+                icon: Icon(RaayIcons.trash2, size: 20, color: kc.errorText),
                 onPressed: onDelete,
               ),
             ]),

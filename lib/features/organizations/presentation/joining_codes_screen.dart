@@ -13,7 +13,7 @@ import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../core/widgets/stat_tile.dart';
 import '../data/organization_repository.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../domain/organization_enums.dart';
 import 'providers/organization_providers.dart';
@@ -69,7 +69,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
           return StatefulBuilder(
             builder: (context, setDialogState) => AlertDialog(
               icon: Icon(Icons.key_rounded,
-                  color: KivoraColors.of(context).accentText),
+                  color: RaayColors.of(context).accentText),
               title: Text(AppLocalizations.of(context).jcSaveTitle),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -94,7 +94,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: QrImageView(
-                        data: 'KIVORA-JOIN:${result.rawCode}',
+                        data: 'raay-JOIN:${result.rawCode}',
                         version: QrVersions.auto,
                         size: 160,
                       ),
@@ -395,7 +395,7 @@ class _JoiningCodesScreenState extends ConsumerState<JoiningCodesScreen> {
         : AppLocalizations.of(context)
             .jcExpires((_dateFormat.format(expiry.toLocal())).toString());
     final active = rawStatus == 'active';
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final Color tone = switch (status) {
       'active' => kc.successText,
       'expired' || 'exhausted' => kc.warningText,

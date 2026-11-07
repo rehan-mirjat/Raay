@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/inline_error_banner.dart';
 import '../data/organization_repository.dart';
@@ -143,9 +143,9 @@ class _CreateOrganizationScreenState
             constraints: const BoxConstraints(maxWidth: 540),
             child: Container(
               decoration: BoxDecoration(
-                color: KivoraColors.surfaceOf(context),
+                color: RaayColors.surfaceOf(context),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: KivoraColors.borderOf(context)),
+                border: Border.all(color: RaayColors.borderOf(context)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.04),
@@ -174,12 +174,12 @@ class _CreateOrganizationScreenState
                           child: Icon(
                             Icons.business_outlined,
                             size: 24,
-                            color: KivoraColors.of(context).accentText,
+                            color: RaayColors.of(context).accentText,
                           ),
                         ),
                         IconButton(
                           icon: Icon(Icons.close_rounded,
-                              color: KivoraColors.textSecondaryOf(context)),
+                              color: RaayColors.textSecondaryOf(context)),
                           tooltip: AppLocalizations.of(context).coClose,
                           onPressed: _handleCancel,
                         ),
@@ -192,14 +192,14 @@ class _CreateOrganizationScreenState
                       style:
                           Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: KivoraColors.textPrimaryOf(context),
+                                color: RaayColors.textPrimaryOf(context),
                               ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       AppLocalizations.of(context).coSubtitle,
                       style: TextStyle(
-                          color: KivoraColors.textSecondaryOf(context),
+                          color: RaayColors.textSecondaryOf(context),
                           fontSize: 14,
                           height: 1.4),
                     ),
@@ -210,7 +210,7 @@ class _CreateOrganizationScreenState
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: KivoraColors.textPrimaryOf(context),
+                        color: RaayColors.textPrimaryOf(context),
                         letterSpacing: 0.5,
                       ),
                     ),
@@ -239,7 +239,7 @@ class _CreateOrganizationScreenState
                       AppLocalizations.of(context).coNameHelp,
                       style: TextStyle(
                           fontSize: 12,
-                          color: KivoraColors.textSecondaryOf(context)),
+                          color: RaayColors.textSecondaryOf(context)),
                     ),
                     const SizedBox(height: 18),
 
@@ -248,7 +248,7 @@ class _CreateOrganizationScreenState
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: KivoraColors.textPrimaryOf(context),
+                        color: RaayColors.textPrimaryOf(context),
                         letterSpacing: 0.5,
                       ),
                     ),
@@ -279,7 +279,7 @@ class _CreateOrganizationScreenState
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
-                                  color: KivoraColors.textPrimaryOf(context),
+                                  color: RaayColors.textPrimaryOf(context),
                                   letterSpacing: 0.5,
                                 ),
                               ),
@@ -305,7 +305,7 @@ class _CreateOrganizationScreenState
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
-                                  color: KivoraColors.textPrimaryOf(context),
+                                  color: RaayColors.textPrimaryOf(context),
                                   letterSpacing: 0.5,
                                 ),
                               ),
@@ -336,7 +336,7 @@ class _CreateOrganizationScreenState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Icon(Icons.check_circle_outline_rounded,
-                              color: KivoraColors.of(context).accentText,
+                              color: RaayColors.of(context).accentText,
                               size: 18),
                           const SizedBox(width: 10),
                           Expanded(
@@ -349,7 +349,7 @@ class _CreateOrganizationScreenState
                                       fontWeight: FontWeight.bold,
                                       fontSize: 13,
                                       color:
-                                          KivoraColors.textPrimaryOf(context)),
+                                          RaayColors.textPrimaryOf(context)),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
@@ -357,7 +357,7 @@ class _CreateOrganizationScreenState
                                   style: TextStyle(
                                       fontSize: 12,
                                       color:
-                                          KivoraColors.textSecondaryOf(context),
+                                          RaayColors.textSecondaryOf(context),
                                       height: 1.4),
                                 ),
                               ],
@@ -372,7 +372,7 @@ class _CreateOrganizationScreenState
                       AppLocalizations.of(context).coRequired,
                       style: TextStyle(
                           fontSize: 12,
-                          color: KivoraColors.textSecondaryOf(context)),
+                          color: RaayColors.textSecondaryOf(context)),
                     ),
 
                     if (_error != null) ...[

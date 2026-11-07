@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/onboarding/providers/onboarding_providers.dart';
 
-const _kLocaleKey = 'kivora_locale';
+const _kLocaleKey = 'raay_locale';
 
 /// null means "follow the system locale" - MaterialApp.router's `locale`
 /// parameter already does exactly that when passed null, falling back to the

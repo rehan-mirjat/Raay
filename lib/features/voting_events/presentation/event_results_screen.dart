@@ -1,16 +1,21 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart' show FirebaseException;
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
+import '../../../core/widgets/reauth_dialog.dart';
+import '../../../core/utils/error_utils.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../l10n/app_localizations.dart';
 import '../domain/voting_event.dart';
@@ -23,7 +28,7 @@ import 'voter_portal_screen.dart' show AdaptiveCardGrid;
 
 /// Series colors for result rows. Each pairs with a text label and the row's
 /// own percentage, so color is never the only identifier.
-List<Color> _seriesColors(KivoraColors kc) => [
+List<Color> _seriesColors(RaayColors kc) => [
       kc.isDark ? const Color(0xFF5EEAD4) : const Color(0xFF0F766E),
       kc.isDark ? const Color(0xFFB8A8FF) : const Color(0xFF5B3FC4),
       kc.isDark ? const Color(0xFFF5B94A) : const Color(0xFF8A5A00),
@@ -43,14 +48,24 @@ class EventResultsScreen extends ConsumerStatefulWidget {
 class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
   bool _busy = false;
 
-  Future<void> _run(String functionName) async {
+  Future<void> _run(String functionName, {bool allowReauth = true}) async {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _busy = true);
     try {
-      await FirebaseService().functions.httpsCallable(functionName).call({'eventId': widget.eventId});
+      await FirebaseService()
+          .functions
+          .httpsCallable(functionName)
+          .call({'eventId': widget.eventId});
     } on FirebaseFunctionsException catch (error) {
-      messenger.showSnackBar(SnackBar(content: Text(error.message ?? l10n.resActionFailed)));
+      if (allowReauth && isRecentAuthError(error) && mounted) {
+        final verified =
+            await showReauthDialog(context, ref, reason: l10n.rvReauth);
+        if (verified && mounted) await _run(functionName, allowReauth: false);
+      } else {
+        messenger.showSnackBar(
+            SnackBar(content: Text(error.message ?? l10n.resActionFailed)));
+      }
     } catch (_) {
       messenger.showSnackBar(SnackBar(content: Text(l10n.resActionFailed)));
     } finally {
@@ -84,8 +99,12 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
 
   void _showCsv(String title, ElectionResults results) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final csv = resultsCsv(title: title, results: results);
+    final box = context.findRenderObject() as RenderBox?;
+    final origin = box != null && box.hasSize
+        ? box.localToGlobal(Offset.zero) & box.size
+        : null;
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -100,7 +119,9 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
                 borderRadius: BorderRadius.circular(AppTheme.radiusInput),
                 border: Border.all(color: kc.border),
               ),
-              child: SelectableText(csv, style: const TextStyle(fontFamily: 'monospace', fontSize: 13)),
+              child: SelectableText(csv,
+                  style:
+                      const TextStyle(fontFamily: 'monospace', fontSize: 13)),
             ),
           ),
         ),
@@ -110,12 +131,39 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
             onPressed: () => Navigator.pop(ctx),
             child: Text(l10n.resClose),
           ),
+          OutlinedButton.icon(
+            style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+            onPressed: () async {
+              final file = XFile.fromData(
+                Uint8List.fromList(utf8.encode(csv)),
+                name: 'raay_results.csv',
+                mimeType: 'text/csv',
+              );
+              Navigator.pop(ctx);
+              try {
+                await SharePlus.instance.share(ShareParams(
+                  files: [file],
+                  fileNameOverrides: ['raay_results.csv'],
+                  sharePositionOrigin: origin,
+                  subject: title,
+                ));
+              } catch (_) {
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l10n.resActionFailed)),
+                );
+              }
+            },
+            icon: const Icon(Icons.ios_share_rounded, size: 18),
+            label: Text(l10n.resExport),
+          ),
           FilledButton.icon(
             style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
             onPressed: () {
               Clipboard.setData(ClipboardData(text: csv));
               Navigator.pop(ctx);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.resCsvCopied)));
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text(l10n.resCsvCopied)));
             },
             icon: const Icon(Icons.copy, size: 18),
             label: Text(l10n.resCopyCsv),
@@ -128,10 +176,16 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
-    final canManage =
-        ref.watch(activeOrganizationContextProvider).valueOrNull?.context?.member.isAdmin ?? false;
-    final event = ref.watch(singleVotingEventProvider(widget.eventId)).valueOrNull;
+    final kc = RaayColors.of(context);
+    final canManage = ref
+            .watch(activeOrganizationContextProvider)
+            .valueOrNull
+            ?.context
+            ?.member
+            .isAdmin ??
+        false;
+    final event =
+        ref.watch(singleVotingEventProvider(widget.eventId)).valueOrNull;
     final dataAsync = ref.watch(eventResultsDataProvider(widget.eventId));
     final pad = ResponsiveLayout.pagePadding(context);
 
@@ -141,7 +195,8 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
             style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
             onPressed: () => context.go('/elections/${widget.eventId}'),
             icon: const Icon(Icons.arrow_back_rounded, size: 18),
-            label: Text(event?.title ?? l10n.resBack, maxLines: 2, overflow: TextOverflow.ellipsis),
+            label: Text(event?.title ?? l10n.resBack,
+                maxLines: 2, overflow: TextOverflow.ellipsis),
           ),
         );
 
@@ -151,7 +206,9 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
             child: Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 900),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [back(), const SizedBox(height: 8), body]),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [back(), const SizedBox(height: 8), body]),
               ),
             ),
           ),
@@ -160,9 +217,11 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
     return Scaffold(
       backgroundColor: kc.background,
       body: dataAsync.when(
-        loading: () => shell(const Padding(padding: EdgeInsets.all(32), child: LoadingView())),
+        loading: () => shell(
+            const Padding(padding: EdgeInsets.all(32), child: LoadingView())),
         error: (err, _) {
-          final denied = err is FirebaseException && err.code == 'permission-denied';
+          final denied =
+              err is FirebaseException && err.code == 'permission-denied';
           if (denied && !canManage) {
             return shell(ErrorView(
                 type: ErrorViewType.generic,
@@ -173,7 +232,8 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
             type: ErrorViewType.generic,
             title: l10n.resLoadErrorTitle,
             message: l10n.resLoadErrorBody,
-            onRetry: () => ref.invalidate(eventResultsDataProvider(widget.eventId)),
+            onRetry: () =>
+                ref.invalidate(eventResultsDataProvider(widget.eventId)),
           ));
         },
         data: (data) {
@@ -181,58 +241,96 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
             // Results can only be calculated after the election closes (the
             // server refuses earlier), so do not offer the action before then.
             final status = event?.status;
-            final closed = status == VotingEventStatus.closed || status == VotingEventStatus.archived;
+            final closed = status == VotingEventStatus.closed ||
+                status == VotingEventStatus.archived;
             final notClosed = event != null && !closed;
             final offer = canManage && !notClosed;
             return shell(EmptyView(
               icon: Icons.query_stats_rounded,
               title: l10n.resNoneTitle,
-              message: canManage && notClosed ? l10n.resNotClosedYet : l10n.resNoneBody,
-              actionLabel: offer ? (_busy ? l10n.resWorking : l10n.resCalculate) : null,
+              message: canManage && notClosed
+                  ? l10n.resNotClosedYet
+                  : l10n.resNoneBody,
+              actionLabel:
+                  offer ? (_busy ? l10n.resWorking : l10n.resCalculate) : null,
               onAction: offer && !_busy ? () => _run('calculateResults') : null,
             ));
           }
           final results = parseElectionResults(data);
-          return shell(_body(context, l10n, kc, event?.title, results, canManage));
+          return shell(
+              _body(context, l10n, kc, event?.title, results, canManage));
         },
       ),
     );
   }
 
-  Widget _body(BuildContext context, AppLocalizations l10n, KivoraColors kc, String? eventTitle,
-      ElectionResults results, bool canManage) {
+  Widget _body(BuildContext context, AppLocalizations l10n, RaayColors kc,
+      String? eventTitle, ElectionResults results, bool canManage) {
     final colors = _seriesColors(kc);
-    final outcome = outcomeFor(results.rows, results.total);
+    final outcome = results.outcome;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Wrap(spacing: 12, runSpacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: [
-          Semantics(
-            header: true,
-            child: Text(l10n.resTitle,
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: kc.textPrimary)),
-          ),
-          results.published
-              ? StatusBadge(
-                  label: l10n.resPublished.toUpperCase(),
-                  backgroundColor: kc.successText.withValues(alpha: kc.isDark ? 0.16 : 0.10),
-                  textColor: kc.successText,
-                  icon: Icons.public_rounded)
-              : StatusBadge(
-                  label: l10n.resNotPublished.toUpperCase(),
-                  backgroundColor: kc.warningText.withValues(alpha: kc.isDark ? 0.16 : 0.10),
-                  textColor: kc.warningText,
-                  icon: Icons.lock_outline_rounded),
-        ]),
+        Wrap(
+            spacing: 12,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Semantics(
+                header: true,
+                child: Text(l10n.resTitle,
+                    style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: kc.textPrimary)),
+              ),
+              results.published
+                  ? StatusBadge(
+                      label: l10n.resPublished.toUpperCase(),
+                      backgroundColor: kc.successText
+                          .withValues(alpha: kc.isDark ? 0.16 : 0.10),
+                      textColor: kc.successText,
+                      icon: Icons.public_rounded)
+                  : StatusBadge(
+                      label: l10n.resNotPublished.toUpperCase(),
+                      backgroundColor: kc.warningText
+                          .withValues(alpha: kc.isDark ? 0.16 : 0.10),
+                      textColor: kc.warningText,
+                      icon: Icons.lock_outline_rounded),
+            ]),
         const SizedBox(height: 4),
-        Text(l10n.resSubtitle, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+        Text(l10n.resSubtitle,
+            style: TextStyle(fontSize: 14, color: kc.textSecondary)),
         const SizedBox(height: 20),
-        if (outcome != null) ...[_OutcomeBanner(outcome: outcome), const SizedBox(height: 16)],
+        if (results.quorumPercent != null) ...[
+          Text(
+              '${l10n.quorumLabel}: ${results.quorumPercent}% · ${results.quorumMet == true ? l10n.quorumMetLabel : l10n.quorumNotMet}',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: results.quorumMet == true
+                      ? kc.successText
+                      : kc.warningText)),
+          Text(l10n.quorumHint),
+          const SizedBox(height: 16),
+        ],
+        Text(l10n.percentageBasis),
+        const SizedBox(height: 12),
+        if (outcome != null) ...[
+          _OutcomeBanner(outcome: outcome),
+          const SizedBox(height: 16)
+        ],
         AdaptiveCardGrid(minColumnWidth: 200, children: [
           _Stat(label: l10n.resBallots, value: '${results.total}'),
+          _Stat(label: l10n.validChoiceBallots, value: '${results.validVotes}'),
+          _Stat(
+              label: l10n.abstentionsLabel,
+              value: '${results.abstentionCount}'),
           _Stat(label: l10n.resEligible, value: '${results.eligible}'),
-          _Stat(label: l10n.resTurnout, value: '${results.turnout.toStringAsFixed(0)}%', progress: results.turnout / 100),
+          _Stat(
+              label: l10n.resTurnout,
+              value: '${results.turnout.toStringAsFixed(0)}%',
+              progress: results.turnout / 100),
         ]),
         const SizedBox(height: 16),
         if (!results.published) ...[
@@ -243,21 +341,45 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
               borderRadius: BorderRadius.circular(AppTheme.radiusCard),
               border: Border.all(color: kc.warningText.withValues(alpha: 0.5)),
             ),
-            child: Text(l10n.resAdminOnly, style: TextStyle(fontSize: 14, color: kc.textPrimary)),
+            child: Text(l10n.resAdminOnly,
+                style: TextStyle(fontSize: 14, color: kc.textPrimary)),
           ),
           const SizedBox(height: 16),
         ],
         if (results.rows.length > 1) ...[
-          Text(l10n.resSplit, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: kc.textSecondary)),
+          Text(l10n.resSplit,
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: kc.textSecondary)),
           const SizedBox(height: 8),
           _SplitBar(rows: results.rows, colors: colors),
           const SizedBox(height: 20),
         ],
         for (var i = 0; i < results.rows.length; i++) ...[
-          _ResultRowCard(row: results.rows[i], color: colors[i % colors.length]),
+          _ResultRowCard(
+              row: results.rows[i], color: colors[i % colors.length]),
           const SizedBox(height: 10),
         ],
-        if (results.rows.isEmpty)
+        for (final contest in results.contests) ...[
+          Text(contest.title,
+              style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: kc.textPrimary)),
+          const SizedBox(height: 12),
+          if (contest.results.outcome case final Outcome outcome) ...[
+            _OutcomeBanner(outcome: outcome),
+            const SizedBox(height: 12),
+          ],
+          for (var i = 0; i < contest.results.rows.length; i++) ...[
+            _ResultRowCard(
+                row: contest.results.rows[i], color: colors[i % colors.length]),
+            const SizedBox(height: 12),
+          ],
+          const SizedBox(height: 16),
+        ],
+        if (results.rows.isEmpty && results.contests.isEmpty)
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -265,21 +387,30 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
               borderRadius: BorderRadius.circular(AppTheme.radiusCard),
               border: Border.all(color: kc.border),
             ),
-            child: Text(l10n.resNoBallots, style: TextStyle(color: kc.textPrimary)),
+            child: Text(l10n.resNoBallots,
+                style: TextStyle(color: kc.textPrimary)),
           ),
         const SizedBox(height: 16),
-        Text(l10n.resFootnote, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+        Text(l10n.resFootnote,
+            style: TextStyle(fontSize: 14, color: kc.textSecondary)),
         if (canManage) ...[
           const SizedBox(height: 20),
           Divider(color: kc.border),
           const SizedBox(height: 12),
           Wrap(spacing: 12, runSpacing: 12, children: [
-            OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
-              onPressed: _busy ? null : () => _run('calculateResults'),
-              icon: const Icon(Icons.refresh_rounded, size: 18),
-              label: Text(_busy ? l10n.resWorking : l10n.resRecalculate),
-            ),
+            if (!results.published)
+              OutlinedButton.icon(
+                style:
+                    OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+                onPressed: _busy ? null : () => _run('calculateResults'),
+                icon: const Icon(Icons.refresh_rounded, size: 18),
+                label: Text(_busy ? l10n.resWorking : l10n.resRecalculate),
+              )
+            else
+              Chip(
+                avatar: const Icon(Icons.lock_outline_rounded, size: 18),
+                label: Text(l10n.resPublishedLocked),
+              ),
             if (!results.published)
               FilledButton.icon(
                 style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
@@ -289,7 +420,8 @@ class _EventResultsScreenState extends ConsumerState<EventResultsScreen> {
               ),
             OutlinedButton.icon(
               style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
-              onPressed: () => _showCsv(eventTitle ?? l10n.resEventFallback, results),
+              onPressed: () =>
+                  _showCsv(eventTitle ?? l10n.resEventFallback, results),
               icon: const Icon(Icons.table_chart_outlined, size: 18),
               label: Text(l10n.resExport),
             ),
@@ -307,11 +439,13 @@ class _OutcomeBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final percent = outcome.percent.toStringAsFixed(1);
-    final title = outcome.isTie ? l10n.resTie : l10n.resWins(outcome.leaders.first.name);
+    final title =
+        outcome.isTie ? l10n.resTie : l10n.resWins(outcome.leaders.first.name);
     final body = outcome.isTie
-        ? l10n.resTieBody(outcome.leaders.map((r) => r.name).join(' / '), outcome.votes, percent)
+        ? l10n.resTieBody(outcome.leaders.map((r) => r.name).join(' / '),
+            outcome.votes, percent)
         : l10n.resWinsBody(outcome.votes, percent);
     return Container(
       padding: const EdgeInsets.all(16),
@@ -321,15 +455,22 @@ class _OutcomeBanner extends StatelessWidget {
         border: Border.all(color: kc.accentText, width: 2),
       ),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Icon(outcome.isTie ? Icons.balance_rounded : Icons.emoji_events_rounded, color: kc.accentText),
+        Icon(outcome.isTie ? Icons.balance_rounded : Icons.emoji_events_rounded,
+            color: kc.accentText),
         const SizedBox(width: 12),
         Expanded(
           child: Semantics(
             liveRegion: true,
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: kc.textPrimary)),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(title,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: kc.textPrimary)),
               const SizedBox(height: 2),
-              Text(body, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+              Text(body,
+                  style: TextStyle(fontSize: 14, color: kc.textSecondary)),
             ]),
           ),
         ),
@@ -346,7 +487,7 @@ class _Stat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Semantics(
       container: true,
       label: '$label: $value',
@@ -358,23 +499,31 @@ class _Stat extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppTheme.radiusCard),
             border: Border.all(color: kc.border),
           ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-            Text(label, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
-            const SizedBox(height: 4),
-            Text(value, style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: kc.textPrimary)),
-            if (progress != null) ...[
-              const SizedBox(height: 8),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: LinearProgressIndicator(
-                  value: progress!.clamp(0, 1),
-                  minHeight: 6,
-                  backgroundColor: kc.border,
-                  valueColor: AlwaysStoppedAnimation<Color>(kc.accentText),
-                ),
-              ),
-            ],
-          ]),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(label,
+                    style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+                const SizedBox(height: 4),
+                Text(value,
+                    style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: kc.textPrimary)),
+                if (progress != null) ...[
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: progress!.clamp(0, 1),
+                      minHeight: 6,
+                      backgroundColor: kc.border,
+                      valueColor: AlwaysStoppedAnimation<Color>(kc.accentText),
+                    ),
+                  ),
+                ],
+              ]),
         ),
       ),
     );
@@ -414,11 +563,12 @@ class _ResultRowCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     return Semantics(
       container: true,
-      label: '${row.name}: ${l10n.resVotes(row.votes)}, ${row.percent.toStringAsFixed(1)}%',
+      label:
+          '${row.name}: ${l10n.resVotes(row.votes)}, ${row.percent.toStringAsFixed(1)}%',
       child: ExcludeSemantics(
         child: Container(
           padding: const EdgeInsets.all(16),
@@ -427,16 +577,24 @@ class _ResultRowCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppTheme.radiusCard),
             border: Border.all(color: kc.border),
           ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Padding(
                 padding: const EdgeInsets.only(top: 6),
-                child: Container(width: 10, height: 10, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+                child: Container(
+                    width: 10,
+                    height: 10,
+                    decoration:
+                        BoxDecoration(color: color, shape: BoxShape.circle)),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(row.name,
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: kc.textPrimary)),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        color: kc.textPrimary)),
               ),
             ]),
             const SizedBox(height: 4),
@@ -448,7 +606,8 @@ class _ResultRowCard extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: '${row.percent.toStringAsFixed(1)}%',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: kc.textPrimary),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: kc.textPrimary),
                   ),
                 ],
               )),

@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appName => 'كيفورا';
+  String get appName => 'رأي';
 
   @override
   String get navHome => 'الرئيسية';
@@ -96,7 +96,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get authRegisterTitle => 'إنشاء حساب';
 
   @override
-  String get authRegisterSubtitle => 'انضم إلى كيفورا اليوم';
+  String get authRegisterSubtitle => 'انضم إلى رأي اليوم';
 
   @override
   String get authFullName => 'الاسم الكامل';
@@ -1234,7 +1234,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get inbRespondFailed => 'تعذّر إكمال ذلك. يُرجى المحاولة مرة أخرى.';
 
   @override
-  String get inbHelp => 'تحتاج إلى مساعدة بشأن دعوة؟ تواصل مع دعم Kivora.';
+  String get inbHelp => 'تحتاج إلى مساعدة بشأن دعوة؟ تواصل مع دعم رأي.';
 
   @override
   String get ballotTitle => 'بطاقة اقتراعك';
@@ -1586,6 +1586,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get resRecalculate => 'إعادة احتساب النتائج';
 
   @override
+  String get resPublishedLocked => 'نُشرت وقُفلت';
+
+  @override
   String get resWorking => 'جارٍ العمل...';
 
   @override
@@ -1617,7 +1620,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get resPublishConfirmBody =>
-      'سيتمكن جميع الأعضاء المؤهلين من رؤية النتائج، وسيتلقى إشعارًا من فعّلوا إشعارات النتائج. يمكنك إعادة احتسابها لاحقًا.';
+      'سيتمكن جميع الأعضاء المؤهلين من رؤية النتائج، وسيتلقى إشعارًا من فعّلوا إشعارات النتائج. نُشرت النتائج وأصبحت مقفلة ولا يمكن إعادة احتسابها.';
 
   @override
   String get resPublishConfirm => 'نشر';
@@ -2088,7 +2091,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get acctAppearance => 'المظهر';
 
   @override
-  String get acctAppearanceBody => 'اختر مظهر Kivora على هذا الجهاز.';
+  String get acctAppearanceBody => 'اختر مظهر رأي على هذا الجهاز.';
 
   @override
   String get acctThemeLight => 'فاتح';
@@ -2161,7 +2164,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get acctConnectedBody =>
-      'طرق تسجيل الدخول المرتبطة بحسابك في Kivora. يجب إبقاء طريقة واحدة على الأقل.';
+      'طرق تسجيل الدخول المرتبطة بحسابك في رأي. يجب إبقاء طريقة واحدة على الأقل.';
 
   @override
   String get acctEmailPassword => 'البريد الإلكتروني وكلمة المرور';
@@ -2185,7 +2188,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String acctDisconnectBody(String name) {
-    return 'لن تتمكن من تسجيل الدخول إلى Kivora باستخدام $name.';
+    return 'لن تتمكن من تسجيل الدخول إلى رأي باستخدام $name.';
   }
 
   @override
@@ -2424,7 +2427,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get jcScanHint =>
-      'أو امسح هذا الرمز بخيار \"Scan to Join\" في Kivora على جهاز آخر.';
+      'أو امسح هذا الرمز بخيار \"Scan to Join\" في رأي على جهاز آخر.';
 
   @override
   String get jcCopied => 'تم النسخ';
@@ -3352,7 +3355,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get plOverviewSubtitle =>
-      'المؤسسات والمراجعات ونشاط المسؤولين الأخير عبر Kivora.';
+      'المؤسسات والمراجعات ونشاط المسؤولين الأخير عبر رأي.';
 
   @override
   String get plRefresh => 'تحديث';
@@ -3514,7 +3517,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get plReportsReadOnly =>
-      'للقراءة فقط حاليًا: لا تدعم المنصة بعد تعيين البلاغات أو حلّها، لذا يبقى كل بلاغ مفتوحًا. ولا توجد قائمة بالمؤسسات المُبلَّغ عنها.';
+      'يمكنك تعيين البلاغ لنفسك أو حلّه بعد إنجاز العمل أو إعادة فتحه عند الحاجة إلى متابعة.';
 
   @override
   String plAllCount(String a) {
@@ -3552,6 +3555,28 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get plStatusOpen => 'مفتوح';
+
+  @override
+  String get plStatusInProgress => 'قيد المعالجة';
+
+  @override
+  String get plStatusResolved => 'تم الحل';
+
+  @override
+  String get plAssignToMe => 'تعييني مسؤولًا عن البلاغ';
+
+  @override
+  String get plResolveReport => 'حل البلاغ';
+
+  @override
+  String get plReopenReport => 'إعادة فتح البلاغ';
+
+  @override
+  String get plReportUpdateFailed =>
+      'تعذر تحديث البلاغ. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get plReportUpdateSuccess => 'تم تحديث حالة البلاغ.';
 
   @override
   String get plCheckingAccess => 'جارٍ التحقق من صلاحية المنصة…';
@@ -3740,7 +3765,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get imCreatedNote =>
-      'سيراها المدعو في إشعارات Kivora بعد تسجيل الدخول، وله القبول أو الرفض من هناك.';
+      'سيراها المدعو في إشعارات رأي بعد تسجيل الدخول، وله القبول أو الرفض من هناك.';
 
   @override
   String get imShareLink => 'شارك هذا الرابط المباشر مع المدعو:';
@@ -3790,7 +3815,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aeClose => 'إغلاق';
 
   @override
-  String get aeSubtitle => 'أضف حساب Kivora موثّقًا مباشرة إلى هذه المؤسسة.';
+  String get aeSubtitle => 'أضف حساب رأي موثّقًا مباشرة إلى هذه المؤسسة.';
 
   @override
   String get aeEmailLabel => 'عنوان البريد الإلكتروني للعضو *';
@@ -4531,7 +4556,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get alP3b => 'أكّد مشاركتك دون كشف اختيارك.';
 
   @override
-  String get alCopy => 'Kivora © 2026';
+  String get alCopy => 'رأي © 2026';
 
   @override
   String get alPlatforms => 'Android • ويب';
@@ -4726,7 +4751,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get hsTrust => 'الثقة والشفافية';
 
   @override
-  String get hsTrustBody => 'كيف تحمي Kivora خصوصية الاقتراع وما الذي يُسجَّل.';
+  String get hsTrustBody => 'كيف تحمي رأي خصوصية الاقتراع وما الذي يُسجَّل.';
 
   @override
   String get hsSend => 'إرسال ملاحظات أو التواصل مع الدعم';
@@ -4829,7 +4854,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get rgDoneBody =>
-      'تم إنشاء هويتك في Kivora بأمان. يمكنك الآن تسجيل الدخول ببياناتك.';
+      'تم إنشاء هويتك في رأي بأمان. يمكنك الآن تسجيل الدخول ببياناتك.';
 
   @override
   String get rgReturn => 'العودة إلى تسجيل الدخول';
@@ -4986,7 +5011,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get plCurrent => 'الحالية';
 
   @override
-  String get spLogo => 'شعار Kivora';
+  String get spLogo => 'شعار رأي';
 
   @override
   String get spTag => 'تصويت إلكتروني للمؤسسات متعدد المستأجرين';
@@ -5001,7 +5026,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get spErrTitle => 'خطأ في الاتصال';
 
   @override
-  String get spErrBody => 'تعذّر الاتصال بخدمات Kivora.';
+  String get spErrBody => 'تعذّر الاتصال بخدمات رأي.';
 
   @override
   String get spRetry => 'إعادة محاولة الاتصال';
@@ -5090,7 +5115,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get trS5P2 =>
-      'يؤكد الإيصال أن اقتراعك قُبل وهو موجود في سجلات النظام. وهو ليس نسخة من اختيارك، وفي الانتخاب السري لا يستطيع أحد - بمن فيهم مسؤولو Kivora - استخدامه لمعرفة ما اخترته.';
+      'يؤكد الإيصال أن اقتراعك قُبل وهو موجود في سجلات النظام. وهو ليس نسخة من اختيارك، وفي الانتخاب السري لا يستطيع أحد - بمن فيهم مسؤولو رأي - استخدامه لمعرفة ما اخترته.';
 
   @override
   String get trS6Title => 'ما الذي يثبته التحقق من الإيصال وما لا يثبته';
@@ -5149,7 +5174,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get trS10P2 =>
-      'Kivora غير معتمدة بشكل مستقل من أي جهة وطنية أو تابعة لطرف ثالث لمعايير الانتخابات، والتحقق من الإيصال ليس بديلًا عن تدقيق تشفيري مستقل للفرز الكامل.';
+      'رأي غير معتمدة بشكل مستقل من أي جهة وطنية أو تابعة لطرف ثالث لمعايير الانتخابات، والتحقق من الإيصال ليس بديلًا عن تدقيق تشفيري مستقل للفرز الكامل.';
 
   @override
   String get trS10P3 =>
@@ -5159,7 +5184,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get trTitle => 'مركز الثقة والشفافية';
 
   @override
-  String get trHeading => 'كيف تعمل انتخابات Kivora';
+  String get trHeading => 'كيف تعمل انتخابات رأي';
 
   @override
   String get trIntro =>
@@ -5315,7 +5340,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'تُسجَّل الإجراءات الإدارية المهمة ليراجعها المالكون والمسؤولون.';
 
   @override
-  String get lcQ1T => 'فيمَ يمكننا استخدام Kivora؟';
+  String get lcQ1T => 'فيمَ يمكننا استخدام رأي؟';
 
   @override
   String get lcQ1B =>
@@ -5381,7 +5406,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ldNavTransparency => 'الشفافية';
 
   @override
-  String get ldBrandTop => 'Kivora، العودة إلى الأعلى';
+  String get ldBrandTop => 'رأي، العودة إلى الأعلى';
 
   @override
   String get ldToLight => 'التبديل إلى السمة الفاتحة';
@@ -5405,7 +5430,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ldVerify => 'التحقق من إيصال';
 
   @override
-  String get ldHeroBadge => 'Kivora · تصويت واستطلاعات إلكترونية آمنة';
+  String get ldHeroBadge => 'رأي · تصويت واستطلاعات إلكترونية آمنة';
 
   @override
   String get ldHeroTitle => 'أجرِ انتخابات عادلة لمؤسستك.';
@@ -5437,7 +5462,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ldHowBody => 'اجعل المشاركة سهلة للمنظّمين والأعضاء على حد سواء.';
 
   @override
-  String get ldStart => 'ابدأ مع Kivora';
+  String get ldStart => 'ابدأ مع رأي';
 
   @override
   String get ldOrgsEyebrow => 'لكل أنواع المؤسسات';
@@ -5447,7 +5472,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ldOrgsBody =>
-      'تُنشأ مؤسسات Kivora كأحد هذه الأنواع ثم تُشكَّل حول الأشخاص المشاركين.';
+      'تُنشأ مؤسسات رأي كأحد هذه الأنواع ثم تُشكَّل حول الأشخاص المشاركين.';
 
   @override
   String get ldSecTitle => 'ثقة مدمجة في كل خطوة.';
@@ -5481,7 +5506,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ldAnonBody =>
-      'سجلان منفصلان يتيحان لـ Kivora منع التصويت المزدوج مع إبقاء الاختيار السري سريًا.';
+      'سجلان منفصلان يتيحان لـ رأي منع التصويت المزدوج مع إبقاء الاختيار السري سريًا.';
 
   @override
   String get ldReceiptTitle => 'تحقق من إيصال دون حساب.';
@@ -5696,7 +5721,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get obBody4 =>
-      'أنشئ بيتًا لانتخاباتك واستطلاعاتك. أضف أعضاءك وتقدّموا معًا مع Kivora.';
+      'أنشئ بيتًا لانتخاباتك واستطلاعاتك. أضف أعضاءك وتقدّموا معًا مع رأي.';
 
   @override
   String get obGetStarted => 'ابدأ الآن';
@@ -5926,6 +5951,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ciParse => 'تحليل وتحقق';
 
   @override
+  String get ciChooseFile => 'اختر ملف CSV';
+
+  @override
   String get ciResults => 'نتائج التحقق';
 
   @override
@@ -6137,7 +6165,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get phCoverageBody =>
-      'لا يفحص هذا الاختبار التخزين وتسليم البريد وتسليم الإشعارات وأجهزة العملاء.';
+      'لا يفحص هذا الاختبار تسليم البريد والإشعارات وأجهزة العملاء.';
 
   @override
   String get phOperational => 'يعمل';
@@ -6167,4 +6195,641 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get navPlatformHealth => 'سلامة المنصة';
+
+  @override
+  String get orgReportTitle => 'تقارير المؤسسة';
+
+  @override
+  String orgReportSubtitle(String name) {
+    return 'نشاط الانتخابات في $name.';
+  }
+
+  @override
+  String get orgReportDenied => 'يلزم وصول مالك المؤسسة أو مسؤولها.';
+
+  @override
+  String get orgReportRefresh => 'تحديث التقارير';
+
+  @override
+  String get orgReportFailed =>
+      'تعذر تحميل التقرير. تحقق من الاتصال وحاول مجددًا.';
+
+  @override
+  String get orgReportDates => 'النطاق الزمني';
+
+  @override
+  String get orgReportAllDates => 'جميع تواريخ الإنشاء';
+
+  @override
+  String get orgReportClearDates => 'مسح التواريخ';
+
+  @override
+  String get orgReportMembers => 'الأعضاء النشطون';
+
+  @override
+  String get orgReportEvents => 'انتخابات هذه الصفحة';
+
+  @override
+  String get orgReportPublishedCount => 'المنشورة في هذه الصفحة';
+
+  @override
+  String get orgReportTurnout => 'المشاركة القابلة للعرض · هذه الصفحة';
+
+  @override
+  String get orgReportPrivate => 'مخفي لحماية الخصوصية';
+
+  @override
+  String get orgReportUnavailable => 'غير متاح';
+
+  @override
+  String get orgReportActivity => 'نشاط الانتخابات';
+
+  @override
+  String get orgReportEmpty => 'لا توجد انتخابات مطابقة لهذه التواريخ.';
+
+  @override
+  String get orgReportPublished => 'النتائج منشورة';
+
+  @override
+  String get orgReportUnpublished => 'النتائج غير منشورة';
+
+  @override
+  String get orgReportPrevious => 'الصفحة السابقة';
+
+  @override
+  String get orgReportNext => 'الصفحة التالية';
+
+  @override
+  String orgReportPage(String page) {
+    return 'الصفحة $page';
+  }
+
+  @override
+  String get orgReportScope =>
+      'يشمل الملخص والتصدير هذه الصفحة فقط. تستخدم المرشحات تاريخ إنشاء الانتخابات.';
+
+  @override
+  String get orgReportPrivacy =>
+      'تستثني المشاركة النتائج غير المنشورة والانتخابات التي يقل ناخبوها المؤهلون عن 10. لا تُدرج أوراق الاقتراع أو الاختيارات الفردية.';
+
+  @override
+  String get orgReportExport => 'تصدير هذه الصفحة (CSV)';
+
+  @override
+  String get rvPreview => 'معاينة بطاقة الاقتراع';
+
+  @override
+  String get rvPreviewNotice =>
+      'معاينة فقط. حدد خيارًا لتجربة بطاقة الاقتراع. لن يُرسل صوت ولن يُنشأ إيصال.';
+
+  @override
+  String rvPreviewSelected(String label) {
+    return 'اختيار المعاينة: $label';
+  }
+
+  @override
+  String get rvPreviewClose => 'إغلاق المعاينة';
+
+  @override
+  String get navOrganizationReports => 'التقارير';
+
+  @override
+  String get mcMode => 'انتخابات متعددة المناصب';
+
+  @override
+  String get mcPolicy =>
+      'من 2 إلى 10 مناصب، ولكل منصب من 2 إلى 20 خيارًا. يلزم خيار واحد لكل منصب؛ تُرسل جميع الاختيارات معًا بإيصال واحد.';
+
+  @override
+  String get mcContestTitle => 'عنوان المنصب';
+
+  @override
+  String get mcChoiceLabel => 'اسم المرشح أو الخيار';
+
+  @override
+  String get mcDescription => 'نبذة (اختيارية)';
+
+  @override
+  String get mcAddContest => 'إضافة منصب';
+
+  @override
+  String get mcAddChoice => 'إضافة خيار';
+
+  @override
+  String get mcRemove => 'إزالة';
+
+  @override
+  String get mcRequired => 'أدخل قيمة.';
+
+  @override
+  String get mcSave => 'حفظ المناصب والمتابعة';
+
+  @override
+  String get mcCompleteAll => 'حدد خيارًا واحدًا لكل منصب قبل المتابعة.';
+
+  @override
+  String get mcDiscard => 'تجاهل تغييرات المناصب غير المحفوظة؟';
+
+  @override
+  String get monDetailsUnavailable =>
+      'السجل التفصيلي غير مكتمل. تشمل المشاركة الإجمالية جميع الأصوات المقبولة.';
+
+  @override
+  String get navNominations => 'الترشيحات';
+
+  @override
+  String get nomIntro => 'تقدم للترشح وتابع طلبك وراجع ترشيحات مؤسستك.';
+
+  @override
+  String get nomCreate => 'فتح الترشيحات';
+
+  @override
+  String get nomCreateHint =>
+      'اختر انتخابات مسودة. يتقدم الأعضاء قبل الموعد النهائي؛ أغلق الجولة قبل المراجعة.';
+
+  @override
+  String get nomElection => 'الانتخابات';
+
+  @override
+  String get nomContest => 'المنافسة';
+
+  @override
+  String get nomDeadline => 'الموعد النهائي للتقديم';
+
+  @override
+  String get nomCancel => 'إلغاء';
+
+  @override
+  String get nomApply => 'طلب الترشح';
+
+  @override
+  String get nomName => 'اسم المرشح العلني';
+
+  @override
+  String get nomStatement => 'بيان المرشح العلني (اختياري)';
+
+  @override
+  String get nomConsent =>
+      'أوافق على الترشح ونشر هذا الاسم والبيان على ورقة الاقتراع بعد الموافقة.';
+
+  @override
+  String get nomRequired => 'يرجى إكمال هذا الحقل.';
+
+  @override
+  String get nomSubmit => 'إرسال الطلب';
+
+  @override
+  String get nomReview => 'مراجعة الطلبات';
+
+  @override
+  String get nomMyApplication => 'طلبي';
+
+  @override
+  String get nomApprove => 'الموافقة على المرشح';
+
+  @override
+  String get nomReject => 'رفض الطلب';
+
+  @override
+  String get nomApproveHint =>
+      'تضيف الموافقة الاسم والبيان المتفق عليهما إلى المسودة. النشر إجراء منفصل.';
+
+  @override
+  String get nomRejectHint =>
+      'وضح سبب رفض الطلب. يمكن لمقدم الطلب قراءة السبب.';
+
+  @override
+  String get nomReason => 'سبب القرار';
+
+  @override
+  String get nomClose => 'إغلاق الترشيحات';
+
+  @override
+  String get nomCloseHint =>
+      'سيوقف هذا الطلبات الجديدة. راجع جميع الطلبات المعلقة قبل نشر الانتخابات.';
+
+  @override
+  String get nomWithdraw => 'سحب الطلب';
+
+  @override
+  String get nomWithdrawHint =>
+      'هل تريد سحب الطلب؟ سيزال المرشح المعتمد من مسودة الاقتراع. يتاح السحب قبل نشر الانتخابات فقط.';
+
+  @override
+  String get nomConfirm => 'تأكيد';
+
+  @override
+  String get nomOpen => 'مفتوحة';
+
+  @override
+  String get nomClosed => 'مغلقة للمراجعة';
+
+  @override
+  String get nomPending => 'بانتظار المراجعة';
+
+  @override
+  String get nomApproved => 'مقبول';
+
+  @override
+  String get nomRejected => 'مرفوض';
+
+  @override
+  String get nomWithdrawn => 'مسحوب';
+
+  @override
+  String get nomFinalized => 'مكتملة — نُشرت الانتخابات';
+
+  @override
+  String get nomMore => 'تحميل المزيد';
+
+  @override
+  String get nomAccess => 'اختر مؤسسة تتمتع فيها بعضوية نشطة.';
+
+  @override
+  String get nomFailed =>
+      'تعذر تحميل الترشيحات أو حفظها. يرجى المحاولة مجدداً.';
+
+  @override
+  String get nomEmpty => 'لا توجد جولات ترشيح بعد.';
+
+  @override
+  String get nomNoApplications => 'لا توجد طلبات لعرضها.';
+
+  @override
+  String get nomNeedDraft =>
+      'أنشئ انتخابات مسودة أولاً. يجب أن تبدأ بعد الموعد النهائي للترشيح.';
+
+  @override
+  String get supportMyReports => 'طلبات الدعم الخاصة بي';
+
+  @override
+  String get supportLoadFailed => 'تعذر تحميل طلبات الدعم.';
+
+  @override
+  String get supportRetry => 'حاول مجدداً';
+
+  @override
+  String get supportEmpty => 'لم ترسل أي طلب دعم بعد.';
+
+  @override
+  String get supportCaseId => 'مرجع الطلب';
+
+  @override
+  String get navCommunications => 'الاتصالات';
+
+  @override
+  String get comIntro => 'جدول تذكيرات التصويت وتابع إنشاء إشعارات مؤسستك.';
+
+  @override
+  String get comInApp => 'إشعارات داخل التطبيق';
+
+  @override
+  String get comExternalUnavailable =>
+      'لم يتم إعداد إرسال البريد والرسائل النصية. تظهر هذه التذكيرات في صندوق إشعارات العضو.';
+
+  @override
+  String get comSchedule => 'جدولة تذكير';
+
+  @override
+  String get comAudience =>
+      'يُخطر الأعضاء النشطون المؤهلون الذين لم يصوتوا ويسمحون بالتذكيرات فقط. لا تظهر هويات المستلمين هنا.';
+
+  @override
+  String get comChooseTime => 'اختر التاريخ والوقت';
+
+  @override
+  String get comTiming =>
+      'اختر وقتاً ضمن فترة التصويت. تتم المعالجة كل دقيقة تقريباً؛ لا يؤكد عدد الإشعارات أن الأعضاء قرؤوها.';
+
+  @override
+  String get comCancel => 'إلغاء التذكير';
+
+  @override
+  String get comCancelHint =>
+      'هل تريد إلغاء التذكير المنتظر؟ لا يمكن إلغاء مهمة قيد المعالجة فقد تكون بعض الإشعارات أُنشئت.';
+
+  @override
+  String get comQueued => 'في الانتظار';
+
+  @override
+  String get comProcessing => 'قيد المعالجة';
+
+  @override
+  String get comCompleted => 'مكتمل';
+
+  @override
+  String get comCancelled => 'ملغى';
+
+  @override
+  String get comFailedStatus => 'فشل';
+
+  @override
+  String get comFailed => 'تعذر تحميل التذكيرات أو تحديثها. حاول مجدداً.';
+
+  @override
+  String get comNeedEvent => 'انشر انتخابات بوقت إغلاق مستقبلي لجدولة تذكير.';
+
+  @override
+  String get comEmpty => 'لا توجد تذكيرات مجدولة بعد.';
+
+  @override
+  String get comScheduledFor => 'الوقت المطلوب';
+
+  @override
+  String get comCount => 'الإشعارات المنشأة';
+
+  @override
+  String get comFailureHint =>
+      'توقفت المهمة. تحقق من حالة الانتخابات وصلاحية المنظم قبل جدولة تذكير آخر.';
+
+  @override
+  String get comRetrying => 'حدث خطأ مؤقت. تمت جدولة إعادة المحاولة تلقائياً.';
+
+  @override
+  String get eventPageScope =>
+      'تُعرض صفحة واحدة. يشمل البحث انتخابات هذه الصفحة؛ استخدم المرشحات وأزرار الصفحات لتصفح السجل الكامل.';
+
+  @override
+  String get govTitle => 'موافقات الانتخابات';
+
+  @override
+  String get govIntro =>
+      'اطلب من مسؤول نشط آخر مراجعة ورقة الاقتراع والنتائج الحالية قبل أن ينشرها مقدم الطلب.';
+
+  @override
+  String get govPolicy => 'الموافقة المستقلة مطلوبة';
+
+  @override
+  String get govPolicyHint =>
+      'سياسة يتحكم بها المالك في المسودة فقط. يلزم مسؤولان نشطان على الأقل وتحقق بخطوتين للمراجعين.';
+
+  @override
+  String get govLaunch => 'موافقة الإطلاق';
+
+  @override
+  String get govResults => 'موافقة النتائج';
+
+  @override
+  String get govPending => 'بانتظار مسؤول آخر';
+
+  @override
+  String get govNoRequest => 'لم تُطلب مراجعة';
+
+  @override
+  String get govApprove => 'الموافقة على هذا الإصدار';
+
+  @override
+  String get govReject => 'رفض هذا الإصدار';
+
+  @override
+  String get govRequest => 'طلب مراجعة الإصدار الحالي';
+
+  @override
+  String get govReviewNotice =>
+      'راجع ورقة الاقتراع والأهلية والجدول أو النتائج المحسوبة قبل التأكيد. لا يمكنك الموافقة على طلبك.';
+
+  @override
+  String get govVersion => 'بصمة الإصدار المراجع';
+
+  @override
+  String get govFreshness =>
+      'تتطلب التغييرات مراجعة جديدة. يعاد التحقق من الإصدار وصلاحية المراجع عند النشر؛ ينشر الإصدار المعتمد مقدم الطلب فقط.';
+
+  @override
+  String get govCalculate => 'حساب النتائج';
+
+  @override
+  String get govViewResults => 'مراجعة النتائج';
+
+  @override
+  String get govPublishElection => 'نشر الانتخابات المعتمدة';
+
+  @override
+  String get govPublishResults => 'نشر النتائج المعتمدة';
+
+  @override
+  String get ballotRules => 'قواعد الاقتراع';
+
+  @override
+  String get ballotRulesSave => 'حفظ القواعد';
+
+  @override
+  String get ballotAbstain => 'الامتناع عن التصويت في هذا الانتخاب';
+
+  @override
+  String get ballotAbstainHint =>
+      'تسجيل المشاركة دون اختيار أي مرشح أو خيار في جميع المسابقات. هذا نهائي ويُحتسب ضمن النصاب.';
+
+  @override
+  String get quorumLabel => 'النصاب المطلوب';
+
+  @override
+  String get quorumHint =>
+      'تُحسب المشاركة على مستوى الانتخاب وفق سجل الناخبين المجمّد. تُحتسب الأوراق المقدمة، بما فيها الامتناع، ضمن النصاب. عند عدم اكتماله يمكن نشر الأعداد دون إعلان فائز.';
+
+  @override
+  String get quorumInputHint => 'من 1 إلى 100؛ اتركه فارغًا للتعطيل';
+
+  @override
+  String get quorumValidation => 'أدخل نسبة صحيحة من 1 إلى 100.';
+
+  @override
+  String get quorumMetLabel => 'اكتمل النصاب';
+
+  @override
+  String get quorumNotMet => 'لم يكتمل النصاب — لا يُعلن فائز';
+
+  @override
+  String get quorumDisabled => 'معطّل';
+
+  @override
+  String get abstentionsLabel => 'الامتناع';
+
+  @override
+  String get validChoiceBallots => 'أوراق الاختيار';
+
+  @override
+  String get percentageBasis => 'نسب الخيارات لا تشمل الامتناع.';
+
+  @override
+  String get ballotAbstainEnabled => 'مفعّل';
+
+  @override
+  String get scanJoinTitle => 'امسح للانضمام';
+
+  @override
+  String get scanJoinInvalid =>
+      'رمز QR هذا ليس رمز انضمام إلى رأي. امسح رمز دعوة المؤسسة أو أدخل الرمز يدويًا.';
+
+  @override
+  String get scanJoinTorch => 'تشغيل أو إيقاف المصباح';
+
+  @override
+  String get homeNoOrgTitle => 'مرحبًا بك في رأي';
+
+  @override
+  String get homeNoOrgBody =>
+      'لست عضوًا في أي مؤسسة حاليًا. انضم إلى مساحة عمل موجودة أو أنشئ مؤسسة جديدة للمشاركة في انتخابات آمنة.';
+
+  @override
+  String get homeCreateOrg => 'إنشاء مؤسسة';
+
+  @override
+  String get homeJoinByCode => 'الانضمام باستخدام رمز';
+
+  @override
+  String get scanJoinEnterCode => 'أدخل الرمز بدلاً من ذلك';
+
+  @override
+  String get scanJoinPermissionDenied =>
+      'الوصول إلى الكاميرا محظور. اسمح بالكاميرا لهذا الموقع أو التطبيق من الإعدادات، أو أدخل الرمز يدويًا.';
+
+  @override
+  String get scanJoinUnsupported =>
+      'لا يمكن لهذا المتصفح أو الجهاز مسح رموز QR. أدخل رمز الانضمام يدويًا بدلاً من ذلك.';
+
+  @override
+  String get scanJoinGeneric =>
+      'تعذر تشغيل الكاميرا. يمكنك إدخال رمز الانضمام يدويًا بدلاً من ذلك.';
+
+  @override
+  String get searchHintNavigate => 'تنقل';
+
+  @override
+  String get searchHintOpen => 'فتح';
+
+  @override
+  String get directoryImportCsv => 'استيراد CSV';
+
+  @override
+  String get bulkInviteFileUnreadable => 'تعذر قراءة هذا الملف.';
+
+  @override
+  String get bulkInviteTooLarge => 'يجب ألا يتجاوز حجم ملف CSV ‏2 ميغابايت.';
+
+  @override
+  String get bulkInviteOpenFailed => 'تعذر فتح ملف CSV هذا.';
+
+  @override
+  String get bulkInviteNoValid =>
+      'لم يتم العثور على عناوين بريد إلكتروني صالحة.';
+
+  @override
+  String bulkInviteCapped(int max) {
+    return 'ستتم معالجة أول $max عنوانًا فريدًا فقط.';
+  }
+
+  @override
+  String get bulkInviteCopied => 'تم نسخ روابط الدعوة. شاركها مع المستلمين.';
+
+  @override
+  String get bulkInviteResultsTitle => 'نتائج الدعوات';
+
+  @override
+  String get bulkInviteTitle => 'دعوة الأعضاء من ملف CSV';
+
+  @override
+  String bulkInviteSummary(int success, int total) {
+    return 'تم إنشاء $success من $total دعوة. الروابط أسرار لمرة واحدة؛ شاركها بشكل آمن.';
+  }
+
+  @override
+  String bulkInviteIntro(int max) {
+    return 'ارفع ملف CSV أو الصق العناوين. استخدم عنوان عمود Email عندما يحتوي الملف على أعمدة متعددة. حتى $max دعوة عضو فريدة لكل دفعة. لا يتم إرسال البريد الإلكتروني تلقائيًا.';
+  }
+
+  @override
+  String get bulkInviteChooseFile => 'اختر ملف CSV';
+
+  @override
+  String get bulkInviteFieldLabel => 'محتوى CSV أو قائمة البريد الإلكتروني';
+
+  @override
+  String bulkInviteReady(int count) {
+    return '$count عنوانًا صالحًا فريدًا جاهزًا للدعوة.';
+  }
+
+  @override
+  String bulkInviteProgress(int current, int total) {
+    return 'جارٍ إنشاء الدعوة $current من $total…';
+  }
+
+  @override
+  String get bulkInviteFailed => 'فشلت الدعوة.';
+
+  @override
+  String get bulkInviteCopyLinks => 'نسخ روابط الدعوات الناجحة';
+
+  @override
+  String get bulkInvitePreview => 'معاينة العناوين';
+
+  @override
+  String get bulkInviteCreate => 'إنشاء الدعوات';
+
+  @override
+  String get mpTransferLabel => 'نقل ملكية المنظمة';
+
+  @override
+  String get mpTransferTitle => 'هل تريد نقل ملكية المنظمة؟';
+
+  @override
+  String mpTransferMessage(String name) {
+    return 'سيصبح $name المالك. سيتغير دورك إلى مسؤول. يلزم تسجيل دخول حديث والمصادقة الثنائية.';
+  }
+
+  @override
+  String get mpTransferConfirm => 'نقل الملكية';
+
+  @override
+  String get mpTransferDone => 'تم نقل ملكية المنظمة.';
+
+  @override
+  String get tplSaveTitle => 'حفظ الإعداد كقالب';
+
+  @override
+  String get tplNameLabel => 'اسم القالب';
+
+  @override
+  String get tplSave => 'حفظ';
+
+  @override
+  String get tplShared => 'تمت مشاركة القالب مع هذه المنظمة.';
+
+  @override
+  String get tplSaveFailed => 'تعذر حفظ هذا القالب.';
+
+  @override
+  String get tplLoadSharedFailed =>
+      'تعذر تحميل القوالب المشتركة. تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get tplLegacyHeading => 'محفوظ على هذا الجهاز (قديم)';
+
+  @override
+  String get tplSharedHeading => 'مشترك مع هذه المنظمة';
+
+  @override
+  String get tplDelete => 'حذف القالب';
+
+  @override
+  String get tplDeleteShared => 'حذف القالب المشترك';
+
+  @override
+  String get tplDeleteSharedFailed => 'تعذر حذف القالب المشترك.';
+
+  @override
+  String get tplSaveSetup => 'حفظ الإعداد';
+
+  @override
+  String get salesPricingLabel => 'الباقات والأسعار';
+
+  @override
+  String get salesReportsSubtitle =>
+      'طلبات الدعم والاستفسارات عن الباقات. عيّن كل طلب وتابعه ثم أغلقه عند الانتهاء.';
+
+  @override
+  String get privacyPolicyLabel => 'سياسة الخصوصية';
+
+  @override
+  String get deleteAccountLabel => 'حذف الحساب';
 }

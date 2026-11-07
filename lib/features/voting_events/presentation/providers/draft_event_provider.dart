@@ -5,6 +5,8 @@ import '../../domain/voting_event.dart';
 import '../../../../core/utils/friendly_error.dart';
 
 class DraftEventState {
+  final bool multiContest;
+  final bool choicesDirty;
   final String title;
   final String description;
   final VotingType votingType;
@@ -20,6 +22,8 @@ class DraftEventState {
   final String? error;
 
   DraftEventState({
+    this.multiContest = false,
+    this.choicesDirty = false,
     this.title = '',
     this.description = '',
     this.votingType = VotingType.candidateElection,
@@ -36,6 +40,8 @@ class DraftEventState {
   });
 
   DraftEventState copyWith({
+    bool? multiContest,
+    bool? choicesDirty,
     String? title,
     String? description,
     VotingType? votingType,
@@ -51,6 +57,8 @@ class DraftEventState {
     String? error,
   }) {
     return DraftEventState(
+      multiContest: multiContest ?? this.multiContest,
+      choicesDirty: choicesDirty ?? this.choicesDirty,
       title: title ?? this.title,
       description: description ?? this.description,
       votingType: votingType ?? this.votingType,
@@ -74,6 +82,7 @@ String draftSignature(DraftEventState s) => [
       s.title,
       s.description,
       s.votingType.name,
+      s.multiContest.toString(),
       s.privacyMode.name,
       s.startAt?.toIso8601String() ?? '',
       s.endAt?.toIso8601String() ?? '',
@@ -92,13 +101,18 @@ class DraftEventNotifier extends StateNotifier<DraftEventState> {
   /// True when the form holds edits the server has not accepted: either brand
   /// new input, or changes since the last successful create/update. A
   /// freshly opened empty form and a just-saved draft are both "clean".
-  bool get hasUnsavedChanges => draftSignature(state) != _savedSignature;
+  bool get hasUnsavedChanges => state.choicesDirty || draftSignature(state) != _savedSignature;
+
+  void setMultiContest(bool value) {
+    if (state.serverEventId == null) state = state.copyWith(multiContest: value);
+  }
+  void markChoicesDirty(bool value) => state = state.copyWith(choicesDirty: value);
 
   final VotingEventRepository _repository;
   final String organizationId;
 
   void updateBasicInfo(String title, String desc, VotingType type, PrivacyMode privacyMode) {
-    state = state.copyWith(title: title, description: desc, votingType: type, privacyMode: privacyMode);
+    state = state.copyWith(title: title, description: desc, votingType: type, privacyMode: privacyMode, multiContest: state.serverEventId != null ? state.multiContest : type == VotingType.candidateElection && state.multiContest);
   }
 
   void updateSchedule(DateTime start, DateTime end) {
@@ -111,6 +125,7 @@ class DraftEventNotifier extends StateNotifier<DraftEventState> {
 
   void loadExistingDraft(VotingEvent event) {
     state = DraftEventState(
+      multiContest: event.isMultiContest,
       title: event.title,
       description: event.description,
       votingType: event.votingType,
@@ -166,6 +181,7 @@ class DraftEventNotifier extends StateNotifier<DraftEventState> {
       }
 
       final eventId = await _repository.createVotingEvent(
+        multiContest: state.multiContest,
         organizationId: organizationId,
         title: state.title,
         description: state.description,

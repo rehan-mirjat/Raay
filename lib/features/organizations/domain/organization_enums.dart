@@ -17,7 +17,8 @@ enum OrganizationRole {
 extension OrganizationRoleAdmin on OrganizationRole {
   // UI Convenience Helper ONLY (never used as the source of security/authorization).
   // Mirrors OrganizationMember.isAdmin for call sites that only have the bare role.
-  bool get isAdmin => this == OrganizationRole.owner || this == OrganizationRole.admin;
+  bool get isAdmin =>
+      this == OrganizationRole.owner || this == OrganizationRole.admin;
 }
 
 enum MembershipStatus {
@@ -43,7 +44,8 @@ enum OrganizationStatus {
   verified('verified'),
   active('active'),
   suspended('suspended'),
-  rejected('rejected');
+  rejected('rejected'),
+  archived('archived');
 
   final String value;
   const OrganizationStatus(this.value);

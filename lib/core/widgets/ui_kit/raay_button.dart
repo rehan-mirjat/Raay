@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
+import '../../theme/raay_colors.dart';
 
-enum KivoraButtonType { primary, secondary, ghost, destructive }
+enum RaayButtonType { primary, secondary, ghost, destructive }
 
-class KivoraButton extends StatelessWidget {
+class RaayButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
-  final KivoraButtonType type;
+  final RaayButtonType type;
   final IconData? icon;
   final bool isLoading;
   final bool isExpanded;
 
-  const KivoraButton({
+  const RaayButton({
     super.key,
     required this.label,
     this.onPressed,
-    this.type = KivoraButtonType.primary,
+    this.type = RaayButtonType.primary,
     this.icon,
     this.isLoading = false,
     this.isExpanded = true,
@@ -24,17 +25,18 @@ class KivoraButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final colors = RaayColors.of(context);
 
     Color bg;
     Color fg;
     BorderSide? border;
 
     switch (type) {
-      case KivoraButtonType.primary:
+      case RaayButtonType.primary:
         bg = Theme.of(context).colorScheme.primary;
         fg = Theme.of(context).colorScheme.onPrimary;
         break;
-      case KivoraButtonType.secondary:
+      case RaayButtonType.secondary:
         bg = isDark ? AppTheme.darkElevated : AppTheme.surfaceWhite;
         fg = isDark ? AppTheme.darkTextPrimary : AppTheme.textPrimary;
         border = BorderSide(
@@ -42,14 +44,14 @@ class KivoraButton extends StatelessWidget {
           width: 1.2,
         );
         break;
-      case KivoraButtonType.ghost:
+      case RaayButtonType.ghost:
         bg = Colors.transparent;
-        fg = AppTheme.primaryBlue;
+        fg = colors.accentText;
         break;
-      case KivoraButtonType.destructive:
-        bg = AppTheme.error.withValues(alpha: 0.1);
-        fg = AppTheme.error;
-        border = BorderSide(color: AppTheme.error.withValues(alpha: 0.3));
+      case RaayButtonType.destructive:
+        bg = colors.errorText.withValues(alpha: 0.1);
+        fg = colors.errorText;
+        border = BorderSide(color: colors.errorText.withValues(alpha: 0.5));
         break;
     }
 

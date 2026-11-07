@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
-import '../theme/kivora_colors.dart';
+import '../theme/raay_colors.dart';
 
 /// A read-only number with a label (not a control). A null [value] shows a
 /// dash: the figure is unknown, never guessed.
@@ -12,7 +12,7 @@ class StatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Semantics(
       container: true,
       label: '$label: ${value ?? '-'}',

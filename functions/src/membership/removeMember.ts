@@ -1,6 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
-import { requireActiveMembership, requireOperationalOrganization, requireNotRevoked, requireRecentAuthentication, requireMfaEnrolled } from "../utils/authorization";
+import { requireActiveMembership, requireOperationalOrganization, requireNotRevoked, requireRecentAuthentication, requireMfaVerified } from "../utils/authorization";
 
 export const removeMember = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
@@ -10,7 +10,7 @@ export const removeMember = onCall(async (request) => {
   // FR-10 / MFA-REQ-001: removing a member is an explicitly-named sensitive operation.
   await requireNotRevoked(request);
   requireRecentAuthentication(request.auth);
-  await requireMfaEnrolled(request.auth.uid);
+  await requireMfaVerified(request.auth);
 
   const uid = request.auth.uid;
   const { organizationId, targetUid } = request.data || {};

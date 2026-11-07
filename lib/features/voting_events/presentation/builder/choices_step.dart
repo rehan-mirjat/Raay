@@ -1,8 +1,9 @@
+import 'multi_contest_editor.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/theme/kivora_colors.dart';
+import '../../../../core/theme/raay_colors.dart';
 import '../../domain/voting_event.dart';
 import '../providers/draft_event_provider.dart';
 import '../components/candidate_list.dart';
@@ -25,6 +26,7 @@ class ChoicesStep extends ConsumerWidget {
     final eventId = draftState.serverEventId;
 
     if (eventId == null) return const SizedBox.shrink();
+    if (draftState.multiContest) return MultiContestEditor(orgId: orgId, eventId: eventId, onNext: onNext, onBack: onBack);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -71,7 +73,7 @@ class ChoicesStep extends ConsumerWidget {
   }
 
   Widget _buildYesNoList(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Column(
       children: [
         ListTile(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
-import '../../theme/kivora_colors.dart';
+import '../../theme/raay_colors.dart';
 
-class KivoraMetricCard extends StatelessWidget {
+class RaayMetricCard extends StatelessWidget {
   final String title;
   final String value;
   final IconData icon;
@@ -10,7 +10,7 @@ class KivoraMetricCard extends StatelessWidget {
   final Color? iconColor;
   final Color? iconBgColor;
 
-  const KivoraMetricCard({
+  const RaayMetricCard({
     super.key,
     required this.title,
     required this.value,
@@ -22,7 +22,7 @@ class KivoraMetricCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final isDark = kc.isDark;
 
     return Container(

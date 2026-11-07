@@ -1,9 +1,8 @@
 import '../../../core/utils/date_utils.dart';
 import '../../../l10n/app_localizations.dart';
 
-/// One record from `userReports` (filed from Help & support). Platform admins
-/// can read these, but nothing in the backend changes their status, so a
-/// report stays "open" and the UI must not offer to resolve it.
+/// One record from `userReports` (filed from Help & support), including its
+/// platform-admin triage state and optional assignee.
 class PlatformReport {
   const PlatformReport({
     required this.id,
@@ -14,6 +13,7 @@ class PlatformReport {
     required this.status,
     required this.time,
     this.receiptReference,
+    this.assignedToUid,
   });
 
   final String id;
@@ -24,6 +24,7 @@ class PlatformReport {
   final String status;
   final DateTime? time;
   final String? receiptReference;
+  final String? assignedToUid;
 
   factory PlatformReport.fromMap(String id, Map<String, dynamic> d) {
     String s(String k) => d[k] is String ? d[k] as String : '';
@@ -37,13 +38,15 @@ class PlatformReport {
       status: s('status').isEmpty ? 'open' : s('status'),
       time: parseFirestoreDate(d['createdAt']),
       receiptReference: ref.isEmpty ? null : ref,
+      assignedToUid: s('assignedToUid').isEmpty ? null : s('assignedToUid'),
     );
   }
 }
 
 /// Localized name for the four report categories the Help screen offers; any
 /// other value is shown as stored.
-String reportCategoryText(AppLocalizations l, String category) => switch (category) {
+String reportCategoryText(AppLocalizations l, String category) =>
+    switch (category) {
       'General feedback' => l.plCatGeneral,
       'Election issue' => l.plCatElection,
       'Technical problem' => l.plCatTechnical,

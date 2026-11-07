@@ -1,4 +1,4 @@
-# Kivora permissions contract (draft for approval)
+# raay permissions contract (draft for approval)
 
 Status: **proposal, no code changed.** Every row is enforced on three layers:
 **UI** (not rendered), **Route** (direct URL checked), **Backend** (callable / Firestore / Storage).

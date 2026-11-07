@@ -1,11 +1,11 @@
 import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kivora/core/theme/kivora_icons.dart';
-import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
+import 'package:raay/core/theme/raay_icons.dart';
+import 'package:raay/core/widgets/ui_kit/raay_button.dart';
 
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/theme/kivora_colors.dart';
+import '../../../../core/theme/raay_colors.dart';
 import '../../../../core/widgets/loading_view.dart';
 import '../../../departments/presentation/providers/department_providers.dart';
 import '../../../organizations/presentation/membership_directory_screen.dart';
@@ -72,11 +72,11 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-                color: KivoraColors.surfaceOf(context),
+                color: RaayColors.surfaceOf(context),
                 borderRadius: BorderRadius.circular(AppTheme.radiusInput),
-                border: Border.all(color: KivoraColors.borderOf(context))),
+                border: Border.all(color: RaayColors.borderOf(context))),
             child: Text(AppLocalizations.of(context).elLocked,
-                style: TextStyle(color: KivoraColors.textSecondaryOf(context))),
+                style: TextStyle(color: RaayColors.textSecondaryOf(context))),
           ),
         const SizedBox(height: 16),
         Text(AppLocalizations.of(context).elTitle,
@@ -224,9 +224,9 @@ class _EligibilityStepState extends ConsumerState<EligibilityStep> {
                       fontWeight: FontWeight.w600, fontSize: 14),
                 ),
                 if (isDraft)
-                  KivoraButton(
-                    type: KivoraButtonType.ghost,
-                    icon: KivoraIcons.fileSpreadsheet,
+                  RaayButton(
+                    type: RaayButtonType.ghost,
+                    icon: RaayIcons.fileSpreadsheet,
                     label: AppLocalizations.of(context).elCsv,
                     isExpanded: false,
                     onPressed: () async {

@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/navigation/exit_guard.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/theme/kivora_colors.dart';
+import '../../../../core/theme/raay_colors.dart';
 import '../../../../core/layout/responsive.dart';
 import '../../../../core/widgets/loading_view.dart';
 import '../../../../core/widgets/error_view.dart';
@@ -58,7 +58,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
           TextButton(
             style: TextButton.styleFrom(
                 minimumSize: const Size(48, 48),
-                foregroundColor: KivoraColors.of(ctx).errorText),
+                foregroundColor: RaayColors.of(ctx).errorText),
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(l10n.builderLeave),
           ),
@@ -158,7 +158,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
 
     final draftState = ref.watch(draftEventProvider(orgId));
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final isWide = !ResponsiveLayout.isCompact(context);
     final labels = [
       l10n.builderStepBasic,
@@ -256,7 +256,7 @@ class _EventBuilderScreenState extends ConsumerState<EventBuilderScreen> {
         _leave();
       },
       child: Scaffold(
-        backgroundColor: KivoraColors.backgroundOf(context),
+        backgroundColor: RaayColors.backgroundOf(context),
         body: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: ResponsiveLayout.maxContentWidth),
@@ -390,7 +390,7 @@ class _StepTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final primary = Theme.of(context).colorScheme.primary;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),

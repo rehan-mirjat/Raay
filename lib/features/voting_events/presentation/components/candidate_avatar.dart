@@ -2,7 +2,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/theme/kivora_colors.dart';
+import '../../../../core/theme/raay_colors.dart';
 import '../../domain/candidate.dart';
 
 /// Download URL for a candidate photo stored at [path]. The backend stores only
@@ -35,7 +35,7 @@ class CandidateAvatar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final legacy = candidate.photoUrl;
     final path = candidate.photoPath;
 

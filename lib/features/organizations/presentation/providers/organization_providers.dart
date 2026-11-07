@@ -116,7 +116,7 @@ class ActiveOrgIdNotifier extends StateNotifier<String?> {
     }
 
     final prefs = await SharedPreferences.getInstance();
-    final key = 'kivora_active_org_id_${user.uid}';
+    final key = 'raay_active_org_id_${user.uid}';
     state = prefs.getString(key);
   }
 
@@ -126,7 +126,7 @@ class ActiveOrgIdNotifier extends StateNotifier<String?> {
 
     state = orgId;
     final prefs = await SharedPreferences.getInstance();
-    final key = 'kivora_active_org_id_${user.uid}';
+    final key = 'raay_active_org_id_${user.uid}';
     await prefs.setString(key, orgId);
   }
 
@@ -135,7 +135,7 @@ class ActiveOrgIdNotifier extends StateNotifier<String?> {
     state = null;
     if (user != null) {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('kivora_active_org_id_${user.uid}');
+      await prefs.remove('raay_active_org_id_${user.uid}');
     }
   }
 }

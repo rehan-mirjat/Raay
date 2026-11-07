@@ -2,11 +2,11 @@ import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../core/utils/status_text.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kivora/core/theme/kivora_icons.dart';
-import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
+import 'package:raay/core/theme/raay_icons.dart';
+import 'package:raay/core/widgets/ui_kit/raay_button.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../data/organization_repository.dart';
 import '../domain/organization_enums.dart';
@@ -86,7 +86,7 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final screenWidth = MediaQuery.sizeOf(context).width;
 
     final targetUid = widget.memberData['userId'] as String? ?? '';
@@ -97,6 +97,7 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
     final statusStr = widget.memberData['status'] as String? ?? 'active';
     final deptName = widget.memberData['departmentName'] as String? ??
         AppLocalizations.of(context).mpNone;
+    final transferDoneMessage = AppLocalizations.of(context).mpTransferDone;
     final isTargetObserver = widget.memberData['isObserver'] as bool? ?? false;
 
     final isTargetOwner = roleStr.toLowerCase() == 'owner';
@@ -171,7 +172,8 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(KivoraIcons.x, size: 20),
+                      tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                      icon: const Icon(RaayIcons.x, size: 20),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ],
@@ -197,6 +199,29 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     isTargetObserver
                         ? AppLocalizations.of(context).mpGranted
                         : AppLocalizations.of(context).mpNone),
+                if (isCallerOwner && !isTargetOwner && isTargetActive) ...[
+                  const SizedBox(height: 12),
+                  RaayButton(
+                    type: RaayButtonType.secondary,
+                    icon: RaayIcons.shieldCheck,
+                    label: AppLocalizations.of(context).mpTransferLabel,
+                    onPressed: () async {
+                      final confirmed = await _confirm(
+                        title: AppLocalizations.of(context).mpTransferTitle,
+                        message: AppLocalizations.of(context).mpTransferMessage(displayName),
+                        confirmLabel: AppLocalizations.of(context).mpTransferConfirm,
+                      );
+                      if (!confirmed || !mounted) return;
+                      await _performAction(
+                        () => repo.transferOwnership(
+                          organizationId: widget.organizationId,
+                          targetUid: targetUid,
+                        ),
+                        transferDoneMessage,
+                      );
+                    },
+                  ),
+                ],
                 if (_isLoading) ...[
                   const SizedBox(height: 16),
                   const LoadingView(),
@@ -204,9 +229,9 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                 const SizedBox(height: 24),
                 if (!_isLoading) ...[
                   if (canManageRole && isTargetMember) ...[
-                    KivoraButton(
-                      type: KivoraButtonType.secondary,
-                      icon: KivoraIcons.shieldCheck,
+                    RaayButton(
+                      type: RaayButtonType.secondary,
+                      icon: RaayIcons.shieldCheck,
                       label: AppLocalizations.of(context).mpPromote,
                       onPressed: () => _performAction(
                         () => repo.updateMemberRole(
@@ -219,9 +244,9 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     const SizedBox(height: 10),
                   ],
                   if (canManageRole && isTargetAdmin) ...[
-                    KivoraButton(
-                      type: KivoraButtonType.secondary,
-                      icon: KivoraIcons.user,
+                    RaayButton(
+                      type: RaayButtonType.secondary,
+                      icon: RaayIcons.user,
                       label: AppLocalizations.of(context).mpDemote,
                       onPressed: () => _performAction(
                         () => repo.updateMemberRole(
@@ -234,9 +259,9 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     const SizedBox(height: 10),
                   ],
                   if (canManageObserver && !isTargetObserver) ...[
-                    KivoraButton(
-                      type: KivoraButtonType.secondary,
-                      icon: KivoraIcons.eye,
+                    RaayButton(
+                      type: RaayButtonType.secondary,
+                      icon: RaayIcons.eye,
                       label: AppLocalizations.of(context).mpGrantObserver,
                       onPressed: () => _performAction(
                         () => repo.setObserverStatus(
@@ -249,9 +274,9 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     const SizedBox(height: 10),
                   ],
                   if (canManageObserver && isTargetObserver) ...[
-                    KivoraButton(
-                      type: KivoraButtonType.secondary,
-                      icon: KivoraIcons.eyeOff,
+                    RaayButton(
+                      type: RaayButtonType.secondary,
+                      icon: RaayIcons.eyeOff,
                       label: AppLocalizations.of(context).mpRevokeObserver,
                       onPressed: () => _performAction(
                         () => repo.setObserverStatus(
@@ -264,9 +289,9 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     const SizedBox(height: 10),
                   ],
                   if (canManageStatus && isTargetActive) ...[
-                    KivoraButton(
-                      type: KivoraButtonType.secondary,
-                      icon: KivoraIcons.userX,
+                    RaayButton(
+                      type: RaayButtonType.secondary,
+                      icon: RaayIcons.userX,
                       label: AppLocalizations.of(context).mpDeactivate,
                       onPressed: () => _performAction(
                         () => repo.updateMemberStatus(
@@ -279,9 +304,9 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     const SizedBox(height: 10),
                   ],
                   if (canManageStatus && !isTargetActive) ...[
-                    KivoraButton(
-                      type: KivoraButtonType.secondary,
-                      icon: KivoraIcons.userCheck,
+                    RaayButton(
+                      type: RaayButtonType.secondary,
+                      icon: RaayIcons.userCheck,
                       label: AppLocalizations.of(context).mpReactivate,
                       onPressed: () => _performAction(
                         () => repo.updateMemberStatus(
@@ -294,9 +319,9 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     const SizedBox(height: 10),
                   ],
                   if (canRemove) ...[
-                    KivoraButton(
-                      type: KivoraButtonType.destructive,
-                      icon: KivoraIcons.trash2,
+                    RaayButton(
+                      type: RaayButtonType.destructive,
+                      icon: RaayIcons.trash2,
                       label: AppLocalizations.of(context).mpRemove,
                       onPressed: () async {
                         final l = AppLocalizations.of(context);
@@ -318,8 +343,8 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
                     const SizedBox(height: 10),
                   ],
                 ],
-                KivoraButton(
-                  type: KivoraButtonType.ghost,
+                RaayButton(
+                  type: RaayButtonType.ghost,
                   label: AppLocalizations.of(context).mpClose,
                   onPressed: () => Navigator.pop(context),
                 ),
@@ -332,7 +357,7 @@ class _MemberProfileDialogState extends ConsumerState<MemberProfileDialog> {
   }
 
   Widget _infoRow(BuildContext context, String label, String value) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Wrap(

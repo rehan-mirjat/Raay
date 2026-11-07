@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../router/app_router.dart';
 
-/// Listens for kivora://invite?token=... deep links on native platforms
+/// Listens for raay://invite?token=... deep links on native platforms
 /// (Android/iOS) and routes them into the app. Web handles the equivalent
 /// https://.../invite?token=... URL directly through normal browser
 /// navigation and go_router - no listener needed there.
@@ -37,7 +37,7 @@ class DeepLinkHandler {
   }
 
   void _handle(Uri uri) {
-    if (uri.scheme != 'kivora' || uri.host != 'invite') return;
+    if (uri.scheme != 'raay' || uri.host != 'invite') return;
     final token = uri.queryParameters['token'];
     if (token == null || token.trim().isEmpty) return;
 

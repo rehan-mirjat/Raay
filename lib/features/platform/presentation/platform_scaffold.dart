@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/layout/responsive.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../services/auth_service.dart';
@@ -44,7 +44,7 @@ class PlatformPage extends ConsumerWidget {
                 title: AppLocalizations.of(context).plDeniedTitle,
                 message: AppLocalizations.of(context).plOnlySuper);
           }
-          final kc = KivoraColors.of(context);
+          final kc = RaayColors.of(context);
           final wide = ResponsiveLayout.isWide(context);
           return Center(
             child: ConstrainedBox(
@@ -104,7 +104,7 @@ class PlatformPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -143,7 +143,7 @@ class PlatformHeaderBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return SafeArea(
       bottom: false,
       child: Center(

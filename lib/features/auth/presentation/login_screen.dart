@@ -4,14 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/utils/error_utils.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/inline_error_banner.dart';
 import '../../../core/widgets/totp_challenge_dialog.dart';
-import '../../../core/widgets/ui_kit/kivora_button.dart';
-import '../../../core/widgets/ui_kit/kivora_text_field.dart';
-import 'package:kivora/core/theme/kivora_icons.dart';
+import '../../../core/widgets/ui_kit/raay_button.dart';
+import '../../../core/widgets/ui_kit/raay_text_field.dart';
+import 'package:raay/core/theme/raay_icons.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../services/auth_service.dart';
 import 'email_verification_screen.dart';
@@ -170,7 +170,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
 
     final isMobile = ResponsiveLayout.isCompact(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
 
     return AuthSplitLayout(
@@ -237,18 +237,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            KivoraTextField(
+                            RaayTextField(
                               label: l10n.authEmail,
                               controller: _emailController,
                               hint: 'user@email.com',
-                              prefixIcon: KivoraIcons.mail,
+                              prefixIcon: RaayIcons.mail,
                               keyboardType: TextInputType.emailAddress,
                               textInputAction: TextInputAction.next,
                               autofillHints: const [AutofillHints.email],
                               validator: Validators.email,
                             ),
                             const SizedBox(height: 16),
-                            KivoraTextField(
+                            RaayTextField(
                               label: l10n.authPassword,
                               controller: _passwordController,
                               obscureText: _obscurePassword,
@@ -256,12 +256,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               onFieldSubmitted: (_) => _submit(),
                               autofillHints: const [AutofillHints.password],
                               hint: '••••••••',
-                              prefixIcon: KivoraIcons.lock,
+                              prefixIcon: RaayIcons.lock,
                               suffixIcon: IconButton(
                                 icon: Icon(
                                     _obscurePassword
-                                        ? KivoraIcons.eyeOff
-                                        : KivoraIcons.eye,
+                                        ? RaayIcons.eyeOff
+                                        : RaayIcons.eye,
                                     size: 20),
                                 tooltip: _obscurePassword
                                     ? l10n.authShowPassword
@@ -289,10 +289,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         InlineErrorBanner(message: _error!),
                       ],
                       SizedBox(height: isMobile ? 20 : 24),
-                      KivoraButton(
+                      RaayButton(
                         onPressed: _submit,
                         isLoading: _isLoading,
-                        icon: KivoraIcons.shieldCheck,
+                        icon: RaayIcons.shieldCheck,
                         label: l10n.authSignInButton,
                       ),
                       SizedBox(height: isMobile ? 16 : 20),
@@ -311,8 +311,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ],
                       ),
                       SizedBox(height: isMobile ? 16 : 20),
-                      KivoraButton(
-                        type: KivoraButtonType.secondary,
+                      RaayButton(
+                        type: RaayButtonType.secondary,
                         onPressed: _isLoading ? null : _googleSignIn,
                         icon: null,
                         label: l10n.authContinueWithGoogle,

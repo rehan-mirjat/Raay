@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
+  static List<BoxShadow> cardShadow({required bool dark}) => [
+    BoxShadow(
+      color: dark ? const Color(0x33000000) : const Color(0x0F000000),
+      blurRadius: 16,
+      offset: const Offset(0, 4),
+    )
+  ];
   // ── Brand Colors ────────────────────────────────────────────────────────────
-  static const Color primaryBlue = Color(0xFF0F766E);   // Kivora Teal (primary, filled controls)
-  static const Color primaryBlueDark = Color(0xFF0B5F58);   // pressed / hover
+  static const Color primaryBlue = Color(0xFF6D4AFF);   // Raay Violet (primary, filled controls)
+  static const Color primaryBlueDark = Color(0xFF5936DB);   // pressed / hover
   static const Color secondaryBlue = Color(0xFF3284FF); // Secondary Blue
   static const Color accentCyan = Color(0xFF28C8FF);    // Accent Cyan
-  static const Color secondaryNavy = Color(0xFF142333); // Deep Navy (sidebar)
+  static const Color secondaryNavy = Color(0xFF0B1020); // Deep Midnight
 
   // ── Semantic Colors ──────────────────────────────────────────────────────────
   static const Color accentTeal = Color(0xFF10B981);    // Success / Verified
@@ -20,8 +27,8 @@ class AppTheme {
   // ── Accessible text accents (validated by docs/design/contrast_check.py) ───
   // primaryBlue is for FILLED controls (white label, 5.15:1). As text on dark
   // surfaces it fails (3.2:1), so text/links/selected states use these.
-  static const Color accentTextLight = Color(0xFF0B5F58);
-  static const Color accentTextDark = Color(0xFF5EEAD4);
+  static const Color accentTextLight = Color(0xFF5936DB);
+  static const Color accentTextDark = Color(0xFFB8A8FF);
   static const Color successTextLight = Color(0xFF0F7A4F);
   static const Color warningTextLight = Color(0xFF8A5A00);
   static const Color errorTextLight = Color(0xFFB42318);
@@ -32,50 +39,37 @@ class AppTheme {
   static const Color infoTextDark = Color(0xFF7DB8FF);
 
   // ── Light Mode Surfaces ──────────────────────────────────────────────────────
-  static const Color backgroundLight = Color(0xFFF4F6F8);
+  static const Color backgroundLight = Color(0xFFF7F8FC);
   static const Color surfaceWhite = Colors.white;
-  static const Color textPrimary = Color(0xFF17212F);
-  static const Color textSecondary = Color(0xFF526174);
-  static const Color borderLight = Color(0xFFDCE2E8);
-  static const Color surfaceBlue = Color(0xFFE6F4F2);   // Light teal tint
+  static const Color textPrimary = Color(0xFF172033);
+  static const Color textSecondary = Color(0xFF526078);
+  static const Color borderLight = Color(0xFFE2E7F0);
+  static const Color surfaceBlue = Color(0xFFF0EDFF);   // Light violet tint
 
   // ── Dark Mode Surfaces ───────────────────────────────────────────────────────
-  static const Color darkBackground = Color(0xFF0B1520);
-  static const Color darkSurface = Color(0xFF111F2E);
-  static const Color darkElevated = Color(0xFF172B3F);
-  static const Color darkBorder = Color(0xFF2A3E54);
-  static const Color darkTextPrimary = Color(0xFFF1F5F9);
-  static const Color darkTextSecondary = Color(0xFFA9B8C9);
+  static const Color darkBackground = Color(0xFF0F1420);
+  static const Color darkSurface = Color(0xFF171F2E);
+  static const Color darkElevated = Color(0xFF202B3D);
+  static const Color darkBorder = Color(0xFF354158);
+  static const Color darkTextPrimary = Color(0xFFF4F6FB);
+  static const Color darkTextSecondary = Color(0xFFB0BCD0);
 
   // ── Shape Scale ──────────────────────────────────────────────────────────────
   static const double radiusButton = 12.0;
   static const double radiusInput = 12.0;
-  static const double radiusCard = 16.0;
+  static const double radiusCard = 14.0;
   static const double radiusDialog = 16.0;
   static const double radiusSheet = 20.0;
 
-  // ── Depth ────────────────────────────────────────────────────────────────────
-  /// Soft two-layer shadow shared by cards: a tight contact shadow and a wide,
-  /// low ambient one. Decoration only; borders still carry the shape.
-  static List<BoxShadow> cardShadow({required bool dark}) => dark
-      ? [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.35), blurRadius: 3, offset: const Offset(0, 1)),
-          BoxShadow(color: Colors.black.withValues(alpha: 0.28), blurRadius: 28, offset: const Offset(0, 10)),
-        ]
-      : [
-          BoxShadow(color: secondaryNavy.withValues(alpha: 0.05), blurRadius: 2, offset: const Offset(0, 1)),
-          BoxShadow(color: secondaryNavy.withValues(alpha: 0.07), blurRadius: 24, offset: const Offset(0, 8)),
-        ];
-
   // ── Gradient Helpers ─────────────────────────────────────────────────────────
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [Color(0xFF0F766E), Color(0xFF0E7490)],
-    begin: AlignmentDirectional.topStart,
-    end: AlignmentDirectional.bottomEnd,
+    colors: [Color(0xFF7857F7), Color(0xFF3284FF)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
   );
 
   static const LinearGradient darkHeroGradient = LinearGradient(
-    colors: [Color(0xFF0F2233), Color(0xFF16344A)],
+    colors: [Color(0xFF151B30), Color(0xFF202740)],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );

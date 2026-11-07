@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/layout/responsive.dart';
-import '../../../core/theme/kivora_colors.dart';
-import '../../../core/theme/kivora_icons.dart';
+import '../../../core/theme/raay_colors.dart';
+import '../../../core/theme/raay_icons.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/hero_banner.dart';
@@ -42,10 +42,10 @@ class VoterPortalScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     const body = _VoterPortalBody();
     if (embedded) {
-      return ColoredBox(color: KivoraColors.backgroundOf(context), child: body);
+      return ColoredBox(color: RaayColors.backgroundOf(context), child: body);
     }
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: RaayColors.backgroundOf(context),
       body: const SafeArea(child: body),
     );
   }
@@ -140,7 +140,7 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
               child: SizedBox(
                 height: 420,
                 child: EmptyView(
-                  icon: KivoraIcons.vote,
+                  icon: RaayIcons.vote,
                   title: l10n.voterNoElectionsTitle,
                   message: l10n.voterNoElectionsBody,
                 ),
@@ -209,7 +209,7 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
           HeroAction(
             filled: ready.isEmpty,
             label: l10n.voterCalendar,
-            icon: KivoraIcons.calendar,
+            icon: RaayIcons.calendar,
             onPressed: () => context.go('/calendar'),
           ),
         ],
@@ -241,7 +241,7 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
         onChanged: (_) => setState(() => _visibleCount = _pageSize),
         decoration: InputDecoration(
           hintText: l10n.voterSearchHint,
-          prefixIcon: const Icon(KivoraIcons.search),
+          prefixIcon: const Icon(RaayIcons.search),
         ),
       ),
       const SizedBox(height: 12),
@@ -283,7 +283,7 @@ class _VoterPortalBodyState extends ConsumerState<_VoterPortalBody> {
       children.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 40),
         child: EmptyView(
-          icon: KivoraIcons.search,
+          icon: RaayIcons.search,
           title: l10n.voterNoMatchTitle,
           message: l10n.voterNoMatchBody,
         ),
@@ -350,7 +350,7 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Semantics(
@@ -374,7 +374,7 @@ class _WarningBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(

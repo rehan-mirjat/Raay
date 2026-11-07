@@ -4,7 +4,7 @@ import {
   CALLABLE_OPTIONS, EVENT_STATUS,
   enforceRateLimit, failWith, loadEventAsAdmin, requireAuth, requireId, writeAudit,
 } from "./votingCommon";
-import { requireNotRevoked, requireRecentAuthentication, requireMfaEnrolled } from "../utils/authorization";
+import { requireNotRevoked, requireRecentAuthentication, requireMfaVerified } from "../utils/authorization";
 
 export const closeVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
   const uid = requireAuth(request);
@@ -13,7 +13,7 @@ export const closeVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
   // FR-10 / MFA-REQ-001: closing a voting event is a sensitive operation.
   await requireNotRevoked(request);
   requireRecentAuthentication(request.auth);
-  await requireMfaEnrolled(uid);
+  await requireMfaVerified(request.auth);
 
   const db = getFirestore();
   await enforceRateLimit(db, uid, "closeVotingEvent");

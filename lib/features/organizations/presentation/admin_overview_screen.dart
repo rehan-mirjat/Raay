@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../departments/presentation/providers/department_providers.dart';
 import '../../voting_events/data/voting_event_repository.dart';
@@ -36,7 +36,7 @@ class AdminOverviewScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final org = orgContext.organization;
     final role = orgContext.member.role;
     final isOwner = role == OrganizationRole.owner;
@@ -169,7 +169,7 @@ class AdminOverviewScreen extends ConsumerWidget {
 }
 
 /// Bordered rounded surface that, unlike a DecoratedBox, lets ListTile ink show.
-ShapeBorder _cardShape(KivoraColors kc) => RoundedRectangleBorder(
+ShapeBorder _cardShape(RaayColors kc) => RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(AppTheme.radiusCard),
       side: BorderSide(color: kc.border),
     );
@@ -204,7 +204,7 @@ class _RequiredActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
@@ -277,7 +277,7 @@ class _MetricTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     final text = switch (value) {
       MetricCount(:final count) => '$count',
@@ -325,7 +325,7 @@ class _ElectionsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
 
     Widget body = eventsAsync.when(
@@ -388,7 +388,7 @@ class _Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -412,7 +412,7 @@ class _Shortcuts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     final items = [
       (Icons.groups_outlined, l10n.overviewShortcutPeople, '/orgs/members'),
@@ -491,7 +491,7 @@ class _ActivitySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     final logs = ref.watch(organizationAuditLogsProvider(orgId));
 

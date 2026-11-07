@@ -1,7 +1,7 @@
-# Kivora Premium UI/UX Transformation Proposal
+# raay Premium UI/UX Transformation Proposal
 
 ## Executive Summary
-This document serves as the Phase 1 & 2 deliverable for the Kivora UI/UX Modernization. Based on the `Kivora_Screen_Reference.docx` and the provided high-fidelity mockups, this proposal outlines the exact technical mapping, design tokens, and component architecture required to transform Kivora into a premium SaaS product. 
+This document serves as the Phase 1 & 2 deliverable for the raay UI/UX Modernization. Based on the `raay_Screen_Reference.docx` and the provided high-fidelity mockups, this proposal outlines the exact technical mapping, design tokens, and component architecture required to transform raay into a premium SaaS product. 
 
 **Zero functionality will be removed. Backend schemas, Firebase Auth, voting transaction safety, and role-based permissions will remain exactly as they are.** Brand logos and core icons are preserved.
 
@@ -49,7 +49,7 @@ The project currently uses Riverpod for state management, go_router for navigati
 
 ## Phase 2: Design System Proposal
 
-We will centralize all UI definitions in a new `KivoraDesignSystem` class (replacing the current standard `AppTheme`).
+We will centralize all UI definitions in a new `raayDesignSystem` class (replacing the current standard `AppTheme`).
 
 ### 1. Typography
 *   **Font Family:** `Plus Jakarta Sans` (to be added to pubspec.yaml via google_fonts if not already present, or downloaded as assets).
@@ -75,14 +75,14 @@ Derived directly from the mockups:
 
 ### 4. Component Architecture
 We will build a strict UI kit in `lib/core/widgets/ui_kit/` before updating individual screens:
-*   `KivoraButton` (Primary gradient, Secondary outline, Ghost, Destructive)
-*   `KivoraCard` (Glassmorphic in dark mode, flat with subtle shadow in light mode)
-*   `KivoraTextField` (Floating labels, solid background fill, distinct focus ring)
-*   `KivoraBottomNav` (Floating pill style or cleanly separated bottom bar)
-*   `KivoraSidebar` (Desktop navigation rail with expand/collapse)
-*   `KivoraAvatar` (Standardized sizing, automated initials fallback)
-*   `KivoraMetricCard` (Used on dashboards for Turnout, Total Members, etc.)
-*   `KivoraProgressBar` (Animated widths, glowing trails)
+*   `raayButton` (Primary gradient, Secondary outline, Ghost, Destructive)
+*   `raayCard` (Glassmorphic in dark mode, flat with subtle shadow in light mode)
+*   `raayTextField` (Floating labels, solid background fill, distinct focus ring)
+*   `raayBottomNav` (Floating pill style or cleanly separated bottom bar)
+*   `raaySidebar` (Desktop navigation rail with expand/collapse)
+*   `raayAvatar` (Standardized sizing, automated initials fallback)
+*   `raayMetricCard` (Used on dashboards for Turnout, Total Members, etc.)
+*   `raayProgressBar` (Animated widths, glowing trails)
 
 ### 5. Layout Paradigms
 *   **Mobile (< 600px):** Full-width lists, bottom sheet modals, sticky bottom action bars, AppBars with centered titles.
@@ -93,7 +93,7 @@ We will build a strict UI kit in `lib/core/widgets/ui_kit/` before updating indi
 
 ## Next Steps (Awaiting Approval)
 If this audit and design proposal is approved, Phase 4 (Implementation) will proceed in the following safe, reversible order:
-1.  **Foundation:** Install `lucide_icons` and `google_fonts`. Implement the raw `KivoraDesignSystem` tokens.
+1.  **Foundation:** Install `lucide_icons` and `google_fonts`. Implement the raw `raayDesignSystem` tokens.
 2.  **Core Components:** Build the reusable UI Kit widgets.
 3.  **Shell & Navigation:** Overhaul `AppNavigationShell` to match the Premium Desktop Sidebar / Mobile Bottom Nav mockup.
 4.  **Screen Upgrades:** Progressively convert features (Auth -> Dashboard -> Org Management -> Voting) without touching business logic.

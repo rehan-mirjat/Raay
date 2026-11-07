@@ -1,10 +1,14 @@
+import 'dart:convert';
+
+import 'package:file_picker/file_picker.dart';
 import '../../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/theme/app_theme.dart';
-import '../../../../../core/theme/kivora_colors.dart';
-import '../../../../../core/theme/kivora_icons.dart';
-import '../../../../../core/widgets/ui_kit/kivora_button.dart';
-import '../../../../../core/widgets/ui_kit/kivora_text_field.dart';
+import '../../../../../core/theme/raay_colors.dart';
+import '../../../../../core/theme/raay_icons.dart';
+import '../../../../../core/widgets/ui_kit/raay_button.dart';
+import '../../../../../core/widgets/ui_kit/raay_text_field.dart';
+import '../../../domain/csv_email_parser.dart';
 
 class CsvImportModal extends StatefulWidget {
   final List<Map<String, dynamic>> organizationMembers;
@@ -23,27 +27,50 @@ class _CsvImportModalState extends State<CsvImportModal> {
   List<String> _matchedUserIds = [];
   List<String> _unmatchedEmails = [];
   bool _hasParsed = false;
+  bool _isPickingFile = false;
+  String? _fileError;
+
+  Future<void> _pickCsvFile() async {
+    setState(() {
+      _isPickingFile = true;
+      _fileError = null;
+    });
+    try {
+      final result = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: const ['csv'],
+        allowMultiple: false,
+        withData: true,
+      );
+      if (result == null || result.files.isEmpty || !mounted) return;
+      final file = result.files.single;
+      final bytes = file.bytes;
+      if (bytes == null) {
+        throw const FormatException('Could not read this file.');
+      }
+      if (bytes.length > 2 * 1024 * 1024) {
+        throw const FormatException('CSV file must be 2 MB or smaller.');
+      }
+      final content = utf8.decode(bytes, allowMalformed: false);
+      _csvController.text = content;
+      setState(() {
+        _hasParsed = false;
+        _fileError = null;
+      });
+    } on FormatException catch (error) {
+      if (mounted) setState(() => _fileError = error.message);
+    } catch (_) {
+      if (mounted) setState(() => _fileError = 'Unable to open this CSV file.');
+    } finally {
+      if (mounted) setState(() => _isPickingFile = false);
+    }
+  }
 
   void _parseCsv() {
     final text = _csvController.text.trim();
     if (text.isEmpty) return;
 
-    // Split by newlines, commas, or semicolons
-    final lines = text.split(RegExp(r'[\r\n,;]+'));
-    final emailSet = <String>{};
-
-    for (var line in lines) {
-      final cleaned = line.trim().toLowerCase();
-      // Basic email regex match or simple string cleanup
-      if (cleaned.contains('@') && cleaned.contains('.')) {
-        // Strip quotes or extra text if any
-        final match = RegExp(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')
-            .stringMatch(cleaned);
-        if (match != null) {
-          emailSet.add(match.toLowerCase());
-        }
-      }
-    }
+    final emailSet = const CsvEmailParser().parse(text).toSet();
 
     final matchedUids = <String>[];
     final unmatched = <String>[];
@@ -70,7 +97,7 @@ class _CsvImportModalState extends State<CsvImportModal> {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
 
     return Dialog(
       shape: RoundedRectangleBorder(
@@ -96,8 +123,8 @@ class _CsvImportModalState extends State<CsvImportModal> {
                           color: AppTheme.primaryBlue.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Icon(KivoraIcons.fileSpreadsheet,
-                            color: KivoraColors.of(context).accentText,
+                        child: Icon(RaayIcons.fileSpreadsheet,
+                            color: RaayColors.of(context).accentText,
                             size: 20),
                       ),
                       const SizedBox(width: 12),
@@ -112,7 +139,8 @@ class _CsvImportModalState extends State<CsvImportModal> {
                     ],
                   ),
                   IconButton(
-                    icon: const Icon(KivoraIcons.x, size: 20),
+                    tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                    icon: const Icon(RaayIcons.x, size: 20),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],
@@ -124,7 +152,27 @@ class _CsvImportModalState extends State<CsvImportModal> {
                     fontSize: 13, color: kc.textSecondary, height: 1.4),
               ),
               const SizedBox(height: 20),
-              KivoraTextField(
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: OutlinedButton.icon(
+                  onPressed: _isPickingFile ? null : _pickCsvFile,
+                  icon: _isPickingFile
+                      ? const SizedBox.square(
+                          dimension: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.upload_file_rounded),
+                  label: Text(AppLocalizations.of(context).ciChooseFile),
+                ),
+              ),
+              if (_fileError != null) ...[
+                const SizedBox(height: 8),
+                Text(_fileError!,
+                    style:
+                        TextStyle(color: RaayColors.of(context).errorText)),
+              ],
+              const SizedBox(height: 8),
+              RaayTextField(
                 controller: _csvController,
                 label: AppLocalizations.of(context).ciLabel,
                 hint: AppLocalizations.of(context).ciHint,
@@ -132,9 +180,9 @@ class _CsvImportModalState extends State<CsvImportModal> {
               ),
               const SizedBox(height: 16),
               if (!_hasParsed)
-                KivoraButton(
+                RaayButton(
                   label: AppLocalizations.of(context).ciParse,
-                  icon: KivoraIcons.check,
+                  icon: RaayIcons.check,
                   onPressed: _parseCsv,
                 )
               else ...[
@@ -161,8 +209,8 @@ class _CsvImportModalState extends State<CsvImportModal> {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(KivoraIcons.checkCircle2,
-                              color: KivoraColors.of(context).successText,
+                          Icon(RaayIcons.checkCircle2,
+                              color: RaayColors.of(context).successText,
                               size: 16),
                           const SizedBox(width: 8),
                           Text(
@@ -180,8 +228,8 @@ class _CsvImportModalState extends State<CsvImportModal> {
                         const SizedBox(height: 6),
                         Row(
                           children: [
-                            Icon(KivoraIcons.alertTriangle,
-                                color: KivoraColors.of(context).warningText,
+                            Icon(RaayIcons.alertTriangle,
+                                color: RaayColors.of(context).warningText,
                                 size: 16),
                             const SizedBox(width: 8),
                             Expanded(
@@ -204,18 +252,18 @@ class _CsvImportModalState extends State<CsvImportModal> {
                 Row(
                   children: [
                     Expanded(
-                      child: KivoraButton(
-                        type: KivoraButtonType.secondary,
+                      child: RaayButton(
+                        type: RaayButtonType.secondary,
                         label: AppLocalizations.of(context).ciReedit,
                         onPressed: () => setState(() => _hasParsed = false),
                       ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: KivoraButton(
+                      child: RaayButton(
                         label: AppLocalizations.of(context)
                             .ciApply(_matchedUserIds.length.toString()),
-                        icon: KivoraIcons.userCheck,
+                        icon: RaayIcons.userCheck,
                         onPressed: _matchedUserIds.isEmpty
                             ? null
                             : () => Navigator.pop(context, _matchedUserIds),

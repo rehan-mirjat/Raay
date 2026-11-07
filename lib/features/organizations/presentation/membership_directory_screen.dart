@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
@@ -15,13 +15,15 @@ import '../domain/member_filter.dart';
 import '../domain/organization_enums.dart';
 import '../data/organization_repository.dart';
 import 'invite_member_dialog.dart';
+import 'bulk_invite_dialog.dart';
 import 'add_existing_member_dialog.dart';
 import 'member_profile_dialog.dart';
 import 'providers/organization_providers.dart';
 import 'pending_invitations_widget.dart';
 
 final organizationMembersDirectoryProvider =
-    FutureProvider.family<List<Map<String, dynamic>>, String>((ref, orgId) async {
+    FutureProvider.family<List<Map<String, dynamic>>, String>(
+        (ref, orgId) async {
   final repo = ref.watch(organizationRepositoryProvider);
   final result = await repo.getOrganizationMembers(organizationId: orgId);
   return result.members;
@@ -31,10 +33,12 @@ class MembershipDirectoryScreen extends ConsumerStatefulWidget {
   const MembershipDirectoryScreen({super.key});
 
   @override
-  ConsumerState<MembershipDirectoryScreen> createState() => _MembershipDirectoryScreenState();
+  ConsumerState<MembershipDirectoryScreen> createState() =>
+      _MembershipDirectoryScreenState();
 }
 
-class _MembershipDirectoryScreenState extends ConsumerState<MembershipDirectoryScreen> {
+class _MembershipDirectoryScreenState
+    extends ConsumerState<MembershipDirectoryScreen> {
   final _searchController = TextEditingController();
   final _searchFocusNode = FocusNode();
   String _query = '';
@@ -54,7 +58,8 @@ class _MembershipDirectoryScreenState extends ConsumerState<MembershipDirectoryS
         MemberFilter.notActive => l10n.peopleFilterNotActive,
       };
 
-  Future<void> _openInvite(String orgId, String orgName, OrganizationRole role) async {
+  Future<void> _openInvite(
+      String orgId, String orgName, OrganizationRole role) async {
     await showDialog<bool>(
       context: context,
       builder: (_) => InviteMemberDialog(
@@ -78,10 +83,20 @@ class _MembershipDirectoryScreenState extends ConsumerState<MembershipDirectoryS
     }
   }
 
+  Future<void> _openBulkInvite(String orgId) async {
+    final created = await showDialog<bool>(
+      context: context,
+      builder: (_) => BulkInviteDialog(organizationId: orgId),
+    );
+    if (created == true && mounted) {
+      ref.invalidate(pendingInvitationsProvider(orgId));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final bg = KivoraColors.backgroundOf(context);
+    final bg = RaayColors.backgroundOf(context);
     final state = ref.watch(activeOrganizationContextProvider);
 
     return state.when(
@@ -118,10 +133,11 @@ class _MembershipDirectoryScreenState extends ConsumerState<MembershipDirectoryS
           );
         }
 
-        final membersAsync = ref.watch(organizationMembersDirectoryProvider(orgId));
+        final membersAsync =
+            ref.watch(organizationMembersDirectoryProvider(orgId));
         final isDesktop = ResponsiveLayout.isWide(context);
         final hPad = isDesktop ? 32.0 : 16.0;
-        final kc = KivoraColors.of(context);
+        final kc = RaayColors.of(context);
 
         // "/" focuses search unless it already has focus (a shortcut binding
         // would swallow the keystroke while typing).
@@ -140,20 +156,23 @@ class _MembershipDirectoryScreenState extends ConsumerState<MembershipDirectoryS
             color: bg,
             child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: ResponsiveLayout.maxContentWidth),
+                constraints: const BoxConstraints(
+                    maxWidth: ResponsiveLayout.maxContentWidth),
                 child: RefreshIndicator(
                   onRefresh: () async {
                     ref.invalidate(organizationMembersDirectoryProvider(orgId));
                     ref.invalidate(pendingInvitationsProvider(orgId));
                     try {
-                      await ref.read(organizationMembersDirectoryProvider(orgId).future);
+                      await ref.read(
+                          organizationMembersDirectoryProvider(orgId).future);
                     } catch (_) {}
                   },
                   child: CustomScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     slivers: [
                       SliverPadding(
-                        padding: EdgeInsets.fromLTRB(hPad, isDesktop ? 28 : 16, hPad, 12),
+                        padding: EdgeInsets.fromLTRB(
+                            hPad, isDesktop ? 28 : 16, hPad, 12),
                         sliver: SliverToBoxAdapter(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -165,9 +184,11 @@ class _MembershipDirectoryScreenState extends ConsumerState<MembershipDirectoryS
                                 runSpacing: 12,
                                 children: [
                                   ConstrainedBox(
-                                    constraints: const BoxConstraints(maxWidth: 560),
+                                    constraints:
+                                        const BoxConstraints(maxWidth: 560),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Semantics(
                                           header: true,
@@ -179,23 +200,42 @@ class _MembershipDirectoryScreenState extends ConsumerState<MembershipDirectoryS
                                         ),
                                         const SizedBox(height: 4),
                                         Text(l10n.peopleSubtitle,
-                                            style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: kc.textSecondary)),
                                       ],
                                     ),
                                   ),
                                   Wrap(spacing: 8, runSpacing: 8, children: [
                                     OutlinedButton.icon(
-                                      style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
+                                      style: OutlinedButton.styleFrom(
+                                          minimumSize: const Size(48, 48)),
                                       onPressed: () => _openAddExisting(orgId),
-                                      icon: const Icon(Icons.person_add_alt_outlined, size: 18),
+                                      icon: const Icon(
+                                          Icons.person_add_alt_outlined,
+                                          size: 18),
                                       label: Text(l10n.peopleAddExisting),
                                     ),
                                     FilledButton.icon(
-                                      style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+                                      style: FilledButton.styleFrom(
+                                          minimumSize: const Size(48, 48)),
                                       onPressed: () => _openInvite(
-                                          orgId, orgContext.organization.name, callerRole),
-                                      icon: const Icon(Icons.mail_outline_rounded, size: 18),
+                                          orgId,
+                                          orgContext.organization.name,
+                                          callerRole),
+                                      icon: const Icon(
+                                          Icons.mail_outline_rounded,
+                                          size: 18),
                                       label: Text(l10n.peopleInvite),
+                                    ),
+                                    OutlinedButton.icon(
+                                      style: OutlinedButton.styleFrom(
+                                          minimumSize: const Size(48, 48)),
+                                      onPressed: () => _openBulkInvite(orgId),
+                                      icon: const Icon(
+                                          Icons.upload_file_rounded,
+                                          size: 18),
+                                      label: Text(AppLocalizations.of(context).directoryImportCsv),
                                     ),
                                   ]),
                                 ],
@@ -207,14 +247,16 @@ class _MembershipDirectoryScreenState extends ConsumerState<MembershipDirectoryS
                                 textInputAction: TextInputAction.search,
                                 decoration: InputDecoration(
                                   hintText: l10n.peopleSearchHint,
-                                  prefixIcon: const Icon(Icons.search_rounded, size: 20),
+                                  prefixIcon: const Icon(Icons.search_rounded,
+                                      size: 20),
                                   suffixIcon: _query.isEmpty
                                       ? null
                                       : IconButton(
                                           tooltip: l10n.peopleSearchClear,
-                                          constraints:
-                                              const BoxConstraints(minWidth: 48, minHeight: 48),
-                                          icon: const Icon(Icons.close_rounded, size: 18),
+                                          constraints: const BoxConstraints(
+                                              minWidth: 48, minHeight: 48),
+                                          icon: const Icon(Icons.close_rounded,
+                                              size: 18),
                                           onPressed: () {
                                             _searchController.clear();
                                             setState(() => _query = '');
@@ -227,11 +269,13 @@ class _MembershipDirectoryScreenState extends ConsumerState<MembershipDirectoryS
                               Wrap(spacing: 8, runSpacing: 8, children: [
                                 for (final f in MemberFilter.values)
                                   ChoiceChip(
-                                    materialTapTargetSize: MaterialTapTargetSize.padded,
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.padded,
                                     showCheckmark: true,
                                     label: Text(_filterLabel(l10n, f)),
                                     selected: _filter == f,
-                                    onSelected: (_) => setState(() => _filter = f),
+                                    onSelected: (_) =>
+                                        setState(() => _filter = f),
                                   ),
                               ]),
                             ],
@@ -247,7 +291,8 @@ class _MembershipDirectoryScreenState extends ConsumerState<MembershipDirectoryS
                           ),
                         ),
                       ),
-                      ..._memberSlivers(context, l10n, membersAsync, orgId, callerRole, hPad),
+                      ..._memberSlivers(
+                          context, l10n, membersAsync, orgId, callerRole, hPad),
                     ],
                   ),
                 ),
@@ -268,14 +313,17 @@ class _MembershipDirectoryScreenState extends ConsumerState<MembershipDirectoryS
     double hPad,
   ) {
     return membersAsync.when(
-      loading: () => [const SliverFillRemaining(hasScrollBody: false, child: LoadingView())],
+      loading: () => [
+        const SliverFillRemaining(hasScrollBody: false, child: LoadingView())
+      ],
       error: (_, __) => [
         SliverFillRemaining(
           hasScrollBody: false,
           child: ErrorView(
             type: ErrorViewType.generic,
             message: l10n.peopleLoadError,
-            onRetry: () => ref.invalidate(organizationMembersDirectoryProvider(orgId)),
+            onRetry: () =>
+                ref.invalidate(organizationMembersDirectoryProvider(orgId)),
           ),
         ),
       ],
@@ -287,9 +335,15 @@ class _MembershipDirectoryScreenState extends ConsumerState<MembershipDirectoryS
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: hPad, vertical: 24),
                 child: EmptyView(
-                  icon: members.isEmpty ? Icons.people_outline_rounded : Icons.search_off_rounded,
-                  title: members.isEmpty ? l10n.peopleNoMembersTitle : l10n.peopleNoMatchTitle,
-                  message: members.isEmpty ? l10n.peopleNoMembersBody : l10n.peopleNoMatchBody,
+                  icon: members.isEmpty
+                      ? Icons.people_outline_rounded
+                      : Icons.search_off_rounded,
+                  title: members.isEmpty
+                      ? l10n.peopleNoMembersTitle
+                      : l10n.peopleNoMatchTitle,
+                  message: members.isEmpty
+                      ? l10n.peopleNoMembersBody
+                      : l10n.peopleNoMatchBody,
                 ),
               ),
             ),
@@ -300,7 +354,9 @@ class _MembershipDirectoryScreenState extends ConsumerState<MembershipDirectoryS
             padding: EdgeInsets.fromLTRB(hPad, 16, hPad, 8),
             sliver: SliverToBoxAdapter(
               child: Text(l10n.peopleCount(filtered.length, members.length),
-                  style: TextStyle(fontSize: 14, color: KivoraColors.textSecondaryOf(context))),
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: RaayColors.textSecondaryOf(context))),
             ),
           ),
           SliverPadding(
@@ -318,7 +374,8 @@ class _MembershipDirectoryScreenState extends ConsumerState<MembershipDirectoryS
                       organizationId: orgId,
                       callerRole: callerRole,
                       memberData: member,
-                      onChanged: () => ref.invalidate(organizationMembersDirectoryProvider(orgId)),
+                      onChanged: () => ref.invalidate(
+                          organizationMembersDirectoryProvider(orgId)),
                     ),
                   ),
                 );
@@ -339,16 +396,18 @@ class MemberCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     final name = (member['displayName'] as String?)?.trim();
-    final shownName = (name == null || name.isEmpty) ? l10n.peopleUnknownUser : name;
+    final shownName =
+        (name == null || name.isEmpty) ? l10n.peopleUnknownUser : name;
     final email = member['email'] as String? ?? '';
     final role = memberRole(member);
     final status = ((member['status'] as String?) ?? 'active').toLowerCase();
     final active = memberIsActive(member);
     final deptName = member['departmentName'] as String?;
-    final rawPhotoUrl = (member['photoUrl'] as String?) ?? (member['photoURL'] as String?);
+    final rawPhotoUrl =
+        (member['photoUrl'] as String?) ?? (member['photoURL'] as String?);
     final photoUrl = FirebaseService.sanitizeStorageUrl(rawPhotoUrl);
     final primary = Theme.of(context).colorScheme.primary;
 
@@ -370,8 +429,10 @@ class MemberCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 22,
-                  backgroundColor: primary.withValues(alpha: active ? 0.12 : 0.06),
-                  backgroundImage: photoUrl.isNotEmpty ? NetworkImage(photoUrl) : null,
+                  backgroundColor:
+                      primary.withValues(alpha: active ? 0.12 : 0.06),
+                  backgroundImage:
+                      photoUrl.isNotEmpty ? NetworkImage(photoUrl) : null,
                   child: photoUrl.isEmpty
                       ? Text(shownName[0].toUpperCase(),
                           style: TextStyle(
@@ -391,20 +452,23 @@ class MemberCard extends StatelessWidget {
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
-                              color: active ? kc.textPrimary : kc.textSecondary)),
+                              color:
+                                  active ? kc.textPrimary : kc.textSecondary)),
                       if (email.isNotEmpty) ...[
                         const SizedBox(height: 4),
                         Text(email,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+                            style: TextStyle(
+                                fontSize: 14, color: kc.textSecondary)),
                       ],
                       if (deptName != null && deptName.isNotEmpty) ...[
                         const SizedBox(height: 2),
                         Text(deptName,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 14, color: kc.textSecondary)),
+                            style: TextStyle(
+                                fontSize: 14, color: kc.textSecondary)),
                       ],
                       const SizedBox(height: 8),
                       Wrap(spacing: 8, runSpacing: 8, children: [
@@ -412,7 +476,8 @@ class MemberCard extends StatelessWidget {
                         if (!active)
                           StatusBadge(
                             label: status.toUpperCase(),
-                            backgroundColor: kc.errorText.withValues(alpha: kc.isDark ? 0.16 : 0.10),
+                            backgroundColor: kc.errorText
+                                .withValues(alpha: kc.isDark ? 0.16 : 0.10),
                             textColor: kc.errorText,
                             icon: Icons.block_rounded,
                           ),
@@ -423,9 +488,10 @@ class MemberCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
-                  child: Icon(Directionality.of(context) == TextDirection.rtl
-                      ? Icons.chevron_left_rounded
-                      : Icons.chevron_right_rounded,
+                  child: Icon(
+                      Directionality.of(context) == TextDirection.rtl
+                          ? Icons.chevron_left_rounded
+                          : Icons.chevron_right_rounded,
                       color: kc.textSecondary),
                 ),
               ],

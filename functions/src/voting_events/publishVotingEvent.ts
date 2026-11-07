@@ -1,3 +1,6 @@
+import { assertIndependentApproval, launchApprovalContent } from '../governance/approvalPolicy';
+import { parseContests } from "../utils/multiContest";
+import { assertNominationsResolved } from "./manageNominations";
 import { requireLiveEventCapacity } from "../billing/plans";
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
@@ -6,7 +9,7 @@ import {
   assertDepartmentsInOrg, enforceRateLimit, failWith, loadEventAsAdmin, readEligibilityConfig,
   requireAuth, requireId, resolveEligibleUserIds, writeActivationDocs, writeAudit,
 } from "./votingCommon";
-import { requireNotRevoked, requireRecentAuthentication, requireMfaEnrolled } from "../utils/authorization";
+import { requireNotRevoked, requireRecentAuthentication, requireMfaVerified } from "../utils/authorization";
 
 export const publishVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
   const uid = requireAuth(request);
@@ -16,7 +19,7 @@ export const publishVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
   // TOTP enrollment UI ships in lib/core/widgets/totp_enroll_dialog.dart.
   await requireNotRevoked(request);
   requireRecentAuthentication(request.auth);
-  await requireMfaEnrolled(uid);
+  await requireMfaVerified(request.auth);
 
   const db = getFirestore();
   await enforceRateLimit(db, uid, "publishVotingEvent");
@@ -29,6 +32,7 @@ export const publishVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
       if (ev.status !== EVENT_STATUS.DRAFT) {
         throw new HttpsError("failed-precondition", `Only DRAFT events can be published. Current status: '${ev.status}'`);
       }
+      await assertNominationsResolved(tx, db, eventId, ev);
 
       // ---- Eligibility re-validation (departments AND members) ----
       const eligSnap = await tx.get(db.collection("votingEventEligibility").doc(eventId));
@@ -53,7 +57,9 @@ export const publishVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
       await requireLiveEventCapacity(db, tx, organizationId, orgPlanSnap.data());
 
       // ---- Candidate / option completeness ----
-      if (ev.votingType === "CANDIDATE_ELECTION") {
+      if (ev.ballotMode === "MULTI_CONTEST") {
+        parseContests(ev.contests);
+      } else if (ev.votingType === "CANDIDATE_ELECTION") {
         const snap = await tx.get(
           db.collection("candidates")
             .where("organizationId", "==", organizationId)
@@ -94,6 +100,11 @@ export const publishVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
         }
       }
 
+      if (ev.independentApprovalRequired === true) {
+        const content = await launchApprovalContent(tx, db, eventId, ev, eligibleNow);
+        await assertIndependentApproval(tx, db, eventId, ev, 'LAUNCH', uid, content);
+      }
+
       // ---- Time window & next status (server time) ----
       const trustedNow = Timestamp.now().toMillis();
       const startMillis = ev.startAt ? ev.startAt.toMillis() : trustedNow;
@@ -104,6 +115,9 @@ export const publishVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
       const nextStatus = startMillis > trustedNow ? EVENT_STATUS.SCHEDULED : EVENT_STATUS.ACTIVE;
 
       // ---- Writes ----
+      for (const roundId of ev.nominationRoundIds ?? []) {
+        tx.update(db.collection("nominationRounds").doc(roundId), { status: "FINALIZED", finalizedAt: FieldValue.serverTimestamp() });
+      }
       if (nextStatus === EVENT_STATUS.ACTIVE) {
         tx.update(eventRef, {
           status: nextStatus,

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 /// NOTE: The 'lucide_icons' package currently breaks Flutter Web builds 
 /// due to IconData being marked as final in recent Flutter SDKs. 
 /// We fallback to equivalent Material Rounded icons safely here.
-class KivoraIcons {
+class RaayIcons {
   static const IconData vote = Icons.how_to_vote_rounded;
   static const IconData user = Icons.person_outline_rounded;
   static const IconData userPlus = Icons.person_add_outlined;

@@ -8,13 +8,13 @@ import 'package:intl/intl.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
-import '../../../core/theme/kivora_icons.dart';
+import '../../../core/theme/raay_colors.dart';
+import '../../../core/theme/raay_icons.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/global_search_overlay.dart';
 import '../../../core/widgets/loading_view.dart';
-import '../../../core/widgets/ui_kit/kivora_metric_card.dart';
+import '../../../core/widgets/ui_kit/raay_metric_card.dart';
 import 'voter_portal_screen.dart' show AdaptiveCardGrid;
 import '../../organizations/domain/organization_enums.dart';
 import '../../organizations/presentation/membership_directory_screen.dart'
@@ -63,7 +63,7 @@ class _ElectionCommandCenterScreenState
     final orgState = ref.watch(activeOrganizationContextProvider);
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: RaayColors.backgroundOf(context),
       body: orgState.when(
         loading: () => const LoadingView(),
         error: (e, _) => ErrorView(
@@ -75,14 +75,14 @@ class _ElectionCommandCenterScreenState
           final orgContext = state.context;
           if (orgContext == null) {
             return EmptyView(
-              icon: KivoraIcons.building,
+              icon: RaayIcons.building,
               title: AppLocalizations.of(context).ccNoOrgTitle,
               message: AppLocalizations.of(context).ccNoOrgBody,
             );
           }
           if (!orgContext.member.role.isAdmin) {
             return EmptyView(
-              icon: KivoraIcons.lock,
+              icon: RaayIcons.lock,
               title: AppLocalizations.of(context).ccAdminTitle,
               message: AppLocalizations.of(context).ccAdminBody,
             );
@@ -149,7 +149,7 @@ class _ElectionCommandCenterScreenState
   }
 
   Widget _buildHeader(BuildContext context, bool orgSuspended) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final isDesktop = ResponsiveLayout.isWide(context);
 
     return Column(
@@ -177,7 +177,7 @@ class _ElectionCommandCenterScreenState
                   tooltip: AppLocalizations.of(context).ccSearch,
                   constraints:
                       const BoxConstraints(minWidth: 48, minHeight: 48),
-                  icon: const Icon(KivoraIcons.search),
+                  icon: const Icon(RaayIcons.search),
                   onPressed: () => showGlobalSearch(context),
                 ),
                 IconButton(
@@ -191,7 +191,7 @@ class _ElectionCommandCenterScreenState
                   style:
                       FilledButton.styleFrom(minimumSize: const Size(48, 48)),
                   onPressed: () => context.go('/admin/events/new'),
-                  icon: const Icon(KivoraIcons.plus, size: 18),
+                  icon: const Icon(RaayIcons.plus, size: 18),
                   label: Text(AppLocalizations.of(context).ccCreate),
                 ),
               ],
@@ -332,7 +332,7 @@ class _ElectionCommandCenterScreenState
               context,
               title: AppLocalizations.of(context).ccAlerts,
               icon: Icons.warning_amber_rounded,
-              accentColor: KivoraColors.of(context).errorText,
+              accentColor: RaayColors.of(context).errorText,
               child: Column(
                 children: misconfigured
                     .map((e) => _AlertTile(
@@ -440,36 +440,36 @@ class _ElectionCommandCenterScreenState
     int? totalMembers,
   ) {
     return [
-      KivoraMetricCard(
+      RaayMetricCard(
           title: AppLocalizations.of(context).ccStatTotal,
           value: '${all.length}',
-          icon: KivoraIcons.vote),
-      KivoraMetricCard(
+          icon: RaayIcons.vote),
+      RaayMetricCard(
           title: AppLocalizations.of(context).ccStatActive,
           value: '${active.length}',
           icon: Icons.sensors_rounded,
-          iconColor: KivoraColors.of(context).successText),
-      KivoraMetricCard(
+          iconColor: RaayColors.of(context).successText),
+      RaayMetricCard(
           title: AppLocalizations.of(context).ccStatScheduled,
           value: '${scheduled.length}',
           icon: Icons.schedule_rounded,
           iconColor: AppTheme.accentGold),
-      KivoraMetricCard(
+      RaayMetricCard(
           title: AppLocalizations.of(context).ccStatClosed,
           value: '${closed.length}',
           icon: Icons.task_alt_rounded,
           iconColor: AppTheme.textSecondary),
-      KivoraMetricCard(
+      RaayMetricCard(
           title: AppLocalizations.of(context).ccStatMembers,
           value: totalMembers?.toString() ?? '—',
-          icon: KivoraIcons.users,
+          icon: RaayIcons.users,
           subtitle: AppLocalizations.of(context).ccStatMembersSub,
           iconColor: AppTheme.secondaryBlue),
     ];
   }
 
   Widget _buildRecentActivity(BuildContext context, dynamic auditSnapshot) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     if (auditSnapshot == null) {
       return _emptyPanelText(
           context, AppLocalizations.of(context).ccNoActivity);
@@ -512,7 +512,7 @@ class _ElectionCommandCenterScreenState
 
   Widget _summaryRow(
       BuildContext context, String label, String value, VoidCallback onTap) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
@@ -535,7 +535,7 @@ class _ElectionCommandCenterScreenState
   }
 
   Widget _emptyPanelText(BuildContext context, String text) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child:
@@ -550,7 +550,7 @@ class _ElectionCommandCenterScreenState
     required Widget child,
     Color? accentColor,
   }) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final color = accentColor ?? AppTheme.primaryBlue;
     return Container(
       width: double.infinity,
@@ -596,7 +596,7 @@ class _AlertTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
@@ -627,14 +627,14 @@ class _ActiveEventTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final summaryAsync = ref.watch(eventMonitoringSummaryProvider(event.id));
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: KivoraColors.backgroundOf(context),
+        color: RaayColors.backgroundOf(context),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: kc.border),
       ),

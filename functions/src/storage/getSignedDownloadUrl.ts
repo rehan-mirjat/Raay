@@ -15,6 +15,17 @@ const SIGNED_URL_TTL_MS = 10 * 60 * 1000;
 type FileClass = "candidatePhoto" | "organizationLogo" | "profileAvatar";
 const FILE_CLASSES: FileClass[] = ["candidatePhoto", "organizationLogo", "profileAvatar"];
 
+/** Mirrors the candidate-photo READ expression in storage.rules exactly. */
+export function canReadCandidatePhoto(
+  role: string,
+  eventStatus: string,
+  organizationStatus: string,
+): boolean {
+  if (role === "owner" || role === "admin") return true;
+  return ["pending", "verified", "active"].includes(organizationStatus)
+    && eventStatus !== "DRAFT";
+}
+
 interface SignedUrlRequest {
   fileClass: FileClass;
   organizationId?: string;
@@ -46,12 +57,7 @@ export const getSignedDownloadUrl = onCall(async (request) => {
       throw new HttpsError("invalid-argument", "organizationId, eventId and candidateId are required.");
     }
 
-    // Matches storage.rules candidates/{photo.jpg}: any active member, no
-    // operational/draft gate on READ (that rule doesn't restrict reads by
-    // draft status either - this function intentionally mirrors it exactly,
-    // not a stricter policy, to avoid silently diverging from the approved
-    // Storage access model).
-    await requireActiveMembership(db, organizationId, uid);
+    const { role } = await requireActiveMembership(db, organizationId, uid);
 
     // Resource-ownership check: confirm the candidate actually belongs to
     // this organization and event before signing a URL for it, rather than
@@ -60,6 +66,20 @@ export const getSignedDownloadUrl = onCall(async (request) => {
     const candidateData = candidateSnap.data();
     if (!candidateSnap.exists || candidateData?.organizationId !== organizationId || candidateData?.votingEventId !== eventId) {
       throw new HttpsError("not-found", "Candidate not found in this organization/event.");
+    }
+
+    const [eventSnap, organizationSnap] = await Promise.all([
+      db.collection("votingEvents").doc(eventId).get(),
+      db.collection("organizations").doc(organizationId).get(),
+    ]);
+    const eventData = eventSnap.data();
+    const organizationStatus = organizationSnap.data()?.status;
+    if (!eventSnap.exists || eventData?.organizationId !== organizationId ||
+        typeof eventData.status !== "string" || typeof organizationStatus !== "string") {
+      throw new HttpsError("not-found", "Candidate event not found.");
+    }
+    if (!canReadCandidatePhoto(role, eventData.status, organizationStatus)) {
+      throw new HttpsError("permission-denied", "Candidate photos are not available for this event.");
     }
 
     filePath = `organizations/${organizationId}/events/${eventId}/candidates/${candidateId}/photo.jpg`;
@@ -78,9 +98,8 @@ export const getSignedDownloadUrl = onCall(async (request) => {
     }
     filePath = files[0].name;
   } else {
-    // profileAvatar - matches storage.rules users/{uid}/profile: any signedIn()
-    // user may read any profile avatar (needed so avatars render elsewhere in
-    // the app, e.g. the membership directory) - no further check beyond auth.
+    // profileAvatar - matches storage.rules users/{uid}/profile: any signed-in
+    // user may read profile avatars (used in organization member directories).
     const targetUid = typeof data.targetUid === "string" && data.targetUid.trim() ? data.targetUid.trim() : uid;
     const [files] = await bucket.getFiles({ prefix: `users/${targetUid}/profile/` });
     if (files.length === 0) {

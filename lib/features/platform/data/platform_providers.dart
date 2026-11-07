@@ -55,6 +55,22 @@ final platformReportsProvider =
           s.docs.map((d) => PlatformReport.fromMap(d.id, d.data())).toList());
 });
 
+/// Applies a server-authorized triage action; client rules do not allow report
+/// status writes, so every update is checked and audited by the callable.
+Future<void> updatePlatformReport(String reportId, String action) async {
+  await FirebaseService().functions.httpsCallable('updateUserReport').call({
+    'reportId': reportId,
+    'action': action,
+  });
+}
+
+typedef PlatformReportUpdater = Future<void> Function(
+    String reportId, String action);
+
+final platformReportUpdaterProvider = Provider<PlatformReportUpdater>(
+  (ref) => updatePlatformReport,
+);
+
 /// How many reports are still "open". (The analytics callable counts a
 /// different collection, `platformReports`, which nothing writes to.)
 final openReportCountProvider = FutureProvider.autoDispose<int>((ref) async {

@@ -25,7 +25,7 @@ class VoterPortalEntry {
     this.eligibility,
   });
 
-  /// The server's decision for the signed-in user (restricted elections only).
+  /// The server's decision for the signed-in user in an actionable election.
   final EligibilityDecision? eligibility;
 
   final VotingEvent event;
@@ -38,8 +38,7 @@ class VoterPortalEntry {
   /// returns, so a stale or wrong client guess here can only ever hide or
   /// show a button, never let someone vote who shouldn't be able to.
   bool get isLikelyEligible {
-    if (event.eligibilityType == EligibilityType.allMembers) return true;
-    // Restricted elections: the voter roll is private and server-side, so the
+    // The activation voter roll is private and server-side for every type, so the
     // server's per-user answer is the only source. No answer = unknown, which
     // still lets the vote action show (castVote enforces).
     return eligibility?.showsAsEligible ?? true;
@@ -76,12 +75,12 @@ final voterPortalEntriesProvider =
     for (final m in activeMemberships) m.organizationId: m
   };
 
-  final restricted = events
-      .where((e) => e.eligibilityType != EligibilityType.allMembers)
+  final actionable = events
+      .where((e) => e.status == VotingEventStatus.active || e.status == VotingEventStatus.scheduled)
       .map((e) => e.id)
       .toList();
   final decisions =
-      await ref.watch(eligibilityRepositoryProvider).fetchMine(restricted);
+      await ref.watch(eligibilityRepositoryProvider).fetchMine(actionable);
 
   return events
       .map((event) {
@@ -107,7 +106,9 @@ final participationStatusesProvider =
   final entries = await ref.watch(voterPortalEntriesProvider.future);
   final repo = ref.watch(participationRepositoryProvider);
 
-  final results = await Future.wait(entries.map((e) async {
+  final results = <MapEntry<String, ParticipationStatus>>[];
+  for (var offset = 0; offset < entries.length; offset += 20) {
+    results.addAll(await Future.wait(entries.skip(offset).take(20).map((e) async {
     if (uid == null) return MapEntry(e.event.id, ParticipationStatus.unknown);
     try {
       final voted = await repo.hasUserVoted(e.organization.id, e.event.id, uid);
@@ -116,7 +117,8 @@ final participationStatusesProvider =
     } catch (_) {
       return MapEntry(e.event.id, ParticipationStatus.unknown);
     }
-  }));
+    })));
+  }
   return Map.fromEntries(results);
 });
 
@@ -132,7 +134,10 @@ final resultsStatusesProvider =
       e.event.status == VotingEventStatus.closed ||
       e.event.status == VotingEventStatus.archived);
 
-  final results = await Future.wait(finished.map((e) async {
+  final records = finished.toList();
+  final results = <MapEntry<String, ResultsStatus>>[];
+  for (var offset = 0; offset < records.length; offset += 20) {
+    results.addAll(await Future.wait(records.skip(offset).take(20).map((e) async {
     try {
       final doc =
           await firestore.collection('eventResults').doc(e.event.id).get();
@@ -141,7 +146,8 @@ final resultsStatusesProvider =
     } catch (err) {
       return MapEntry(e.event.id, resultsStatusFrom(error: err));
     }
-  }));
+    })));
+  }
   return Map.fromEntries(results);
 });
 

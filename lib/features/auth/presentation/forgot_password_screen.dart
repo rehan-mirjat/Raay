@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/utils/error_utils.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/inline_error_banner.dart';
@@ -96,7 +96,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final isMobile = ResponsiveLayout.isCompact(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
 
     return AuthSplitLayout(
       onMobileBackTap: widget.onBackToLoginTap,
@@ -174,14 +174,14 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                           child: Row(
                             children: [
                               Icon(Icons.check_circle_outline,
-                                  color: KivoraColors.of(context).successText),
+                                  color: RaayColors.of(context).successText),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
                                   AppLocalizations.of(context).fpSent,
                                   style: TextStyle(
                                       color:
-                                          KivoraColors.of(context).successText,
+                                          RaayColors.of(context).successText,
                                       fontSize: 13,
                                       height: 1.4),
                                 ),

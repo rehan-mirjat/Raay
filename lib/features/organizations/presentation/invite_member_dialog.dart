@@ -2,12 +2,12 @@ import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kivora/core/theme/kivora_icons.dart';
-import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
-import 'package:kivora/core/widgets/ui_kit/kivora_text_field.dart';
+import 'package:raay/core/theme/raay_icons.dart';
+import 'package:raay/core/widgets/ui_kit/raay_button.dart';
+import 'package:raay/core/widgets/ui_kit/raay_text_field.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/utils/validators.dart';
 import '../data/organization_repository.dart';
 import '../../../core/utils/friendly_error.dart';
@@ -88,7 +88,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final screenWidth = MediaQuery.sizeOf(context).width;
 
     if (_invitedEmail != null) {
@@ -111,8 +111,8 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                         color: AppTheme.success.withValues(alpha: 0.12),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(KivoraIcons.checkCircle2,
-                          color: KivoraColors.of(context).successText,
+                      child: Icon(RaayIcons.checkCircle2,
+                          color: RaayColors.of(context).successText,
                           size: 22),
                     ),
                     const SizedBox(width: 12),
@@ -169,7 +169,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                         ),
                         IconButton(
                           icon: Icon(
-                            _linkCopied ? KivoraIcons.check : KivoraIcons.copy,
+                            _linkCopied ? RaayIcons.check : RaayIcons.copy,
                             size: 18,
                             color: _linkCopied
                                 ? AppTheme.success
@@ -186,7 +186,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                   ),
                 ],
                 const SizedBox(height: 24),
-                KivoraButton(
+                RaayButton(
                   label: AppLocalizations.of(context).imDone,
                   onPressed: () => Navigator.pop(context, true),
                 ),
@@ -219,8 +219,8 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                           color: AppTheme.primaryBlue.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Icon(KivoraIcons.userPlus,
-                            color: KivoraColors.of(context).accentText,
+                        child: Icon(RaayIcons.userPlus,
+                            color: RaayColors.of(context).accentText,
                             size: 20),
                       ),
                       const SizedBox(width: 12),
@@ -241,7 +241,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                         tooltip: AppLocalizations.of(context).imClose,
                         constraints:
                             const BoxConstraints(minWidth: 48, minHeight: 48),
-                        icon: const Icon(KivoraIcons.x, size: 20),
+                        icon: const Icon(RaayIcons.x, size: 20),
                         onPressed:
                             _isLoading ? null : () => Navigator.pop(context),
                       ),
@@ -253,11 +253,11 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                     style: TextStyle(fontSize: 13, color: kc.textSecondary),
                   ),
                   const SizedBox(height: 20),
-                  KivoraTextField(
+                  RaayTextField(
                     controller: _emailController,
                     label: AppLocalizations.of(context).imEmailLabel,
                     hint: AppLocalizations.of(context).imEmailHint,
-                    prefixIcon: KivoraIcons.mail,
+                    prefixIcon: RaayIcons.mail,
                     keyboardType: TextInputType.emailAddress,
                     validator: Validators.email,
                   ),
@@ -271,7 +271,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(KivoraIcons.building,
+                          Icon(RaayIcons.building,
                               size: 18, color: kc.textSecondary),
                           const SizedBox(width: 10),
                           Expanded(
@@ -305,7 +305,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                       isExpanded: true,
                       initialValue: _selectedRole,
                       decoration: const InputDecoration(
-                        prefixIcon: Icon(KivoraIcons.shieldCheck, size: 20),
+                        prefixIcon: Icon(RaayIcons.shieldCheck, size: 20),
                       ),
                       items: [
                         DropdownMenuItem(
@@ -326,7 +326,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                     const SizedBox(height: 16),
                     Text(_error!,
                         style: TextStyle(
-                            color: KivoraColors.of(context).errorText,
+                            color: RaayColors.of(context).errorText,
                             fontSize: 13)),
                   ],
                   const SizedBox(height: 24),
@@ -352,7 +352,7 @@ class _InviteMemberDialogState extends ConsumerState<InviteMemberDialog> {
                                 width: 16,
                                 child:
                                     CircularProgressIndicator(strokeWidth: 2))
-                            : const Icon(KivoraIcons.send, size: 18),
+                            : const Icon(RaayIcons.send, size: 18),
                         label: Text(AppLocalizations.of(context).imSend),
                       ),
                     ],

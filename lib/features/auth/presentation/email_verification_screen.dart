@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/utils/error_utils.dart';
 import '../../../core/widgets/inline_error_banner.dart';
 import '../../../services/auth_service.dart';
@@ -133,7 +133,7 @@ class _EmailVerificationScreenState
   Widget build(BuildContext context) {
     final userEmail = ref.watch(authServiceProvider).currentUser?.email ??
         AppLocalizations.of(context).evYourEmail;
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
 
     return Scaffold(
       appBar: AppBar(

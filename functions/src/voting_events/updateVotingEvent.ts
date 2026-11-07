@@ -1,3 +1,4 @@
+import { parseContests } from "../utils/multiContest";
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
 import {
@@ -15,12 +16,13 @@ export const updateVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
   rejectUnknownKeys(data, [
     "eventId", "title", "description", "votingType", "privacyMode",
     "eligibilityType", "eligibilityDepartmentIds", "eligibilityUserIds",
-    "startAt", "endAt",
+    "startAt", "endAt", "contests",
   ], "updateVotingEvent");
 
   const eventId = requireId(data.eventId, "eventId");
 
   // ---- Validate only what the client actually sent ----
+  const contests = data.contests !== undefined ? parseContests(data.contests) : undefined;
   const newTitle = data.title !== undefined ? requiredString(data.title, "Title", 3, 100) : undefined;
   const newDescription = data.description !== undefined ? optionalString(data.description, "Description", 1000, { multiline: true }) : undefined;
   const newPrivacy = data.privacyMode !== undefined ? parsePrivacyMode(data.privacyMode) : undefined;
@@ -54,6 +56,10 @@ export const updateVotingEvent = onCall(CALLABLE_OPTIONS, async (request) => {
       }
 
       const updates: Record<string, unknown> = {};
+      if (contests !== undefined) {
+        if (ev.ballotMode !== "MULTI_CONTEST") throw new HttpsError("failed-precondition", "This election does not use multi-contest ballots.");
+        updates.contests = contests;
+      }
       const auditExtra: Record<string, unknown> = {};
 
       if (newTitle !== undefined && newTitle !== ev.title) updates.title = newTitle;

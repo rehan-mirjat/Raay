@@ -1,3 +1,4 @@
+import { acceptedBallotCount, parseContests } from "../utils/multiContest";
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, Timestamp } from "firebase-admin/firestore";
 import { requireActiveMembership, requireNotRevoked } from "../utils/authorization";
@@ -44,13 +45,14 @@ export const getEventMonitoring = onCall(async (request) => {
     throw new HttpsError("failed-precondition", "Live monitoring is available for scheduled or active events.");
   }
 
-  const [eligibleMembers, participationSnap, departmentsSnap] = await Promise.all([
-    getEligibleMembers(db, organizationId, event),
+  const [eligibleMembers, participationSnap, departmentsSnap, acceptedVotes] = await Promise.all([
+    getEligibleMembers(db, organizationId, eventId, event),
     db.collection("participation")
       .where("organizationId", "==", organizationId)
       .where("votingEventId", "==", eventId)
       .get(),
     db.collection("departments").where("organizationId", "==", organizationId).get(),
+    db.collection("votes").where("organizationId", "==", organizationId).where("votingEventId", "==", eventId).count().get(),
   ]);
 
   const departmentNames = new Map<string, string>();
@@ -66,7 +68,8 @@ export const getEventMonitoring = onCall(async (request) => {
   votedAtMs.sort((a, b) => a - b);
 
   const eligibleCount = eligibleMembers.length;
-  const participationCount = votedUserIds.size;
+  const participationCount = acceptedBallotCount(acceptedVotes.data().count, event.ballotMode === "MULTI_CONTEST" ? parseContests(event.contests).length : 1);
+  const detailsComplete = participationCount === votedUserIds.size;
   const turnoutPercent = eligibleCount === 0 ? 0 : Math.round((participationCount / eligibleCount) * 10000) / 100;
 
   // Per-department counts and vote-timing history can re-identify who voted
@@ -75,11 +78,11 @@ export const getEventMonitoring = onCall(async (request) => {
   // Package D's spec says an Observer must never see ("do not expose...
   // small-group turnout breakdowns that could reveal sensitive participation
   // patterns"). Only computed for admin callers.
-  const departmentBreakdown = isAdminCaller
+  const departmentBreakdown = isAdminCaller && detailsComplete
     ? buildDepartmentBreakdown(eligibleMembers, votedUserIds, departmentNames)
     : [];
   const openedAtMs = (event.startAt instanceof Timestamp ? event.startAt.toMillis() : null) ?? (votedAtMs[0] ?? Date.now());
-  const participationHistory = isAdminCaller
+  const participationHistory = isAdminCaller && detailsComplete
     ? buildParticipationHistory(votedAtMs, openedAtMs, Date.now(), PARTICIPATION_HISTORY_POINTS)
     : [];
 
@@ -89,6 +92,7 @@ export const getEventMonitoring = onCall(async (request) => {
     eligibleCount,
     participationCount,
     turnoutPercent,
+    detailsUnavailable: isAdminCaller && !detailsComplete,
     departmentBreakdown,
     participationHistory,
     refreshedAt: new Date().toISOString(),

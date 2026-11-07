@@ -1,4 +1,8 @@
+import { quorumReached } from "../utils/ballotRules";
+import { parseContests, tallyContests } from "../utils/multiContest";
+import { assertIndependentApproval, resultApprovalContent } from "../governance/approvalPolicy";
 import { Firestore, FieldValue, Timestamp } from "firebase-admin/firestore";
+import { HttpsError } from "firebase-functions/v2/https";
 
 export interface TallyRow {
   choiceId: string;
@@ -17,15 +21,21 @@ export interface EventResultsPayload {
   calculatedAt: FirebaseFirestore.Timestamp | FirebaseFirestore.FieldValue;
   calculatedBy: string;
   totalVotes: number;
+  validVotes: number;
+  abstentionCount: number;
+  quorumPercent: number | null;
+  quorumMet: boolean | null;
   eligibleCount: number;
   participationCount: number;
   turnoutPercent: number;
   tallies: TallyRow[];
+  contests?: ReturnType<typeof tallyContests>;
 }
 
 export interface EligibleMember {
   userId: string;
   departmentId: string | null;
+  active?: boolean;
 }
 
 export type EligibilitySource =
@@ -63,7 +73,7 @@ export function resolveEligibilitySource(
   if (eligData && Array.isArray(eligData.eligibleUserIds)) {
     return {
       kind: "frozen",
-      userIds: eligData.eligibleUserIds.filter((x: unknown) => typeof x === "string"),
+      userIds: [...new Set<string>(eligData.eligibleUserIds.filter((x: unknown): x is string => typeof x === "string" && x.length > 0))],
     };
   }
 
@@ -103,6 +113,7 @@ export function resolveEligibilitySource(
 export async function getEligibleMembers(
   db: Firestore,
   organizationId: string,
+  eventId: string,
   eventData: FirebaseFirestore.DocumentData
 ): Promise<EligibleMember[]> {
   const toEligibleMember = (doc: FirebaseFirestore.DocumentSnapshot): EligibleMember => ({
@@ -110,10 +121,7 @@ export async function getEligibleMembers(
     departmentId: doc.data()?.departmentId ?? null,
   });
 
-  const eventId = eventData.id as string | undefined;
-  const eligSnap = eventId
-    ? await db.collection("votingEventEligibility").doc(eventId).get()
-    : null;
+  const eligSnap = await db.collection("votingEventEligibility").doc(eventId).get();
   const eligData = eligSnap?.exists ? eligSnap.data() ?? null : null;
 
   const source = resolveEligibilitySource(eligData, eventData);
@@ -123,7 +131,16 @@ export async function getEligibleMembers(
     const snaps = await db.getAll(
       ...source.userIds.map((userId) => db.collection("organizationMembers").doc(`${organizationId}_${userId}`))
     );
-    return snaps.filter((s) => s.exists).map(toEligibleMember);
+    // Preserve the original denominator even if a member is removed later.
+    return source.userIds.map((userId, index) => ({
+      userId,
+      departmentId: snaps[index].data()?.departmentId ?? null,
+      active: snaps[index].exists && snaps[index].data()?.status === "active",
+    }));
+  }
+
+  if (["ACTIVE", "CLOSED", "ARCHIVED"].includes(eventData.status)) {
+    throw new HttpsError("failed-precondition", "The election voter roll is missing. Contact the organizer.");
   }
 
   if (source.kind === "selected_members") {
@@ -158,9 +175,10 @@ export async function getEligibleMembers(
 export async function countEligibleVoters(
   db: Firestore,
   organizationId: string,
+  eventId: string,
   eventData: FirebaseFirestore.DocumentData
 ): Promise<number> {
-  return (await getEligibleMembers(db, organizationId, eventData)).length;
+  return (await getEligibleMembers(db, organizationId, eventId, eventData)).length;
 }
 
 export async function calculateEventResults(
@@ -196,6 +214,7 @@ export async function calculateEventResults(
 
   const counts = new Map<string, number>();
   for (const doc of votesSnap.docs) {
+    if (doc.data()?.choiceType === "ABSTAIN") continue;
     const choiceId = (doc.data()?.choiceId as string) || "";
     if (!choiceId) continue;
     counts.set(choiceId, (counts.get(choiceId) || 0) + 1);
@@ -219,22 +238,28 @@ export async function calculateEventResults(
     });
   }
 
-  const totalVotes = Array.from(counts.values()).reduce((sum, count) => sum + count, 0);
+  const multi = eventData.ballotMode === "MULTI_CONTEST";
+  const contests = multi ? tallyContests(parseContests(eventData.contests), votesSnap.docs.map((doc) => doc.data())) : undefined;
+  const abstentionCount = multi ? contests![0].abstentionCount : votesSnap.docs.filter(doc => doc.data().choiceType === "ABSTAIN").length;
+  if (abstentionCount > 0 && eventData.allowAbstain !== true) throw new HttpsError("failed-precondition", "Unexpected abstentions; investigate before publishing.");
+  const validVotes = multi ? contests![0].validVotes : Array.from(counts.values()).reduce((sum, count) => sum + count, 0);
+  const totalVotes = validVotes + abstentionCount;
   const tallies: TallyRow[] = roster.map((row) => {
     const votes = counts.get(row.choiceId) || 0;
     return {
       ...row,
       votes,
-      percent: totalVotes === 0 ? 0 : Math.round((votes / totalVotes) * 10000) / 100,
+      percent: validVotes === 0 ? 0 : Math.round((votes / validVotes) * 10000) / 100,
     };
   });
 
   tallies.sort((a, b) => b.votes - a.votes || a.name.localeCompare(b.name));
 
-  const eligibleCount = await countEligibleVoters(db, organizationId, eventData);
+  const eligibleCount = await countEligibleVoters(db, organizationId, eventId, eventData);
   const participationCount = participationSnap.size;
+  if (participationCount > totalVotes) throw new HttpsError("failed-precondition", "Accepted ballots are missing; investigate before publishing.");
   const turnoutPercent =
-    eligibleCount === 0 ? 0 : Math.round((participationCount / eligibleCount) * 10000) / 100;
+    eligibleCount === 0 ? 0 : Math.round((totalVotes / eligibleCount) * 10000) / 100;
 
   const alreadyPublished = existingResults.exists && existingResults.data()?.published === true;
   const published = options?.publish === true || alreadyPublished;
@@ -256,12 +281,27 @@ export async function calculateEventResults(
     calculatedAt: FieldValue.serverTimestamp(),
     calculatedBy: actorUid,
     totalVotes,
+    validVotes,
+    abstentionCount,
+    quorumPercent: eventData.quorumPercent ?? null,
+    quorumMet: quorumReached(totalVotes, eligibleCount, eventData.quorumPercent ?? null),
     eligibleCount,
     participationCount,
     turnoutPercent,
-    tallies,
+    tallies: multi ? [] : tallies,
+    ...(contests ? { contests } : {}),
   };
 
-  await db.collection("eventResults").doc(eventId).set(payload, { merge: true });
-  return payload;
+  // Recheck the public record atomically: a concurrent recalculation must never
+  // overwrite a result publication that committed after our initial read.
+  return db.runTransaction(async tx => {
+    const currentEvent = (await tx.get(db.collection("votingEvents").doc(eventId))).data();
+    if (!currentEvent || currentEvent.organizationId !== organizationId || !["CLOSED", "ARCHIVED"].includes(currentEvent.status)) throw new Error("NOT_CLOSED");
+    const resultRef = db.collection("eventResults").doc(eventId);
+    const currentResult = (await tx.get(resultRef)).data();
+    if (currentResult?.published === true) return currentResult as EventResultsPayload;
+    if (options?.publish === true) await assertIndependentApproval(tx, db, eventId, currentEvent, "RESULTS", actorUid, resultApprovalContent(payload));
+    tx.set(resultRef, payload, { merge: true });
+    return payload;
+  });
 }

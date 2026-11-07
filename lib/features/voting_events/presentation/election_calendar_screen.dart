@@ -6,8 +6,8 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
-import '../../../core/theme/kivora_icons.dart';
+import '../../../core/theme/raay_colors.dart';
+import '../../../core/theme/raay_icons.dart';
 import 'package:intl/intl.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
@@ -60,7 +60,7 @@ class _ElectionCalendarScreenState
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     final entriesAsync = ref.watch(voterPortalEntriesProvider);
     final isDesktop = ResponsiveLayout.isWide(context);
@@ -168,7 +168,7 @@ class _ElectionCalendarScreenState
 
   Widget _orgChip(BuildContext context, String? id, String label) {
     final selected = _orgFilter == id;
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Center(
       child: ChoiceChip(
         label: Text(label),
@@ -186,7 +186,7 @@ class _ElectionCalendarScreenState
 
   Widget _buildCalendar(
       BuildContext context, Map<DateTime, List<VoterPortalEntry>> byDay) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     final primary = Theme.of(context).colorScheme.primary;
     return TableCalendar<VoterPortalEntry>(
@@ -250,7 +250,7 @@ class _ElectionCalendarScreenState
     if (sorted.isEmpty) {
       final l10n = AppLocalizations.of(context);
       return EmptyView(
-        icon: KivoraIcons.calendar,
+        icon: RaayIcons.calendar,
         title: l10n.calNoneTitle,
         message: l10n.calNoneBody,
       );
@@ -265,7 +265,7 @@ class _ElectionCalendarScreenState
 
   Widget _buildDetailPanel(BuildContext context, List<VoterPortalEntry> selectedEvents,
       {bool shrink = false}) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).toString();
     String dayLabel;
@@ -294,7 +294,7 @@ class _ElectionCalendarScreenState
                 ? Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     child: EmptyView(
-                      icon: KivoraIcons.calendar,
+                      icon: RaayIcons.calendar,
                       title: l10n.calNoDayTitle,
                       message: l10n.calNoDayBody,
                     ),
@@ -309,7 +309,7 @@ class _ElectionCalendarScreenState
             Expanded(
               child: selectedEvents.isEmpty
                   ? EmptyView(
-                      icon: KivoraIcons.calendar,
+                      icon: RaayIcons.calendar,
                       title: l10n.calNoDayTitle,
                       message: l10n.calNoDayBody,
                     )
@@ -332,7 +332,7 @@ class _AgendaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     final event = entry.event;
 

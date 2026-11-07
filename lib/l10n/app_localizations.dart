@@ -105,7 +105,7 @@ abstract class AppLocalizations {
   /// The application name, shown on splash/auth screens
   ///
   /// In en, this message translates to:
-  /// **'Kivora'**
+  /// **'Raay'**
   String get appName;
 
   /// No description provided for @navHome.
@@ -279,7 +279,7 @@ abstract class AppLocalizations {
   /// No description provided for @authRegisterSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Join Kivora today'**
+  /// **'Join Raay today'**
   String get authRegisterSubtitle;
 
   /// No description provided for @authFullName.
@@ -2259,7 +2259,7 @@ abstract class AppLocalizations {
   /// No description provided for @inbHelp.
   ///
   /// In en, this message translates to:
-  /// **'Need help with an invitation? Contact Kivora support.'**
+  /// **'Need help with an invitation? Contact Raay support.'**
   String get inbHelp;
 
   /// No description provided for @ballotTitle.
@@ -2838,6 +2838,12 @@ abstract class AppLocalizations {
   /// **'Recalculate results'**
   String get resRecalculate;
 
+  /// No description provided for @resPublishedLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Published and locked'**
+  String get resPublishedLocked;
+
   /// No description provided for @resWorking.
   ///
   /// In en, this message translates to:
@@ -2901,7 +2907,7 @@ abstract class AppLocalizations {
   /// No description provided for @resPublishConfirmBody.
   ///
   /// In en, this message translates to:
-  /// **'All eligible members will be able to see the results, and those who have result notifications on will be notified. You can still recalculate them afterwards.'**
+  /// **'All eligible members will be able to see the results, and those who have result notifications on will be notified. Published results are locked and cannot be recalculated.'**
   String get resPublishConfirmBody;
 
   /// No description provided for @resPublishConfirm.
@@ -3705,7 +3711,7 @@ abstract class AppLocalizations {
   /// No description provided for @acctAppearanceBody.
   ///
   /// In en, this message translates to:
-  /// **'Choose how Kivora looks on this device.'**
+  /// **'Choose how Raay looks on this device.'**
   String get acctAppearanceBody;
 
   /// No description provided for @acctThemeLight.
@@ -3837,7 +3843,7 @@ abstract class AppLocalizations {
   /// No description provided for @acctConnectedBody.
   ///
   /// In en, this message translates to:
-  /// **'Sign-in methods linked to your Kivora account. You must keep at least one connected.'**
+  /// **'Sign-in methods linked to your Raay account. You must keep at least one connected.'**
   String get acctConnectedBody;
 
   /// No description provided for @acctEmailPassword.
@@ -3879,7 +3885,7 @@ abstract class AppLocalizations {
   /// No description provided for @acctDisconnectBody.
   ///
   /// In en, this message translates to:
-  /// **'You will no longer be able to sign in to Kivora using {name}.'**
+  /// **'You will no longer be able to sign in to Raay using {name}.'**
   String acctDisconnectBody(String name);
 
   /// No description provided for @acctCancel.
@@ -4323,7 +4329,7 @@ abstract class AppLocalizations {
   /// No description provided for @jcScanHint.
   ///
   /// In en, this message translates to:
-  /// **'Or scan this with Kivora\'s \"Scan to Join\" on another device.'**
+  /// **'Or scan this with Raay\'s \"Scan to Join\" on another device.'**
   String get jcScanHint;
 
   /// No description provided for @jcCopied.
@@ -6015,7 +6021,7 @@ abstract class AppLocalizations {
   /// No description provided for @plOverviewSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Organizations, reviews and recent administrator activity across Kivora.'**
+  /// **'Organizations, reviews and recent administrator activity across Raay.'**
   String get plOverviewSubtitle;
 
   /// No description provided for @plRefresh.
@@ -6309,7 +6315,7 @@ abstract class AppLocalizations {
   /// No description provided for @plReportsReadOnly.
   ///
   /// In en, this message translates to:
-  /// **'Read-only for now: the platform does not yet support assigning or resolving reports, so every report stays open. There is no flagged-organization feed either.'**
+  /// **'Assign reports to yourself, resolve completed work, or reopen a report when it needs more attention.'**
   String get plReportsReadOnly;
 
   /// No description provided for @plAllCount.
@@ -6377,6 +6383,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'open'**
   String get plStatusOpen;
+
+  /// No description provided for @plStatusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'in progress'**
+  String get plStatusInProgress;
+
+  /// No description provided for @plStatusResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'resolved'**
+  String get plStatusResolved;
+
+  /// No description provided for @plAssignToMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign to me'**
+  String get plAssignToMe;
+
+  /// No description provided for @plResolveReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolve report'**
+  String get plResolveReport;
+
+  /// No description provided for @plReopenReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopen report'**
+  String get plReopenReport;
+
+  /// No description provided for @plReportUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update the report. Please try again.'**
+  String get plReportUpdateFailed;
+
+  /// No description provided for @plReportUpdateSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Report status updated.'**
+  String get plReportUpdateSuccess;
 
   /// No description provided for @plCheckingAccess.
   ///
@@ -6729,7 +6777,7 @@ abstract class AppLocalizations {
   /// No description provided for @imCreatedNote.
   ///
   /// In en, this message translates to:
-  /// **'The invitee will see it in Kivora Notifications after logging in. They can accept or decline there.'**
+  /// **'The invitee will see it in Raay Notifications after logging in. They can accept or decline there.'**
   String get imCreatedNote;
 
   /// No description provided for @imShareLink.
@@ -6825,7 +6873,7 @@ abstract class AppLocalizations {
   /// No description provided for @aeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Add a verified Kivora account directly to this organization.'**
+  /// **'Add a verified Raay account directly to this organization.'**
   String get aeSubtitle;
 
   /// No description provided for @aeEmailLabel.
@@ -8199,7 +8247,7 @@ abstract class AppLocalizations {
   /// No description provided for @alCopy.
   ///
   /// In en, this message translates to:
-  /// **'Kivora © 2026'**
+  /// **'Raay © 2026'**
   String get alCopy;
 
   /// No description provided for @alPlatforms.
@@ -8565,7 +8613,7 @@ abstract class AppLocalizations {
   /// No description provided for @hsTrustBody.
   ///
   /// In en, this message translates to:
-  /// **'How Kivora protects ballot privacy and what is recorded.'**
+  /// **'How Raay protects ballot privacy and what is recorded.'**
   String get hsTrustBody;
 
   /// No description provided for @hsSend.
@@ -8757,7 +8805,7 @@ abstract class AppLocalizations {
   /// No description provided for @rgDoneBody.
   ///
   /// In en, this message translates to:
-  /// **'Your Kivora identity has been securely generated. You may now sign in using your credentials.'**
+  /// **'Your Raay identity has been securely generated. You may now sign in using your credentials.'**
   String get rgDoneBody;
 
   /// No description provided for @rgReturn.
@@ -9039,7 +9087,7 @@ abstract class AppLocalizations {
   /// No description provided for @spLogo.
   ///
   /// In en, this message translates to:
-  /// **'Kivora Logo'**
+  /// **'Raay Logo'**
   String get spLogo;
 
   /// No description provided for @spTag.
@@ -9069,7 +9117,7 @@ abstract class AppLocalizations {
   /// No description provided for @spErrBody.
   ///
   /// In en, this message translates to:
-  /// **'Failed to connect to Kivora services.'**
+  /// **'Failed to connect to Raay services.'**
   String get spErrBody;
 
   /// No description provided for @spRetry.
@@ -9219,7 +9267,7 @@ abstract class AppLocalizations {
   /// No description provided for @trS5P2.
   ///
   /// In en, this message translates to:
-  /// **'The receipt confirms your ballot was accepted and exists in the system\'s records. It is not a copy of your ballot choice, and in an anonymous election it cannot be used by anyone - including Kivora administrators - to determine what you selected.'**
+  /// **'The receipt confirms your ballot was accepted and exists in the system\'s records. It is not a copy of your ballot choice, and in an anonymous election it cannot be used by anyone - including Raay administrators - to determine what you selected.'**
   String get trS5P2;
 
   /// No description provided for @trS6Title.
@@ -9315,7 +9363,7 @@ abstract class AppLocalizations {
   /// No description provided for @trS10P2.
   ///
   /// In en, this message translates to:
-  /// **'Kivora is not independently certified by any national or third-party election-standards body, and receipt verification is not a substitute for an independent cryptographic audit of the full tally.'**
+  /// **'Raay is not independently certified by any national or third-party election-standards body, and receipt verification is not a substitute for an independent cryptographic audit of the full tally.'**
   String get trS10P2;
 
   /// No description provided for @trS10P3.
@@ -9333,7 +9381,7 @@ abstract class AppLocalizations {
   /// No description provided for @trHeading.
   ///
   /// In en, this message translates to:
-  /// **'How Kivora elections work'**
+  /// **'How Raay elections work'**
   String get trHeading;
 
   /// No description provided for @trIntro.
@@ -9615,7 +9663,7 @@ abstract class AppLocalizations {
   /// No description provided for @lcQ1T.
   ///
   /// In en, this message translates to:
-  /// **'What can we use Kivora for?'**
+  /// **'What can we use Raay for?'**
   String get lcQ1T;
 
   /// No description provided for @lcQ1B.
@@ -9735,7 +9783,7 @@ abstract class AppLocalizations {
   /// No description provided for @ldBrandTop.
   ///
   /// In en, this message translates to:
-  /// **'Kivora, back to top'**
+  /// **'Raay, back to top'**
   String get ldBrandTop;
 
   /// No description provided for @ldToLight.
@@ -9783,7 +9831,7 @@ abstract class AppLocalizations {
   /// No description provided for @ldHeroBadge.
   ///
   /// In en, this message translates to:
-  /// **'Kivora · secure e-voting and polling'**
+  /// **'Raay · secure e-voting and polling'**
   String get ldHeroBadge;
 
   /// No description provided for @ldHeroTitle.
@@ -9843,7 +9891,7 @@ abstract class AppLocalizations {
   /// No description provided for @ldStart.
   ///
   /// In en, this message translates to:
-  /// **'Start with Kivora'**
+  /// **'Start with Raay'**
   String get ldStart;
 
   /// No description provided for @ldOrgsEyebrow.
@@ -9861,7 +9909,7 @@ abstract class AppLocalizations {
   /// No description provided for @ldOrgsBody.
   ///
   /// In en, this message translates to:
-  /// **'Kivora organizations are set up as one of these types, then shaped around the people who take part.'**
+  /// **'Raay organizations are set up as one of these types, then shaped around the people who take part.'**
   String get ldOrgsBody;
 
   /// No description provided for @ldSecTitle.
@@ -9921,7 +9969,7 @@ abstract class AppLocalizations {
   /// No description provided for @ldAnonBody.
   ///
   /// In en, this message translates to:
-  /// **'Two separate records let Kivora prevent double voting while keeping an anonymous choice anonymous.'**
+  /// **'Two separate records let Raay prevent double voting while keeping an anonymous choice anonymous.'**
   String get ldAnonBody;
 
   /// No description provided for @ldReceiptTitle.
@@ -10329,7 +10377,7 @@ abstract class AppLocalizations {
   /// No description provided for @obBody4.
   ///
   /// In en, this message translates to:
-  /// **'Create a home for your elections and polls. Bring your members in, and move forward together with Kivora.'**
+  /// **'Create a home for your elections and polls. Bring your members in, and move forward together with Raay.'**
   String get obBody4;
 
   /// No description provided for @obGetStarted.
@@ -10746,6 +10794,12 @@ abstract class AppLocalizations {
   /// **'Parse & Validate'**
   String get ciParse;
 
+  /// No description provided for @ciChooseFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a .csv file'**
+  String get ciChooseFile;
+
   /// No description provided for @ciResults.
   ///
   /// In en, this message translates to:
@@ -11139,7 +11193,7 @@ abstract class AppLocalizations {
   /// No description provided for @phCoverageBody.
   ///
   /// In en, this message translates to:
-  /// **'Storage, email delivery, push delivery, and client devices are not probed by this check.'**
+  /// **'Email delivery, push delivery, and client devices are not probed by this check.'**
   String get phCoverageBody;
 
   /// No description provided for @phOperational.
@@ -11189,6 +11243,1176 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Platform health'**
   String get navPlatformHealth;
+
+  /// No description provided for @orgReportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization reports'**
+  String get orgReportTitle;
+
+  /// No description provided for @orgReportSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Election activity for {name}.'**
+  String orgReportSubtitle(String name);
+
+  /// No description provided for @orgReportDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization owner or admin access is required.'**
+  String get orgReportDenied;
+
+  /// No description provided for @orgReportRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh reports'**
+  String get orgReportRefresh;
+
+  /// No description provided for @orgReportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The report could not be loaded. Check your connection and try again.'**
+  String get orgReportFailed;
+
+  /// No description provided for @orgReportDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Date range'**
+  String get orgReportDates;
+
+  /// No description provided for @orgReportAllDates.
+  ///
+  /// In en, this message translates to:
+  /// **'All creation dates'**
+  String get orgReportAllDates;
+
+  /// No description provided for @orgReportClearDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear dates'**
+  String get orgReportClearDates;
+
+  /// No description provided for @orgReportMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Active members'**
+  String get orgReportMembers;
+
+  /// No description provided for @orgReportEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Elections on this page'**
+  String get orgReportEvents;
+
+  /// No description provided for @orgReportPublishedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Published on this page'**
+  String get orgReportPublishedCount;
+
+  /// No description provided for @orgReportTurnout.
+  ///
+  /// In en, this message translates to:
+  /// **'Reportable turnout · this page'**
+  String get orgReportTurnout;
+
+  /// No description provided for @orgReportPrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden for privacy'**
+  String get orgReportPrivate;
+
+  /// No description provided for @orgReportUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available'**
+  String get orgReportUnavailable;
+
+  /// No description provided for @orgReportActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Election activity'**
+  String get orgReportActivity;
+
+  /// No description provided for @orgReportEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No elections match these dates.'**
+  String get orgReportEmpty;
+
+  /// No description provided for @orgReportPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Results published'**
+  String get orgReportPublished;
+
+  /// No description provided for @orgReportUnpublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Results not published'**
+  String get orgReportUnpublished;
+
+  /// No description provided for @orgReportPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous page'**
+  String get orgReportPrevious;
+
+  /// No description provided for @orgReportNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next page'**
+  String get orgReportNext;
+
+  /// No description provided for @orgReportPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {page}'**
+  String orgReportPage(String page);
+
+  /// No description provided for @orgReportScope.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary and export cover this page only. Date filters use the election creation date.'**
+  String get orgReportScope;
+
+  /// No description provided for @orgReportPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Turnout excludes unpublished results and elections with fewer than 10 eligible voters. Individual ballots and choices are never included.'**
+  String get orgReportPrivacy;
+
+  /// No description provided for @orgReportExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export this page (CSV)'**
+  String get orgReportExport;
+
+  /// No description provided for @rvPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Rehearse ballot'**
+  String get rvPreview;
+
+  /// No description provided for @rvPreviewNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview only. Select a choice to check the ballot experience. No vote is submitted and no receipt is created.'**
+  String get rvPreviewNotice;
+
+  /// No description provided for @rvPreviewSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview selection: {label}'**
+  String rvPreviewSelected(String label);
+
+  /// No description provided for @rvPreviewClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close preview'**
+  String get rvPreviewClose;
+
+  /// No description provided for @navOrganizationReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get navOrganizationReports;
+
+  /// No description provided for @mcMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Multi-contest election'**
+  String get mcMode;
+
+  /// No description provided for @mcPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'2–10 contests, each with 2–20 choices. One required choice per contest; all contests are submitted together with one receipt.'**
+  String get mcPolicy;
+
+  /// No description provided for @mcContestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contest / position title'**
+  String get mcContestTitle;
+
+  /// No description provided for @mcChoiceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate / choice name'**
+  String get mcChoiceLabel;
+
+  /// No description provided for @mcDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Statement (optional)'**
+  String get mcDescription;
+
+  /// No description provided for @mcAddContest.
+  ///
+  /// In en, this message translates to:
+  /// **'Add contest'**
+  String get mcAddContest;
+
+  /// No description provided for @mcAddChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Add choice'**
+  String get mcAddChoice;
+
+  /// No description provided for @mcRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get mcRemove;
+
+  /// No description provided for @mcRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a value.'**
+  String get mcRequired;
+
+  /// No description provided for @mcSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save contests and continue'**
+  String get mcSave;
+
+  /// No description provided for @mcCompleteAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select one choice in every contest before continuing.'**
+  String get mcCompleteAll;
+
+  /// No description provided for @mcDiscard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard unsaved contest changes?'**
+  String get mcDiscard;
+
+  /// No description provided for @monDetailsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed history is incomplete. Aggregate turnout includes all accepted ballots.'**
+  String get monDetailsUnavailable;
+
+  /// No description provided for @navNominations.
+  ///
+  /// In en, this message translates to:
+  /// **'Nominations'**
+  String get navNominations;
+
+  /// No description provided for @nomIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply as a candidate, track your application and review nominations in your organization.'**
+  String get nomIntro;
+
+  /// No description provided for @nomCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Open nominations'**
+  String get nomCreate;
+
+  /// No description provided for @nomCreateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a draft candidate election. Members apply before the deadline; close the round before reviewing.'**
+  String get nomCreateHint;
+
+  /// No description provided for @nomElection.
+  ///
+  /// In en, this message translates to:
+  /// **'Election'**
+  String get nomElection;
+
+  /// No description provided for @nomContest.
+  ///
+  /// In en, this message translates to:
+  /// **'Contest'**
+  String get nomContest;
+
+  /// No description provided for @nomDeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Application deadline'**
+  String get nomDeadline;
+
+  /// No description provided for @nomCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get nomCancel;
+
+  /// No description provided for @nomApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply as a candidate'**
+  String get nomApply;
+
+  /// No description provided for @nomName.
+  ///
+  /// In en, this message translates to:
+  /// **'Public candidate name'**
+  String get nomName;
+
+  /// No description provided for @nomStatement.
+  ///
+  /// In en, this message translates to:
+  /// **'Public candidate statement (optional)'**
+  String get nomStatement;
+
+  /// No description provided for @nomConsent.
+  ///
+  /// In en, this message translates to:
+  /// **'I consent to stand as a candidate and to publish this name and statement on the ballot if approved.'**
+  String get nomConsent;
+
+  /// No description provided for @nomRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please complete this field.'**
+  String get nomRequired;
+
+  /// No description provided for @nomSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit application'**
+  String get nomSubmit;
+
+  /// No description provided for @nomReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Review applications'**
+  String get nomReview;
+
+  /// No description provided for @nomMyApplication.
+  ///
+  /// In en, this message translates to:
+  /// **'My application'**
+  String get nomMyApplication;
+
+  /// No description provided for @nomApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve candidate'**
+  String get nomApprove;
+
+  /// No description provided for @nomReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject application'**
+  String get nomReject;
+
+  /// No description provided for @nomApproveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Approval adds the consented name and statement to the draft ballot. Publication is a separate action.'**
+  String get nomApproveHint;
+
+  /// No description provided for @nomRejectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain why this application is being rejected. The applicant can read this reason.'**
+  String get nomRejectHint;
+
+  /// No description provided for @nomReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Review reason'**
+  String get nomReason;
+
+  /// No description provided for @nomClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close nominations'**
+  String get nomClose;
+
+  /// No description provided for @nomCloseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This stops new applications. Review every pending application before publishing the election.'**
+  String get nomCloseHint;
+
+  /// No description provided for @nomWithdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw application'**
+  String get nomWithdraw;
+
+  /// No description provided for @nomWithdrawHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw this application? An approved candidate will also be removed from the draft ballot. Withdrawal is available only before the election is published.'**
+  String get nomWithdrawHint;
+
+  /// No description provided for @nomConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get nomConfirm;
+
+  /// No description provided for @nomOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get nomOpen;
+
+  /// No description provided for @nomClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed for review'**
+  String get nomClosed;
+
+  /// No description provided for @nomPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending review'**
+  String get nomPending;
+
+  /// No description provided for @nomApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get nomApproved;
+
+  /// No description provided for @nomRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get nomRejected;
+
+  /// No description provided for @nomWithdrawn.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdrawn'**
+  String get nomWithdrawn;
+
+  /// No description provided for @nomFinalized.
+  ///
+  /// In en, this message translates to:
+  /// **'Finalized — election published'**
+  String get nomFinalized;
+
+  /// No description provided for @nomMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Load more'**
+  String get nomMore;
+
+  /// No description provided for @nomAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an organization where you are an active member.'**
+  String get nomAccess;
+
+  /// No description provided for @nomFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load or save nominations. Please try again.'**
+  String get nomFailed;
+
+  /// No description provided for @nomEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No nomination rounds yet.'**
+  String get nomEmpty;
+
+  /// No description provided for @nomNoApplications.
+  ///
+  /// In en, this message translates to:
+  /// **'No applications to display.'**
+  String get nomNoApplications;
+
+  /// No description provided for @nomNeedDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a draft candidate election first. Its start time must be after the nomination deadline.'**
+  String get nomNeedDraft;
+
+  /// No description provided for @supportMyReports.
+  ///
+  /// In en, this message translates to:
+  /// **'My support cases'**
+  String get supportMyReports;
+
+  /// No description provided for @supportLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load your support cases.'**
+  String get supportLoadFailed;
+
+  /// No description provided for @supportRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get supportRetry;
+
+  /// No description provided for @supportEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not submitted a support case yet.'**
+  String get supportEmpty;
+
+  /// No description provided for @supportCaseId.
+  ///
+  /// In en, this message translates to:
+  /// **'Case reference'**
+  String get supportCaseId;
+
+  /// No description provided for @navCommunications.
+  ///
+  /// In en, this message translates to:
+  /// **'Communications'**
+  String get navCommunications;
+
+  /// No description provided for @comIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule voting reminders and track notification creation for your organization.'**
+  String get comIntro;
+
+  /// No description provided for @comInApp.
+  ///
+  /// In en, this message translates to:
+  /// **'In-app notifications'**
+  String get comInApp;
+
+  /// No description provided for @comExternalUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Email and SMS delivery are not configured. These reminders appear in the member’s notification inbox.'**
+  String get comExternalUnavailable;
+
+  /// No description provided for @comSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule reminder'**
+  String get comSchedule;
+
+  /// No description provided for @comAudience.
+  ///
+  /// In en, this message translates to:
+  /// **'Only eligible, active members who have not voted and allow voting reminders are notified. Recipient identities are not shown here.'**
+  String get comAudience;
+
+  /// No description provided for @comChooseTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose date and time'**
+  String get comChooseTime;
+
+  /// No description provided for @comTiming.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a time within the voting window. Processing runs approximately once a minute; creation counts do not confirm a member has read a notification.'**
+  String get comTiming;
+
+  /// No description provided for @comCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel reminder'**
+  String get comCancel;
+
+  /// No description provided for @comCancelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this queued reminder? Processing jobs cannot be cancelled because some notifications may already exist.'**
+  String get comCancelHint;
+
+  /// No description provided for @comQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'Queued'**
+  String get comQueued;
+
+  /// No description provided for @comProcessing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing'**
+  String get comProcessing;
+
+  /// No description provided for @comCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get comCompleted;
+
+  /// No description provided for @comCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get comCancelled;
+
+  /// No description provided for @comFailedStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get comFailedStatus;
+
+  /// No description provided for @comFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load or update reminder jobs. Please try again.'**
+  String get comFailed;
+
+  /// No description provided for @comNeedEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish an election with a future closing time to schedule a reminder.'**
+  String get comNeedEvent;
+
+  /// No description provided for @comEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No scheduled reminder jobs yet.'**
+  String get comEmpty;
+
+  /// No description provided for @comScheduledFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Requested time'**
+  String get comScheduledFor;
+
+  /// No description provided for @comCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications created'**
+  String get comCount;
+
+  /// No description provided for @comFailureHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This job stopped. Check the election status and organizer access before scheduling another reminder.'**
+  String get comFailureHint;
+
+  /// No description provided for @comRetrying.
+  ///
+  /// In en, this message translates to:
+  /// **'A temporary failure occurred. An automatic retry is queued.'**
+  String get comRetrying;
+
+  /// No description provided for @eventPageScope.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing one page. Search matches elections on this page; use the filters and page controls to browse the full history.'**
+  String get eventPageScope;
+
+  /// No description provided for @govTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Election approvals'**
+  String get govTitle;
+
+  /// No description provided for @govIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Require a different active manager to review the current ballot and results before their requester publishes them.'**
+  String get govIntro;
+
+  /// No description provided for @govPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Independent approval required'**
+  String get govPolicy;
+
+  /// No description provided for @govPolicyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner-controlled policy, configurable only in draft. At least two active managers are needed; reviewers need two-step authentication.'**
+  String get govPolicyHint;
+
+  /// No description provided for @govLaunch.
+  ///
+  /// In en, this message translates to:
+  /// **'Launch approval'**
+  String get govLaunch;
+
+  /// No description provided for @govResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Results approval'**
+  String get govResults;
+
+  /// No description provided for @govPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting another manager'**
+  String get govPending;
+
+  /// No description provided for @govNoRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'No review requested'**
+  String get govNoRequest;
+
+  /// No description provided for @govApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve this version'**
+  String get govApprove;
+
+  /// No description provided for @govReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject this version'**
+  String get govReject;
+
+  /// No description provided for @govRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Request current-version review'**
+  String get govRequest;
+
+  /// No description provided for @govReviewNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Review the current ballot, eligibility and schedule, or the calculated results, before confirming. You cannot approve your own request.'**
+  String get govReviewNotice;
+
+  /// No description provided for @govVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviewed version hash'**
+  String get govVersion;
+
+  /// No description provided for @govFreshness.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes require a fresh review. Publication rechecks the version and the reviewer’s access; only the requester can publish an approved version.'**
+  String get govFreshness;
+
+  /// No description provided for @govCalculate.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculate results'**
+  String get govCalculate;
+
+  /// No description provided for @govViewResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Review results'**
+  String get govViewResults;
+
+  /// No description provided for @govPublishElection.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish approved election'**
+  String get govPublishElection;
+
+  /// No description provided for @govPublishResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish approved results'**
+  String get govPublishResults;
+
+  /// No description provided for @ballotRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Ballot rules'**
+  String get ballotRules;
+
+  /// No description provided for @ballotRulesSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save rules'**
+  String get ballotRulesSave;
+
+  /// No description provided for @ballotAbstain.
+  ///
+  /// In en, this message translates to:
+  /// **'Abstain from this election'**
+  String get ballotAbstain;
+
+  /// No description provided for @ballotAbstainHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit participation without choosing any candidate or option, across all contests. This is final and counts toward quorum.'**
+  String get ballotAbstainHint;
+
+  /// No description provided for @quorumLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Required quorum'**
+  String get quorumLabel;
+
+  /// No description provided for @quorumHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Election-level participation uses the frozen voter roll. Submitted ballots, including abstentions, count toward quorum. If quorum is not met, counts can be published but no winner is announced.'**
+  String get quorumHint;
+
+  /// No description provided for @quorumInputHint.
+  ///
+  /// In en, this message translates to:
+  /// **'1–100; leave empty to disable'**
+  String get quorumInputHint;
+
+  /// No description provided for @quorumValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a whole percentage from 1 to 100.'**
+  String get quorumValidation;
+
+  /// No description provided for @quorumMetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Quorum reached'**
+  String get quorumMetLabel;
+
+  /// No description provided for @quorumNotMet.
+  ///
+  /// In en, this message translates to:
+  /// **'Quorum not reached — no winner announced'**
+  String get quorumNotMet;
+
+  /// No description provided for @quorumDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get quorumDisabled;
+
+  /// No description provided for @abstentionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Abstentions'**
+  String get abstentionsLabel;
+
+  /// No description provided for @validChoiceBallots.
+  ///
+  /// In en, this message translates to:
+  /// **'Choice ballots'**
+  String get validChoiceBallots;
+
+  /// No description provided for @percentageBasis.
+  ///
+  /// In en, this message translates to:
+  /// **'Choice percentages exclude abstentions.'**
+  String get percentageBasis;
+
+  /// No description provided for @ballotAbstainEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get ballotAbstainEnabled;
+
+  /// No description provided for @scanJoinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan to join'**
+  String get scanJoinTitle;
+
+  /// No description provided for @scanJoinInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'This QR code is not a Raay joining code. Scan an organization invite QR or enter the code manually.'**
+  String get scanJoinInvalid;
+
+  /// No description provided for @scanJoinTorch.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle flashlight'**
+  String get scanJoinTorch;
+
+  /// No description provided for @homeNoOrgTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Raay'**
+  String get homeNoOrgTitle;
+
+  /// No description provided for @homeNoOrgBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You are not currently a member of any organization. Join an existing workspace or create a new one to begin participating in secure elections.'**
+  String get homeNoOrgBody;
+
+  /// No description provided for @homeCreateOrg.
+  ///
+  /// In en, this message translates to:
+  /// **'Create organization'**
+  String get homeCreateOrg;
+
+  /// No description provided for @homeJoinByCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Join by code'**
+  String get homeJoinByCode;
+
+  /// No description provided for @scanJoinEnterCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the code instead'**
+  String get scanJoinEnterCode;
+
+  /// No description provided for @scanJoinPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera access is blocked. Allow the camera for this site or app in your settings, or enter the code by hand.'**
+  String get scanJoinPermissionDenied;
+
+  /// No description provided for @scanJoinUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This browser or device cannot scan QR codes. Enter the joining code by hand instead.'**
+  String get scanJoinUnsupported;
+
+  /// No description provided for @scanJoinGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'The camera could not be started. You can enter the joining code by hand instead.'**
+  String get scanJoinGeneric;
+
+  /// No description provided for @searchHintNavigate.
+  ///
+  /// In en, this message translates to:
+  /// **'navigate'**
+  String get searchHintNavigate;
+
+  /// No description provided for @searchHintOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'open'**
+  String get searchHintOpen;
+
+  /// No description provided for @directoryImportCsv.
+  ///
+  /// In en, this message translates to:
+  /// **'Import CSV'**
+  String get directoryImportCsv;
+
+  /// No description provided for @bulkInviteFileUnreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read this file.'**
+  String get bulkInviteFileUnreadable;
+
+  /// No description provided for @bulkInviteTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'CSV must be 2 MB or smaller.'**
+  String get bulkInviteTooLarge;
+
+  /// No description provided for @bulkInviteOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open that CSV file.'**
+  String get bulkInviteOpenFailed;
+
+  /// No description provided for @bulkInviteNoValid.
+  ///
+  /// In en, this message translates to:
+  /// **'No valid email addresses were found.'**
+  String get bulkInviteNoValid;
+
+  /// No description provided for @bulkInviteCapped.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the first {max} unique addresses will be processed.'**
+  String bulkInviteCapped(int max);
+
+  /// No description provided for @bulkInviteCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation links copied. Share them with recipients.'**
+  String get bulkInviteCopied;
+
+  /// No description provided for @bulkInviteResultsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation results'**
+  String get bulkInviteResultsTitle;
+
+  /// No description provided for @bulkInviteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite members from CSV'**
+  String get bulkInviteTitle;
+
+  /// No description provided for @bulkInviteSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{success} of {total} invitations created. Links are one-time secrets; share them securely.'**
+  String bulkInviteSummary(int success, int total);
+
+  /// No description provided for @bulkInviteIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a CSV or paste addresses. Use an Email column header when the file has multiple columns. Up to {max} unique member invitations per batch. Email is not sent automatically.'**
+  String bulkInviteIntro(int max);
+
+  /// No description provided for @bulkInviteChooseFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose CSV file'**
+  String get bulkInviteChooseFile;
+
+  /// No description provided for @bulkInviteFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'CSV content or email list'**
+  String get bulkInviteFieldLabel;
+
+  /// No description provided for @bulkInviteReady.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} unique valid addresses ready to invite.'**
+  String bulkInviteReady(int count);
+
+  /// No description provided for @bulkInviteProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating {current} of {total} invitations…'**
+  String bulkInviteProgress(int current, int total);
+
+  /// No description provided for @bulkInviteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation failed.'**
+  String get bulkInviteFailed;
+
+  /// No description provided for @bulkInviteCopyLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy successful invite links'**
+  String get bulkInviteCopyLinks;
+
+  /// No description provided for @bulkInvitePreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview addresses'**
+  String get bulkInvitePreview;
+
+  /// No description provided for @bulkInviteCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create invitations'**
+  String get bulkInviteCreate;
+
+  /// No description provided for @mpTransferLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer organization ownership'**
+  String get mpTransferLabel;
+
+  /// No description provided for @mpTransferTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer organization ownership?'**
+  String get mpTransferTitle;
+
+  /// No description provided for @mpTransferMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} will become the owner. Your role will change to admin. Recent sign-in and two-factor authentication are required.'**
+  String mpTransferMessage(String name);
+
+  /// No description provided for @mpTransferConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer ownership'**
+  String get mpTransferConfirm;
+
+  /// No description provided for @mpTransferDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization ownership transferred.'**
+  String get mpTransferDone;
+
+  /// No description provided for @tplSaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save setup as a template'**
+  String get tplSaveTitle;
+
+  /// No description provided for @tplNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Template name'**
+  String get tplNameLabel;
+
+  /// No description provided for @tplSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get tplSave;
+
+  /// No description provided for @tplShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Template shared with this organization.'**
+  String get tplShared;
+
+  /// No description provided for @tplSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save this template.'**
+  String get tplSaveFailed;
+
+  /// No description provided for @tplLoadSharedFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load shared templates. Check your connection and try again.'**
+  String get tplLoadSharedFailed;
+
+  /// No description provided for @tplLegacyHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this device (legacy)'**
+  String get tplLegacyHeading;
+
+  /// No description provided for @tplSharedHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared with this organization'**
+  String get tplSharedHeading;
+
+  /// No description provided for @tplDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete template'**
+  String get tplDelete;
+
+  /// No description provided for @tplDeleteShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete shared template'**
+  String get tplDeleteShared;
+
+  /// No description provided for @tplDeleteSharedFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete the shared template.'**
+  String get tplDeleteSharedFailed;
+
+  /// No description provided for @tplSaveSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Save setup'**
+  String get tplSaveSetup;
+
+  /// No description provided for @salesPricingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Packages & pricing'**
+  String get salesPricingLabel;
+
+  /// No description provided for @salesReportsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Support cases and package enquiries. Assign, follow up and resolve each request.'**
+  String get salesReportsSubtitle;
+
+  /// No description provided for @privacyPolicyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get privacyPolicyLabel;
+
+  /// No description provided for @deleteAccountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get deleteAccountLabel;
 }
 
 class _AppLocalizationsDelegate

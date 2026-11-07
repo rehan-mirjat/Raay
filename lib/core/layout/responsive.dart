@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Shared breakpoint policy (docs/design/kivora-ui-spec.md section 3):
+/// Shared breakpoint policy (docs/design/raay-ui-spec.md section 3):
 /// compact < 600, medium 600..<1024, expanded >= 1024.
 abstract final class ResponsiveLayout {
   static const compactBreakpoint = 600.0;

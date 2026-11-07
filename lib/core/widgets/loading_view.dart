@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
-import '../theme/kivora_colors.dart';
+import '../theme/raay_colors.dart';
 
 class LoadingView extends StatelessWidget {
   final String? message;
@@ -9,7 +9,7 @@ class LoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),

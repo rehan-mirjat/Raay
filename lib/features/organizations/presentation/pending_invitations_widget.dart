@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../core/utils/date_utils.dart';
 import '../../../l10n/app_localizations.dart';
@@ -64,7 +64,7 @@ class _PendingInvitationsWidgetState extends ConsumerState<PendingInvitationsWid
           TextButton(
             style: TextButton.styleFrom(
                 minimumSize: const Size(48, 48),
-                foregroundColor: KivoraColors.of(ctx).errorText),
+                foregroundColor: RaayColors.of(ctx).errorText),
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(l10n.invRevoke),
           ),
@@ -89,7 +89,7 @@ class _PendingInvitationsWidgetState extends ConsumerState<PendingInvitationsWid
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final invitationsAsync = ref.watch(pendingInvitationsProvider(widget.organizationId));
 
     String expiryText(({String kind, int n}) e) => switch (e.kind) {
@@ -173,7 +173,7 @@ class _PendingInvitationsWidgetState extends ConsumerState<PendingInvitationsWid
   Widget _row(
     BuildContext context,
     AppLocalizations l10n,
-    KivoraColors kc,
+    RaayColors kc,
     Map<String, dynamic> item,
     String Function(({String kind, int n})) expiryText,
   ) {

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
@@ -67,7 +67,7 @@ class _DepartmentMembersScreenState
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(AppLocalizations.of(context).dmDeleteTitle,
-            style: TextStyle(color: KivoraColors.of(context).errorText)),
+            style: TextStyle(color: RaayColors.of(context).errorText)),
         content: Text(
           AppLocalizations.of(context).dmDeleteBody(dept.name.toString()),
         ),
@@ -164,7 +164,7 @@ class _DepartmentMembersScreenState
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(AppLocalizations.of(context).dmRemoveFrom,
-            style: TextStyle(color: KivoraColors.of(context).errorText)),
+            style: TextStyle(color: RaayColors.of(context).errorText)),
         content: Text(
             AppLocalizations.of(context).dmRemoveBody(memberName.toString())),
         actions: [
@@ -293,14 +293,14 @@ class _DepartmentMembersScreenState
                           children: [
                             Icon(Icons.arrow_back_rounded,
                                 size: 16,
-                                color: KivoraColors.of(context).accentText),
+                                color: RaayColors.of(context).accentText),
                             const SizedBox(width: 6),
                             Text(
                               AppLocalizations.of(context).dmBack,
                               style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
-                                  color: KivoraColors.of(context).accentText),
+                                  color: RaayColors.of(context).accentText),
                             ),
                           ],
                         ),
@@ -329,7 +329,7 @@ class _DepartmentMembersScreenState
                                   style: TextStyle(
                                     fontSize: isDesktop ? 28 : 24,
                                     fontWeight: FontWeight.bold,
-                                    color: KivoraColors.textPrimaryOf(context),
+                                    color: RaayColors.textPrimaryOf(context),
                                   ),
                                 ),
                               ),
@@ -338,11 +338,11 @@ class _DepartmentMembersScreenState
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: KivoraColors.surfaceOf(context),
+                                  color: RaayColors.surfaceOf(context),
                                   borderRadius: BorderRadius.circular(
                                       AppTheme.radiusInput),
                                   border: Border.all(
-                                      color: KivoraColors.borderOf(context)),
+                                      color: RaayColors.borderOf(context)),
                                 ),
                                 child: Text(
                                   AppLocalizations.of(context).dmAssignedCount(
@@ -350,7 +350,7 @@ class _DepartmentMembersScreenState
                                   style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
-                                      color: KivoraColors.textSecondaryOf(
+                                      color: RaayColors.textSecondaryOf(
                                           context)),
                                 ),
                               ),
@@ -359,7 +359,7 @@ class _DepartmentMembersScreenState
                                 AppLocalizations.of(context).dmEligibleNote,
                                 style: TextStyle(
                                     color:
-                                        KivoraColors.textSecondaryOf(context),
+                                        RaayColors.textSecondaryOf(context),
                                     fontSize: 14),
                               ),
                             ],
@@ -392,17 +392,17 @@ class _DepartmentMembersScreenState
                                     context, department, orgId),
                                 icon: Icon(Icons.delete_outline_rounded,
                                     size: 18,
-                                    color: KivoraColors.of(context).errorText),
+                                    color: RaayColors.of(context).errorText),
                                 label: Text(
                                     AppLocalizations.of(context).dmDelete,
                                     style: TextStyle(
-                                        color: KivoraColors.of(context)
+                                        color: RaayColors.of(context)
                                             .errorText)),
                                 style: OutlinedButton.styleFrom(
                                   minimumSize: const Size(48, 48),
                                   side: BorderSide(
                                       color:
-                                          KivoraColors.of(context).errorText),
+                                          RaayColors.of(context).errorText),
                                 ),
                               ),
                             ],
@@ -486,9 +486,9 @@ class _DepartmentMembersScreenState
   ) {
     return Container(
       decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
+        color: RaayColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: KivoraColors.borderOf(context)),
+        border: Border.all(color: RaayColors.borderOf(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -508,7 +508,7 @@ class _DepartmentMembersScreenState
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: KivoraColors.textPrimaryOf(context)),
+                        color: RaayColors.textPrimaryOf(context)),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -525,14 +525,14 @@ class _DepartmentMembersScreenState
                       style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: KivoraColors.of(context).accentText),
+                          color: RaayColors.of(context).accentText),
                     ),
                   ),
                 ),
               ],
             ),
           ),
-          Divider(height: 1, color: KivoraColors.borderOf(context)),
+          Divider(height: 1, color: RaayColors.borderOf(context)),
 
           // Body: List or Empty View
           if (assignedMembers.isEmpty)
@@ -548,7 +548,7 @@ class _DepartmentMembersScreenState
                       shape: BoxShape.circle,
                     ),
                     child: Icon(Icons.people_outline_rounded,
-                        size: 28, color: KivoraColors.of(context).accentText),
+                        size: 28, color: RaayColors.of(context).accentText),
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -556,14 +556,14 @@ class _DepartmentMembersScreenState
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: KivoraColors.textPrimaryOf(context)),
+                        color: RaayColors.textPrimaryOf(context)),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     AppLocalizations.of(context).dmNoMembersBody,
                     style: TextStyle(
                         fontSize: 13,
-                        color: KivoraColors.textSecondaryOf(context),
+                        color: RaayColors.textSecondaryOf(context),
                         height: 1.4),
                     textAlign: TextAlign.center,
                   ),
@@ -572,7 +572,7 @@ class _DepartmentMembersScreenState
                     AppLocalizations.of(context).dmAssignedHere,
                     style: TextStyle(
                         fontSize: 11,
-                        color: KivoraColors.textSecondaryOf(context)),
+                        color: RaayColors.textSecondaryOf(context)),
                   ),
                 ],
               ),
@@ -584,7 +584,7 @@ class _DepartmentMembersScreenState
               padding: const EdgeInsets.symmetric(vertical: 8),
               itemCount: assignedMembers.length,
               separatorBuilder: (_, __) =>
-                  Divider(height: 1, color: KivoraColors.borderOf(context)),
+                  Divider(height: 1, color: RaayColors.borderOf(context)),
               itemBuilder: (context, idx) {
                 final member = assignedMembers[idx];
                 final name = member['displayName'] as String? ??
@@ -606,7 +606,7 @@ class _DepartmentMembersScreenState
                             .withValues(alpha: 0.14),
                         child: Text(initials,
                             style: TextStyle(
-                                color: KivoraColors.of(context).accentText,
+                                color: RaayColors.of(context).accentText,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold)),
                       ),
@@ -622,7 +622,7 @@ class _DepartmentMembersScreenState
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     color:
-                                        KivoraColors.textPrimaryOf(context))),
+                                        RaayColors.textPrimaryOf(context))),
                             const SizedBox(height: 4),
                             StatusBadge.role(role),
                           ],
@@ -633,7 +633,7 @@ class _DepartmentMembersScreenState
                         IconButton(
                           icon: Icon(Icons.close_rounded,
                               size: 18,
-                              color: KivoraColors.textSecondaryOf(context)),
+                              color: RaayColors.textSecondaryOf(context)),
                           tooltip: AppLocalizations.of(context).dmRemoveFrom,
                           onPressed: () => _showRemoveMemberConfirmation(
                               context, orgId, userId, name),
@@ -645,7 +645,7 @@ class _DepartmentMembersScreenState
               },
             ),
 
-          Divider(height: 1, color: KivoraColors.borderOf(context)),
+          Divider(height: 1, color: RaayColors.borderOf(context)),
 
           // Footnote Notice
           Padding(
@@ -653,7 +653,7 @@ class _DepartmentMembersScreenState
             child: Row(
               children: [
                 Icon(Icons.info_outline_rounded,
-                    size: 15, color: KivoraColors.textSecondaryOf(context)),
+                    size: 15, color: RaayColors.textSecondaryOf(context)),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -662,7 +662,7 @@ class _DepartmentMembersScreenState
                         dept.name.toString()),
                     style: TextStyle(
                         fontSize: 11,
-                        color: KivoraColors.textSecondaryOf(context),
+                        color: RaayColors.textSecondaryOf(context),
                         height: 1.3),
                   ),
                 ),
@@ -717,9 +717,9 @@ class _DepartmentMembersScreenState
 
     return Container(
       decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
+        color: RaayColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: KivoraColors.borderOf(context)),
+        border: Border.all(color: RaayColors.borderOf(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -735,7 +735,7 @@ class _DepartmentMembersScreenState
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: KivoraColors.textPrimaryOf(context)),
+                      color: RaayColors.textPrimaryOf(context)),
                 ),
                 const SizedBox(height: 2),
                 Text(
@@ -743,7 +743,7 @@ class _DepartmentMembersScreenState
                       .dmSelectPeople(dept.name.toString()),
                   style: TextStyle(
                       fontSize: 12,
-                      color: KivoraColors.textSecondaryOf(context)),
+                      color: RaayColors.textSecondaryOf(context)),
                 ),
                 const SizedBox(height: 16),
 
@@ -753,26 +753,26 @@ class _DepartmentMembersScreenState
                   decoration: InputDecoration(
                     hintText: AppLocalizations.of(context).dmSearch,
                     prefixIcon: Icon(Icons.search_rounded,
-                        color: KivoraColors.textSecondaryOf(context), size: 20),
+                        color: RaayColors.textSecondaryOf(context), size: 20),
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide:
-                          BorderSide(color: KivoraColors.borderOf(context)),
+                          BorderSide(color: RaayColors.borderOf(context)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide:
-                          BorderSide(color: KivoraColors.borderOf(context)),
+                          BorderSide(color: RaayColors.borderOf(context)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(
-                          color: KivoraColors.of(context).accentText,
+                          color: RaayColors.of(context).accentText,
                           width: 1.5),
                     ),
-                    fillColor: KivoraColors.surfaceOf(context),
+                    fillColor: RaayColors.surfaceOf(context),
                     filled: true,
                   ),
                 ),
@@ -786,7 +786,7 @@ class _DepartmentMembersScreenState
                     children: [
                       Icon(Icons.filter_list_rounded,
                           size: 18,
-                          color: KivoraColors.textSecondaryOf(context)),
+                          color: RaayColors.textSecondaryOf(context)),
                       const SizedBox(width: 8),
                       _buildFilterPill(
                           'all', AppLocalizations.of(context).dmAllMembers),
@@ -801,7 +801,7 @@ class _DepartmentMembersScreenState
               ],
             ),
           ),
-          Divider(height: 1, color: KivoraColors.borderOf(context)),
+          Divider(height: 1, color: RaayColors.borderOf(context)),
 
           // Selectable Members List
           if (filteredMembers.isEmpty)
@@ -810,7 +810,7 @@ class _DepartmentMembersScreenState
               child: Center(
                 child: Text(AppLocalizations.of(context).dmNoMatch,
                     style: TextStyle(
-                        color: KivoraColors.textSecondaryOf(context),
+                        color: RaayColors.textSecondaryOf(context),
                         fontSize: 13)),
               ),
             )
@@ -870,12 +870,12 @@ class _DepartmentMembersScreenState
                             ? AppTheme.primaryBlue
                                 .withValues(alpha: 0.12)
                                 .withValues(alpha: 0.6)
-                            : KivoraColors.surfaceOf(context),
+                            : RaayColors.surfaceOf(context),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: isChecked
                               ? AppTheme.primaryBlue
-                              : KivoraColors.borderOf(context),
+                              : RaayColors.borderOf(context),
                           width: isChecked ? 1.4 : 1.0,
                         ),
                       ),
@@ -888,12 +888,12 @@ class _DepartmentMembersScreenState
                             decoration: BoxDecoration(
                               color: isChecked
                                   ? AppTheme.primaryBlue
-                                  : KivoraColors.surfaceOf(context),
+                                  : RaayColors.surfaceOf(context),
                               borderRadius: BorderRadius.circular(6),
                               border: Border.all(
                                 color: isChecked
                                     ? AppTheme.primaryBlue
-                                    : KivoraColors.borderOf(context),
+                                    : RaayColors.borderOf(context),
                                 width: 1.5,
                               ),
                             ),
@@ -915,7 +915,7 @@ class _DepartmentMembersScreenState
                                 .withValues(alpha: 0.14),
                             child: Text(initials,
                                 style: TextStyle(
-                                    color: KivoraColors.of(context).accentText,
+                                    color: RaayColors.of(context).accentText,
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold)),
                           ),
@@ -935,7 +935,7 @@ class _DepartmentMembersScreenState
                                         : FontWeight.w600,
                                     color: isChecked
                                         ? AppTheme.primaryBlue
-                                        : KivoraColors.textPrimaryOf(context),
+                                        : RaayColors.textPrimaryOf(context),
                                   ),
                                 ),
                                 Text(
@@ -945,7 +945,7 @@ class _DepartmentMembersScreenState
                                       : currentDeptName,
                                   style: TextStyle(
                                       fontSize: 11,
-                                      color: KivoraColors.textSecondaryOf(
+                                      color: RaayColors.textSecondaryOf(
                                           context)),
                                 ),
                               ],
@@ -962,7 +962,7 @@ class _DepartmentMembersScreenState
               },
             ),
 
-          Divider(height: 1, color: KivoraColors.borderOf(context)),
+          Divider(height: 1, color: RaayColors.borderOf(context)),
 
           // Bottom Action Footer
           Padding(
@@ -986,7 +986,7 @@ class _DepartmentMembersScreenState
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13,
-                                  color: KivoraColors.textPrimaryOf(context)),
+                                  color: RaayColors.textPrimaryOf(context)),
                             ),
                             if (_pendingSelectedUids.isNotEmpty) ...[
                               const SizedBox(width: 8),
@@ -1007,7 +1007,7 @@ class _DepartmentMembersScreenState
                               .dmPendingTo(dept.name.toString()),
                           style: TextStyle(
                               fontSize: 14,
-                              color: KivoraColors.textSecondaryOf(context)),
+                              color: RaayColors.textSecondaryOf(context)),
                         ),
                       ],
                     )),
@@ -1054,11 +1054,11 @@ class _DepartmentMembersScreenState
         decoration: BoxDecoration(
           color: isSelected
               ? AppTheme.primaryBlue
-              : KivoraColors.surfaceOf(context),
+              : RaayColors.surfaceOf(context),
           borderRadius: BorderRadius.circular(16),
           border: isSelected
               ? null
-              : Border.all(color: KivoraColors.borderOf(context)),
+              : Border.all(color: RaayColors.borderOf(context)),
         ),
         child: Text(
           label,
@@ -1067,7 +1067,7 @@ class _DepartmentMembersScreenState
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
             color: isSelected
                 ? Theme.of(context).colorScheme.onPrimary
-                : KivoraColors.textSecondaryOf(context),
+                : RaayColors.textSecondaryOf(context),
           ),
         ),
       ),

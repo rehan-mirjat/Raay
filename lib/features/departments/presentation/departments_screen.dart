@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
@@ -48,7 +48,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
           TextButton(
             style: TextButton.styleFrom(
                 minimumSize: const Size(48, 48),
-                foregroundColor: KivoraColors.of(ctx).errorText),
+                foregroundColor: RaayColors.of(ctx).errorText),
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(l10n.deptDeleteConfirm),
           ),
@@ -80,7 +80,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final orgContext = ref.watch(activeOrganizationContextProvider).valueOrNull?.context;
 
     if (orgContext == null) {
@@ -110,7 +110,7 @@ class _DepartmentsScreenState extends ConsumerState<DepartmentsScreen> {
     final counts = memberCountsByDepartment(members);
 
     return Scaffold(
-      backgroundColor: KivoraColors.backgroundOf(context),
+      backgroundColor: RaayColors.backgroundOf(context),
       body: departmentsAsync.when(
         loading: () => const LoadingView(),
         error: (_, __) => ErrorView(
@@ -287,7 +287,7 @@ class DepartmentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     final primary = Theme.of(context).colorScheme.primary;
 

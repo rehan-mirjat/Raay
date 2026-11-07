@@ -92,7 +92,7 @@ class LandingFaq {
 }
 
 const landingFaqs = <LandingFaq>[
-  LandingFaq('What can we use Kivora for?',
+  LandingFaq('What can we use Raay for?',
       'Candidate elections, single-choice polls and yes/no polls for your organization, such as representative choices, committee decisions and member questions.'),
   LandingFaq('Who is allowed to vote?',
       'The organizer sets one eligibility rule per vote: all active members, selected departments, or selected members. The server checks it again when you submit your ballot.'),

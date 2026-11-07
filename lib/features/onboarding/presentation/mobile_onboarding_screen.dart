@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../providers/onboarding_providers.dart';
 
 class MobileOnboardingScreen extends ConsumerStatefulWidget {
@@ -99,7 +99,7 @@ class _MobileOnboardingScreenState
   }
 
   // ===========================================================================
-  // TOP BAR (Kivora Official Logo Asset + Brand Name + Skip Action)
+  // TOP BAR (Raay Official Logo Asset + Brand Name + Skip Action)
   // ===========================================================================
   Widget _buildTopBar() {
     return Padding(
@@ -123,13 +123,13 @@ class _MobileOnboardingScreenState
                 const SizedBox(width: 10),
                 Flexible(
                   child: Text(
-                    'Kivora',
+                    'Raay',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w800,
-                      color: KivoraColors.textPrimaryOf(context),
+                      color: RaayColors.textPrimaryOf(context),
                       letterSpacing: -0.5,
                     ),
                   ),
@@ -141,7 +141,7 @@ class _MobileOnboardingScreenState
             TextButton(
               onPressed: _skipToWelcome,
               style: TextButton.styleFrom(
-                foregroundColor: KivoraColors.of(context).accentText,
+                foregroundColor: RaayColors.of(context).accentText,
                 minimumSize: const Size(48, 48),
               ),
               child: Text(AppLocalizations.of(context).obSkip,
@@ -176,7 +176,7 @@ class _MobileOnboardingScreenState
                           style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: KivoraColors.textPrimaryOf(context))),
+                              color: RaayColors.textPrimaryOf(context))),
                     ),
                     Container(
                       padding: const EdgeInsets.all(4),
@@ -184,7 +184,7 @@ class _MobileOnboardingScreenState
                           color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(6)),
                       child: Icon(Icons.corporate_fare_outlined,
-                          size: 14, color: KivoraColors.of(context).accentText),
+                          size: 14, color: RaayColors.of(context).accentText),
                     ),
                   ],
                 ),
@@ -202,13 +202,13 @@ class _MobileOnboardingScreenState
                 Row(
                   children: [
                     Icon(Icons.key_outlined,
-                        size: 14, color: KivoraColors.of(context).accentText),
+                        size: 14, color: RaayColors.of(context).accentText),
                     const SizedBox(width: 6),
                     Flexible(
                       child: Text(AppLocalizations.of(context).obInviteNote,
                           style: TextStyle(
                               fontSize: 12,
-                              color: KivoraColors.of(context).accentText,
+                              color: RaayColors.of(context).accentText,
                               fontWeight: FontWeight.bold)),
                     ),
                   ],
@@ -272,7 +272,7 @@ class _MobileOnboardingScreenState
                           style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: KivoraColors.textSecondaryOf(context))),
+                              color: RaayColors.textSecondaryOf(context))),
                     ),
                     Container(
                       padding: const EdgeInsets.all(4),
@@ -280,7 +280,7 @@ class _MobileOnboardingScreenState
                           color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(6)),
                       child: Icon(Icons.how_to_vote_outlined,
-                          size: 14, color: KivoraColors.of(context).accentText),
+                          size: 14, color: RaayColors.of(context).accentText),
                     ),
                   ],
                 ),
@@ -289,11 +289,11 @@ class _MobileOnboardingScreenState
                     style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: KivoraColors.textPrimaryOf(context))),
+                        color: RaayColors.textPrimaryOf(context))),
                 Text(AppLocalizations.of(context).obPresident,
                     style: TextStyle(
                         fontSize: 12,
-                        color: KivoraColors.textSecondaryOf(context))),
+                        color: RaayColors.textSecondaryOf(context))),
                 const SizedBox(height: 12),
                 Container(
                   padding:
@@ -302,18 +302,18 @@ class _MobileOnboardingScreenState
                       color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                          color: KivoraColors.of(context).accentText)),
+                          color: RaayColors.of(context).accentText)),
                   child: Row(
                     children: [
                       Icon(Icons.radio_button_checked_rounded,
-                          size: 14, color: KivoraColors.of(context).accentText),
+                          size: 14, color: RaayColors.of(context).accentText),
                       const SizedBox(width: 8),
                       Flexible(
                         child: Text(AppLocalizations.of(context).obAlex,
                             style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                color: KivoraColors.of(context).accentText)),
+                                color: RaayColors.of(context).accentText)),
                       ),
                     ],
                   ),
@@ -323,19 +323,19 @@ class _MobileOnboardingScreenState
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                      color: KivoraColors.backgroundOf(context),
+                      color: RaayColors.backgroundOf(context),
                       borderRadius: BorderRadius.circular(8)),
                   child: Row(
                     children: [
                       Icon(Icons.radio_button_unchecked_rounded,
                           size: 14,
-                          color: KivoraColors.textSecondaryOf(context)),
+                          color: RaayColors.textSecondaryOf(context)),
                       const SizedBox(width: 8),
                       Flexible(
                         child: Text(AppLocalizations.of(context).obJordan,
                             style: TextStyle(
                                 fontSize: 12,
-                                color: KivoraColors.textPrimaryOf(context))),
+                                color: RaayColors.textPrimaryOf(context))),
                       ),
                     ],
                   ),
@@ -415,7 +415,7 @@ class _MobileOnboardingScreenState
                           style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.bold,
-                              color: KivoraColors.textPrimaryOf(context))),
+                              color: RaayColors.textPrimaryOf(context))),
                     ),
                     Container(
                       padding: const EdgeInsets.all(4),
@@ -423,7 +423,7 @@ class _MobileOnboardingScreenState
                           color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(6)),
                       child: Icon(Icons.tune_rounded,
-                          size: 14, color: KivoraColors.of(context).accentText),
+                          size: 14, color: RaayColors.of(context).accentText),
                     ),
                   ],
                 ),
@@ -444,16 +444,16 @@ class _MobileOnboardingScreenState
                               style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
-                                  color: KivoraColors.textPrimaryOf(context))),
+                                  color: RaayColors.textPrimaryOf(context))),
                           Text(AppLocalizations.of(context).obCodesSub,
                               style: TextStyle(
                                   fontSize: 12,
                                   color:
-                                      KivoraColors.textSecondaryOf(context))),
+                                      RaayColors.textSecondaryOf(context))),
                         ],
                       )),
                       Icon(Icons.toggle_on_rounded,
-                          color: KivoraColors.of(context).accentText, size: 22),
+                          color: RaayColors.of(context).accentText, size: 22),
                     ],
                   ),
                 ),
@@ -462,7 +462,7 @@ class _MobileOnboardingScreenState
                     style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: KivoraColors.textPrimaryOf(context))),
+                        color: RaayColors.textPrimaryOf(context))),
                 const SizedBox(height: 4),
                 _miniLogItem(AppLocalizations.of(context).obLogAdded, '09:32'),
                 _miniLogItem(
@@ -505,7 +505,7 @@ class _MobileOnboardingScreenState
   }
 
   // ===========================================================================
-  // STEP 4: WELCOME SCREEN (Kivora · Welcome)
+  // STEP 4: WELCOME SCREEN (Raay · Welcome)
   // ===========================================================================
   Widget _buildWelcomePage() {
     return Padding(
@@ -527,7 +527,7 @@ class _MobileOnboardingScreenState
                           color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(10)),
                       child: Icon(Icons.people_outline_rounded,
-                          color: KivoraColors.of(context).accentText, size: 20),
+                          color: RaayColors.of(context).accentText, size: 20),
                     ),
                     const SizedBox(width: 10),
                     Flexible(
@@ -538,11 +538,11 @@ class _MobileOnboardingScreenState
                             style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
-                                color: KivoraColors.textPrimaryOf(context))),
+                                color: RaayColors.textPrimaryOf(context))),
                         Text(AppLocalizations.of(context).obCommSub,
                             style: TextStyle(
                                 fontSize: 12,
-                                color: KivoraColors.textSecondaryOf(context))),
+                                color: RaayColors.textSecondaryOf(context))),
                       ],
                     )),
                   ],
@@ -554,20 +554,20 @@ class _MobileOnboardingScreenState
                       child: Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                            color: KivoraColors.backgroundOf(context),
+                            color: RaayColors.backgroundOf(context),
                             borderRadius: BorderRadius.circular(10)),
                         child: Column(
                           children: [
                             Icon(Icons.how_to_vote_outlined,
                                 size: 18,
-                                color: KivoraColors.of(context).accentText),
+                                color: RaayColors.of(context).accentText),
                             const SizedBox(height: 4),
                             Text(AppLocalizations.of(context).obElections,
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                     color:
-                                        KivoraColors.textPrimaryOf(context))),
+                                        RaayColors.textPrimaryOf(context))),
                           ],
                         ),
                       ),
@@ -577,20 +577,20 @@ class _MobileOnboardingScreenState
                       child: Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                            color: KivoraColors.backgroundOf(context),
+                            color: RaayColors.backgroundOf(context),
                             borderRadius: BorderRadius.circular(10)),
                         child: Column(
                           children: [
                             Icon(Icons.bar_chart_rounded,
                                 size: 18,
-                                color: KivoraColors.of(context).accentText),
+                                color: RaayColors.of(context).accentText),
                             const SizedBox(height: 4),
                             Text(AppLocalizations.of(context).obPolls,
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                     color:
-                                        KivoraColors.textPrimaryOf(context))),
+                                        RaayColors.textPrimaryOf(context))),
                           ],
                         ),
                       ),
@@ -602,7 +602,7 @@ class _MobileOnboardingScreenState
                     style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: KivoraColors.of(context).accentText)),
+                        color: RaayColors.of(context).accentText)),
               ],
             ),
           ),
@@ -615,7 +615,7 @@ class _MobileOnboardingScreenState
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w800,
-              color: KivoraColors.textPrimaryOf(context),
+              color: RaayColors.textPrimaryOf(context),
               height: 1.2,
               letterSpacing: -0.6,
             ),
@@ -626,7 +626,7 @@ class _MobileOnboardingScreenState
             AppLocalizations.of(context).obBody4,
             style: TextStyle(
               fontSize: 13,
-              color: KivoraColors.textSecondaryOf(context),
+              color: RaayColors.textSecondaryOf(context),
               height: 1.4,
             ),
             textAlign: TextAlign.center,
@@ -662,9 +662,9 @@ class _MobileOnboardingScreenState
                 context.go('/login');
               },
               style: OutlinedButton.styleFrom(
-                foregroundColor: KivoraColors.of(context).accentText,
+                foregroundColor: RaayColors.of(context).accentText,
                 side: BorderSide(
-                    color: KivoraColors.borderOf(context), width: 1.5),
+                    color: RaayColors.borderOf(context), width: 1.5),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
@@ -679,7 +679,7 @@ class _MobileOnboardingScreenState
           TextButton.icon(
             style: TextButton.styleFrom(
               minimumSize: const Size(48, 48),
-              foregroundColor: KivoraColors.of(context).accentText,
+              foregroundColor: RaayColors.of(context).accentText,
             ),
             onPressed: () {
               ref.read(hasSeenIntroProvider.notifier).markSeen();
@@ -708,12 +708,12 @@ class _MobileOnboardingScreenState
       decoration: BoxDecoration(
         color: AppTheme.primaryBlue.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: KivoraColors.borderOf(context)),
+        border: Border.all(color: RaayColors.borderOf(context)),
       ),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: KivoraColors.surfaceOf(context),
+          color: RaayColors.surfaceOf(context),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -732,7 +732,7 @@ class _MobileOnboardingScreenState
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-          color: KivoraColors.backgroundOf(context),
+          color: RaayColors.backgroundOf(context),
           borderRadius: BorderRadius.circular(10)),
       child: Row(
         children: [
@@ -742,7 +742,7 @@ class _MobileOnboardingScreenState
                 color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(8)),
             child: Icon(icon,
-                size: 16, color: KivoraColors.of(context).accentText),
+                size: 16, color: RaayColors.of(context).accentText),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -753,16 +753,16 @@ class _MobileOnboardingScreenState
                     style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: KivoraColors.textPrimaryOf(context))),
+                        color: RaayColors.textPrimaryOf(context))),
                 Text(subtitle,
                     style: TextStyle(
                         fontSize: 12,
-                        color: KivoraColors.textSecondaryOf(context))),
+                        color: RaayColors.textSecondaryOf(context))),
               ],
             ),
           ),
           Icon(Icons.chevron_right_rounded,
-              size: 16, color: KivoraColors.textSecondaryOf(context)),
+              size: 16, color: RaayColors.textSecondaryOf(context)),
         ],
       ),
     );
@@ -781,14 +781,14 @@ class _MobileOnboardingScreenState
                     width: 6,
                     height: 6,
                     decoration: BoxDecoration(
-                        color: KivoraColors.of(context).accentText,
+                        color: RaayColors.of(context).accentText,
                         shape: BoxShape.circle)),
                 const SizedBox(width: 8),
                 Flexible(
                   child: Text(title,
                       style: TextStyle(
                           fontSize: 12,
-                          color: KivoraColors.textPrimaryOf(context))),
+                          color: RaayColors.textPrimaryOf(context))),
                 ),
               ],
             ),
@@ -796,7 +796,7 @@ class _MobileOnboardingScreenState
           const SizedBox(width: 8),
           Text(time,
               style: TextStyle(
-                  fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
+                  fontSize: 12, color: RaayColors.textSecondaryOf(context))),
         ],
       ),
     );
@@ -811,7 +811,7 @@ class _MobileOnboardingScreenState
           style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: KivoraColors.of(context).accentText,
+              color: RaayColors.of(context).accentText,
               letterSpacing: 0.8),
           textAlign: TextAlign.center,
         ),
@@ -821,7 +821,7 @@ class _MobileOnboardingScreenState
           style: TextStyle(
             fontSize: 26,
             fontWeight: FontWeight.w800,
-            color: KivoraColors.textPrimaryOf(context),
+            color: RaayColors.textPrimaryOf(context),
             height: 1.2,
             letterSpacing: -0.5,
           ),
@@ -832,7 +832,7 @@ class _MobileOnboardingScreenState
           subtitle,
           style: TextStyle(
             fontSize: 13,
-            color: KivoraColors.textSecondaryOf(context),
+            color: RaayColors.textSecondaryOf(context),
             height: 1.4,
           ),
           textAlign: TextAlign.center,
@@ -846,9 +846,9 @@ class _MobileOnboardingScreenState
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
+        color: RaayColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: KivoraColors.borderOf(context)),
+        border: Border.all(color: RaayColors.borderOf(context)),
       ),
       child: Row(
         children: [
@@ -858,7 +858,7 @@ class _MobileOnboardingScreenState
                 color: AppTheme.primaryBlue.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(8)),
             child: Icon(icon,
-                color: KivoraColors.of(context).accentText, size: 16),
+                color: RaayColors.of(context).accentText, size: 16),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -869,11 +869,11 @@ class _MobileOnboardingScreenState
                     style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: KivoraColors.textPrimaryOf(context))),
+                        color: RaayColors.textPrimaryOf(context))),
                 Text(text,
                     style: TextStyle(
                         fontSize: 12,
-                        color: KivoraColors.textSecondaryOf(context),
+                        color: RaayColors.textSecondaryOf(context),
                         height: 1.3)),
               ],
             ),
@@ -904,7 +904,7 @@ class _MobileOnboardingScreenState
               decoration: BoxDecoration(
                 color: isCurrent
                     ? AppTheme.primaryBlue
-                    : KivoraColors.borderOf(context),
+                    : RaayColors.borderOf(context),
                 borderRadius: BorderRadius.circular(4),
               ),
             );
@@ -913,7 +913,7 @@ class _MobileOnboardingScreenState
         const SizedBox(height: 4),
         Text(AppLocalizations.of(context).obPage(pageIndex.toString()),
             style: TextStyle(
-                fontSize: 12, color: KivoraColors.textSecondaryOf(context))),
+                fontSize: 12, color: RaayColors.textSecondaryOf(context))),
         const SizedBox(height: 16),
 
         // Action Buttons Row
@@ -924,9 +924,9 @@ class _MobileOnboardingScreenState
                 child: OutlinedButton(
                   onPressed: onBack,
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: KivoraColors.textPrimaryOf(context),
+                    foregroundColor: RaayColors.textPrimaryOf(context),
                     side: BorderSide(
-                        color: KivoraColors.borderOf(context), width: 1.5),
+                        color: RaayColors.borderOf(context), width: 1.5),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),

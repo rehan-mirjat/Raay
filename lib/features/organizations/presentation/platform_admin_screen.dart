@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../services/auth_service.dart';
@@ -323,12 +323,12 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
                       style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color: KivoraColors.textPrimaryOf(context))),
+                          color: RaayColors.textPrimaryOf(context))),
                   const SizedBox(height: 4),
                   Text(label,
                       style: TextStyle(
                           fontSize: 12,
-                          color: KivoraColors.textSecondaryOf(context))),
+                          color: RaayColors.textSecondaryOf(context))),
                 ],
               ),
             ),
@@ -380,7 +380,7 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
                     .characters
                     .first
                     .toUpperCase(),
-                style: TextStyle(color: KivoraColors.of(context).accentText),
+                style: TextStyle(color: RaayColors.of(context).accentText),
               ),
             ),
             const SizedBox(width: 12),
@@ -393,7 +393,7 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
                   Text(email,
                       style: TextStyle(
                           fontSize: 12,
-                          color: KivoraColors.textSecondaryOf(context))),
+                          color: RaayColors.textSecondaryOf(context))),
                   const SizedBox(height: 4),
                   Wrap(
                     spacing: 6,
@@ -401,15 +401,15 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
                       if (isPlatformAdmin)
                         _Tag(
                             label: AppLocalizations.of(context).paTagAdmin,
-                            color: KivoraColors.of(context).accentText),
+                            color: RaayColors.of(context).accentText),
                       if (!emailVerified)
                         _Tag(
                             label: AppLocalizations.of(context).paTagUnverified,
-                            color: KivoraColors.textSecondaryOf(context)),
+                            color: RaayColors.textSecondaryOf(context)),
                       if (disabled)
                         _Tag(
                             label: AppLocalizations.of(context).paTagDisabled,
-                            color: KivoraColors.of(context).errorText),
+                            color: RaayColors.of(context).errorText),
                     ],
                   ),
                 ],
@@ -419,7 +419,7 @@ class _PlatformAdminScreenState extends ConsumerState<PlatformAdminScreen> {
               OutlinedButton(
                 onPressed: busy ? null : () => _revokeAdmin(user),
                 style: OutlinedButton.styleFrom(
-                    foregroundColor: KivoraColors.of(context).errorText),
+                    foregroundColor: RaayColors.of(context).errorText),
                 child: busy
                     ? const SizedBox(
                         height: 14,

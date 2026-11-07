@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../services/firebase_service.dart';
 import 'providers/organization_providers.dart';
@@ -51,14 +51,14 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: KivoraColors.textPrimaryOf(context)),
+                                color: RaayColors.textPrimaryOf(context)),
                           ),
                           const SizedBox(height: 2),
                           Text(
                             AppLocalizations.of(context).osBody,
                             style: TextStyle(
                                 fontSize: 12,
-                                color: KivoraColors.textSecondaryOf(context)),
+                                color: RaayColors.textSecondaryOf(context)),
                           ),
                         ],
                       ),
@@ -67,7 +67,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                         onPressed: () => Navigator.pop(context),
                         style: IconButton.styleFrom(
                           foregroundColor:
-                              KivoraColors.textSecondaryOf(context),
+                              RaayColors.textSecondaryOf(context),
                           minimumSize: const Size(32, 32),
                         ),
                       ),
@@ -83,7 +83,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                           AppLocalizations.of(context).osLoadError,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              color: KivoraColors.of(context).errorText),
+                              color: RaayColors.of(context).errorText),
                         ),
                         const SizedBox(height: 8),
                         TextButton.icon(
@@ -101,7 +101,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                         AppLocalizations.of(context).osNone,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            color: KivoraColors.textSecondaryOf(context)),
+                            color: RaayColors.textSecondaryOf(context)),
                       ),
                     ),
                   ] else ...[
@@ -143,7 +143,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                     ),
                   ],
                   const SizedBox(height: 16),
-                  Divider(height: 1, color: KivoraColors.borderOf(context)),
+                  Divider(height: 1, color: RaayColors.borderOf(context)),
                   const SizedBox(height: 12),
                   _buildMenuItem(
                     context,
@@ -220,13 +220,13 @@ class OrganizationContextSwitcher extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         child: Row(
           children: [
-            Icon(icon, size: 18, color: KivoraColors.of(context).accentText),
+            Icon(icon, size: 18, color: RaayColors.of(context).accentText),
             const SizedBox(width: 12),
             Text(
               label,
               style: TextStyle(
                   fontSize: 13,
-                  color: KivoraColors.textPrimaryOf(context),
+                  color: RaayColors.textPrimaryOf(context),
                   fontWeight: FontWeight.w500),
             ),
           ],
@@ -274,7 +274,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.business_rounded,
-                        color: KivoraColors.of(context).accentText, size: 16),
+                        color: RaayColors.of(context).accentText, size: 16),
                     const SizedBox(width: 8),
                     Flexible(
                       child: Column(
@@ -286,7 +286,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                             style: TextStyle(
                               fontSize: 9,
                               fontWeight: FontWeight.bold,
-                              color: KivoraColors.textSecondaryOf(context),
+                              color: RaayColors.textSecondaryOf(context),
                               letterSpacing: 0.5,
                             ),
                           ),
@@ -295,7 +295,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 12,
-                              color: KivoraColors.textPrimaryOf(context),
+                              color: RaayColors.textPrimaryOf(context),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -305,7 +305,7 @@ class OrganizationContextSwitcher extends ConsumerWidget {
                     ),
                     const SizedBox(width: 8),
                     Icon(Icons.unfold_more_rounded,
-                        color: KivoraColors.textSecondaryOf(context), size: 16),
+                        color: RaayColors.textSecondaryOf(context), size: 16),
                   ],
                 ),
               ),
@@ -356,14 +356,14 @@ class _SwitcherOrgItemState extends State<_SwitcherOrgItem> {
                     ? AppTheme.primaryBlue
                         .withValues(alpha: 0.12)
                         .withValues(alpha: 0.5)
-                    : KivoraColors.surfaceOf(context)),
+                    : RaayColors.surfaceOf(context)),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: widget.isSelected
                   ? AppTheme.primaryBlue.withValues(alpha: 0.4)
                   : (_isHovered
                       ? AppTheme.primaryBlue.withValues(alpha: 0.2)
-                      : KivoraColors.borderOf(context)),
+                      : RaayColors.borderOf(context)),
               width: 1.0,
             ),
           ),
@@ -392,7 +392,7 @@ class _SwitcherOrgItemState extends State<_SwitcherOrgItem> {
                             size: 20,
                             color: widget.isSelected
                                 ? AppTheme.primaryBlue
-                                : KivoraColors.textPrimaryOf(context),
+                                : RaayColors.textPrimaryOf(context),
                           ),
                         ),
                       )
@@ -404,7 +404,7 @@ class _SwitcherOrgItemState extends State<_SwitcherOrgItem> {
                           size: 20,
                           color: widget.isSelected
                               ? AppTheme.primaryBlue
-                              : KivoraColors.textPrimaryOf(context),
+                              : RaayColors.textPrimaryOf(context),
                         ),
                       ),
               ),
@@ -420,7 +420,7 @@ class _SwitcherOrgItemState extends State<_SwitcherOrgItem> {
                         fontSize: 14,
                         color: widget.isSelected
                             ? AppTheme.primaryBlue
-                            : KivoraColors.textPrimaryOf(context),
+                            : RaayColors.textPrimaryOf(context),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -434,7 +434,7 @@ class _SwitcherOrgItemState extends State<_SwitcherOrgItem> {
                         fontSize: 11,
                         color: widget.isSelected
                             ? AppTheme.primaryBlue
-                            : KivoraColors.textSecondaryOf(context),
+                            : RaayColors.textSecondaryOf(context),
                         fontWeight: widget.isSelected
                             ? FontWeight.w600
                             : FontWeight.normal,
@@ -452,7 +452,7 @@ class _SwitcherOrgItemState extends State<_SwitcherOrgItem> {
                   widget.isSelected ? Icons.check_rounded : Icons.east_rounded,
                   color: widget.isSelected
                       ? AppTheme.primaryBlue
-                      : KivoraColors.textSecondaryOf(context),
+                      : RaayColors.textSecondaryOf(context),
                   size: 18,
                 ),
               ),

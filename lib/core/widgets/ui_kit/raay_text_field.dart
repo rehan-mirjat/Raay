@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class KivoraTextField extends StatelessWidget {
+class RaayTextField extends StatelessWidget {
   final String label;
   final String? hint;
   final IconData? prefixIcon;
@@ -16,7 +16,7 @@ class KivoraTextField extends StatelessWidget {
   final Iterable<String>? autofillHints;
   final int maxLines;
 
-  const KivoraTextField({
+  const RaayTextField({
     super.key,
     required this.label,
     this.hint,

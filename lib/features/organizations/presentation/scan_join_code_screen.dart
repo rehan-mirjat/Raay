@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
+import '../../../l10n/app_localizations.dart';
 
-const _kivoraJoinPrefix = 'KIVORA-JOIN:';
+const _raayJoinPrefix = 'raay-JOIN:';
 
 /// Extracts a joining code from scanned QR text. Accepts both the app's own
-/// `KIVORA-JOIN:<code>` QR payload (see joining_codes_screen.dart) and a bare
+/// `raay-JOIN:<code>` QR payload (see joining_codes_screen.dart) and a bare
 /// code, so a code copy-pasted into a generic QR generator still works.
 String? extractJoiningCode(String rawValue) {
   final trimmed = rawValue.trim();
   if (trimmed.isEmpty) return null;
-  if (trimmed.startsWith(_kivoraJoinPrefix)) {
-    final code = trimmed.substring(_kivoraJoinPrefix.length).trim();
+  if (trimmed.startsWith(_raayJoinPrefix)) {
+    final code = trimmed.substring(_raayJoinPrefix.length).trim();
     return code.isEmpty ? null : code;
   }
   // A bare code: letters/digits only, matching the format createJoiningCode
@@ -28,14 +29,14 @@ typedef ScannerErrorBuilder = Widget Function(
     BuildContext, MobileScannerException);
 
 /// Plain-language reason the camera cannot be used, with what to do instead.
-String scannerProblemMessage(MobileScannerErrorCode code) {
+String scannerProblemMessage(AppLocalizations l10n, MobileScannerErrorCode code) {
   switch (code) {
     case MobileScannerErrorCode.permissionDenied:
-      return 'Camera access is blocked. Allow the camera for this site or app in your settings, or enter the code by hand.';
+      return l10n.scanJoinPermissionDenied;
     case MobileScannerErrorCode.unsupported:
-      return 'This browser or device cannot scan QR codes. Enter the joining code by hand instead.';
+      return l10n.scanJoinUnsupported;
     default:
-      return 'The camera could not be started. You can enter the joining code by hand instead.';
+      return l10n.scanJoinGeneric;
   }
 }
 
@@ -60,6 +61,7 @@ class _ScanJoinCodeScreenState extends State<ScanJoinCodeScreen> {
     detectionSpeed: DetectionSpeed.normal,
   );
   bool _handled = false;
+  DateTime? _lastInvalidNoticeAt;
 
   @override
   void dispose() {
@@ -78,6 +80,17 @@ class _ScanJoinCodeScreenState extends State<ScanJoinCodeScreen> {
         context.go('/orgs/join', extra: {'initialCode': code});
         return;
       }
+      final now = DateTime.now();
+      if (_lastInvalidNoticeAt == null ||
+          now.difference(_lastInvalidNoticeAt!) > const Duration(seconds: 3)) {
+        _lastInvalidNoticeAt = now;
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(
+            content: Text(AppLocalizations.of(context).scanJoinInvalid),
+            duration: const Duration(seconds: 3),
+          ));
+      }
     }
   }
 
@@ -91,7 +104,7 @@ class _ScanJoinCodeScreenState extends State<ScanJoinCodeScreen> {
           const Icon(Icons.no_photography_outlined,
               color: Colors.white, size: 40),
           const SizedBox(height: 16),
-          Text(scannerProblemMessage(e.errorCode),
+          Text(scannerProblemMessage(AppLocalizations.of(context), e.errorCode),
               textAlign: TextAlign.center,
               style: const TextStyle(
                   color: Colors.white, fontSize: 15, height: 1.5)),
@@ -107,20 +120,21 @@ class _ScanJoinCodeScreenState extends State<ScanJoinCodeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
-        title: const Text('Scan to Join'),
+        title: Text(AppLocalizations.of(context).scanJoinTitle),
         actions: [
-          IconButton(
-            icon: ValueListenableBuilder(
-              valueListenable: _controller,
-              builder: (context, state, child) {
-                return Icon(
-                  state.torchState == TorchState.on
-                      ? Icons.flash_on_rounded
-                      : Icons.flash_off_rounded,
-                );
-              },
+          ValueListenableBuilder(
+            valueListenable: _controller,
+            builder: (context, state, child) => IconButton(
+              icon: Icon(
+                state.torchState == TorchState.on
+                    ? Icons.flash_on_rounded
+                    : Icons.flash_off_rounded,
+              ),
+              tooltip: AppLocalizations.of(context).scanJoinTorch,
+              onPressed: state.torchState == TorchState.unavailable
+                  ? null
+                  : () => _controller.toggleTorch(),
             ),
-            onPressed: () => _controller.toggleTorch(),
           ),
         ],
       ),
@@ -139,7 +153,7 @@ class _ScanJoinCodeScreenState extends State<ScanJoinCodeScreen> {
               height: 240,
               decoration: BoxDecoration(
                 border: Border.all(
-                    color: KivoraColors.of(context).accentText, width: 3),
+                    color: RaayColors.of(context).accentText, width: 3),
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
@@ -170,7 +184,7 @@ class _ScanJoinCodeScreenState extends State<ScanJoinCodeScreen> {
                   // The same join flow the QR feeds; the code is typed instead.
                   onPressed: () => context.go('/orgs/join'),
                   icon: const Icon(Icons.keyboard_outlined, size: 18),
-                  label: const Text('Enter the code instead'),
+                  label: Text(AppLocalizations.of(context).scanJoinEnterCode),
                 ),
               ]),
             ),

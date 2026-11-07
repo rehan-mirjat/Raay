@@ -2,7 +2,7 @@ import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { OPERATIONAL_ORG_STATUSES } from "../voting_events/votingCommon";
 import { getFirestore, FieldValue, Firestore, DocumentData } from "firebase-admin/firestore";
 import * as logger from "firebase-functions/logger";
-import { requireActiveMembership, requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
+import { requireActiveMembership, requireMfaVerified, requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
 import { calculateEventResults, getEligibleMembers } from "../results/tally";
 import { filterOptedIn } from "../utils/notificationPreferences";
 
@@ -21,11 +21,11 @@ async function notifyResultsPublished(
   event: DocumentData
 ): Promise<void> {
   try {
-    const eligibleMembers = await getEligibleMembers(db, organizationId, event);
+    const eligibleMembers = await getEligibleMembers(db, organizationId, eventId, event);
     if (eligibleMembers.length === 0) return;
 
     const optedInUserIds = new Set(
-      await filterOptedIn(db, eligibleMembers.map((m) => m.userId), "eventUpdates")
+      await filterOptedIn(db, eligibleMembers.filter((m) => m.active !== false).map((m) => m.userId), "eventUpdates")
     );
     const recipients = eligibleMembers.filter((m) => optedInUserIds.has(m.userId));
     if (recipients.length === 0) return;
@@ -60,6 +60,7 @@ export const publishResults = onCall(async (request) => {
   // FR-10 / MFA-REQ-001: publishing results is a sensitive, irreversible operation.
   await requireNotRevoked(request);
   requireRecentAuthentication(request.auth);
+  await requireMfaVerified(request.auth);
 
   const eventId = typeof request.data?.eventId === "string" ? request.data.eventId.trim() : "";
   if (!eventId) throw new HttpsError("invalid-argument", "Valid eventId is required.");
@@ -78,6 +79,13 @@ export const publishResults = onCall(async (request) => {
     throw new HttpsError("failed-precondition", "The organization is not currently authorized to manage voting events.");
   }
   try {
+    // Idempotent: a repeat call (double click, retry after a timeout) must not
+    // write a second audit entry or re-notify every eligible member.
+    const existing = await db.collection("eventResults").doc(eventId).get();
+    if (existing.exists && existing.data()?.published === true) {
+      return { status: "success", eventId, published: true, alreadyPublished: true };
+    }
+
     const results = await calculateEventResults(db, eventId, uid, { publish: true });
     await db.collection("auditLogs").add({
       organizationId,

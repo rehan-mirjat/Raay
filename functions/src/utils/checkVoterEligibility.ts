@@ -59,22 +59,20 @@ export async function checkVoterEligibility(
 
   const eligibilityType = eventData.eligibilityType;
 
-  // 3. ALL_MEMBERS: any currently active member of the organization is eligible.
-  if (eligibilityType === "ALL_MEMBERS") {
-    return true;
-  }
-
-  if (eligibilityType !== "SELECTED_DEPARTMENTS" && eligibilityType !== "SELECTED_MEMBERS") {
+  // All election types use the activation snapshot, including ALL_MEMBERS.
+  // Membership still has to be active, but joining later cannot expand the roll.
+  if (eligibilityType !== "ALL_MEMBERS" && eligibilityType !== "SELECTED_DEPARTMENTS" && eligibilityType !== "SELECTED_MEMBERS") {
     throw new HttpsError("invalid-argument", `Unsupported eligibilityType '${eligibilityType}'.`);
   }
 
-  // 4. SELECTED_DEPARTMENTS / SELECTED_MEMBERS: match against the frozen voter roll.
+  // 4. Match against the same frozen voter roll used by monitoring and tallying.
   const eligibilityRef = db.collection("votingEventEligibility").doc(eventId);
   const eligibilitySnap = preFetched?.eligibilitySnap || (await transaction.get(eligibilityRef));
 
-  const eligibleUserIds: string[] = eligibilitySnap.exists && Array.isArray(eligibilitySnap.data()?.eligibleUserIds)
-    ? eligibilitySnap.data()!.eligibleUserIds
-    : [];
+  const eligibleUserIds = eligibilitySnap.data()?.eligibleUserIds;
+  if (!Array.isArray(eligibleUserIds)) {
+    throw new HttpsError("failed-precondition", "The election voter roll is not ready. Contact the organizer.");
+  }
 
   if (!eligibleUserIds.includes(userId)) {
     throw new HttpsError("permission-denied", "You are not on the eligible voters list for this event.");

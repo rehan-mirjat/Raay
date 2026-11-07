@@ -50,12 +50,10 @@ export const LIMITS = {
 } as const;
 
 /**
- * App Check enforcement is OFF: the Flutter client has no App Check SDK wired up
- * (no `firebase_app_check` dependency, no activation in main.dart). Turning this
- * on without that client-side setup rejects every real request - confirmed via
- * production data: votingEvents/candidates/votes were completely empty while this
- * was true, with no sign any of these callables had ever succeeded. Re-enable
- * only once the client is actually sending App Check tokens.
+ * App Check enforcement remains OFF during rollout. The Flutter client now has
+ * opt-in activation (APP_CHECK_ENABLED); platform registration and valid-token
+ * telemetry must be verified before enabling enforcement. SDK presence alone
+ * does not prove that existing released clients send valid attestation tokens.
  */
 export const CALLABLE_OPTIONS = {
   enforceAppCheck: false,
@@ -309,6 +307,9 @@ export async function loadDraftEventForChild(
   }
   if (ev.status !== EVENT_STATUS.DRAFT) {
     throw new HttpsError("failed-precondition", `${what} can be changed ONLY in DRAFT events. Current status: '${ev.status}'`);
+  }
+  if (ev.ballotMode === "MULTI_CONTEST") {
+    throw new HttpsError("failed-precondition", "Edit the contests on this election instead of standalone choices.");
   }
   if (requiredType && ev.votingType !== requiredType) {
     throw new HttpsError("failed-precondition", `${what} apply ONLY to ${requiredType} events. Event type: '${ev.votingType}'`);

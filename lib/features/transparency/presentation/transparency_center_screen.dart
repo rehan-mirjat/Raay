@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 
 class _TopicSection {
   const _TopicSection(this.icon, this.title, this.body);
@@ -13,7 +13,7 @@ class _TopicSection {
   final List<String> body;
 }
 
-/// Package D1: a public, user-facing explanation of how Kivora's election
+/// Package D1: a public, user-facing explanation of how Raay's election
 /// system actually works - written to match the implemented backend exactly,
 /// not aspirational claims. Every statement here should be checkable against
 /// functions/src/voting/*.ts and firestore.rules. No claims of national
@@ -47,7 +47,7 @@ class TransparencyCenterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final isDesktop = ResponsiveLayout.isWide(context);
 
     return Scaffold(
@@ -96,7 +96,7 @@ class TransparencyCenterScreen extends StatelessWidget {
   }
 
   Widget _buildSection(BuildContext context, _TopicSection section) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(18),
@@ -111,7 +111,7 @@ class TransparencyCenterScreen extends StatelessWidget {
           Row(
             children: [
               Icon(section.icon,
-                  color: KivoraColors.of(context).accentText, size: 20),
+                  color: RaayColors.of(context).accentText, size: 20),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(section.title,

@@ -85,8 +85,7 @@ class OrganizationRepository {
     }
 
     try {
-      final callable =
-          _firebase.functions.httpsCallable('previewJoiningCode');
+      final callable = _firebase.functions.httpsCallable('previewJoiningCode');
       final response = await callable.call({
         'rawCode': trimmedCode,
       });
@@ -113,7 +112,7 @@ class OrganizationRepository {
 
   /// Joins an Organization using a raw joining code via [joinOrganizationWithCode] Cloud Function.
   Future<({String organizationId, String organizationName})>
-  joinOrganizationWithCode(String rawCode) async {
+      joinOrganizationWithCode(String rawCode) async {
     final trimmedCode = rawCode.trim();
     if (trimmedCode.isEmpty) {
       throw Exception('Please enter a valid joining code.');
@@ -151,9 +150,8 @@ class OrganizationRepository {
     required int maxUses,
   }) async {
     try {
-      final response = await _firebase.functions
-          .httpsCallable('createJoiningCode')
-          .call({
+      final response =
+          await _firebase.functions.httpsCallable('createJoiningCode').call({
         'organizationId': organizationId.trim(),
         'expiresInHours': expiresInHours,
         'maxUses': maxUses,
@@ -167,7 +165,8 @@ class OrganizationRepository {
           rawCode.isNotEmpty) {
         return (codeId: codeId, rawCode: rawCode);
       }
-      throw Exception('The server did not return a joining code. Please try again.');
+      throw Exception(
+          'The server did not return a joining code. Please try again.');
     } on FirebaseFunctionsException catch (error) {
       throw Exception(mapFirebaseFunctionsError(error));
     } catch (error) {
@@ -189,7 +188,8 @@ class OrganizationRepository {
             .map((code) => Map<String, dynamic>.from(code as Map))
             .toList();
       }
-      throw Exception('The joining-code list could not be read. Please try again.');
+      throw Exception(
+          'The joining-code list could not be read. Please try again.');
     } on FirebaseFunctionsException catch (error) {
       throw Exception(mapFirebaseFunctionsError(error));
     } catch (error) {
@@ -323,7 +323,7 @@ class OrganizationRepository {
     }
   }
 
-  /// Adds an existing verified Kivora account directly as a regular member.
+  /// Adds an existing verified Raay account directly as a regular member.
   Future<void> addMember({
     required String organizationId,
     required String email,
@@ -347,9 +347,8 @@ class OrganizationRepository {
     required bool accept,
   }) async {
     try {
-      final response = await _firebase.functions
-          .httpsCallable('memberInvitations')
-          .call({
+      final response =
+          await _firebase.functions.httpsCallable('memberInvitations').call({
         'action': accept ? 'accept' : 'decline',
         'invitationId': invitationId,
       });
@@ -478,6 +477,27 @@ class OrganizationRepository {
       throw Exception(mapFirebaseFunctionsError(e));
     } catch (_) {
       throw Exception('Unable to update member role.');
+    }
+  }
+
+  /// Transfers organization ownership atomically through the MFA-protected
+  /// server callable. The former owner remains as an organization admin.
+  Future<void> transferOwnership({
+    required String organizationId,
+    required String targetUid,
+  }) async {
+    try {
+      await _firebase.functions
+          .httpsCallable('transferOrganizationOwnership')
+          .call({
+        'organizationId': organizationId.trim(),
+        'targetUid': targetUid.trim(),
+      });
+    } on FirebaseFunctionsException catch (error) {
+      throw Exception(mapFirebaseFunctionsError(error));
+    } catch (_) {
+      throw Exception(
+          'Unable to transfer organization ownership. Please try again.');
     }
   }
 
@@ -673,10 +693,18 @@ class OrganizationRepository {
     // Determine content type
     String contentType = 'image/jpeg';
     String extension = 'jpg';
-    if (imageBytes.length >= 8 && imageBytes[0] == 0x89 && imageBytes[1] == 0x50 && imageBytes[2] == 0x4E && imageBytes[3] == 0x47) {
+    if (imageBytes.length >= 8 &&
+        imageBytes[0] == 0x89 &&
+        imageBytes[1] == 0x50 &&
+        imageBytes[2] == 0x4E &&
+        imageBytes[3] == 0x47) {
       contentType = 'image/png';
       extension = 'png';
-    } else if (imageBytes.length >= 4 && imageBytes[0] == 0x52 && imageBytes[1] == 0x49 && imageBytes[2] == 0x46 && imageBytes[3] == 0x46) {
+    } else if (imageBytes.length >= 4 &&
+        imageBytes[0] == 0x52 &&
+        imageBytes[1] == 0x49 &&
+        imageBytes[2] == 0x46 &&
+        imageBytes[3] == 0x46) {
       contentType = 'image/webp';
       extension = 'webp';
     }
@@ -695,10 +723,12 @@ class OrganizationRepository {
     } on FirebaseException catch (e) {
       debugPrint('Logo upload failed: ${e.code} ${e.message}');
       throw Exception(switch (e.code) {
-        'unauthorized' || 'permission-denied' =>
+        'unauthorized' ||
+        'permission-denied' =>
           'The logo could not be uploaded. Only the Owner can change it, and it must be a PNG, JPEG or WebP under 2 MB.',
         'canceled' => 'The logo upload was cancelled.',
-        'retry-limit-exceeded' || 'unavailable' =>
+        'retry-limit-exceeded' ||
+        'unavailable' =>
           'The logo upload was interrupted. Check your connection and try again.',
         _ => 'The logo could not be uploaded. Please try again.',
       });

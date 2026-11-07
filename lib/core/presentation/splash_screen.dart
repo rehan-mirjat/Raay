@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../layout/responsive.dart';
 import '../theme/app_theme.dart';
-import '../../core/theme/kivora_colors.dart';
+import '../../core/theme/raay_colors.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   final String? errorMessage;
@@ -159,12 +159,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             Semantics(
               header: true,
               child: Text(
-                'Kivora',
+                'Raay',
                 style: TextStyle(
                   fontSize: 34,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.6,
-                  color: KivoraColors.textPrimaryOf(context),
+                  color: RaayColors.textPrimaryOf(context),
                 ),
               ),
             ),
@@ -175,7 +175,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 letterSpacing: 0.2,
-                color: KivoraColors.textSecondaryOf(context),
+                color: RaayColors.textSecondaryOf(context),
               ),
             ),
             const SizedBox(height: 40),
@@ -200,7 +200,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           Icon(
             Icons.shield_outlined,
             size: 14,
-            color: KivoraColors.textSecondaryOf(context),
+            color: RaayColors.textSecondaryOf(context),
           ),
           const SizedBox(width: 6),
           Text(
@@ -208,7 +208,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: KivoraColors.textSecondaryOf(context),
+              color: RaayColors.textSecondaryOf(context),
             ),
           ),
         ],
@@ -234,7 +234,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w500,
-            color: KivoraColors.textSecondaryOf(context),
+            color: RaayColors.textSecondaryOf(context),
           ),
         ),
       ],
@@ -246,7 +246,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       constraints: const BoxConstraints(maxWidth: 420),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
+        color: RaayColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: AppTheme.error.withValues(alpha: 0.3),
@@ -264,7 +264,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         children: [
           Icon(
             Icons.error_outline_rounded,
-            color: KivoraColors.of(context).errorText,
+            color: RaayColors.of(context).errorText,
             size: 40,
           ),
           const SizedBox(height: 12),
@@ -273,7 +273,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: KivoraColors.textPrimaryOf(context),
+              color: RaayColors.textPrimaryOf(context),
             ),
           ),
           const SizedBox(height: 6),
@@ -282,7 +282,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,
-              color: KivoraColors.textSecondaryOf(context),
+              color: RaayColors.textSecondaryOf(context),
               height: 1.4,
             ),
           ),

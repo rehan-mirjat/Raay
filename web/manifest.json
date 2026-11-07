@@ -1,10 +1,10 @@
 {
-    "name": "Kivora",
-    "short_name": "Kivora",
+    "name": "Raay",
+    "short_name": "Raay",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0B1520",
-    "theme_color": "#0F766E",
+    "theme_color": "#6D4AFF",
     "description": "Enterprise Multi-Tenant E-Voting & Polling SaaS Platform",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,

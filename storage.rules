@@ -56,22 +56,28 @@ service firebase.storage {
     }
 
     function eventIsDraft(orgId, eventId) {
-      let ev = firestore.get(/databases/(default)/documents/votingEvents/$(eventId)).data;
-      return ev.organizationId == orgId && ev.status == "DRAFT";
+      let path = /databases/(default)/documents/votingEvents/$(eventId);
+      return firestore.exists(path)
+        && firestore.get(path).data.organizationId == orgId
+        && firestore.get(path).data.status == "DRAFT";
     }
 
     // Members may only see a candidate photo once the election is out of DRAFT,
     // mirroring the Firestore rule that hides draft candidates from members.
     function eventVisibleToMembers(orgId, eventId) {
-      let ev = firestore.get(/databases/(default)/documents/votingEvents/$(eventId)).data;
-      return ev.organizationId == orgId && ev.status != "DRAFT";
+      let path = /databases/(default)/documents/votingEvents/$(eventId);
+      return firestore.exists(path)
+        && firestore.get(path).data.organizationId == orgId
+        && firestore.get(path).data.status != "DRAFT";
     }
 
     // The path must name a real candidate of THIS event; otherwise an admin could
     // park arbitrary 5 MB objects under invented candidate ids.
     function candidateBelongsToEvent(orgId, eventId, candidateId) {
-      let c = firestore.get(/databases/(default)/documents/candidates/$(candidateId)).data;
-      return c.organizationId == orgId && c.votingEventId == eventId;
+      let path = /databases/(default)/documents/candidates/$(candidateId);
+      return firestore.exists(path)
+        && firestore.get(path).data.organizationId == orgId
+        && firestore.get(path).data.votingEventId == eventId;
     }
 
     function validJpeg() {
@@ -94,15 +100,23 @@ service firebase.storage {
       allow delete: if isOwnerOrAdmin(orgId);
     }
 
-    // ---- User profile avatar (owner only writes; 500 KB, matches client-side limit) ----
+    // ---- User profile avatar (one fixed object per supported image format) ----
+    // The client writes avatar.{jpg,png,webp}; pinning the filename prevents
+    // an authenticated user from accumulating arbitrary objects in their own
+    // profile directory while retaining the existing 500 KB/type limits.
     match /users/{uid}/profile/{fileName} {
       allow read: if signedIn();
       allow create, update: if signedIn()
         && request.auth.uid == uid
-        && request.resource.contentType.matches('image/(jpeg|png|webp)')
+        && fileName.matches('avatar\\.(jpg|png|webp)')
+        && ((fileName == 'avatar.jpg' && request.resource.contentType == 'image/jpeg')
+            || (fileName == 'avatar.png' && request.resource.contentType == 'image/png')
+            || (fileName == 'avatar.webp' && request.resource.contentType == 'image/webp'))
         && request.resource.size > 0
         && request.resource.size <= 500 * 1024;
-      allow delete: if signedIn() && request.auth.uid == uid;
+      allow delete: if signedIn()
+        && request.auth.uid == uid
+        && fileName.matches('avatar\\.(jpg|png|webp)');
     }
 
     // ---- Organization logo (Owner only manages branding; 2 MB) ----
@@ -115,10 +129,13 @@ service firebase.storage {
       // updateOrganization has no status check either. Suspended/rejected may not.
       allow create, update: if isOwner(orgId)
         && orgCanRunEvents(orgId)
-        && request.resource.contentType.matches('image/(png|jpeg|webp)')
+        && fileName.matches('logo\\.(png|jpg|webp)')
+        && ((fileName == 'logo.jpg' && request.resource.contentType == 'image/jpeg')
+            || (fileName == 'logo.png' && request.resource.contentType == 'image/png')
+            || (fileName == 'logo.webp' && request.resource.contentType == 'image/webp'))
         && request.resource.size > 0
         && request.resource.size <= 2 * 1024 * 1024;
-      allow delete: if isOwner(orgId);
+      allow delete: if isOwner(orgId) && fileName.matches('logo\\.(png|jpg|webp)');
     }
 
     // ---- Deny everything else ----

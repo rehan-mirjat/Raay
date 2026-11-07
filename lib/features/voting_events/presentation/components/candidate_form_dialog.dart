@@ -3,10 +3,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:kivora/core/theme/kivora_icons.dart';
-import 'package:kivora/core/widgets/ui_kit/kivora_text_field.dart';
+import 'package:raay/core/theme/raay_icons.dart';
+import 'package:raay/core/widgets/ui_kit/raay_text_field.dart';
 
-import '../../../../core/theme/kivora_colors.dart';
+import '../../../../core/theme/raay_colors.dart';
 import '../../../../core/widgets/inline_error_banner.dart';
 import '../../data/candidate_repository.dart';
 import '../../domain/candidate.dart';
@@ -150,7 +150,7 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.sizeOf(context).width;
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -186,7 +186,7 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                         tooltip: AppLocalizations.of(context).cfClose,
                         constraints:
                             const BoxConstraints(minWidth: 48, minHeight: 48),
-                        icon: const Icon(KivoraIcons.x, size: 20),
+                        icon: const Icon(RaayIcons.x, size: 20),
                         onPressed:
                             _isLoading ? null : () => Navigator.pop(context),
                       ),
@@ -229,7 +229,7 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                                         Theme.of(context).colorScheme.primary,
                                     shape: BoxShape.circle,
                                   ),
-                                  child: Icon(KivoraIcons.camera,
+                                  child: Icon(RaayIcons.camera,
                                       size: 16,
                                       color: Theme.of(context)
                                           .colorScheme
@@ -260,7 +260,7 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  KivoraTextField(
+                  RaayTextField(
                     controller: _nameCtrl,
                     label: AppLocalizations.of(context).cfName,
                     hint: AppLocalizations.of(context).cfNameHint,
@@ -274,7 +274,7 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  KivoraTextField(
+                  RaayTextField(
                     controller: _partyCtrl,
                     label: AppLocalizations.of(context).cfParty,
                     hint: AppLocalizations.of(context).cfPartyHint,
@@ -283,7 +283,7 @@ class _CandidateFormDialogState extends ConsumerState<CandidateFormDialog> {
                         : null,
                   ),
                   const SizedBox(height: 16),
-                  KivoraTextField(
+                  RaayTextField(
                     controller: _bioCtrl,
                     label: AppLocalizations.of(context).cfBio,
                     hint: AppLocalizations.of(context).cfBioHint,

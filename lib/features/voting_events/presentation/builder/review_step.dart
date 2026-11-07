@@ -1,15 +1,19 @@
 import '../../../../l10n/app_localizations.dart';
+import 'ballot_rehearsal_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/theme/kivora_colors.dart';
+import '../../../../core/theme/raay_colors.dart';
 import '../../../../core/widgets/loading_view.dart';
 import '../../../../core/widgets/reauth_dialog.dart';
 import '../../data/voting_event_repository.dart';
 import '../providers/draft_event_provider.dart';
 import '../../../voting/presentation/cast_vote_screen.dart'
-    show eventCandidatesProvider, eventPollOptionsProvider;
+    show
+        eventCandidatesProvider,
+        eventPollOptionsProvider,
+        singleVotingEventProvider;
 import '../voter_election_card.dart' show formatDeadline;
 import '../../domain/voting_event.dart';
 import '../../../../core/utils/error_utils.dart';
@@ -98,26 +102,30 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
     final draft = ref.watch(draftEventProvider(widget.orgId));
     final eventId = draft.serverEventId;
     if (eventId == null) return const SizedBox.shrink();
+    final policyEvent =
+        ref.watch(singleVotingEventProvider(eventId)).valueOrNull;
 
     // Check completeness locally for UX warning
     final bool isCand = draft.votingType == VotingType.candidateElection;
-    final bool isPoll = draft.votingType == VotingType.singleChoicePoll;
 
-    final AsyncValue<int> countAsync = isCand
-        ? ref.watch(eventCandidatesProvider(eventId)).whenData((v) => v.length)
-        : isPoll
+    final AsyncValue<int> countAsync = draft.multiContest
+        ? ref
+            .watch(singleVotingEventProvider(eventId))
+            .whenData((event) => event?.contests.length ?? 0)
+        : isCand
             ? ref
-                .watch(eventPollOptionsProvider(eventId))
+                .watch(eventCandidatesProvider(eventId))
                 .whenData((v) => v.length)
-            : const AsyncValue.data(2); // Yes/No always has its two options
+            : ref
+                .watch(eventPollOptionsProvider(eventId))
+                .whenData((v) => v.length);
 
     return countAsync.when(
         loading: () => const LoadingView(),
         error: (_, __) => Text(AppLocalizations.of(context).rvChoicesError,
-            style: TextStyle(color: KivoraColors.of(context).errorText)),
+            style: TextStyle(color: RaayColors.of(context).errorText)),
         data: (count) {
-          final hasChoices =
-              count >= 2 || draft.votingType == VotingType.yesNoPoll;
+          final hasChoices = count >= 2;
           final hasSchedule = draft.startAt != null &&
               draft.endAt != null &&
               draft.endAt!.isAfter(draft.startAt!);
@@ -161,15 +169,15 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                   style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
-                      color: KivoraColors.textSecondaryOf(context),
+                      color: RaayColors.textSecondaryOf(context),
                       letterSpacing: 0.8)),
               const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: KivoraColors.surfaceOf(context),
+                  color: RaayColors.surfaceOf(context),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: KivoraColors.borderOf(context)),
+                  border: Border.all(color: RaayColors.borderOf(context)),
                 ),
                 child: Column(
                   children:
@@ -191,18 +199,32 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                       : ''),
               _summaryRow(AppLocalizations.of(context).rvChoices,
                   AppLocalizations.of(context).rvItems(count.toString())),
+              if (policyEvent != null) ...[
+                _summaryRow(
+                  AppLocalizations.of(context).quorumLabel,
+                  policyEvent.quorumPercent == null
+                      ? AppLocalizations.of(context).quorumDisabled
+                      : '${policyEvent.quorumPercent}%',
+                ),
+                _summaryRow(
+                  AppLocalizations.of(context).ballotAbstain,
+                  policyEvent.allowAbstain
+                      ? AppLocalizations.of(context).ballotAbstainHint
+                      : AppLocalizations.of(context).quorumDisabled,
+                ),
+              ],
               if (!isReady) ...[
                 const SizedBox(height: 16),
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                      color: KivoraColors.of(context)
+                      color: RaayColors.of(context)
                           .warningText
                           .withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8)),
                   child: Text(AppLocalizations.of(context).rvIncomplete,
                       style: TextStyle(
-                          color: KivoraColors.of(context).warningText,
+                          color: RaayColors.of(context).warningText,
                           fontWeight: FontWeight.w600)),
                 ),
               ],
@@ -211,7 +233,7 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                      color: KivoraColors.of(context)
+                      color: RaayColors.of(context)
                           .errorText
                           .withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8)),
@@ -219,7 +241,7 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                     liveRegion: true,
                     child: Text(_error!,
                         style: TextStyle(
-                            color: KivoraColors.of(context).errorText)),
+                            color: RaayColors.of(context).errorText)),
                   ),
                 ),
               ],
@@ -234,6 +256,67 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                           TextButton.styleFrom(minimumSize: const Size(48, 48)),
                       onPressed: _isPublishing ? null : widget.onBack,
                       child: Text(AppLocalizations.of(context).rvBack)),
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.preview_outlined),
+                    label: Text(AppLocalizations.of(context).rvPreview),
+                    onPressed: _isPublishing || count == 0
+                        ? null
+                        : () {
+                            final List<BallotPreviewChoice> choices = draft
+                                    .multiContest
+                                ? []
+                                : isCand
+                                    ? (ref
+                                                .read(eventCandidatesProvider(
+                                                    eventId))
+                                                .valueOrNull ??
+                                            [])
+                                        .map<BallotPreviewChoice>((c) => (
+                                              id: c.id,
+                                              label: c.name,
+                                              description: [c.party, c.bio]
+                                                  .where((s) => s.isNotEmpty)
+                                                  .join(' · ')
+                                            ))
+                                        .toList()
+                                    : (ref
+                                                .read(eventPollOptionsProvider(
+                                                    eventId))
+                                                .valueOrNull ??
+                                            [])
+                                        .map<BallotPreviewChoice>((o) => (
+                                              id: o.id,
+                                              label: o.label,
+                                              description: o.description
+                                            ))
+                                        .toList();
+                            showDialog<void>(
+                                context: context,
+                                builder: (_) => BallotRehearsalDialog(
+                                      title: draft.title,
+                                      description: draft.description,
+                                      privacyLabel: draft.privacyMode ==
+                                              PrivacyMode.anonymous
+                                          ? AppLocalizations.of(context)
+                                              .privacyAnonymous
+                                          : AppLocalizations.of(context)
+                                              .privacyIdentifiable,
+                                      choices: choices,
+                                      allowAbstain:
+                                          policyEvent?.allowAbstain ?? false,
+                                      quorumPercent: policyEvent?.quorumPercent,
+                                      contests: draft.multiContest
+                                          ? ref
+                                                  .read(
+                                                      singleVotingEventProvider(
+                                                          eventId))
+                                                  .valueOrNull
+                                                  ?.contests ??
+                                              const []
+                                          : const [],
+                                    ));
+                          },
+                  ),
                   FilledButton(
                     style:
                         FilledButton.styleFrom(minimumSize: const Size(48, 48)),
@@ -254,7 +337,7 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
   }
 
   Widget _checklistRow(BuildContext context, _ChecklistItem item) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final color = item.done
         ? kc.successText
         : (item.optional ? kc.textSecondary : kc.errorText);
@@ -279,7 +362,7 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
                       ? AppLocalizations.of(context).rvOptional
                       : ''),
               style: TextStyle(
-                  fontSize: 14, color: KivoraColors.textPrimaryOf(context)),
+                  fontSize: 14, color: RaayColors.textPrimaryOf(context)),
             ),
           ),
         ],
@@ -299,7 +382,7 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
             child: Text(label,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: KivoraColors.textPrimaryOf(context))),
+                    color: RaayColors.textPrimaryOf(context))),
           ),
           Text(value, softWrap: true),
         ],

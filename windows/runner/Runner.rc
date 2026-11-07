@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.kivora" "\0"
-            VALUE "FileDescription", "Kivora" "\0"
+            VALUE "CompanyName", "com.raay" "\0"
+            VALUE "FileDescription", "raay" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "kivora" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.kivora. All rights reserved." "\0"
-            VALUE "OriginalFilename", "kivora.exe" "\0"
-            VALUE "ProductName", "Kivora" "\0"
+            VALUE "InternalName", "raay" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 com.raay. All rights reserved." "\0"
+            VALUE "OriginalFilename", "raay.exe" "\0"
+            VALUE "ProductName", "raay" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

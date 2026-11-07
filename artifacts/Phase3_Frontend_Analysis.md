@@ -1,4 +1,4 @@
-# Kivora Premium UI & Architecture Status Report (Phase 3 Update)
+# raay Premium UI & Architecture Status Report (Phase 3 Update)
 
 This is an updated deep analysis of the project's logic, flow, and frontend state following the successful deployment of the M6 Results Engine and the initial Premium UI components.
 
@@ -14,10 +14,10 @@ The core logic of the application remains highly secure and structurally sound:
 
 ## 2. Frontend UI/UX Progress (What is Complete)
 We have successfully initiated **Phase 3: Premium UI/UX**:
-*   **Design Tokens:** `AppTheme.dart` and `KivoraColors` have been centralized with the new Midnight Navy/Violet/Cyan palette.
+*   **Design Tokens:** `AppTheme.dart` and `raayColors` have been centralized with the new Midnight Navy/Violet/Cyan palette.
 *   **Typography & Iconography:** `Plus Jakarta Sans` and `lucide_icons` have been integrated.
 *   **Navigation Shell:** `AppNavigationShell` now features a correct, premium desktop layout (top header + persistent left sidebar) and an adaptive mobile layout (floating bottom nav).
-*   **Authentication Flow:** `LoginScreen` and `RegisterScreen` have been fully transformed. They now use the `AuthSplitLayout` (dark branding panel on desktop, responsive mobile view) and the new `ui_kit` (`KivoraTextField`, `KivoraButton`).
+*   **Authentication Flow:** `LoginScreen` and `RegisterScreen` have been fully transformed. They now use the `AuthSplitLayout` (dark branding panel on desktop, responsive mobile view) and the new `ui_kit` (`raayTextField`, `raayButton`).
 
 ---
 
@@ -29,7 +29,7 @@ While the foundation is set, the primary **Dashboards** are still using old stan
 *   **Current State:** Uses basic list tiles and standard cards. It does not reflect a premium analytics platform.
 *   **Improvement Needed:** 
     *   Implement a "Welcome Back, [User] 👋" header.
-    *   Add a top row of `KivoraMetricCard`s (Total Organizations, Active Events, Pending Invites).
+    *   Add a top row of `raayMetricCard`s (Total Organizations, Active Events, Pending Invites).
     *   Introduce a Members Growth or Activity chart using `fl_chart`.
     *   Use a staggered grid layout on Desktop, gracefully collapsing to a single column on Mobile.
 
@@ -37,17 +37,17 @@ While the foundation is set, the primary **Dashboards** are still using old stan
 *   **Current State:** Heavily relies on generic vertical `ListView`s. White space is poorly utilized on desktop screens.
 *   **Improvement Needed:**
     *   Convert to a multi-panel layout.
-    *   **Left Column (60%):** Upcoming Events cards (`KivoraElectionCard`) and Quick Actions (Vote Now, Scan QR, Create Event).
+    *   **Left Column (60%):** Upcoming Events cards (`raayElectionCard`) and Quick Actions (Vote Now, Scan QR, Create Event).
     *   **Right Column (40%):** Recent Activity Timeline (showing audit logs or event changes in a vertical stepper format).
 
 ### C. OrganizationListScreen
 *   **Current State:** A simple `ListView.builder`.
 *   **Improvement Needed:** 
     *   Change to a responsive Grid (`SliverGrid` or `Wrap`). 
-    *   Implement `KivoraOrgCard` showing the organization logo, member count, and owner/member badge.
+    *   Implement `raayOrgCard` showing the organization logo, member count, and owner/member badge.
 
 ### D. Component Library Gaps
-*   We need to build `KivoraMetricCard`, `KivoraElectionCard`, and `KivoraActivityTimeline` to avoid hardcoding gradients and layouts on every screen.
+*   We need to build `raayMetricCard`, `raayElectionCard`, and `raayActivityTimeline` to avoid hardcoding gradients and layouts on every screen.
 
 ---
 
@@ -55,7 +55,7 @@ While the foundation is set, the primary **Dashboards** are still using old stan
 
 According to the **"STEP 2: Implement Premium UI"** directive, we have completed `LoginScreen` and `RegisterScreen`.
 
-The immediate next logical step is to build the missing UI Kit components (`KivoraMetricCard`, `KivoraActivityTimeline`) and apply them to:
+The immediate next logical step is to build the missing UI Kit components (`raayMetricCard`, `raayActivityTimeline`) and apply them to:
 1. `HomeScreen`
 2. `OrganizationListScreen`
 3. `OrganizationDashboardScreen`

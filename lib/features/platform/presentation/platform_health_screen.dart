@@ -2,7 +2,7 @@ import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/utils/date_text.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
@@ -29,7 +29,7 @@ class PlatformHealthScreen extends ConsumerWidget {
         ),
       ],
       builder: (context) {
-        final kc = KivoraColors.of(context);
+        final kc = RaayColors.of(context);
         return health.when(
           loading: () =>
               const Padding(padding: EdgeInsets.all(32), child: LoadingView()),
@@ -42,14 +42,16 @@ class PlatformHealthScreen extends ConsumerWidget {
           data: (data) {
             final functionOk = data['functions'] == 'ok';
             final firestoreOk = data['firestore'] == 'ok';
+            final storageOk = data['storage'] == 'ok';
             final checkedAt =
                 DateTime.tryParse(data['checkedAt'] as String? ?? '');
             final latency = (data['firestoreLatencyMs'] as num?)?.toInt();
+            final storageLatency = (data['storageLatencyMs'] as num?)?.toInt();
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 PlatformPanel(
-                  title: functionOk && firestoreOk
+                  title: functionOk && firestoreOk && storageOk
                       ? AppLocalizations.of(context).phOkTitle
                       : AppLocalizations.of(context).phBadTitle,
                   child: Column(
@@ -69,6 +71,17 @@ class PlatformHealthScreen extends ConsumerWidget {
                                     .phProbeOkMs('$latency'))
                             : AppLocalizations.of(context).phProbeFailed,
                         ok: firestoreOk,
+                      ),
+                      Divider(color: kc.border),
+                      _HealthRow(
+                        name: 'Firebase Storage',
+                        detail: storageOk
+                            ? (storageLatency == null
+                                ? AppLocalizations.of(context).phProbeOk
+                                : AppLocalizations.of(context)
+                                    .phProbeOkMs('$storageLatency'))
+                            : AppLocalizations.of(context).phProbeFailed,
+                        ok: storageOk,
                       ),
                     ],
                   ),
@@ -107,7 +120,7 @@ class _HealthRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final statusColor = ok ? kc.successText : kc.errorText;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,

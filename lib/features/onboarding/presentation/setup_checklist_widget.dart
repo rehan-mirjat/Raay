@@ -2,7 +2,7 @@ import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../organizations/presentation/providers/organization_providers.dart';
 import '../../departments/presentation/providers/department_providers.dart';
 import '../../voting_events/data/voting_event_repository.dart';
@@ -72,9 +72,9 @@ class SetupChecklistWidget extends ConsumerWidget {
         margin: const EdgeInsets.only(bottom: 24),
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: KivoraColors.surfaceOf(context),
+          color: RaayColors.surfaceOf(context),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: KivoraColors.borderOf(context)),
+          border: Border.all(color: RaayColors.borderOf(context)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,14 +87,14 @@ class SetupChecklistWidget extends ConsumerWidget {
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: KivoraColors.textPrimaryOf(context)),
+                        color: RaayColors.textPrimaryOf(context)),
                   ),
                 ),
                 IconButton(
                   constraints:
                       const BoxConstraints(minWidth: 48, minHeight: 48),
                   icon: Icon(Icons.close_rounded,
-                      size: 20, color: KivoraColors.textSecondaryOf(context)),
+                      size: 20, color: RaayColors.textSecondaryOf(context)),
                   onPressed: () =>
                       ref.read(onboardingProvider.notifier).dismissChecklist(),
                   tooltip: AppLocalizations.of(context).sclDismiss,
@@ -111,8 +111,8 @@ class SetupChecklistWidget extends ConsumerWidget {
                   width: 160,
                   child: LinearProgressIndicator(
                     value: completedCount / items.length,
-                    backgroundColor: KivoraColors.borderOf(context),
-                    color: KivoraColors.of(context).successText,
+                    backgroundColor: RaayColors.borderOf(context),
+                    color: RaayColors.of(context).successText,
                     minHeight: 6,
                     borderRadius: BorderRadius.circular(3),
                   ),
@@ -123,7 +123,7 @@ class SetupChecklistWidget extends ConsumerWidget {
                   style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: KivoraColors.textSecondaryOf(context)),
+                      color: RaayColors.textSecondaryOf(context)),
                 ),
               ],
             ),
@@ -137,8 +137,8 @@ class SetupChecklistWidget extends ConsumerWidget {
                             ? Icons.check_circle_rounded
                             : Icons.radio_button_unchecked_rounded,
                         color: item.isCompleted
-                            ? KivoraColors.of(context).successText
-                            : KivoraColors.textSecondaryOf(context),
+                            ? RaayColors.of(context).successText
+                            : RaayColors.textSecondaryOf(context),
                         size: 20,
                       ),
                       const SizedBox(width: 12),
@@ -148,8 +148,8 @@ class SetupChecklistWidget extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 14,
                           color: item.isCompleted
-                              ? KivoraColors.textSecondaryOf(context)
-                              : KivoraColors.textPrimaryOf(context),
+                              ? RaayColors.textSecondaryOf(context)
+                              : RaayColors.textPrimaryOf(context),
                           decoration: item.isCompleted
                               ? TextDecoration.lineThrough
                               : null,

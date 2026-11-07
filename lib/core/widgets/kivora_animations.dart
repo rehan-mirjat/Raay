@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 // ─── Page route transitions ───────────────────────────────────────────────────
 
 /// Fade + upward-slide page entry. Use as GoRouter's pageBuilder.
-class KivoraFadeSlideRoute<T> extends PageRouteBuilder<T> {
-  KivoraFadeSlideRoute({required WidgetBuilder builder, super.settings})
+class RaayFadeSlideRoute<T> extends PageRouteBuilder<T> {
+  RaayFadeSlideRoute({required WidgetBuilder builder, super.settings})
       : super(
           pageBuilder: (context, animation, secondaryAnimation) =>
               builder(context),

@@ -9,7 +9,7 @@ import { checkRateLimit } from "../utils/rateLimiter";
  *  - A receipt hash is a SHA-256 HMAC of (orgId + eventId + uid + votedAt).
  *    It proves participation without revealing the voter's identity or choice.
  *  - Any third party (observer, auditor, the voter themselves) should be able
- *    to verify a receipt without needing a Kivora account, exactly like a
+ *    to verify a receipt without needing a raay account, exactly like a
  *    paper receipt checked against a public register.
  *  - The response is deliberately minimal: only {verified: true/false}.
  *    No userId, no choiceId, no votedAt is returned.

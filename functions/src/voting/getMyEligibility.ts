@@ -33,8 +33,12 @@ export function decideEligibility(
       String(event.status || "").toUpperCase() === "DRAFT") {
     return { eligible: false, reason: "NOT_OPEN_TO_YOU" };
   }
-  if (event.eligibilityType === "ALL_MEMBERS") return { eligible: true, reason: "ELIGIBLE" };
-  if (event.eligibilityType !== "SELECTED_DEPARTMENTS" && event.eligibilityType !== "SELECTED_MEMBERS") {
+  // Upcoming all-member events have no activation snapshot yet. This is a
+  // provisional eligibility hint only; casting always checks the frozen roll.
+  if (event.eligibilityType === "ALL_MEMBERS" && event.status === "SCHEDULED") {
+    return { eligible: true, reason: "ELIGIBLE" };
+  }
+  if (event.eligibilityType !== "ALL_MEMBERS" && event.eligibilityType !== "SELECTED_DEPARTMENTS" && event.eligibilityType !== "SELECTED_MEMBERS") {
     return { eligible: false, reason: "NOT_OPEN_TO_YOU" };
   }
   const ids = eligibilityDoc && Array.isArray(eligibilityDoc.eligibleUserIds)

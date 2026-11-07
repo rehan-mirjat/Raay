@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'Kivora';
+  String get appName => 'Raay';
 
   @override
   String get navHome => 'Home';
@@ -96,7 +96,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authRegisterTitle => 'Create Account';
 
   @override
-  String get authRegisterSubtitle => 'Join Kivora today';
+  String get authRegisterSubtitle => 'Join Raay today';
 
   @override
   String get authFullName => 'Full name';
@@ -1242,7 +1242,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'We could not complete that. Please try again.';
 
   @override
-  String get inbHelp => 'Need help with an invitation? Contact Kivora support.';
+  String get inbHelp => 'Need help with an invitation? Contact Raay support.';
 
   @override
   String get ballotTitle => 'Your ballot';
@@ -1597,6 +1597,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resRecalculate => 'Recalculate results';
 
   @override
+  String get resPublishedLocked => 'Published and locked';
+
+  @override
   String get resWorking => 'Working...';
 
   @override
@@ -1628,7 +1631,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resPublishConfirmBody =>
-      'All eligible members will be able to see the results, and those who have result notifications on will be notified. You can still recalculate them afterwards.';
+      'All eligible members will be able to see the results, and those who have result notifications on will be notified. Published results are locked and cannot be recalculated.';
 
   @override
   String get resPublishConfirm => 'Publish';
@@ -2101,7 +2104,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get acctAppearance => 'Appearance';
 
   @override
-  String get acctAppearanceBody => 'Choose how Kivora looks on this device.';
+  String get acctAppearanceBody => 'Choose how Raay looks on this device.';
 
   @override
   String get acctThemeLight => 'Light';
@@ -2175,7 +2178,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get acctConnectedBody =>
-      'Sign-in methods linked to your Kivora account. You must keep at least one connected.';
+      'Sign-in methods linked to your Raay account. You must keep at least one connected.';
 
   @override
   String get acctEmailPassword => 'Email & Password';
@@ -2199,7 +2202,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String acctDisconnectBody(String name) {
-    return 'You will no longer be able to sign in to Kivora using $name.';
+    return 'You will no longer be able to sign in to Raay using $name.';
   }
 
   @override
@@ -2445,7 +2448,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get jcScanHint =>
-      'Or scan this with Kivora\'s \"Scan to Join\" on another device.';
+      'Or scan this with Raay\'s \"Scan to Join\" on another device.';
 
   @override
   String get jcCopied => 'Copied';
@@ -3385,7 +3388,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get plOverviewSubtitle =>
-      'Organizations, reviews and recent administrator activity across Kivora.';
+      'Organizations, reviews and recent administrator activity across Raay.';
 
   @override
   String get plRefresh => 'Refresh';
@@ -3548,7 +3551,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get plReportsReadOnly =>
-      'Read-only for now: the platform does not yet support assigning or resolving reports, so every report stays open. There is no flagged-organization feed either.';
+      'Assign reports to yourself, resolve completed work, or reopen a report when it needs more attention.';
 
   @override
   String plAllCount(String a) {
@@ -3586,6 +3589,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get plStatusOpen => 'open';
+
+  @override
+  String get plStatusInProgress => 'in progress';
+
+  @override
+  String get plStatusResolved => 'resolved';
+
+  @override
+  String get plAssignToMe => 'Assign to me';
+
+  @override
+  String get plResolveReport => 'Resolve report';
+
+  @override
+  String get plReopenReport => 'Reopen report';
+
+  @override
+  String get plReportUpdateFailed =>
+      'Could not update the report. Please try again.';
+
+  @override
+  String get plReportUpdateSuccess => 'Report status updated.';
 
   @override
   String get plCheckingAccess => 'Checking platform access…';
@@ -3780,7 +3805,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get imCreatedNote =>
-      'The invitee will see it in Kivora Notifications after logging in. They can accept or decline there.';
+      'The invitee will see it in Raay Notifications after logging in. They can accept or decline there.';
 
   @override
   String get imShareLink => 'Share this direct link with the invitee:';
@@ -3831,7 +3856,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aeSubtitle =>
-      'Add a verified Kivora account directly to this organization.';
+      'Add a verified Raay account directly to this organization.';
 
   @override
   String get aeEmailLabel => 'Member Email Address *';
@@ -4588,7 +4613,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get alP3b => 'Confirm participation without revealing your selection.';
 
   @override
-  String get alCopy => 'Kivora © 2026';
+  String get alCopy => 'Raay © 2026';
 
   @override
   String get alPlatforms => 'Android • Web';
@@ -4786,7 +4811,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hsTrustBody =>
-      'How Kivora protects ballot privacy and what is recorded.';
+      'How Raay protects ballot privacy and what is recorded.';
 
   @override
   String get hsSend => 'Send Feedback or Contact Support';
@@ -4891,7 +4916,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rgDoneBody =>
-      'Your Kivora identity has been securely generated. You may now sign in using your credentials.';
+      'Your Raay identity has been securely generated. You may now sign in using your credentials.';
 
   @override
   String get rgReturn => 'Return to Login';
@@ -5050,7 +5075,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get plCurrent => 'CURRENT';
 
   @override
-  String get spLogo => 'Kivora Logo';
+  String get spLogo => 'Raay Logo';
 
   @override
   String get spTag => 'Enterprise Multi-Tenant E-Voting';
@@ -5065,7 +5090,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get spErrTitle => 'Connection Error';
 
   @override
-  String get spErrBody => 'Failed to connect to Kivora services.';
+  String get spErrBody => 'Failed to connect to Raay services.';
 
   @override
   String get spRetry => 'Retry Connection';
@@ -5154,7 +5179,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get trS5P2 =>
-      'The receipt confirms your ballot was accepted and exists in the system\'s records. It is not a copy of your ballot choice, and in an anonymous election it cannot be used by anyone - including Kivora administrators - to determine what you selected.';
+      'The receipt confirms your ballot was accepted and exists in the system\'s records. It is not a copy of your ballot choice, and in an anonymous election it cannot be used by anyone - including Raay administrators - to determine what you selected.';
 
   @override
   String get trS6Title => 'What Receipt Verification Does and Does Not Prove';
@@ -5213,7 +5238,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get trS10P2 =>
-      'Kivora is not independently certified by any national or third-party election-standards body, and receipt verification is not a substitute for an independent cryptographic audit of the full tally.';
+      'Raay is not independently certified by any national or third-party election-standards body, and receipt verification is not a substitute for an independent cryptographic audit of the full tally.';
 
   @override
   String get trS10P3 =>
@@ -5223,7 +5248,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trTitle => 'Trust & Transparency Center';
 
   @override
-  String get trHeading => 'How Kivora elections work';
+  String get trHeading => 'How Raay elections work';
 
   @override
   String get trIntro =>
@@ -5382,7 +5407,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Key administrative actions are recorded so owners and admins can review them.';
 
   @override
-  String get lcQ1T => 'What can we use Kivora for?';
+  String get lcQ1T => 'What can we use Raay for?';
 
   @override
   String get lcQ1B =>
@@ -5448,7 +5473,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ldNavTransparency => 'Transparency';
 
   @override
-  String get ldBrandTop => 'Kivora, back to top';
+  String get ldBrandTop => 'Raay, back to top';
 
   @override
   String get ldToLight => 'Switch to light theme';
@@ -5472,7 +5497,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ldVerify => 'Verify a receipt';
 
   @override
-  String get ldHeroBadge => 'Kivora · secure e-voting and polling';
+  String get ldHeroBadge => 'Raay · secure e-voting and polling';
 
   @override
   String get ldHeroTitle => 'Run fair elections for your organization.';
@@ -5505,7 +5530,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Make participation straightforward for organizers and members alike.';
 
   @override
-  String get ldStart => 'Start with Kivora';
+  String get ldStart => 'Start with Raay';
 
   @override
   String get ldOrgsEyebrow => 'For every kind of organization';
@@ -5515,7 +5540,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ldOrgsBody =>
-      'Kivora organizations are set up as one of these types, then shaped around the people who take part.';
+      'Raay organizations are set up as one of these types, then shaped around the people who take part.';
 
   @override
   String get ldSecTitle => 'Trust built into every step.';
@@ -5549,7 +5574,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ldAnonBody =>
-      'Two separate records let Kivora prevent double voting while keeping an anonymous choice anonymous.';
+      'Two separate records let Raay prevent double voting while keeping an anonymous choice anonymous.';
 
   @override
   String get ldReceiptTitle => 'Check a receipt without an account.';
@@ -5764,7 +5789,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get obBody4 =>
-      'Create a home for your elections and polls. Bring your members in, and move forward together with Kivora.';
+      'Create a home for your elections and polls. Bring your members in, and move forward together with Raay.';
 
   @override
   String get obGetStarted => 'Get started';
@@ -5998,6 +6023,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ciParse => 'Parse & Validate';
 
   @override
+  String get ciChooseFile => 'Choose a .csv file';
+
+  @override
   String get ciResults => 'Validation Results';
 
   @override
@@ -6212,7 +6240,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get phCoverageBody =>
-      'Storage, email delivery, push delivery, and client devices are not probed by this check.';
+      'Email delivery, push delivery, and client devices are not probed by this check.';
 
   @override
   String get phOperational => 'Operational';
@@ -6242,4 +6270,649 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navPlatformHealth => 'Platform health';
+
+  @override
+  String get orgReportTitle => 'Organization reports';
+
+  @override
+  String orgReportSubtitle(String name) {
+    return 'Election activity for $name.';
+  }
+
+  @override
+  String get orgReportDenied =>
+      'Organization owner or admin access is required.';
+
+  @override
+  String get orgReportRefresh => 'Refresh reports';
+
+  @override
+  String get orgReportFailed =>
+      'The report could not be loaded. Check your connection and try again.';
+
+  @override
+  String get orgReportDates => 'Date range';
+
+  @override
+  String get orgReportAllDates => 'All creation dates';
+
+  @override
+  String get orgReportClearDates => 'Clear dates';
+
+  @override
+  String get orgReportMembers => 'Active members';
+
+  @override
+  String get orgReportEvents => 'Elections on this page';
+
+  @override
+  String get orgReportPublishedCount => 'Published on this page';
+
+  @override
+  String get orgReportTurnout => 'Reportable turnout · this page';
+
+  @override
+  String get orgReportPrivate => 'Hidden for privacy';
+
+  @override
+  String get orgReportUnavailable => 'Not available';
+
+  @override
+  String get orgReportActivity => 'Election activity';
+
+  @override
+  String get orgReportEmpty => 'No elections match these dates.';
+
+  @override
+  String get orgReportPublished => 'Results published';
+
+  @override
+  String get orgReportUnpublished => 'Results not published';
+
+  @override
+  String get orgReportPrevious => 'Previous page';
+
+  @override
+  String get orgReportNext => 'Next page';
+
+  @override
+  String orgReportPage(String page) {
+    return 'Page $page';
+  }
+
+  @override
+  String get orgReportScope =>
+      'Summary and export cover this page only. Date filters use the election creation date.';
+
+  @override
+  String get orgReportPrivacy =>
+      'Turnout excludes unpublished results and elections with fewer than 10 eligible voters. Individual ballots and choices are never included.';
+
+  @override
+  String get orgReportExport => 'Export this page (CSV)';
+
+  @override
+  String get rvPreview => 'Rehearse ballot';
+
+  @override
+  String get rvPreviewNotice =>
+      'Preview only. Select a choice to check the ballot experience. No vote is submitted and no receipt is created.';
+
+  @override
+  String rvPreviewSelected(String label) {
+    return 'Preview selection: $label';
+  }
+
+  @override
+  String get rvPreviewClose => 'Close preview';
+
+  @override
+  String get navOrganizationReports => 'Reports';
+
+  @override
+  String get mcMode => 'Multi-contest election';
+
+  @override
+  String get mcPolicy =>
+      '2–10 contests, each with 2–20 choices. One required choice per contest; all contests are submitted together with one receipt.';
+
+  @override
+  String get mcContestTitle => 'Contest / position title';
+
+  @override
+  String get mcChoiceLabel => 'Candidate / choice name';
+
+  @override
+  String get mcDescription => 'Statement (optional)';
+
+  @override
+  String get mcAddContest => 'Add contest';
+
+  @override
+  String get mcAddChoice => 'Add choice';
+
+  @override
+  String get mcRemove => 'Remove';
+
+  @override
+  String get mcRequired => 'Enter a value.';
+
+  @override
+  String get mcSave => 'Save contests and continue';
+
+  @override
+  String get mcCompleteAll =>
+      'Select one choice in every contest before continuing.';
+
+  @override
+  String get mcDiscard => 'Discard unsaved contest changes?';
+
+  @override
+  String get monDetailsUnavailable =>
+      'Detailed history is incomplete. Aggregate turnout includes all accepted ballots.';
+
+  @override
+  String get navNominations => 'Nominations';
+
+  @override
+  String get nomIntro =>
+      'Apply as a candidate, track your application and review nominations in your organization.';
+
+  @override
+  String get nomCreate => 'Open nominations';
+
+  @override
+  String get nomCreateHint =>
+      'Choose a draft candidate election. Members apply before the deadline; close the round before reviewing.';
+
+  @override
+  String get nomElection => 'Election';
+
+  @override
+  String get nomContest => 'Contest';
+
+  @override
+  String get nomDeadline => 'Application deadline';
+
+  @override
+  String get nomCancel => 'Cancel';
+
+  @override
+  String get nomApply => 'Apply as a candidate';
+
+  @override
+  String get nomName => 'Public candidate name';
+
+  @override
+  String get nomStatement => 'Public candidate statement (optional)';
+
+  @override
+  String get nomConsent =>
+      'I consent to stand as a candidate and to publish this name and statement on the ballot if approved.';
+
+  @override
+  String get nomRequired => 'Please complete this field.';
+
+  @override
+  String get nomSubmit => 'Submit application';
+
+  @override
+  String get nomReview => 'Review applications';
+
+  @override
+  String get nomMyApplication => 'My application';
+
+  @override
+  String get nomApprove => 'Approve candidate';
+
+  @override
+  String get nomReject => 'Reject application';
+
+  @override
+  String get nomApproveHint =>
+      'Approval adds the consented name and statement to the draft ballot. Publication is a separate action.';
+
+  @override
+  String get nomRejectHint =>
+      'Explain why this application is being rejected. The applicant can read this reason.';
+
+  @override
+  String get nomReason => 'Review reason';
+
+  @override
+  String get nomClose => 'Close nominations';
+
+  @override
+  String get nomCloseHint =>
+      'This stops new applications. Review every pending application before publishing the election.';
+
+  @override
+  String get nomWithdraw => 'Withdraw application';
+
+  @override
+  String get nomWithdrawHint =>
+      'Withdraw this application? An approved candidate will also be removed from the draft ballot. Withdrawal is available only before the election is published.';
+
+  @override
+  String get nomConfirm => 'Confirm';
+
+  @override
+  String get nomOpen => 'Open';
+
+  @override
+  String get nomClosed => 'Closed for review';
+
+  @override
+  String get nomPending => 'Pending review';
+
+  @override
+  String get nomApproved => 'Approved';
+
+  @override
+  String get nomRejected => 'Rejected';
+
+  @override
+  String get nomWithdrawn => 'Withdrawn';
+
+  @override
+  String get nomFinalized => 'Finalized — election published';
+
+  @override
+  String get nomMore => 'Load more';
+
+  @override
+  String get nomAccess =>
+      'Select an organization where you are an active member.';
+
+  @override
+  String get nomFailed =>
+      'Unable to load or save nominations. Please try again.';
+
+  @override
+  String get nomEmpty => 'No nomination rounds yet.';
+
+  @override
+  String get nomNoApplications => 'No applications to display.';
+
+  @override
+  String get nomNeedDraft =>
+      'Create a draft candidate election first. Its start time must be after the nomination deadline.';
+
+  @override
+  String get supportMyReports => 'My support cases';
+
+  @override
+  String get supportLoadFailed => 'Could not load your support cases.';
+
+  @override
+  String get supportRetry => 'Try again';
+
+  @override
+  String get supportEmpty => 'You have not submitted a support case yet.';
+
+  @override
+  String get supportCaseId => 'Case reference';
+
+  @override
+  String get navCommunications => 'Communications';
+
+  @override
+  String get comIntro =>
+      'Schedule voting reminders and track notification creation for your organization.';
+
+  @override
+  String get comInApp => 'In-app notifications';
+
+  @override
+  String get comExternalUnavailable =>
+      'Email and SMS delivery are not configured. These reminders appear in the member’s notification inbox.';
+
+  @override
+  String get comSchedule => 'Schedule reminder';
+
+  @override
+  String get comAudience =>
+      'Only eligible, active members who have not voted and allow voting reminders are notified. Recipient identities are not shown here.';
+
+  @override
+  String get comChooseTime => 'Choose date and time';
+
+  @override
+  String get comTiming =>
+      'Choose a time within the voting window. Processing runs approximately once a minute; creation counts do not confirm a member has read a notification.';
+
+  @override
+  String get comCancel => 'Cancel reminder';
+
+  @override
+  String get comCancelHint =>
+      'Cancel this queued reminder? Processing jobs cannot be cancelled because some notifications may already exist.';
+
+  @override
+  String get comQueued => 'Queued';
+
+  @override
+  String get comProcessing => 'Processing';
+
+  @override
+  String get comCompleted => 'Completed';
+
+  @override
+  String get comCancelled => 'Cancelled';
+
+  @override
+  String get comFailedStatus => 'Failed';
+
+  @override
+  String get comFailed =>
+      'Could not load or update reminder jobs. Please try again.';
+
+  @override
+  String get comNeedEvent =>
+      'Publish an election with a future closing time to schedule a reminder.';
+
+  @override
+  String get comEmpty => 'No scheduled reminder jobs yet.';
+
+  @override
+  String get comScheduledFor => 'Requested time';
+
+  @override
+  String get comCount => 'Notifications created';
+
+  @override
+  String get comFailureHint =>
+      'This job stopped. Check the election status and organizer access before scheduling another reminder.';
+
+  @override
+  String get comRetrying =>
+      'A temporary failure occurred. An automatic retry is queued.';
+
+  @override
+  String get eventPageScope =>
+      'Showing one page. Search matches elections on this page; use the filters and page controls to browse the full history.';
+
+  @override
+  String get govTitle => 'Election approvals';
+
+  @override
+  String get govIntro =>
+      'Require a different active manager to review the current ballot and results before their requester publishes them.';
+
+  @override
+  String get govPolicy => 'Independent approval required';
+
+  @override
+  String get govPolicyHint =>
+      'Owner-controlled policy, configurable only in draft. At least two active managers are needed; reviewers need two-step authentication.';
+
+  @override
+  String get govLaunch => 'Launch approval';
+
+  @override
+  String get govResults => 'Results approval';
+
+  @override
+  String get govPending => 'Awaiting another manager';
+
+  @override
+  String get govNoRequest => 'No review requested';
+
+  @override
+  String get govApprove => 'Approve this version';
+
+  @override
+  String get govReject => 'Reject this version';
+
+  @override
+  String get govRequest => 'Request current-version review';
+
+  @override
+  String get govReviewNotice =>
+      'Review the current ballot, eligibility and schedule, or the calculated results, before confirming. You cannot approve your own request.';
+
+  @override
+  String get govVersion => 'Reviewed version hash';
+
+  @override
+  String get govFreshness =>
+      'Changes require a fresh review. Publication rechecks the version and the reviewer’s access; only the requester can publish an approved version.';
+
+  @override
+  String get govCalculate => 'Calculate results';
+
+  @override
+  String get govViewResults => 'Review results';
+
+  @override
+  String get govPublishElection => 'Publish approved election';
+
+  @override
+  String get govPublishResults => 'Publish approved results';
+
+  @override
+  String get ballotRules => 'Ballot rules';
+
+  @override
+  String get ballotRulesSave => 'Save rules';
+
+  @override
+  String get ballotAbstain => 'Abstain from this election';
+
+  @override
+  String get ballotAbstainHint =>
+      'Submit participation without choosing any candidate or option, across all contests. This is final and counts toward quorum.';
+
+  @override
+  String get quorumLabel => 'Required quorum';
+
+  @override
+  String get quorumHint =>
+      'Election-level participation uses the frozen voter roll. Submitted ballots, including abstentions, count toward quorum. If quorum is not met, counts can be published but no winner is announced.';
+
+  @override
+  String get quorumInputHint => '1–100; leave empty to disable';
+
+  @override
+  String get quorumValidation => 'Enter a whole percentage from 1 to 100.';
+
+  @override
+  String get quorumMetLabel => 'Quorum reached';
+
+  @override
+  String get quorumNotMet => 'Quorum not reached — no winner announced';
+
+  @override
+  String get quorumDisabled => 'Disabled';
+
+  @override
+  String get abstentionsLabel => 'Abstentions';
+
+  @override
+  String get validChoiceBallots => 'Choice ballots';
+
+  @override
+  String get percentageBasis => 'Choice percentages exclude abstentions.';
+
+  @override
+  String get ballotAbstainEnabled => 'Enabled';
+
+  @override
+  String get scanJoinTitle => 'Scan to join';
+
+  @override
+  String get scanJoinInvalid =>
+      'This QR code is not a Raay joining code. Scan an organization invite QR or enter the code manually.';
+
+  @override
+  String get scanJoinTorch => 'Toggle flashlight';
+
+  @override
+  String get homeNoOrgTitle => 'Welcome to Raay';
+
+  @override
+  String get homeNoOrgBody =>
+      'You are not currently a member of any organization. Join an existing workspace or create a new one to begin participating in secure elections.';
+
+  @override
+  String get homeCreateOrg => 'Create organization';
+
+  @override
+  String get homeJoinByCode => 'Join by code';
+
+  @override
+  String get scanJoinEnterCode => 'Enter the code instead';
+
+  @override
+  String get scanJoinPermissionDenied =>
+      'Camera access is blocked. Allow the camera for this site or app in your settings, or enter the code by hand.';
+
+  @override
+  String get scanJoinUnsupported =>
+      'This browser or device cannot scan QR codes. Enter the joining code by hand instead.';
+
+  @override
+  String get scanJoinGeneric =>
+      'The camera could not be started. You can enter the joining code by hand instead.';
+
+  @override
+  String get searchHintNavigate => 'navigate';
+
+  @override
+  String get searchHintOpen => 'open';
+
+  @override
+  String get directoryImportCsv => 'Import CSV';
+
+  @override
+  String get bulkInviteFileUnreadable => 'Could not read this file.';
+
+  @override
+  String get bulkInviteTooLarge => 'CSV must be 2 MB or smaller.';
+
+  @override
+  String get bulkInviteOpenFailed => 'Could not open that CSV file.';
+
+  @override
+  String get bulkInviteNoValid => 'No valid email addresses were found.';
+
+  @override
+  String bulkInviteCapped(int max) {
+    return 'Only the first $max unique addresses will be processed.';
+  }
+
+  @override
+  String get bulkInviteCopied =>
+      'Invitation links copied. Share them with recipients.';
+
+  @override
+  String get bulkInviteResultsTitle => 'Invitation results';
+
+  @override
+  String get bulkInviteTitle => 'Invite members from CSV';
+
+  @override
+  String bulkInviteSummary(int success, int total) {
+    return '$success of $total invitations created. Links are one-time secrets; share them securely.';
+  }
+
+  @override
+  String bulkInviteIntro(int max) {
+    return 'Upload a CSV or paste addresses. Use an Email column header when the file has multiple columns. Up to $max unique member invitations per batch. Email is not sent automatically.';
+  }
+
+  @override
+  String get bulkInviteChooseFile => 'Choose CSV file';
+
+  @override
+  String get bulkInviteFieldLabel => 'CSV content or email list';
+
+  @override
+  String bulkInviteReady(int count) {
+    return '$count unique valid addresses ready to invite.';
+  }
+
+  @override
+  String bulkInviteProgress(int current, int total) {
+    return 'Creating $current of $total invitations…';
+  }
+
+  @override
+  String get bulkInviteFailed => 'Invitation failed.';
+
+  @override
+  String get bulkInviteCopyLinks => 'Copy successful invite links';
+
+  @override
+  String get bulkInvitePreview => 'Preview addresses';
+
+  @override
+  String get bulkInviteCreate => 'Create invitations';
+
+  @override
+  String get mpTransferLabel => 'Transfer organization ownership';
+
+  @override
+  String get mpTransferTitle => 'Transfer organization ownership?';
+
+  @override
+  String mpTransferMessage(String name) {
+    return '$name will become the owner. Your role will change to admin. Recent sign-in and two-factor authentication are required.';
+  }
+
+  @override
+  String get mpTransferConfirm => 'Transfer ownership';
+
+  @override
+  String get mpTransferDone => 'Organization ownership transferred.';
+
+  @override
+  String get tplSaveTitle => 'Save setup as a template';
+
+  @override
+  String get tplNameLabel => 'Template name';
+
+  @override
+  String get tplSave => 'Save';
+
+  @override
+  String get tplShared => 'Template shared with this organization.';
+
+  @override
+  String get tplSaveFailed => 'Could not save this template.';
+
+  @override
+  String get tplLoadSharedFailed =>
+      'Could not load shared templates. Check your connection and try again.';
+
+  @override
+  String get tplLegacyHeading => 'Saved on this device (legacy)';
+
+  @override
+  String get tplSharedHeading => 'Shared with this organization';
+
+  @override
+  String get tplDelete => 'Delete template';
+
+  @override
+  String get tplDeleteShared => 'Delete shared template';
+
+  @override
+  String get tplDeleteSharedFailed => 'Could not delete the shared template.';
+
+  @override
+  String get tplSaveSetup => 'Save setup';
+
+  @override
+  String get salesPricingLabel => 'Packages & pricing';
+
+  @override
+  String get salesReportsSubtitle =>
+      'Support cases and package enquiries. Assign, follow up and resolve each request.';
+
+  @override
+  String get privacyPolicyLabel => 'Privacy policy';
+
+  @override
+  String get deleteAccountLabel => 'Delete account';
 }

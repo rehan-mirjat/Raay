@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/audit_action_label.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/layout/responsive.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
@@ -187,18 +187,18 @@ class _OrganizationAuditScreenState
                       child: Text(AppLocalizations.of(context).auCrumbOrg,
                           style: TextStyle(
                               fontSize: 13,
-                              color: KivoraColors.textSecondaryOf(context),
+                              color: RaayColors.textSecondaryOf(context),
                               fontWeight: FontWeight.w500)),
                     ),
                     const SizedBox(width: 6),
                     Icon(Icons.chevron_right_rounded,
-                        size: 16, color: KivoraColors.textSecondaryOf(context)),
+                        size: 16, color: RaayColors.textSecondaryOf(context)),
                     const SizedBox(width: 6),
                     Text(AppLocalizations.of(context).auCrumbActivity,
                         style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
-                            color: KivoraColors.textPrimaryOf(context))),
+                            color: RaayColors.textPrimaryOf(context))),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -208,14 +208,14 @@ class _OrganizationAuditScreenState
                   AppLocalizations.of(context).auTitle,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: KivoraColors.textPrimaryOf(context),
+                        color: RaayColors.textPrimaryOf(context),
                       ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   AppLocalizations.of(context).auSubtitle,
                   style: TextStyle(
-                      color: KivoraColors.textSecondaryOf(context),
+                      color: RaayColors.textSecondaryOf(context),
                       fontSize: 14),
                 ),
                 const SizedBox(height: 24),
@@ -275,18 +275,18 @@ class _OrganizationAuditScreenState
                   decoration: InputDecoration(
                     hintText: AppLocalizations.of(context).auSearchLong,
                     prefixIcon: Icon(Icons.search_rounded,
-                        color: KivoraColors.textSecondaryOf(context), size: 20),
+                        color: RaayColors.textSecondaryOf(context), size: 20),
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 14),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                            BorderSide(color: KivoraColors.borderOf(context))),
+                            BorderSide(color: RaayColors.borderOf(context))),
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                            BorderSide(color: KivoraColors.borderOf(context))),
-                    fillColor: KivoraColors.surfaceOf(context),
+                            BorderSide(color: RaayColors.borderOf(context))),
+                    fillColor: RaayColors.surfaceOf(context),
                     filled: true,
                   ),
                 ),
@@ -312,7 +312,7 @@ class _OrganizationAuditScreenState
                   },
                   child: Text(AppLocalizations.of(context).auReset,
                       style: TextStyle(
-                          color: KivoraColors.of(context).errorText,
+                          color: RaayColors.of(context).errorText,
                           fontWeight: FontWeight.bold,
                           fontSize: 13)),
                 ),
@@ -328,10 +328,10 @@ class _OrganizationAuditScreenState
                 decoration: InputDecoration(
                   hintText: AppLocalizations.of(context).auSearchShort,
                   prefixIcon: Icon(Icons.search_rounded,
-                      color: KivoraColors.textSecondaryOf(context), size: 20),
+                      color: RaayColors.textSecondaryOf(context), size: 20),
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  fillColor: KivoraColors.surfaceOf(context),
+                  fillColor: RaayColors.surfaceOf(context),
                   filled: true,
                 ),
               ),
@@ -357,7 +357,7 @@ class _OrganizationAuditScreenState
                       },
                       child: Text(AppLocalizations.of(context).auReset,
                           style: TextStyle(
-                              color: KivoraColors.of(context).errorText,
+                              color: RaayColors.of(context).errorText,
                               fontWeight: FontWeight.bold,
                               fontSize: 13)),
                     ),
@@ -386,9 +386,9 @@ class _OrganizationAuditScreenState
       offset: const Offset(0, 42),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: KivoraColors.borderOf(context)),
+        side: BorderSide(color: RaayColors.borderOf(context)),
       ),
-      color: KivoraColors.surfaceOf(context),
+      color: RaayColors.surfaceOf(context),
       onSelected: (val) {
         setState(() {
           _selectedRecordType = val;
@@ -403,7 +403,7 @@ class _OrganizationAuditScreenState
             children: [
               if (isSelected)
                 Icon(Icons.check_rounded,
-                    size: 16, color: KivoraColors.of(context).accentText)
+                    size: 16, color: RaayColors.of(context).accentText)
               else
                 const SizedBox(width: 16),
               const SizedBox(width: 8),
@@ -413,7 +413,7 @@ class _OrganizationAuditScreenState
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                   color: isSelected
                       ? AppTheme.primaryBlue
-                      : KivoraColors.textPrimaryOf(context),
+                      : RaayColors.textPrimaryOf(context),
                   fontSize: 13,
                 ),
               ),
@@ -444,9 +444,9 @@ class _OrganizationAuditScreenState
       offset: const Offset(0, 42),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: KivoraColors.borderOf(context)),
+        side: BorderSide(color: RaayColors.borderOf(context)),
       ),
-      color: KivoraColors.surfaceOf(context),
+      color: RaayColors.surfaceOf(context),
       onSelected: (val) {
         setState(() {
           _selectedActorUid = val;
@@ -464,7 +464,7 @@ class _OrganizationAuditScreenState
             children: [
               if (isSelected)
                 Icon(Icons.check_rounded,
-                    size: 16, color: KivoraColors.of(context).accentText)
+                    size: 16, color: RaayColors.of(context).accentText)
               else
                 const SizedBox(width: 16),
               const SizedBox(width: 8),
@@ -474,7 +474,7 @@ class _OrganizationAuditScreenState
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                   color: isSelected
                       ? AppTheme.primaryBlue
-                      : KivoraColors.textPrimaryOf(context),
+                      : RaayColors.textPrimaryOf(context),
                   fontSize: 13,
                 ),
               ),
@@ -502,9 +502,9 @@ class _OrganizationAuditScreenState
       offset: const Offset(0, 42),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: KivoraColors.borderOf(context)),
+        side: BorderSide(color: RaayColors.borderOf(context)),
       ),
-      color: KivoraColors.surfaceOf(context),
+      color: RaayColors.surfaceOf(context),
       onSelected: (val) async {
         if (val == 'all') {
           setState(() {
@@ -567,7 +567,7 @@ class _OrganizationAuditScreenState
             children: [
               if (_selectedDateRange == null)
                 Icon(Icons.check_rounded,
-                    size: 16, color: KivoraColors.of(context).accentText)
+                    size: 16, color: RaayColors.of(context).accentText)
               else
                 const SizedBox(width: 16),
               const SizedBox(width: 8),
@@ -579,7 +579,7 @@ class _OrganizationAuditScreenState
                       : FontWeight.w500,
                   color: _selectedDateRange == null
                       ? AppTheme.primaryBlue
-                      : KivoraColors.textPrimaryOf(context),
+                      : RaayColors.textPrimaryOf(context),
                   fontSize: 13,
                 ),
               ),
@@ -594,7 +594,7 @@ class _OrganizationAuditScreenState
               Text(AppLocalizations.of(context).auToday,
                   style: TextStyle(
                       fontSize: 13,
-                      color: KivoraColors.textPrimaryOf(context))),
+                      color: RaayColors.textPrimaryOf(context))),
             ],
           ),
         ),
@@ -606,7 +606,7 @@ class _OrganizationAuditScreenState
               Text(AppLocalizations.of(context).auLast7,
                   style: TextStyle(
                       fontSize: 13,
-                      color: KivoraColors.textPrimaryOf(context))),
+                      color: RaayColors.textPrimaryOf(context))),
             ],
           ),
         ),
@@ -618,7 +618,7 @@ class _OrganizationAuditScreenState
               Text(AppLocalizations.of(context).auLast30,
                   style: TextStyle(
                       fontSize: 13,
-                      color: KivoraColors.textPrimaryOf(context))),
+                      color: RaayColors.textPrimaryOf(context))),
             ],
           ),
         ),
@@ -628,12 +628,12 @@ class _OrganizationAuditScreenState
           child: Row(
             children: [
               Icon(Icons.date_range_rounded,
-                  size: 16, color: KivoraColors.of(context).accentText),
+                  size: 16, color: RaayColors.of(context).accentText),
               const SizedBox(width: 8),
               Text(AppLocalizations.of(context).auCustomRange,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: KivoraColors.of(context).accentText,
+                      color: RaayColors.of(context).accentText,
                       fontSize: 13)),
             ],
           ),
@@ -650,11 +650,11 @@ class _OrganizationAuditScreenState
       decoration: BoxDecoration(
         color: isActive
             ? AppTheme.primaryBlue.withValues(alpha: 0.12)
-            : KivoraColors.surfaceOf(context),
+            : RaayColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color:
-              isActive ? AppTheme.primaryBlue : KivoraColors.borderOf(context),
+              isActive ? AppTheme.primaryBlue : RaayColors.borderOf(context),
           width: isActive ? 1.5 : 1.0,
         ),
       ),
@@ -665,7 +665,7 @@ class _OrganizationAuditScreenState
               size: 16,
               color: isActive
                   ? AppTheme.primaryBlue
-                  : KivoraColors.textSecondaryOf(context)),
+                  : RaayColors.textSecondaryOf(context)),
           const SizedBox(width: 8),
           Text(
             label,
@@ -674,7 +674,7 @@ class _OrganizationAuditScreenState
               fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
               color: isActive
                   ? AppTheme.primaryBlue
-                  : KivoraColors.textPrimaryOf(context),
+                  : RaayColors.textPrimaryOf(context),
             ),
           ),
           const SizedBox(width: 6),
@@ -682,7 +682,7 @@ class _OrganizationAuditScreenState
               size: 16,
               color: isActive
                   ? AppTheme.primaryBlue
-                  : KivoraColors.textSecondaryOf(context)),
+                  : RaayColors.textSecondaryOf(context)),
         ],
       ),
     );
@@ -829,7 +829,7 @@ class _OrganizationAuditScreenState
                 child: Row(
                   children: [
                     Icon(Icons.swap_vert_rounded,
-                        size: 16, color: KivoraColors.textSecondaryOf(context)),
+                        size: 16, color: RaayColors.textSecondaryOf(context)),
                     const SizedBox(width: 6),
                     Text(
                       _newestFirst
@@ -838,7 +838,7 @@ class _OrganizationAuditScreenState
                       style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: KivoraColors.textSecondaryOf(context)),
+                          color: RaayColors.textSecondaryOf(context)),
                     ),
                   ],
                 ),
@@ -851,9 +851,9 @@ class _OrganizationAuditScreenState
         // Main Table Container Card
         Container(
           decoration: BoxDecoration(
-            color: KivoraColors.surfaceOf(context),
+            color: RaayColors.surfaceOf(context),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: KivoraColors.borderOf(context)),
+            border: Border.all(color: RaayColors.borderOf(context)),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.03),
@@ -872,7 +872,7 @@ class _OrganizationAuditScreenState
                   decoration: BoxDecoration(
                     border: Border(
                         bottom:
-                            BorderSide(color: KivoraColors.borderOf(context))),
+                            BorderSide(color: RaayColors.borderOf(context))),
                   ),
                   child: Row(
                     children: [
@@ -883,7 +883,7 @@ class _OrganizationAuditScreenState
                               style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
-                                  color: KivoraColors.textSecondaryOf(context),
+                                  color: RaayColors.textSecondaryOf(context),
                                   letterSpacing: 0.8))),
                       Expanded(
                           flex: 3,
@@ -891,7 +891,7 @@ class _OrganizationAuditScreenState
                               style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
-                                  color: KivoraColors.textSecondaryOf(context),
+                                  color: RaayColors.textSecondaryOf(context),
                                   letterSpacing: 0.8))),
                       Expanded(
                           flex: 3,
@@ -899,7 +899,7 @@ class _OrganizationAuditScreenState
                               style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
-                                  color: KivoraColors.textSecondaryOf(context),
+                                  color: RaayColors.textSecondaryOf(context),
                                   letterSpacing: 0.8))),
                       SizedBox(
                           width: 90,
@@ -907,7 +907,7 @@ class _OrganizationAuditScreenState
                               style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
-                                  color: KivoraColors.textSecondaryOf(context),
+                                  color: RaayColors.textSecondaryOf(context),
                                   letterSpacing: 0.8))),
                       const SizedBox(width: 30),
                     ],
@@ -920,7 +920,7 @@ class _OrganizationAuditScreenState
                   child: Center(
                     child: Text(AppLocalizations.of(context).auNoMatch,
                         style: TextStyle(
-                            color: KivoraColors.textSecondaryOf(context),
+                            color: RaayColors.textSecondaryOf(context),
                             fontSize: 14)),
                   ),
                 )
@@ -936,7 +936,7 @@ class _OrganizationAuditScreenState
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 24, vertical: 10),
-                        color: KivoraColors.surfaceOf(context),
+                        color: RaayColors.surfaceOf(context),
                         child: Row(
                           children: [
                             Text(
@@ -944,7 +944,7 @@ class _OrganizationAuditScreenState
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13,
-                                  color: KivoraColors.textPrimaryOf(context)),
+                                  color: RaayColors.textPrimaryOf(context)),
                             ),
                             const SizedBox(width: 8),
                             Text(
@@ -954,12 +954,12 @@ class _OrganizationAuditScreenState
                                       .auRecordMany(dayDocs.length.toString())),
                               style: TextStyle(
                                   fontSize: 12,
-                                  color: KivoraColors.textSecondaryOf(context)),
+                                  color: RaayColors.textSecondaryOf(context)),
                             ),
                           ],
                         ),
                       ),
-                      Divider(height: 1, color: KivoraColors.borderOf(context)),
+                      Divider(height: 1, color: RaayColors.borderOf(context)),
 
                       // Rows for this Day
                       ...dayDocs.map(
@@ -980,12 +980,12 @@ class _OrganizationAuditScreenState
               AppLocalizations.of(context)
                   .auShown(filteredDocs.length.toString()),
               style: TextStyle(
-                  fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
+                  fontSize: 12, color: RaayColors.textSecondaryOf(context)),
             ),
             Text(
               AppLocalizations.of(context).auTimesNote,
               style: TextStyle(
-                  fontSize: 12, color: KivoraColors.textSecondaryOf(context)),
+                  fontSize: 12, color: RaayColors.textSecondaryOf(context)),
             ),
           ],
         ),
@@ -1023,7 +1023,7 @@ class _OrganizationAuditScreenState
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 color: isSelected
                     ? AppTheme.primaryBlue
-                    : KivoraColors.textSecondaryOf(context),
+                    : RaayColors.textSecondaryOf(context),
               ),
             ),
             const SizedBox(width: 6),
@@ -1034,7 +1034,7 @@ class _OrganizationAuditScreenState
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 color: isSelected
                     ? AppTheme.primaryBlue
-                    : KivoraColors.textSecondaryOf(context),
+                    : RaayColors.textSecondaryOf(context),
               ),
             ),
           ],
@@ -1089,7 +1089,7 @@ class _OrganizationAuditScreenState
                       ? AppTheme.primaryBlue
                           .withValues(alpha: 0.12)
                           .withValues(alpha: 0.5)
-                      : KivoraColors.surfaceOf(context)),
+                      : RaayColors.surfaceOf(context)),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: isDesktop
                   ? Row(
@@ -1117,7 +1117,7 @@ class _OrganizationAuditScreenState
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
                                       color:
-                                          KivoraColors.textPrimaryOf(context)),
+                                          RaayColors.textPrimaryOf(context)),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -1133,7 +1133,7 @@ class _OrganizationAuditScreenState
                             style: TextStyle(
                                 fontSize: 13,
                                 fontFamily: 'monospace',
-                                color: KivoraColors.textSecondaryOf(context)),
+                                color: RaayColors.textSecondaryOf(context)),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -1146,7 +1146,7 @@ class _OrganizationAuditScreenState
                             style: TextStyle(
                                 fontSize: 13,
                                 fontFamily: 'monospace',
-                                color: KivoraColors.textPrimaryOf(context),
+                                color: RaayColors.textPrimaryOf(context),
                                 fontWeight: FontWeight.w600),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -1159,7 +1159,7 @@ class _OrganizationAuditScreenState
                             timeStr,
                             style: TextStyle(
                                 fontSize: 13,
-                                color: KivoraColors.textSecondaryOf(context)),
+                                color: RaayColors.textSecondaryOf(context)),
                           ),
                         ),
 
@@ -1172,7 +1172,7 @@ class _OrganizationAuditScreenState
                                   style: TextStyle(
                                       fontSize: 11,
                                       color:
-                                          KivoraColors.of(context).accentText,
+                                          RaayColors.of(context).accentText,
                                       fontWeight: FontWeight.bold)),
                             Icon(
                               isExpanded
@@ -1180,7 +1180,7 @@ class _OrganizationAuditScreenState
                                   : Icons.keyboard_arrow_down_rounded,
                               color: isExpanded
                                   ? AppTheme.primaryBlue
-                                  : KivoraColors.textSecondaryOf(context),
+                                  : RaayColors.textSecondaryOf(context),
                               size: 20,
                             ),
                           ],
@@ -1208,20 +1208,20 @@ class _OrganizationAuditScreenState
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
-                                    color: KivoraColors.textPrimaryOf(context)),
+                                    color: RaayColors.textPrimaryOf(context)),
                               ),
                             ),
                             Text(timeStr,
                                 style: TextStyle(
                                     fontSize: 12,
                                     color:
-                                        KivoraColors.textSecondaryOf(context))),
+                                        RaayColors.textSecondaryOf(context))),
                             const SizedBox(width: 4),
                             Icon(
                               isExpanded
                                   ? Icons.keyboard_arrow_up_rounded
                                   : Icons.keyboard_arrow_down_rounded,
-                              color: KivoraColors.textSecondaryOf(context),
+                              color: RaayColors.textSecondaryOf(context),
                               size: 18,
                             ),
                           ],
@@ -1234,7 +1234,7 @@ class _OrganizationAuditScreenState
                                     fontSize: 11,
                                     fontFamily: 'monospace',
                                     color:
-                                        KivoraColors.textSecondaryOf(context))),
+                                        RaayColors.textSecondaryOf(context))),
                             const SizedBox(width: 8),
                             Text(
                                 AppLocalizations.of(context).auActorBullet(
@@ -1242,7 +1242,7 @@ class _OrganizationAuditScreenState
                                 style: TextStyle(
                                     fontSize: 11,
                                     fontFamily: 'monospace',
-                                    color: KivoraColors.textPrimaryOf(context),
+                                    color: RaayColors.textPrimaryOf(context),
                                     fontWeight: FontWeight.w600)),
                           ],
                         ),
@@ -1256,7 +1256,7 @@ class _OrganizationAuditScreenState
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              color: KivoraColors.surfaceOf(context),
+              color: RaayColors.surfaceOf(context),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -1279,13 +1279,13 @@ class _OrganizationAuditScreenState
                     children: [
                       Icon(Icons.info_outline_rounded,
                           size: 14,
-                          color: KivoraColors.textSecondaryOf(context)),
+                          color: RaayColors.textSecondaryOf(context)),
                       const SizedBox(width: 6),
                       Text(
                         AppLocalizations.of(context).auNoActorDetail,
                         style: TextStyle(
                             fontSize: 11,
-                            color: KivoraColors.textSecondaryOf(context)),
+                            color: RaayColors.textSecondaryOf(context)),
                       ),
                     ],
                   ),
@@ -1293,7 +1293,7 @@ class _OrganizationAuditScreenState
               ),
             ),
 
-          Divider(height: 1, color: KivoraColors.borderOf(context)),
+          Divider(height: 1, color: RaayColors.borderOf(context)),
         ],
       ),
     );
@@ -1305,7 +1305,7 @@ class _OrganizationAuditScreenState
       children: [
         Text(label,
             style: TextStyle(
-                fontSize: 11, color: KivoraColors.textSecondaryOf(context))),
+                fontSize: 11, color: RaayColors.textSecondaryOf(context))),
         const SizedBox(height: 2),
         Text(
           value,
@@ -1313,7 +1313,7 @@ class _OrganizationAuditScreenState
             fontSize: 12,
             fontWeight: FontWeight.bold,
             fontFamily: isCode ? 'monospace' : null,
-            color: KivoraColors.textPrimaryOf(context),
+            color: RaayColors.textPrimaryOf(context),
           ),
         ),
       ],

@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/onboarding/providers/onboarding_providers.dart';
 
-const _kThemeKey = 'kivora_theme_mode';
+const _kThemeKey = 'raay_theme_mode';
 
 class ThemeModeNotifier extends StateNotifier<ThemeMode> {
   ThemeModeNotifier(this._prefs) : super(_load(_prefs));

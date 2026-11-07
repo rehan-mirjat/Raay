@@ -1,4 +1,4 @@
-package com.kivora.app
+package com.raay.app
 
 import io.flutter.embedding.android.FlutterActivity
 

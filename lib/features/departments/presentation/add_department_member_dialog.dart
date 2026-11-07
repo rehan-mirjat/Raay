@@ -1,12 +1,12 @@
 import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kivora/core/theme/kivora_icons.dart';
-import 'package:kivora/core/widgets/ui_kit/kivora_button.dart';
-import 'package:kivora/core/widgets/ui_kit/kivora_text_field.dart';
+import 'package:raay/core/theme/raay_icons.dart';
+import 'package:raay/core/widgets/ui_kit/raay_button.dart';
+import 'package:raay/core/widgets/ui_kit/raay_text_field.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../organizations/presentation/membership_directory_screen.dart';
 import '../data/department_repository.dart';
 import '../../../core/utils/friendly_error.dart';
@@ -74,7 +74,7 @@ class _AddDepartmentMemberDialogState
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.sizeOf(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final availableMembers = widget.allMembers.where((m) {
       final isNotInDept = m['departmentId'] != widget.departmentId;
       final isActive = m['status'] == 'active';
@@ -107,8 +107,8 @@ class _AddDepartmentMemberDialogState
                       color: AppTheme.primaryBlue.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Icon(KivoraIcons.userPlus,
-                        color: KivoraColors.of(context).accentText, size: 20),
+                    child: Icon(RaayIcons.userPlus,
+                        color: RaayColors.of(context).accentText, size: 20),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -128,17 +128,17 @@ class _AddDepartmentMemberDialogState
                     tooltip: AppLocalizations.of(context).adClose,
                     constraints:
                         const BoxConstraints(minWidth: 48, minHeight: 48),
-                    icon: const Icon(KivoraIcons.x, size: 20),
+                    icon: const Icon(RaayIcons.x, size: 20),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              KivoraTextField(
+              RaayTextField(
                 controller: _searchController,
                 label: AppLocalizations.of(context).adSearchLabel,
                 hint: AppLocalizations.of(context).adSearchHint,
-                prefixIcon: KivoraIcons.search,
+                prefixIcon: RaayIcons.search,
                 onChanged: (val) =>
                     setState(() => _searchQuery = val.trim().toLowerCase()),
               ),
@@ -236,7 +236,7 @@ class _AddDepartmentMemberDialogState
                                           height: 18,
                                           child: CircularProgressIndicator(
                                               strokeWidth: 2))
-                                      : const Icon(KivoraIcons.userPlus,
+                                      : const Icon(RaayIcons.userPlus,
                                           size: 20),
                                 ),
                               ],
@@ -246,8 +246,8 @@ class _AddDepartmentMemberDialogState
                       ),
               ),
               const SizedBox(height: 16),
-              KivoraButton(
-                type: KivoraButtonType.ghost,
+              RaayButton(
+                type: RaayButtonType.ghost,
                 label: AppLocalizations.of(context).adClose,
                 onPressed: () => Navigator.pop(context),
               ),

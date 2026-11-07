@@ -3,7 +3,7 @@ import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
@@ -50,7 +50,7 @@ class _PlatformAuditScreenState extends ConsumerState<PlatformAuditScreen> {
         ),
       ],
       builder: (context) {
-        final kc = KivoraColors.of(context);
+        final kc = RaayColors.of(context);
         final logs = ref.watch(platformAuditProvider(_limit));
         final dir = ref.watch(platformDirectoryProvider).valueOrNull ??
             const PlatformDirectory();

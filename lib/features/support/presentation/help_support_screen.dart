@@ -1,15 +1,13 @@
 import '../../../l10n/app_localizations.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../platform/domain/platform_report.dart' show reportCategoryText;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/utils/validators.dart';
-import '../../../services/auth_service.dart';
-import '../../../services/firebase_service.dart';
+import '../support_repository.dart';
 
 class HelpSupportScreen extends ConsumerStatefulWidget {
   const HelpSupportScreen({super.key});
@@ -42,25 +40,17 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
   }
 
   Future<void> _submitFeedback() async {
+    if (_isSubmitting) return;
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isSubmitting = true);
 
     try {
-      final user = ref.read(authServiceProvider).currentUser;
-      if (user != null) {
-        await FirebaseService().firestore.collection('userReports').add({
-          'userId': user.uid,
-          'userEmail': user.email ?? '',
-          'category': _category,
-          'subject': _subjectController.text.trim(),
-          'message': _messageController.text.trim(),
-          if (_receiptRefController.text.trim().isNotEmpty)
-            'receiptReference': _receiptRefController.text.trim(),
-          'createdAt': FieldValue.serverTimestamp(),
-          'status': 'open',
-        });
-      }
+      await ref.read(supportRepositoryProvider).submit(
+        category: _category, subject: _subjectController.text,
+        message: _messageController.text,
+        receiptReference: _category == 'Election issue' ? _receiptRefController.text : '',
+      );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -71,6 +61,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
         );
         _subjectController.clear();
         _messageController.clear();
+        _receiptRefController.clear();
       }
     } catch (e) {
       if (mounted) {
@@ -99,11 +90,15 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Align(alignment: AlignmentDirectional.centerEnd,
+                  child: OutlinedButton.icon(icon: const Icon(Icons.receipt_long_outlined),
+                    onPressed: () => context.go('/help/reports'),
+                    label: Text(AppLocalizations.of(context).supportMyReports))),
                 Text(
                   AppLocalizations.of(context).hsTitle,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: KivoraColors.textPrimaryOf(context),
+                        color: RaayColors.textPrimaryOf(context),
                       ),
                 ),
                 const SizedBox(height: 20),
@@ -114,7 +109,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: KivoraColors.textPrimaryOf(context),
+                    color: RaayColors.textPrimaryOf(context),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -139,14 +134,14 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: KivoraColors.textPrimaryOf(context),
+                    color: RaayColors.textPrimaryOf(context),
                   ),
                 ),
                 const SizedBox(height: 16),
                 ListTile(
                   minTileHeight: 56,
                   leading: Icon(Icons.verified_outlined,
-                      color: KivoraColors.of(context).accentText),
+                      color: RaayColors.of(context).accentText),
                   title: Text(AppLocalizations.of(context).hsVerify,
                       style: const TextStyle(fontWeight: FontWeight.w600)),
                   subtitle: Text(AppLocalizations.of(context).hsVerifyBody),
@@ -156,7 +151,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                 ListTile(
                   minTileHeight: 56,
                   leading: Icon(Icons.policy_outlined,
-                      color: KivoraColors.of(context).accentText),
+                      color: RaayColors.of(context).accentText),
                   title: Text(AppLocalizations.of(context).hsTrust,
                       style: const TextStyle(fontWeight: FontWeight.w600)),
                   subtitle: Text(AppLocalizations.of(context).hsTrustBody),
@@ -171,15 +166,15 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: KivoraColors.textPrimaryOf(context),
+                    color: RaayColors.textPrimaryOf(context),
                   ),
                 ),
                 const SizedBox(height: 16),
                 Container(
                   decoration: BoxDecoration(
-                    color: KivoraColors.surfaceOf(context),
+                    color: RaayColors.surfaceOf(context),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: KivoraColors.borderOf(context)),
+                    border: Border.all(color: RaayColors.borderOf(context)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(24),
@@ -193,7 +188,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
-                              color: KivoraColors.textPrimaryOf(context),
+                              color: RaayColors.textPrimaryOf(context),
                               letterSpacing: 0.5,
                             ),
                           ),
@@ -207,7 +202,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                                     child: Text(reportCategoryText(
                                         AppLocalizations.of(context), c))))
                                 .toList(),
-                            onChanged: (v) =>
+                            onChanged: _isSubmitting ? null : (v) =>
                                 setState(() => _category = v ?? _category),
                           ),
                           const SizedBox(height: 20),
@@ -216,13 +211,14 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
-                              color: KivoraColors.textPrimaryOf(context),
+                              color: RaayColors.textPrimaryOf(context),
                               letterSpacing: 0.5,
                             ),
                           ),
                           const SizedBox(height: 6),
                           TextFormField(
                             controller: _subjectController,
+                            enabled: !_isSubmitting, maxLength: 200,
                             decoration: InputDecoration(
                               hintText:
                                   AppLocalizations.of(context).hsSubjectHint,
@@ -237,13 +233,14 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
-                                color: KivoraColors.textPrimaryOf(context),
+                                color: RaayColors.textPrimaryOf(context),
                                 letterSpacing: 0.5,
                               ),
                             ),
                             const SizedBox(height: 6),
                             TextFormField(
                               controller: _receiptRefController,
+                              enabled: !_isSubmitting, maxLength: 200,
                               decoration: InputDecoration(
                                 hintText:
                                     AppLocalizations.of(context).hsReceiptHint,
@@ -254,7 +251,7 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                               AppLocalizations.of(context).hsReceiptNote,
                               style: TextStyle(
                                   fontSize: 11,
-                                  color: KivoraColors.textSecondaryOf(context)),
+                                  color: RaayColors.textSecondaryOf(context)),
                             ),
                           ],
                           const SizedBox(height: 20),
@@ -263,13 +260,14 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
-                              color: KivoraColors.textPrimaryOf(context),
+                              color: RaayColors.textPrimaryOf(context),
                               letterSpacing: 0.5,
                             ),
                           ),
                           const SizedBox(height: 6),
                           TextFormField(
                             controller: _messageController,
+                            enabled: !_isSubmitting, maxLength: 5000,
                             maxLines: 5,
                             decoration: InputDecoration(
                               hintText:
@@ -316,9 +314,9 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: KivoraColors.surfaceOf(context),
+        color: RaayColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: KivoraColors.borderOf(context)),
+        border: Border.all(color: RaayColors.borderOf(context)),
       ),
       child: ExpansionTile(
         shape: const RoundedRectangleBorder(
@@ -329,17 +327,17 @@ class _HelpSupportScreenState extends ConsumerState<HelpSupportScreen> {
           style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 15,
-              color: KivoraColors.textPrimaryOf(context)),
+              color: RaayColors.textPrimaryOf(context)),
         ),
-        iconColor: KivoraColors.of(context).accentText,
-        collapsedIconColor: KivoraColors.textSecondaryOf(context),
+        iconColor: RaayColors.of(context).accentText,
+        collapsedIconColor: RaayColors.textSecondaryOf(context),
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Text(
               answer,
               style: TextStyle(
-                  color: KivoraColors.textSecondaryOf(context),
+                  color: RaayColors.textSecondaryOf(context),
                   height: 1.5,
                   fontSize: 14),
             ),

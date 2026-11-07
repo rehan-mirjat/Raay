@@ -9,7 +9,7 @@ class AppLocalizationsUr extends AppLocalizations {
   AppLocalizationsUr([String locale = 'ur']) : super(locale);
 
   @override
-  String get appName => 'کیوورا';
+  String get appName => 'رائے';
 
   @override
   String get navHome => 'ہوم';
@@ -96,7 +96,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get authRegisterTitle => 'اکاؤنٹ بنائیں';
 
   @override
-  String get authRegisterSubtitle => 'آج ہی کیوورا میں شامل ہوں';
+  String get authRegisterSubtitle => 'آج ہی رائے میں شامل ہوں';
 
   @override
   String get authFullName => 'پورا نام';
@@ -1245,8 +1245,7 @@ class AppLocalizationsUr extends AppLocalizations {
       'ہم یہ مکمل نہیں کر سکے۔ براہ کرم دوبارہ کوشش کریں۔';
 
   @override
-  String get inbHelp =>
-      'دعوت کے بارے میں مدد چاہیے؟ Kivora سپورٹ سے رابطہ کریں۔';
+  String get inbHelp => 'دعوت کے بارے میں مدد چاہیے؟ رائے سپورٹ سے رابطہ کریں۔';
 
   @override
   String get ballotTitle => 'آپ کا بیلٹ';
@@ -1602,6 +1601,9 @@ class AppLocalizationsUr extends AppLocalizations {
   String get resRecalculate => 'نتائج دوبارہ شمار کریں';
 
   @override
+  String get resPublishedLocked => 'شائع شدہ اور مقفل';
+
+  @override
   String get resWorking => 'کام جاری ہے...';
 
   @override
@@ -1633,7 +1635,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get resPublishConfirmBody =>
-      'تمام اہل اراکین نتائج دیکھ سکیں گے، اور جنہوں نے نتائج کی اطلاعات آن رکھی ہیں انہیں اطلاع بھی ملے گی۔ آپ بعد میں بھی انہیں دوبارہ شمار کر سکتے ہیں۔';
+      'تمام اہل اراکین نتائج دیکھ سکیں گے، اور جنہوں نے نتائج کی اطلاعات آن رکھی ہیں انہیں اطلاع بھی ملے گی۔ شائع شدہ نتائج مقفل ہیں اور دوبارہ شمار نہیں کیے جا سکتے۔';
 
   @override
   String get resPublishConfirm => 'شائع کریں';
@@ -2108,7 +2110,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get acctAppearanceBody =>
-      'منتخب کریں کہ اس ڈیوائس پر Kivora کیسا دکھائی دے۔';
+      'منتخب کریں کہ اس ڈیوائس پر رائے کیسا دکھائی دے۔';
 
   @override
   String get acctThemeLight => 'روشن';
@@ -2182,7 +2184,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get acctConnectedBody =>
-      'آپ کے Kivora اکاؤنٹ سے منسلک سائن اِن کے طریقے۔ کم از کم ایک منسلک رہنا لازمی ہے۔';
+      'آپ کے رائے اکاؤنٹ سے منسلک سائن اِن کے طریقے۔ کم از کم ایک منسلک رہنا لازمی ہے۔';
 
   @override
   String get acctEmailPassword => 'ای میل اور پاس ورڈ';
@@ -2206,7 +2208,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String acctDisconnectBody(String name) {
-    return 'آپ $name کے ذریعے Kivora میں سائن اِن نہیں کر سکیں گے۔';
+    return 'آپ $name کے ذریعے رائے میں سائن اِن نہیں کر سکیں گے۔';
   }
 
   @override
@@ -2448,7 +2450,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get jcScanHint =>
-      'یا کسی دوسرے ڈیوائس پر Kivora کے \"Scan to Join\" سے اسے اسکین کریں۔';
+      'یا کسی دوسرے ڈیوائس پر رائے کے \"Scan to Join\" سے اسے اسکین کریں۔';
 
   @override
   String get jcCopied => 'کاپی ہو گیا';
@@ -3385,7 +3387,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get plOverviewSubtitle =>
-      'Kivora بھر کی تنظیمیں، جائزے اور منتظمین کی حالیہ سرگرمی۔';
+      'رائے بھر کی تنظیمیں، جائزے اور منتظمین کی حالیہ سرگرمی۔';
 
   @override
   String get plRefresh => 'تازہ کریں';
@@ -3547,7 +3549,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get plReportsReadOnly =>
-      'فی الحال صرف پڑھنے کے لیے: پلیٹ فارم ابھی رپورٹس تفویض یا حل کرنے کی سہولت نہیں دیتا، اس لیے ہر رپورٹ کھلی رہتی ہے۔ نشان زد تنظیموں کی کوئی فہرست بھی نہیں۔';
+      'رپورٹ اپنے نام تفویض کریں، کام مکمل ہونے پر حل کریں، یا مزید کارروائی کے لیے دوبارہ کھولیں۔';
 
   @override
   String plAllCount(String a) {
@@ -3585,6 +3587,28 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get plStatusOpen => 'کھلی';
+
+  @override
+  String get plStatusInProgress => 'زیرِ کارروائی';
+
+  @override
+  String get plStatusResolved => 'حل شدہ';
+
+  @override
+  String get plAssignToMe => 'مجھے تفویض کریں';
+
+  @override
+  String get plResolveReport => 'رپورٹ حل کریں';
+
+  @override
+  String get plReopenReport => 'رپورٹ دوبارہ کھولیں';
+
+  @override
+  String get plReportUpdateFailed =>
+      'رپورٹ اپ ڈیٹ نہیں ہو سکی۔ دوبارہ کوشش کریں۔';
+
+  @override
+  String get plReportUpdateSuccess => 'رپورٹ کی حالت اپ ڈیٹ ہو گئی۔';
 
   @override
   String get plCheckingAccess => 'پلیٹ فارم کی رسائی چیک ہو رہی ہے…';
@@ -3776,7 +3800,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get imCreatedNote =>
-      'مدعو شخص لاگ اِن کے بعد Kivora کی اطلاعات میں اسے دیکھے گا۔ وہیں سے قبول یا مسترد کر سکتا ہے۔';
+      'مدعو شخص لاگ اِن کے بعد رائے کی اطلاعات میں اسے دیکھے گا۔ وہیں سے قبول یا مسترد کر سکتا ہے۔';
 
   @override
   String get imShareLink => 'یہ براہِ راست لنک مدعو شخص کو بھیجیں:';
@@ -3827,7 +3851,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get aeSubtitle =>
-      'ایک تصدیق شدہ Kivora اکاؤنٹ کو براہِ راست اس تنظیم میں شامل کریں۔';
+      'ایک تصدیق شدہ رائے اکاؤنٹ کو براہِ راست اس تنظیم میں شامل کریں۔';
 
   @override
   String get aeEmailLabel => 'رکن کا ای میل ایڈریس *';
@@ -4577,7 +4601,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get alP3b => 'اپنے انتخاب کو ظاہر کیے بغیر شرکت کی تصدیق کریں۔';
 
   @override
-  String get alCopy => 'Kivora © 2026';
+  String get alCopy => 'رائے © 2026';
 
   @override
   String get alPlatforms => 'Android • ویب';
@@ -4774,7 +4798,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get hsTrustBody =>
-      'Kivora بیلٹ کی رازداری کیسے محفوظ رکھتا ہے اور کیا ریکارڈ ہوتا ہے۔';
+      'رائے بیلٹ کی رازداری کیسے محفوظ رکھتا ہے اور کیا ریکارڈ ہوتا ہے۔';
 
   @override
   String get hsSend => 'رائے بھیجیں یا معاونت سے رابطہ کریں';
@@ -4878,7 +4902,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get rgDoneBody =>
-      'آپ کی Kivora شناخت محفوظ طریقے سے بن گئی ہے۔ اب آپ اپنی معلومات سے سائن اِن کر سکتے ہیں۔';
+      'آپ کی رائے شناخت محفوظ طریقے سے بن گئی ہے۔ اب آپ اپنی معلومات سے سائن اِن کر سکتے ہیں۔';
 
   @override
   String get rgReturn => 'لاگ اِن پر واپس جائیں';
@@ -5037,7 +5061,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get plCurrent => 'موجودہ';
 
   @override
-  String get spLogo => 'Kivora کا لوگو';
+  String get spLogo => 'رائے کا لوگو';
 
   @override
   String get spTag => 'انٹرپرائز ملٹی ٹیننٹ ای ووٹنگ';
@@ -5052,7 +5076,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get spErrTitle => 'کنکشن میں خرابی';
 
   @override
-  String get spErrBody => 'Kivora کی سروسز سے رابطہ نہیں ہو سکا۔';
+  String get spErrBody => 'رائے کی سروسز سے رابطہ نہیں ہو سکا۔';
 
   @override
   String get spRetry => 'کنکشن دوبارہ آزمائیں';
@@ -5141,7 +5165,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get trS5P2 =>
-      'رسید تصدیق کرتی ہے کہ آپ کا بیلٹ قبول ہوا اور نظام کے ریکارڈ میں موجود ہے۔ یہ آپ کے انتخاب کی نقل نہیں، اور گمنام انتخاب میں کوئی بھی - بشمول Kivora کے منتظمین - اسے یہ جاننے کے لیے استعمال نہیں کر سکتا کہ آپ نے کیا چنا۔';
+      'رسید تصدیق کرتی ہے کہ آپ کا بیلٹ قبول ہوا اور نظام کے ریکارڈ میں موجود ہے۔ یہ آپ کے انتخاب کی نقل نہیں، اور گمنام انتخاب میں کوئی بھی - بشمول رائے کے منتظمین - اسے یہ جاننے کے لیے استعمال نہیں کر سکتا کہ آپ نے کیا چنا۔';
 
   @override
   String get trS6Title => 'رسید کی تصدیق کیا ثابت کرتی ہے اور کیا نہیں';
@@ -5200,7 +5224,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get trS10P2 =>
-      'Kivora کو کسی قومی یا تیسرے فریق کی انتخابی معیارات کی تنظیم نے آزادانہ طور پر مصدقہ نہیں کیا، اور رسید کی تصدیق مکمل گنتی کے آزادانہ کرپٹوگرافک آڈٹ کا متبادل نہیں۔';
+      'رائے کو کسی قومی یا تیسرے فریق کی انتخابی معیارات کی تنظیم نے آزادانہ طور پر مصدقہ نہیں کیا، اور رسید کی تصدیق مکمل گنتی کے آزادانہ کرپٹوگرافک آڈٹ کا متبادل نہیں۔';
 
   @override
   String get trS10P3 =>
@@ -5210,7 +5234,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get trTitle => 'اعتماد اور شفافیت کا مرکز';
 
   @override
-  String get trHeading => 'Kivora کے انتخابات کیسے کام کرتے ہیں';
+  String get trHeading => 'رائے کے انتخابات کیسے کام کرتے ہیں';
 
   @override
   String get trIntro =>
@@ -5367,7 +5391,7 @@ class AppLocalizationsUr extends AppLocalizations {
       'اہم انتظامی کارروائیاں ریکارڈ ہوتی ہیں تاکہ مالکان اور منتظمین انہیں دیکھ سکیں۔';
 
   @override
-  String get lcQ1T => 'ہم Kivora کس لیے استعمال کر سکتے ہیں؟';
+  String get lcQ1T => 'ہم رائے کس لیے استعمال کر سکتے ہیں؟';
 
   @override
   String get lcQ1B =>
@@ -5433,7 +5457,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get ldNavTransparency => 'شفافیت';
 
   @override
-  String get ldBrandTop => 'Kivora، اوپر واپس';
+  String get ldBrandTop => 'رائے، اوپر واپس';
 
   @override
   String get ldToLight => 'روشن تھیم پر جائیں';
@@ -5457,7 +5481,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get ldVerify => 'رسید کی تصدیق کریں';
 
   @override
-  String get ldHeroBadge => 'Kivora · محفوظ ای ووٹنگ اور رائے شماری';
+  String get ldHeroBadge => 'رائے · محفوظ ای ووٹنگ اور رائے شماری';
 
   @override
   String get ldHeroTitle => 'اپنی تنظیم کے لیے منصفانہ انتخابات کروائیں۔';
@@ -5490,7 +5514,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get ldHowBody => 'منتظمین اور اراکین دونوں کے لیے شرکت آسان بنائیں۔';
 
   @override
-  String get ldStart => 'Kivora کے ساتھ شروع کریں';
+  String get ldStart => 'رائے کے ساتھ شروع کریں';
 
   @override
   String get ldOrgsEyebrow => 'ہر قسم کی تنظیم کے لیے';
@@ -5500,7 +5524,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get ldOrgsBody =>
-      'Kivora کی تنظیمیں ان میں سے ایک قسم کی ہوتی ہیں، پھر شریک لوگوں کے مطابق ڈھالی جاتی ہیں۔';
+      'رائے کی تنظیمیں ان میں سے ایک قسم کی ہوتی ہیں، پھر شریک لوگوں کے مطابق ڈھالی جاتی ہیں۔';
 
   @override
   String get ldSecTitle => 'اعتماد ہر قدم میں شامل۔';
@@ -5534,7 +5558,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get ldAnonBody =>
-      'دو الگ ریکارڈ Kivora کو دوہری ووٹنگ روکنے دیتے ہیں اور گمنام انتخاب کو گمنام رکھتے ہیں۔';
+      'دو الگ ریکارڈ رائے کو دوہری ووٹنگ روکنے دیتے ہیں اور گمنام انتخاب کو گمنام رکھتے ہیں۔';
 
   @override
   String get ldReceiptTitle => 'بغیر اکاؤنٹ کے رسید جانچیں۔';
@@ -5750,7 +5774,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get obBody4 =>
-      'اپنے انتخابات اور رائے شماریوں کے لیے گھر بنائیں۔ اپنے اراکین کو شامل کریں، اور Kivora کے ساتھ مل کر آگے بڑھیں۔';
+      'اپنے انتخابات اور رائے شماریوں کے لیے گھر بنائیں۔ اپنے اراکین کو شامل کریں، اور رائے کے ساتھ مل کر آگے بڑھیں۔';
 
   @override
   String get obGetStarted => 'شروع کریں';
@@ -5982,6 +6006,9 @@ class AppLocalizationsUr extends AppLocalizations {
   String get ciParse => 'پڑھیں اور جانچیں';
 
   @override
+  String get ciChooseFile => 'CSV فائل منتخب کریں';
+
+  @override
   String get ciResults => 'جانچ کے نتائج';
 
   @override
@@ -6196,7 +6223,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get phCoverageBody =>
-      'اس جانچ میں اسٹوریج، ای میل ڈیلیوری، پش ڈیلیوری اور کلائنٹ ڈیوائسز کی جانچ شامل نہیں۔';
+      'اس جانچ میں ای میل، پش نوٹیفکیشن اور کلائنٹ ڈیوائسز کی ڈیلیوری شامل نہیں۔';
 
   @override
   String get phOperational => 'فعال';
@@ -6226,4 +6253,647 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get navPlatformHealth => 'پلیٹ فارم کی صحت';
+
+  @override
+  String get orgReportTitle => 'تنظیم کی رپورٹس';
+
+  @override
+  String orgReportSubtitle(String name) {
+    return '$name کی انتخابی سرگرمی۔';
+  }
+
+  @override
+  String get orgReportDenied => 'تنظیم کے مالک یا ایڈمن کی رسائی درکار ہے۔';
+
+  @override
+  String get orgReportRefresh => 'رپورٹس تازہ کریں';
+
+  @override
+  String get orgReportFailed =>
+      'رپورٹ لوڈ نہیں ہو سکی۔ کنکشن چیک کر کے دوبارہ کوشش کریں۔';
+
+  @override
+  String get orgReportDates => 'تاریخوں کی حد';
+
+  @override
+  String get orgReportAllDates => 'تخلیق کی تمام تاریخیں';
+
+  @override
+  String get orgReportClearDates => 'تاریخیں ہٹائیں';
+
+  @override
+  String get orgReportMembers => 'فعال ارکان';
+
+  @override
+  String get orgReportEvents => 'اس صفحے کے انتخابات';
+
+  @override
+  String get orgReportPublishedCount => 'اس صفحے پر شائع شدہ';
+
+  @override
+  String get orgReportTurnout => 'قابلِ نمائش شرکت · یہ صفحہ';
+
+  @override
+  String get orgReportPrivate => 'رازداری کے لیے مخفی';
+
+  @override
+  String get orgReportUnavailable => 'دستیاب نہیں';
+
+  @override
+  String get orgReportActivity => 'انتخابی سرگرمی';
+
+  @override
+  String get orgReportEmpty => 'ان تاریخوں میں کوئی انتخاب نہیں ملا۔';
+
+  @override
+  String get orgReportPublished => 'نتائج شائع ہو گئے';
+
+  @override
+  String get orgReportUnpublished => 'نتائج شائع نہیں ہوئے';
+
+  @override
+  String get orgReportPrevious => 'پچھلا صفحہ';
+
+  @override
+  String get orgReportNext => 'اگلا صفحہ';
+
+  @override
+  String orgReportPage(String page) {
+    return 'صفحہ $page';
+  }
+
+  @override
+  String get orgReportScope =>
+      'خلاصہ اور برآمد صرف اس صفحے کے لیے ہیں۔ فلٹر انتخاب کی تخلیق کی تاریخ استعمال کرتا ہے۔';
+
+  @override
+  String get orgReportPrivacy =>
+      'شرکت میں غیر شائع شدہ نتائج اور 10 سے کم اہل ووٹرز والے انتخابات شامل نہیں۔ انفرادی بیلٹ اور انتخاب ظاہر نہیں ہوتے۔';
+
+  @override
+  String get orgReportExport => 'یہ صفحہ برآمد کریں (CSV)';
+
+  @override
+  String get rvPreview => 'بیلٹ کی مشق کریں';
+
+  @override
+  String get rvPreviewNotice =>
+      'صرف پیش نظارہ۔ تجربہ جانچنے کے لیے انتخاب کریں۔ کوئی ووٹ جمع یا رسید تیار نہیں ہوگی۔';
+
+  @override
+  String rvPreviewSelected(String label) {
+    return 'پیش نظارے کا انتخاب: $label';
+  }
+
+  @override
+  String get rvPreviewClose => 'پیش نظارہ بند کریں';
+
+  @override
+  String get navOrganizationReports => 'رپورٹس';
+
+  @override
+  String get mcMode => 'متعدد عہدوں کا انتخاب';
+
+  @override
+  String get mcPolicy =>
+      '2 سے 10 عہدے، ہر عہدے کے 2 سے 20 انتخاب۔ ہر عہدے کے لیے ایک انتخاب لازمی ہے؛ تمام ووٹ ایک ساتھ ایک رسید کے ساتھ جمع ہوں گے۔';
+
+  @override
+  String get mcContestTitle => 'عہدے کا عنوان';
+
+  @override
+  String get mcChoiceLabel => 'امیدوار / انتخاب کا نام';
+
+  @override
+  String get mcDescription => 'بیان (اختیاری)';
+
+  @override
+  String get mcAddContest => 'عہدہ شامل کریں';
+
+  @override
+  String get mcAddChoice => 'انتخاب شامل کریں';
+
+  @override
+  String get mcRemove => 'ہٹائیں';
+
+  @override
+  String get mcRequired => 'قدر درج کریں۔';
+
+  @override
+  String get mcSave => 'عہدے محفوظ کر کے آگے بڑھیں';
+
+  @override
+  String get mcCompleteAll =>
+      'آگے بڑھنے سے پہلے ہر عہدے کے لیے ایک انتخاب کریں۔';
+
+  @override
+  String get mcDiscard => 'عہدوں کی غیر محفوظ تبدیلیاں ختم کریں؟';
+
+  @override
+  String get monDetailsUnavailable =>
+      'تفصیلی تاریخ مکمل نہیں ہے۔ مجموعی شرکت میں تمام قبول شدہ ووٹ شامل ہیں۔';
+
+  @override
+  String get navNominations => 'نامزدگیاں';
+
+  @override
+  String get nomIntro =>
+      'بطور امیدوار درخواست دیں، اس کی پیش رفت دیکھیں اور اپنی تنظیم کی نامزدگیوں کا جائزہ لیں۔';
+
+  @override
+  String get nomCreate => 'نامزدگیاں کھولیں';
+
+  @override
+  String get nomCreateHint =>
+      'ڈرافٹ انتخاب منتخب کریں۔ اراکین آخری وقت سے پہلے درخواست دیں؛ جائزے سے پہلے مرحلہ بند کریں۔';
+
+  @override
+  String get nomElection => 'انتخاب';
+
+  @override
+  String get nomContest => 'عہدے کا انتخاب';
+
+  @override
+  String get nomDeadline => 'درخواست کی آخری تاریخ';
+
+  @override
+  String get nomCancel => 'منسوخ';
+
+  @override
+  String get nomApply => 'امیدوار بننے کی درخواست';
+
+  @override
+  String get nomName => 'امیدوار کا عوامی نام';
+
+  @override
+  String get nomStatement => 'امیدوار کا عوامی بیان (اختیاری)';
+
+  @override
+  String get nomConsent =>
+      'میں امیدوار بننے اور منظوری کے بعد یہ نام اور بیان بیلٹ پر شائع کرنے کی رضامندی دیتا ہوں۔';
+
+  @override
+  String get nomRequired => 'یہ خانہ مکمل کریں۔';
+
+  @override
+  String get nomSubmit => 'درخواست جمع کریں';
+
+  @override
+  String get nomReview => 'درخواستوں کا جائزہ';
+
+  @override
+  String get nomMyApplication => 'میری درخواست';
+
+  @override
+  String get nomApprove => 'امیدوار منظور کریں';
+
+  @override
+  String get nomReject => 'درخواست مسترد کریں';
+
+  @override
+  String get nomApproveHint =>
+      'منظوری سے نام اور بیان ڈرافٹ بیلٹ میں شامل ہوں گے۔ اشاعت الگ کارروائی ہے۔';
+
+  @override
+  String get nomRejectHint =>
+      'مسترد کرنے کی وجہ لکھیں۔ درخواست گزار یہ وجہ پڑھ سکے گا۔';
+
+  @override
+  String get nomReason => 'جائزے کی وجہ';
+
+  @override
+  String get nomClose => 'نامزدگیاں بند کریں';
+
+  @override
+  String get nomCloseHint =>
+      'اس سے نئی درخواستیں بند ہو جائیں گی۔ انتخاب شائع کرنے سے پہلے ہر زیر التوا درخواست کا جائزہ لیں۔';
+
+  @override
+  String get nomWithdraw => 'درخواست واپس لیں';
+
+  @override
+  String get nomWithdrawHint =>
+      'درخواست واپس لیں؟ منظور شدہ امیدوار بھی ڈرافٹ بیلٹ سے ہٹ جائے گا۔ واپسی صرف انتخاب کی اشاعت سے پہلے ممکن ہے۔';
+
+  @override
+  String get nomConfirm => 'تصدیق';
+
+  @override
+  String get nomOpen => 'کھلی';
+
+  @override
+  String get nomClosed => 'جائزے کے لیے بند';
+
+  @override
+  String get nomPending => 'جائزہ باقی ہے';
+
+  @override
+  String get nomApproved => 'منظور شدہ';
+
+  @override
+  String get nomRejected => 'مسترد';
+
+  @override
+  String get nomWithdrawn => 'واپس لی گئی';
+
+  @override
+  String get nomFinalized => 'مکمل — انتخاب شائع ہو گیا';
+
+  @override
+  String get nomMore => 'مزید دکھائیں';
+
+  @override
+  String get nomAccess => 'وہ تنظیم منتخب کریں جس میں آپ فعال رکن ہیں۔';
+
+  @override
+  String get nomFailed =>
+      'نامزدگیاں لوڈ یا محفوظ نہیں ہو سکیں۔ دوبارہ کوشش کریں۔';
+
+  @override
+  String get nomEmpty => 'ابھی کوئی نامزدگی کا مرحلہ نہیں۔';
+
+  @override
+  String get nomNoApplications => 'دکھانے کے لیے کوئی درخواست نہیں۔';
+
+  @override
+  String get nomNeedDraft =>
+      'پہلے ڈرافٹ انتخاب بنائیں۔ اس کا آغاز نامزدگی کی آخری تاریخ کے بعد ہونا چاہیے۔';
+
+  @override
+  String get supportMyReports => 'میری سپورٹ درخواستیں';
+
+  @override
+  String get supportLoadFailed => 'آپ کی درخواستیں لوڈ نہیں ہو سکیں۔';
+
+  @override
+  String get supportRetry => 'دوبارہ کوشش کریں';
+
+  @override
+  String get supportEmpty => 'آپ نے ابھی کوئی سپورٹ درخواست جمع نہیں کی۔';
+
+  @override
+  String get supportCaseId => 'درخواست کا حوالہ';
+
+  @override
+  String get navCommunications => 'اطلاعات';
+
+  @override
+  String get comIntro =>
+      'اپنی تنظیم کے ووٹنگ ریمائنڈر شیڈول کریں اور اطلاعات بننے کی حالت دیکھیں۔';
+
+  @override
+  String get comInApp => 'ایپ کے اندر اطلاعات';
+
+  @override
+  String get comExternalUnavailable =>
+      'ای میل اور ایس ایم ایس ترتیب نہیں دیے گئے۔ یہ ریمائنڈر رکن کے ایپ ان باکس میں نظر آئیں گے۔';
+
+  @override
+  String get comSchedule => 'ریمائنڈر شیڈول کریں';
+
+  @override
+  String get comAudience =>
+      'صرف اہل فعال اراکین کو اطلاع ملے گی جنہوں نے ووٹ نہیں دیا اور ریمائنڈر کی اجازت دی ہے۔ وصول کنندگان کے نام یہاں ظاہر نہیں ہوں گے۔';
+
+  @override
+  String get comChooseTime => 'تاریخ اور وقت منتخب کریں';
+
+  @override
+  String get comTiming =>
+      'ووٹنگ کے دورانیے میں وقت منتخب کریں۔ کارروائی تقریباً ہر منٹ ہوتی ہے؛ تعداد سے یہ ثابت نہیں ہوتا کہ رکن نے اطلاع پڑھی ہے۔';
+
+  @override
+  String get comCancel => 'ریمائنڈر منسوخ کریں';
+
+  @override
+  String get comCancelHint =>
+      'یہ زیر انتظار ریمائنڈر منسوخ کریں؟ شروع شدہ کارروائی منسوخ نہیں ہو سکتی کیونکہ کچھ اطلاعات بن چکی ہوں گی۔';
+
+  @override
+  String get comQueued => 'زیر انتظار';
+
+  @override
+  String get comProcessing => 'کارروائی جاری';
+
+  @override
+  String get comCompleted => 'مکمل';
+
+  @override
+  String get comCancelled => 'منسوخ';
+
+  @override
+  String get comFailedStatus => 'ناکام';
+
+  @override
+  String get comFailed =>
+      'ریمائنڈر لوڈ یا اپ ڈیٹ نہیں ہو سکے۔ دوبارہ کوشش کریں۔';
+
+  @override
+  String get comNeedEvent =>
+      'ریمائنڈر کے لیے مستقبل کے اختتامی وقت والا انتخاب شائع کریں۔';
+
+  @override
+  String get comEmpty => 'ابھی کوئی ریمائنڈر شیڈول نہیں ہے۔';
+
+  @override
+  String get comScheduledFor => 'مقررہ وقت';
+
+  @override
+  String get comCount => 'بنائی گئی اطلاعات';
+
+  @override
+  String get comFailureHint =>
+      'کارروائی رک گئی۔ دوبارہ شیڈول کرنے سے پہلے انتخاب کی حالت اور منتظم کی رسائی چیک کریں۔';
+
+  @override
+  String get comRetrying =>
+      'عارضی خرابی ہوئی۔ دوبارہ کوشش خودکار طور پر شیڈول ہے۔';
+
+  @override
+  String get eventPageScope =>
+      'ایک صفحہ دکھایا جا رہا ہے۔ تلاش اسی صفحے کے انتخابات پر لاگو ہے؛ مکمل تاریخ کے لیے فلٹر اور صفحہ کنٹرول استعمال کریں۔';
+
+  @override
+  String get govTitle => 'انتخاب کی منظوری';
+
+  @override
+  String get govIntro =>
+      'درخواست دینے والا اشاعت سے پہلے موجودہ بیلٹ اور نتائج کا جائزہ کسی دوسرے فعال منتظم سے کروائے۔';
+
+  @override
+  String get govPolicy => 'آزاد منظوری ضروری ہے';
+
+  @override
+  String get govPolicyHint =>
+      'صرف مالک ڈرافٹ میں یہ پالیسی بدل سکتا ہے۔ کم از کم دو فعال منتظم درکار ہیں؛ جائزہ لینے والوں کو دو مرحلہ تصدیق چاہیے۔';
+
+  @override
+  String get govLaunch => 'انتخاب شائع کرنے کی منظوری';
+
+  @override
+  String get govResults => 'نتائج کی منظوری';
+
+  @override
+  String get govPending => 'دوسرے منتظم کا انتظار';
+
+  @override
+  String get govNoRequest => 'جائزے کی درخواست نہیں ہوئی';
+
+  @override
+  String get govApprove => 'اس ورژن کی منظوری دیں';
+
+  @override
+  String get govReject => 'اس ورژن کو مسترد کریں';
+
+  @override
+  String get govRequest => 'موجودہ ورژن کے جائزے کی درخواست';
+
+  @override
+  String get govReviewNotice =>
+      'تصدیق سے پہلے موجودہ بیلٹ، اہلیت اور شیڈول یا حساب شدہ نتائج کا جائزہ لیں۔ آپ اپنی درخواست منظور نہیں کر سکتے۔';
+
+  @override
+  String get govVersion => 'جائزہ شدہ ورژن کا ہیش';
+
+  @override
+  String get govFreshness =>
+      'تبدیلی کے بعد نیا جائزہ ضروری ہے۔ اشاعت کے وقت ورژن اور جائزہ لینے والے کی رسائی دوبارہ چیک ہوتی ہے؛ صرف درخواست دینے والا منظور شدہ ورژن شائع کر سکتا ہے۔';
+
+  @override
+  String get govCalculate => 'نتائج شمار کریں';
+
+  @override
+  String get govViewResults => 'نتائج کا جائزہ';
+
+  @override
+  String get govPublishElection => 'منظور شدہ انتخاب شائع کریں';
+
+  @override
+  String get govPublishResults => 'منظور شدہ نتائج شائع کریں';
+
+  @override
+  String get ballotRules => 'بیلٹ کے قواعد';
+
+  @override
+  String get ballotRulesSave => 'قواعد محفوظ کریں';
+
+  @override
+  String get ballotAbstain => 'اس انتخاب میں ووٹ کے انتخاب سے گریز کریں';
+
+  @override
+  String get ballotAbstainHint =>
+      'کسی امیدوار یا آپشن کو چنے بغیر تمام مقابلوں میں شرکت جمع کریں۔ یہ حتمی ہے اور کورم میں شمار ہوگی۔';
+
+  @override
+  String get quorumLabel => 'مطلوبہ کورم';
+
+  @override
+  String get quorumHint =>
+      'شرکت انتخاب کی منجمد ووٹر فہرست کے مطابق ہے۔ جمع شدہ بیلٹ، بشمول گریز، کورم میں شمار ہیں۔ کورم مکمل نہ ہو تو گنتی شائع ہوگی مگر فاتح کا اعلان نہیں ہوگا۔';
+
+  @override
+  String get quorumInputHint => '۱ تا ۱۰۰؛ غیر فعال کرنے کے لیے خالی چھوڑیں';
+
+  @override
+  String get quorumValidation => '۱ تا ۱۰۰ مکمل فیصد درج کریں۔';
+
+  @override
+  String get quorumMetLabel => 'کورم مکمل';
+
+  @override
+  String get quorumNotMet => 'کورم نامکمل — فاتح کا اعلان نہیں';
+
+  @override
+  String get quorumDisabled => 'غیر فعال';
+
+  @override
+  String get abstentionsLabel => 'انتخاب سے گریز';
+
+  @override
+  String get validChoiceBallots => 'انتخاب والے بیلٹ';
+
+  @override
+  String get percentageBasis => 'انتخاب کے فیصد میں گریز شامل نہیں۔';
+
+  @override
+  String get ballotAbstainEnabled => 'فعال';
+
+  @override
+  String get scanJoinTitle => 'شامل ہونے کے لیے اسکین کریں';
+
+  @override
+  String get scanJoinInvalid =>
+      'یہ QR کوڈ رائے کا جوائننگ کوڈ نہیں ہے۔ تنظیم کا دعوتی QR اسکین کریں یا کوڈ خود درج کریں۔';
+
+  @override
+  String get scanJoinTorch => 'فلیش لائٹ ٹوگل کریں';
+
+  @override
+  String get homeNoOrgTitle => 'رائے میں خوش آمدید';
+
+  @override
+  String get homeNoOrgBody =>
+      'آپ ابھی کسی تنظیم کے رکن نہیں ہیں۔ محفوظ انتخابات میں حصہ لینے کے لیے کسی موجودہ تنظیم میں شامل ہوں یا نئی تنظیم بنائیں۔';
+
+  @override
+  String get homeCreateOrg => 'تنظیم بنائیں';
+
+  @override
+  String get homeJoinByCode => 'کوڈ سے شامل ہوں';
+
+  @override
+  String get scanJoinEnterCode => 'اس کے بجائے کوڈ درج کریں';
+
+  @override
+  String get scanJoinPermissionDenied =>
+      'کیمرے تک رسائی بلاک ہے۔ سیٹنگز میں اس سائٹ یا ایپ کے لیے کیمرے کی اجازت دیں، یا کوڈ ہاتھ سے درج کریں۔';
+
+  @override
+  String get scanJoinUnsupported =>
+      'یہ براؤزر یا ڈیوائس QR کوڈ اسکین نہیں کر سکتی۔ اس کے بجائے شمولیتی کوڈ ہاتھ سے درج کریں۔';
+
+  @override
+  String get scanJoinGeneric =>
+      'کیمرہ شروع نہیں ہو سکا۔ آپ شمولیتی کوڈ ہاتھ سے درج کر سکتے ہیں۔';
+
+  @override
+  String get searchHintNavigate => 'نیویگیٹ کریں';
+
+  @override
+  String get searchHintOpen => 'کھولیں';
+
+  @override
+  String get directoryImportCsv => 'CSV درآمد کریں';
+
+  @override
+  String get bulkInviteFileUnreadable => 'یہ فائل پڑھی نہیں جا سکی۔';
+
+  @override
+  String get bulkInviteTooLarge => 'CSV فائل 2 MB یا اس سے چھوٹی ہونی چاہیے۔';
+
+  @override
+  String get bulkInviteOpenFailed => 'وہ CSV فائل کھولی نہیں جا سکی۔';
+
+  @override
+  String get bulkInviteNoValid => 'کوئی درست ای میل ایڈریس نہیں ملا۔';
+
+  @override
+  String bulkInviteCapped(int max) {
+    return 'صرف پہلے $max منفرد ایڈریس پر کارروائی کی جائے گی۔';
+  }
+
+  @override
+  String get bulkInviteCopied =>
+      'دعوتی لنکس کاپی ہو گئے۔ انہیں وصول کنندگان کے ساتھ شیئر کریں۔';
+
+  @override
+  String get bulkInviteResultsTitle => 'دعوتوں کے نتائج';
+
+  @override
+  String get bulkInviteTitle => 'CSV سے ارکان کو مدعو کریں';
+
+  @override
+  String bulkInviteSummary(int success, int total) {
+    return '$total میں سے $success دعوتیں بن گئیں۔ لنکس ایک بار کے راز ہیں؛ انہیں محفوظ طریقے سے شیئر کریں۔';
+  }
+
+  @override
+  String bulkInviteIntro(int max) {
+    return 'CSV اپ لوڈ کریں یا ایڈریس پیسٹ کریں۔ فائل میں ایک سے زیادہ کالم ہوں تو Email کالم ہیڈر استعمال کریں۔ ہر بیچ میں زیادہ سے زیادہ $max منفرد دعوتیں۔ ای میل خود بخود نہیں بھیجی جاتی۔';
+  }
+
+  @override
+  String get bulkInviteChooseFile => 'CSV فائل منتخب کریں';
+
+  @override
+  String get bulkInviteFieldLabel => 'CSV مواد یا ای میل فہرست';
+
+  @override
+  String bulkInviteReady(int count) {
+    return '$count منفرد درست ایڈریس مدعو کرنے کے لیے تیار ہیں۔';
+  }
+
+  @override
+  String bulkInviteProgress(int current, int total) {
+    return '$total میں سے $current دعوت بنائی جا رہی ہے…';
+  }
+
+  @override
+  String get bulkInviteFailed => 'دعوت ناکام ہو گئی۔';
+
+  @override
+  String get bulkInviteCopyLinks => 'کامیاب دعوتی لنکس کاپی کریں';
+
+  @override
+  String get bulkInvitePreview => 'ایڈریس کا پیش منظر';
+
+  @override
+  String get bulkInviteCreate => 'دعوتیں بنائیں';
+
+  @override
+  String get mpTransferLabel => 'تنظیم کی ملکیت منتقل کریں';
+
+  @override
+  String get mpTransferTitle => 'تنظیم کی ملکیت منتقل کریں؟';
+
+  @override
+  String mpTransferMessage(String name) {
+    return '$name مالک بن جائے گا۔ آپ کا کردار ایڈمن میں بدل جائے گا۔ حالیہ سائن اِن اور دو مرحلہ تصدیق درکار ہے۔';
+  }
+
+  @override
+  String get mpTransferConfirm => 'ملکیت منتقل کریں';
+
+  @override
+  String get mpTransferDone => 'تنظیم کی ملکیت منتقل ہو گئی۔';
+
+  @override
+  String get tplSaveTitle => 'سیٹ اپ کو ٹیمپلیٹ کے طور پر محفوظ کریں';
+
+  @override
+  String get tplNameLabel => 'ٹیمپلیٹ کا نام';
+
+  @override
+  String get tplSave => 'محفوظ کریں';
+
+  @override
+  String get tplShared => 'ٹیمپلیٹ اس تنظیم کے ساتھ شیئر ہو گیا۔';
+
+  @override
+  String get tplSaveFailed => 'یہ ٹیمپلیٹ محفوظ نہیں ہو سکا۔';
+
+  @override
+  String get tplLoadSharedFailed =>
+      'مشترکہ ٹیمپلیٹس لوڈ نہیں ہو سکے۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔';
+
+  @override
+  String get tplLegacyHeading => 'اس ڈیوائس پر محفوظ (پرانے)';
+
+  @override
+  String get tplSharedHeading => 'اس تنظیم کے ساتھ شیئر کیے گئے';
+
+  @override
+  String get tplDelete => 'ٹیمپلیٹ حذف کریں';
+
+  @override
+  String get tplDeleteShared => 'مشترکہ ٹیمپلیٹ حذف کریں';
+
+  @override
+  String get tplDeleteSharedFailed => 'مشترکہ ٹیمپلیٹ حذف نہیں ہو سکا۔';
+
+  @override
+  String get tplSaveSetup => 'سیٹ اپ محفوظ کریں';
+
+  @override
+  String get salesPricingLabel => 'پیکیجز اور قیمتیں';
+
+  @override
+  String get salesReportsSubtitle =>
+      'سپورٹ کے معاملات اور پیکیج کی درخواستیں۔ ہر درخواست تفویض کریں، رابطہ کریں اور حل کریں۔';
+
+  @override
+  String get privacyPolicyLabel => 'رازداری کی پالیسی';
+
+  @override
+  String get deleteAccountLabel => 'اکاؤنٹ حذف کریں';
 }

@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../core/widgets/status_badge.dart';
@@ -29,8 +29,9 @@ class EventDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final eventAsync = ref.watch(singleVotingEventProvider(eventId));
+    final activeOrg = ref.watch(activeOrganizationContextProvider).valueOrNull?.context;
     final currentUser = ref.watch(authServiceProvider).currentUser;
 
     return Scaffold(
@@ -77,12 +78,14 @@ class EventDetailScreen extends ConsumerWidget {
                         icon: const Icon(Icons.arrow_back_rounded, size: 18),
                         label: Text(l10n.evBack),
                       ),
+                      if (activeOrg?.member.role.isAdmin == true && activeOrg?.organization.id == event.organizationId)
+                        OutlinedButton.icon(onPressed: () => context.go('/elections/${event.id}/approvals'), icon: const Icon(Icons.fact_check_outlined), label: Text(l10n.govTitle)),
                       const SizedBox(height: 8),
                       Wrap(spacing: 8, runSpacing: 8, children: [
                         StatusBadge.eventStatus(event.status.name),
                         StatusBadge.privacyMode(event.privacyMode.name),
                         StatusBadge(
-                          label: event.votingType.localized(l10n),
+                          label: event.isMultiContest ? l10n.mcMode : event.votingType.localized(l10n),
                           backgroundColor: Theme.of(context)
                               .colorScheme
                               .primary
@@ -133,7 +136,7 @@ class EventDetailScreen extends ConsumerWidget {
 }
 
 Widget _card(BuildContext context, {required Widget child, Color? tint}) {
-  final kc = KivoraColors.of(context);
+  final kc = RaayColors.of(context);
   return Container(
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
@@ -158,7 +161,7 @@ class _MainColumn extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
 
     final Widget participation = participationAsync.when(
       loading: () => _card(context,
@@ -202,7 +205,7 @@ class _VotedCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return _card(
       context,
       tint: kc.successText,
@@ -253,7 +256,7 @@ class _NotVotedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final isActive = event.status == VotingEventStatus.active;
     return _card(
       context,
@@ -297,7 +300,7 @@ class _ResultsCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final isAdmin =
         ref.watch(activeOrganizationContextProvider).valueOrNull?.context?.member.role.isAdmin ?? false;
     final status = ref.watch(eventResultsStatusProvider(event.id)).valueOrNull ?? ResultsStatus.unknown;
@@ -366,7 +369,7 @@ class EventDetailsCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final isAdmin =
         ref.watch(activeOrganizationContextProvider).valueOrNull?.context?.member.role.isAdmin ?? false;
     final s = event.status;
@@ -392,7 +395,7 @@ class EventDetailsCard extends ConsumerWidget {
             ),
           ),
           Divider(height: 1, color: kc.border),
-          _row(context, Icons.how_to_vote_outlined, l10n.evType, event.votingType.label),
+          _row(context, Icons.how_to_vote_outlined, l10n.evType, event.isMultiContest ? l10n.mcMode : event.votingType.localized(l10n)),
           Divider(height: 1, color: kc.border),
           _row(context, Icons.groups_outlined, l10n.evWho, event.eligibilityType.localized(l10n)),
           Divider(height: 1, color: kc.border),
@@ -457,7 +460,7 @@ class EventDetailsCard extends ConsumerWidget {
   }
 
   Widget _row(BuildContext context, IconData icon, String label, String value) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(

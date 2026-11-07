@@ -1,3 +1,4 @@
+import 'election_contest.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -35,6 +36,11 @@ extension EligibilityTypeLabel on EligibilityType {
 }
 
 class VotingEvent {
+  final bool independentApprovalRequired;
+  final bool allowAbstain;
+  final int? quorumPercent;
+  final bool isMultiContest;
+  final List<ElectionContest> contests;
   final String id;
   final String organizationId;
   final String title;
@@ -59,6 +65,11 @@ class VotingEvent {
   final String? archivedBy;
 
   VotingEvent({
+    this.independentApprovalRequired = false,
+    this.allowAbstain = false,
+    this.quorumPercent,
+    this.isMultiContest = false,
+    this.contests = const [],
     required this.id,
     required this.organizationId,
     required this.title,
@@ -86,6 +97,11 @@ class VotingEvent {
   factory VotingEvent.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return VotingEvent(
+      isMultiContest: data['ballotMode'] == 'MULTI_CONTEST',
+      independentApprovalRequired: data['independentApprovalRequired'] == true,
+      allowAbstain: data['allowAbstain'] == true,
+      quorumPercent: (data['quorumPercent'] as num?)?.toInt(),
+      contests: (data['contests'] as List? ?? const []).map((c) => ElectionContest.fromMap(c as Map)).toList(),
       id: data['id'] ?? doc.id,
       organizationId: data['organizationId'] ?? '',
       title: data['title'] ?? '',

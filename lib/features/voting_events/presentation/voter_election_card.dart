@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../l10n/app_localizations.dart';
 import '../domain/election_card_state.dart';
@@ -48,7 +48,7 @@ class VoterElectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     final event = entry.event;
 
@@ -113,7 +113,7 @@ class VoterElectionCard extends StatelessWidget {
   }
 
   List<Widget> _chips(BuildContext context, AppLocalizations l10n) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final out = <Widget>[];
     Widget chip(String text, Color color) => Container(
           constraints: const BoxConstraints(minHeight: 24),

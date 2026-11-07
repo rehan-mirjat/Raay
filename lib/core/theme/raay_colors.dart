@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'app_theme.dart';
 
 /// Theme-context-aware color accessors.
-/// Usage: KivoraColors.of(context).surface
-class KivoraColors {
-  KivoraColors._(this._isDark);
+/// Usage: RaayColors.of(context).surface
+class RaayColors {
+  RaayColors._(this._isDark);
 
   final bool _isDark;
 
-  factory KivoraColors.of(BuildContext context) {
-    return KivoraColors._(
+  factory RaayColors.of(BuildContext context) {
+    return RaayColors._(
       Theme.of(context).brightness == Brightness.dark,
     );
   }
@@ -52,10 +52,10 @@ class KivoraColors {
 
   bool get isDark => _isDark;
 
-  static Color textPrimaryOf(BuildContext ctx) => KivoraColors.of(ctx).textPrimary;
-  static Color textSecondaryOf(BuildContext ctx) => KivoraColors.of(ctx).textSecondary;
-  static Color surfaceOf(BuildContext ctx) => KivoraColors.of(ctx).surface;
-  static Color elevatedOf(BuildContext ctx) => KivoraColors.of(ctx).elevated;
-  static Color borderOf(BuildContext ctx) => KivoraColors.of(ctx).border;
-  static Color backgroundOf(BuildContext ctx) => KivoraColors.of(ctx).background;
+  static Color textPrimaryOf(BuildContext ctx) => RaayColors.of(ctx).textPrimary;
+  static Color textSecondaryOf(BuildContext ctx) => RaayColors.of(ctx).textSecondary;
+  static Color surfaceOf(BuildContext ctx) => RaayColors.of(ctx).surface;
+  static Color elevatedOf(BuildContext ctx) => RaayColors.of(ctx).elevated;
+  static Color borderOf(BuildContext ctx) => RaayColors.of(ctx).border;
+  static Color backgroundOf(BuildContext ctx) => RaayColors.of(ctx).background;
 }

@@ -3,9 +3,10 @@ import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/theme/theme_provider.dart';
 import 'landing_content.dart';
 import 'landing_widgets.dart';
@@ -199,7 +200,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   /// Surface-and-border style shared by the theme toggle, Sign in and Menu so
   /// they read as one group next to the filled Get started. Hover and focus
   /// change the button's own border and fill, never anything outside it.
-  ButtonStyle _outlinedAction(KivoraColors kc) {
+  ButtonStyle _outlinedAction(RaayColors kc) {
     return ButtonStyle(
       minimumSize: const WidgetStatePropertyAll(Size(44, 44)),
       // Keeps a 48px hit area around the 44px visual button.
@@ -238,7 +239,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   }
 
   Widget _navBar(BuildContext context, bool inline) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final dark = kc.isDark;
     final brand = Semantics(
       button: true,
@@ -256,7 +257,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
             ),
             const SizedBox(width: 10),
             Flexible(
-              child: Text('Kivora',
+              child: Text('Raay',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -357,7 +358,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
               side: WidgetStateProperty.resolveWith((s) =>
                   s.contains(WidgetState.focused)
                       ? BorderSide(
-                          color: KivoraColors.of(context).textPrimary, width: 2)
+                          color: RaayColors.of(context).textPrimary, width: 2)
                       : BorderSide.none),
             ),
             onPressed: () => _go('/register'),
@@ -383,7 +384,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   }
 
   Widget _drawer(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     Widget tile(String label, VoidCallback onTap) => ListTile(
           minVerticalPadding: 12,
           title: Text(label,
@@ -413,6 +414,8 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
             ),
           ),
           for (final item in _navItems) tile(item.label, item.onTap),
+          tile(AppLocalizations.of(context).salesPricingLabel,
+              () => _open('/pricing')),
           tile(AppLocalizations.of(context).ldVerify,
               () => _open('/receipt-verify')),
           const Divider(height: 32),
@@ -450,7 +453,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   // ---- sections --------------------------------------------------------------
 
   Widget _hero(BuildContext context, double width) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final wide = width >= 960;
     final narrow = width < 640;
 
@@ -587,7 +590,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   }
 
   Widget _trustItem(BuildContext context, LandingFeature p) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       IconTile(p.icon, size: 44),
       const SizedBox(width: 14),
@@ -665,7 +668,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
       );
 
   Widget _security(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final wide = MediaQuery.sizeOf(context).width >= 960;
     final header =
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -732,7 +735,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   }
 
   Widget _anonymous(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final wide = MediaQuery.sizeOf(context).width >= 860;
     Widget card(IconData icon, String title, String body) => Container(
           padding: const EdgeInsets.all(24),
@@ -790,7 +793,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   }
 
   Widget _receipt(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return SectionShell(
       tinted: true,
       child: Container(
@@ -935,7 +938,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
   }
 
   Widget _footer(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final narrow = MediaQuery.sizeOf(context).width < 640;
     Widget link(String label, VoidCallback onTap) => TextButton(
           style: TextButton.styleFrom(
@@ -987,7 +990,7 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                         ),
                         const SizedBox(width: 10),
                         Flexible(
-                          child: Text('Kivora',
+                          child: Text('Raay',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
@@ -1005,6 +1008,8 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     ]),
               ),
               col(AppLocalizations.of(context).ldFooterProduct, [
+                link(AppLocalizations.of(context).salesPricingLabel,
+                    () => _open('/pricing')),
                 link(AppLocalizations.of(context).ldNavFeatures,
                     () => _scrollTo(_featuresKey)),
                 link(AppLocalizations.of(context).ldNavHow,
@@ -1019,6 +1024,11 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     () => _open('/transparency')),
                 link(AppLocalizations.of(context).ldVerify,
                     () => _open('/receipt-verify')),
+                link(
+                    AppLocalizations.of(context).privacyPolicyLabel,
+                    () => launchUrl(
+                        Uri.parse('https://vote-d1ae4.web.app/privacy.html'),
+                        mode: LaunchMode.externalApplication)),
               ]),
               col(AppLocalizations.of(context).ldFooterAccount, [
                 link(
@@ -1027,6 +1037,12 @@ class _LandingPageScreenState extends ConsumerState<LandingPageScreen> {
                     () => _go('/register')),
                 link(AppLocalizations.of(context).ldFooterFaq,
                     () => _scrollTo(_faqKey)),
+                link(
+                    AppLocalizations.of(context).deleteAccountLabel,
+                    () => launchUrl(
+                        Uri.parse(
+                            'https://vote-d1ae4.web.app/delete-account.html'),
+                        mode: LaunchMode.externalApplication)),
               ]),
             ]),
             const SizedBox(height: 28),
@@ -1074,7 +1090,7 @@ class _AmbientGlow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = KivoraColors.of(context).isDark;
+    final dark = RaayColors.of(context).isDark;
     Widget orb(Color c, double size) => Container(
           width: size,
           height: size,
@@ -1106,7 +1122,7 @@ class _CursorGlow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = KivoraColors.of(context).isDark;
+    final dark = RaayColors.of(context).isDark;
     return IgnorePointer(
       child: ExcludeSemantics(
         child: ValueListenableBuilder<Offset?>(

@@ -4,13 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../../../core/utils/error_utils.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/inline_error_banner.dart';
-import '../../../core/widgets/ui_kit/kivora_button.dart';
-import '../../../core/widgets/ui_kit/kivora_text_field.dart';
-import 'package:kivora/core/theme/kivora_icons.dart';
+import '../../../core/widgets/ui_kit/raay_button.dart';
+import '../../../core/widgets/ui_kit/raay_text_field.dart';
+import 'package:raay/core/theme/raay_icons.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../services/auth_service.dart';
 import 'widgets/auth_split_layout.dart';
@@ -101,7 +101,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.check_circle,
-                    color: KivoraColors.of(context).successText, size: 64),
+                    color: RaayColors.of(context).successText, size: 64),
                 const SizedBox(height: 24),
                 Text(
                   AppLocalizations.of(context).rgDoneTitle,
@@ -138,7 +138,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     }
 
     final isMobile = ResponsiveLayout.isCompact(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
 
     return AuthSplitLayout(
@@ -203,7 +203,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           children: [
                             LayoutBuilder(
                               builder: (context, constraints) {
-                                final firstName = KivoraTextField(
+                                final firstName = RaayTextField(
                                   label:
                                       AppLocalizations.of(context).rgFirstLabel,
                                   controller: _firstNameController,
@@ -213,13 +213,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                   ],
                                   hint:
                                       AppLocalizations.of(context).rgFirstHint,
-                                  prefixIcon: KivoraIcons.user,
+                                  prefixIcon: RaayIcons.user,
                                   validator: (v) => Validators.required(
                                       v,
                                       AppLocalizations.of(context)
                                           .rgFirstField),
                                 );
-                                final lastName = KivoraTextField(
+                                final lastName = RaayTextField(
                                   label:
                                       AppLocalizations.of(context).rgLastLabel,
                                   controller: _lastNameController,
@@ -228,7 +228,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                     AutofillHints.familyName
                                   ],
                                   hint: AppLocalizations.of(context).rgLastHint,
-                                  prefixIcon: KivoraIcons.user,
+                                  prefixIcon: RaayIcons.user,
                                   validator: (v) => Validators.required(v,
                                       AppLocalizations.of(context).rgLastField),
                                 );
@@ -247,30 +247,30 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               },
                             ),
                             const SizedBox(height: 16),
-                            KivoraTextField(
+                            RaayTextField(
                               label: AppLocalizations.of(context).rgEmailLabel,
                               controller: _emailController,
                               textInputAction: TextInputAction.next,
                               autofillHints: const [AutofillHints.email],
                               hint: AppLocalizations.of(context).rgEmailHint,
-                              prefixIcon: KivoraIcons.mail,
+                              prefixIcon: RaayIcons.mail,
                               keyboardType: TextInputType.emailAddress,
                               validator: Validators.email,
                             ),
                             const SizedBox(height: 16),
-                            KivoraTextField(
+                            RaayTextField(
                               label: AppLocalizations.of(context).rgPassword,
                               controller: _passwordController,
                               obscureText: _obscurePassword,
                               textInputAction: TextInputAction.next,
                               autofillHints: const [AutofillHints.newPassword],
                               hint: '••••••••',
-                              prefixIcon: KivoraIcons.lock,
+                              prefixIcon: RaayIcons.lock,
                               suffixIcon: IconButton(
                                 icon: Icon(
                                     _obscurePassword
-                                        ? KivoraIcons.eyeOff
-                                        : KivoraIcons.eye,
+                                        ? RaayIcons.eyeOff
+                                        : RaayIcons.eye,
                                     size: 20),
                                 tooltip: _obscurePassword
                                     ? AppLocalizations.of(context)
@@ -283,7 +283,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               validator: Validators.password,
                             ),
                             const SizedBox(height: 16),
-                            KivoraTextField(
+                            RaayTextField(
                               label: AppLocalizations.of(context).rgConfirm,
                               controller: _confirmPasswordController,
                               obscureText: _obscureConfirmPassword,
@@ -291,12 +291,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               onFieldSubmitted: (_) => _submit(),
                               autofillHints: const [AutofillHints.newPassword],
                               hint: '••••••••',
-                              prefixIcon: KivoraIcons.lock,
+                              prefixIcon: RaayIcons.lock,
                               suffixIcon: IconButton(
                                 icon: Icon(
                                     _obscureConfirmPassword
-                                        ? KivoraIcons.eyeOff
-                                        : KivoraIcons.eye,
+                                        ? RaayIcons.eyeOff
+                                        : RaayIcons.eye,
                                     size: 20),
                                 tooltip: _obscureConfirmPassword
                                     ? AppLocalizations.of(context)
@@ -318,10 +318,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         InlineErrorBanner(message: _error!),
                       ],
                       SizedBox(height: isMobile ? 20 : 28),
-                      KivoraButton(
+                      RaayButton(
                         onPressed: _submit,
                         isLoading: _isLoading,
-                        icon: KivoraIcons.userPlus,
+                        icon: RaayIcons.userPlus,
                         label: l10n.authCreateAccount,
                       ),
                       SizedBox(height: isMobile ? 20 : 28),

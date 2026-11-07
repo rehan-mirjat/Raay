@@ -166,7 +166,7 @@ class AuthService {
         case 'web-context-canceled':
           return;
         case 'credential-already-in-use':
-          throw Exception('This Google account is already linked to a different Kivora account.');
+          throw Exception('This Google account is already linked to a different Raay account.');
         case 'provider-already-linked':
           throw Exception('Your account is already linked to Google.');
         default:

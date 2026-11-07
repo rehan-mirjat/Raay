@@ -6,7 +6,7 @@ def create_report():
     doc = docx.Document()
     
     # Title
-    title = doc.add_heading('Kivora Audit Verification Matrix', 0)
+    title = doc.add_heading('raay Audit Verification Matrix', 0)
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     doc.add_paragraph('Focused Read-Only Verification of Unresolved Issues\n').alignment = WD_ALIGN_PARAGRAPH.CENTER
     
@@ -30,7 +30,7 @@ def create_report():
         ("RTE-1", "lib/core/router/app_router.dart", "Route mapping comparison", "All 31 screens from the reference map cleanly to the GoRouter configuration (e.g., /orgs, /admin/events, /elections/:eventId/results).", "Verified", "None", "None."),
         ("RTE-2", "lib/core/router/app_router.dart", "Route mapping comparison", "No route exists for the public Receipt Verifier or Election Templates.", "Unverified", "Medium", "Add routes during Phase 2 (Enterprise Expansion)."),
         ("UX-1", "lib/core/presentation/app_navigation_shell.dart", "Static layout tree analysis", "Uses Theme.of(context).brightness successfully. Navigation shell uses Row/Column combinations accurately switching between Desktop Sidebar and Mobile Bottom Nav.", "Verified", "None", "None."),
-        ("UX-2", "lib/features/organizations/presentation/organization_dashboard_screen.dart", "Static layout tree analysis", "Still utilizing old generic Material 3 ListViews rather than the new Premium Grid layout.", "Unverified", "High", "Must refactor Dashboard screens before release using KivoraCard/KivoraMetricCard."),
+        ("UX-2", "lib/features/organizations/presentation/organization_dashboard_screen.dart", "Static layout tree analysis", "Still utilizing old generic Material 3 ListViews rather than the new Premium Grid layout.", "Unverified", "High", "Must refactor Dashboard screens before release using raayCard/raayMetricCard."),
         ("EDG-1", "lib/features/organizations/presentation/providers/organization_providers.dart", "Inspection of memberInvitationsProvider", "Uses Stream.periodic(Duration(seconds: 45)) instead of Firestore real-time .snapshots().", "Unverified", "Low", "Refactor to use .snapshots() for instant delivery and lower bandwidth."),
         ("EDG-2", "lib/features/organizations/presentation/providers/organization_providers.dart", "Inspection of activeOrganizationContextProvider", "If membership is revoked mid-session, state resolves to null (empty context). It does not gracefully redirect.", "Unverified", "Low", "Implement auto-redirect to '/home' or alternate organization if context drops.")
     ]
@@ -45,7 +45,7 @@ def create_report():
         row[5].text = sev
         row[6].text = rec
 
-    doc.save('artifacts/Kivora_Verification_Matrix.docx')
+    doc.save('artifacts/raay_Verification_Matrix.docx')
     print("Matrix generated.")
 
 if __name__ == "__main__":

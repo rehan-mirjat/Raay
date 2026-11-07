@@ -1,6 +1,10 @@
-# Kivora UI/UX Specification: "Clear & Confident"
+# raay UI/UX Specification: "Clear & Confident"
 
-Status: **design specification + implementation plan**, written before screen changes.
+Status: **historical design specification; verify current source before implementation.**
+The file predates the current Raay theme and several later screen changes. The live
+theme source is `lib/core/theme/app_theme.dart`; the values in section 2 are updated
+to match the current Raay palette. Do not use the older workflow notes below as proof
+that a screen or behavior is still missing.
 The wireframes below are ASCII layout intent, **not rendered mockups of the running app**.
 Nothing in this document claims a live visual audit of authenticated screens (see
 "Verification limits").
@@ -27,25 +31,25 @@ Nothing in this document claims a live visual audit of authenticated screens (se
 * Urdu/Arabic/Sindhi font glyph coverage (to be checked with a rendered test, section 8).
 * Whether the previous glass pass hurts readability. The spec replaces it; no measurement was made.
 
-### 1.3 Palette history (navy + teal, 2026-10-26)
-The violet `#6D4AFF` palette was replaced by **deep navy + restrained teal** (approved mock-ups in
-`docs/design/mockups-navy-teal.html`). Every pair below was checked with `python3 docs/design/contrast_check.py`
-(text pairs >= 4.5:1, input borders >= 3:1). Re-run it after any token change.
+### 1.3 Current palette (Raay violet, verified 2026-11-01)
+The app currently uses violet primary controls and context-aware violet text accents.
+Run `python3 docs/design/contrast_check.py` after changing these tokens. The checker
+uses current theme values; it is a token-pair check, not a full accessibility audit.
 
-## 2. Tokens (single source: `lib/core/theme/app_tokens.dart`, consumed by `AppTheme`/`KivoraColors`)
+## 2. Tokens (source: `lib/core/theme/app_theme.dart`, consumed by `RaayColors`)
 
 | Token | Light | Dark |
 |-------|-------|------|
-| background | `#F4F6F8` | `#0B1520` |
-| surface | `#FFFFFF` | `#111F2E` |
-| surfaceElevated | `#FFFFFF` | `#172B3F` |
-| textPrimary | `#17212F` | `#F1F5F9` |
-| textSecondary | `#526174` | `#A9B8C9` |
-| border | `#DCE2E8` | `#2A3E54` |
-| primary (filled controls) | `#0F766E` (white label 5.47:1) | `#0F766E` (white label 5.47:1) |
-| primaryPressed | `#0B5F58` | `#0B5F58` |
-| accentText (links, selected text, focus ring) | `#0B5F58` | `#5EEAD4` |
-| sidebar | deep navy gradient `#162B3E` to `#0F1D2B` in both themes | same |
+| background | `#F7F8FC` | `#0F1420` |
+| surface | `#FFFFFF` | `#171F2E` |
+| surfaceElevated | `#FFFFFF` | `#202B3D` |
+| textPrimary | `#172033` | `#F4F6FB` |
+| textSecondary | `#526078` | `#B0BCD0` |
+| border | `#E2E7F0` | `#354158` |
+| primary (filled controls) | `#6D4AFF` (white label 5.15:1) | `#6D4AFF` (white label 5.15:1) |
+| primaryPressed | `#5936DB` | `#5936DB` |
+| accentText (links, selected text, focus ring) | `#5936DB` | `#B8A8FF` |
+| sidebar | see `AppTheme` and current navigation shell | same |
 | selectedFill | primary at 10% over surface | primary at 16% over surface |
 | success / warning / error / info | `#0F7A4F` / `#8A5A00` / `#B42318` / `#0B5CAD` | `#4ADE9A` / `#F5B94A` / `#FF8A80` / `#7DB8FF` |
 
@@ -55,7 +59,7 @@ by contrast so a light brand color gets a dark label. High contrast mode raises 
 
 * Spacing: 4, 8, 12, 16, 24, 32, 48. Card radius 16, controls 12, chips 10.
 * Type: body 14-16, secondary at least 13, page heading 24-32 (clamped by text scale), min touch target 48x48.
-* Surfaces are solid with a border and a soft two-layer shadow (`AppTheme.cardShadow`); overlays use stronger elevation. Workspace pages open with a `HeroBanner` (navy to teal) carrying the greeting or organization name and one or two real actions.
+* Surfaces are solid with a border and a soft shadow (`AppTheme.cardShadow`); overlays use stronger elevation. Use shared page composition as it is introduced; do not assume every workspace currently has a `HeroBanner`.
 * No global gradient/orbs/blur. Gradients allowed only in landing/auth branding panels.
 * Motion: every custom animation checks `MediaQuery.disableAnimations` (the app's reduced-motion setting already sets it).
 
@@ -92,7 +96,7 @@ voters to `/home`. `/orgs/members`, `/orgs/departments`, `/orgs/audit`, `/calend
 
 **Voter home (compact):**
 ```
-[ Kivora ]  [Org v]        [bell][acct]
+[ raay ]  [Org v]        [bell][acct]
 My elections                 <- title + one line of context
 [search_____________] [filter v]
 READY TO VOTE
@@ -182,3 +186,6 @@ provider overrides and clearly-labelled fixtures, **not** by screenshots of live
 
 ### Landing page (redesign, 2026-10-23)
 Glass nav, scroll reveals (off with reduced motion), verified-only copy in `landing_content.dart`. Hero ballot is a labelled, inert illustration. Joining needs an account, so the hero's join link opens registration (the join screen `/orgs/join` is behind sign-in). Checked in widget tests at 360-1440px and 200% text, light and dark, plus rendered screenshots (test renderer, Noto Sans stand-in for Plus Jakarta Sans). Not checked in a real browser: headless Chromium renders Flutter web blank here.
+
+### Current follow-up (2026-10-27)
+This note supersedes any older status above where they conflict. Profile Storage writes now accept only the app's fixed `avatar.jpg/png/webp` object names. Platform health probes Cloud Functions, Firestore, and the configured Firebase Storage bucket; email/push delivery and client devices remain explicitly unmonitored. Platform admins can assign a user report to themselves, resolve it, or reopen it through an audited callable; report replies and email delivery are not implemented. Eligibility CSV imports support pasted data and selected `.csv` files, respecting quoted fields and an Email header. The Members screen can create up to 25 invitations per CSV batch and exposes one-time links for manual sharing; it does not send email. Event setup templates can now be shared within an organization through a role-checked callable, with a 20-template cap and no voter/date fields; older device-local templates remain accessible as legacy entries. Organization reports provide aggregate activity/turnout only, suppressing per-event turnout below 10 eligible voters. Ownership transfer is now a transaction protected by recent authentication and TOTP MFA; the former owner becomes an admin and the change is audited. Organization status parsing now includes archived workspaces. Phone verification, configured email/push delivery, cryptographic end-to-end verifiability, external scale testing and real-device accessibility QA remain unimplemented or unverified. Result publication enforces enrolled TOTP MFA. Validation for this change: TypeScript build passed and all 85 Cloud Functions tests passed. Dart analysis reported no issues in changed files, but the process exits after an attempted write to the host's read-only telemetry directory; Flutter widget tests and Firestore emulator tests could not start because the sandbox denies SDK cache writes and loopback port binding, respectively.

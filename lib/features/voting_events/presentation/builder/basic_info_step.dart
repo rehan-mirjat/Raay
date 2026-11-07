@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/theme/kivora_colors.dart';
+import '../../../../core/theme/raay_colors.dart';
 import '../../../../core/layout/responsive.dart';
 import '../../domain/voting_event.dart';
+import '../../domain/event_template_store.dart';
 import '../providers/draft_event_provider.dart';
 
 class BasicInfoStep extends ConsumerStatefulWidget {
@@ -75,92 +76,231 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
     _syncDraft();
   }
 
-  void _showTemplateSelector(BuildContext context) {
+  Future<void> _saveCurrentTemplate() async {
+    final nameController = TextEditingController();
+    final name = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(AppLocalizations.of(dialogContext).tplSaveTitle),
+        content: TextField(
+          controller: nameController,
+          autofocus: true,
+          maxLength: 48,
+          decoration: InputDecoration(
+              labelText: AppLocalizations.of(dialogContext).tplNameLabel),
+          onSubmitted: (value) => Navigator.pop(dialogContext, value.trim()),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child:
+                Text(MaterialLocalizations.of(dialogContext).cancelButtonLabel),
+          ),
+          FilledButton(
+            onPressed: () =>
+                Navigator.pop(dialogContext, nameController.text.trim()),
+            child: Text(AppLocalizations.of(dialogContext).tplSave),
+          ),
+        ],
+      ),
+    );
+    nameController.dispose();
+    if (name == null || name.isEmpty || !mounted) return;
+    try {
+      await CloudEventTemplateStore.save(
+        organizationId: widget.orgId,
+        name: name,
+        title: _titleCtrl.text,
+        description: _descCtrl.text,
+        votingType: _type,
+        privacyMode: _privacyMode,
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context).tplShared)),
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context).tplSaveFailed)),
+        );
+      }
+    }
+  }
+
+  Future<void> _showTemplateSelector() async {
+    final l10n = AppLocalizations.of(context);
+    final savedTemplates = await EventTemplateStore.load(widget.orgId);
+    List<EventTemplate> sharedTemplates = const [];
+    String? sharedLoadError;
+    try {
+      sharedTemplates = await CloudEventTemplateStore.load(widget.orgId);
+    } catch (_) {
+      sharedLoadError = l10n.tplLoadSharedFailed;
+    }
+    if (!mounted) return;
     showDialog(
       context: context,
       builder: (context) => Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 500),
+          constraints: BoxConstraints(
+            maxWidth: 500,
+            maxHeight: MediaQuery.sizeOf(context).height * 0.82,
+          ),
           child: Padding(
             padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      AppLocalizations.of(context).biTemplateTitle,
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context).biTemplateTitle,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      IconButton(
+                        tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    AppLocalizations.of(context).biTemplateBody,
+                    style: TextStyle(
+                        fontSize: 13,
+                        color: RaayColors.textSecondaryOf(context)),
+                  ),
+                  const SizedBox(height: 20),
+                  if (sharedLoadError != null) ...[
+                    Text(sharedLoadError,
+                        style: TextStyle(
+                            color: RaayColors.of(context).errorText)),
+                    const SizedBox(height: 8),
                   ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  AppLocalizations.of(context).biTemplateBody,
-                  style: TextStyle(
-                      fontSize: 13,
-                      color: KivoraColors.textSecondaryOf(context)),
-                ),
-                const SizedBox(height: 20),
-                ListTile(
-                  leading: Icon(Icons.stars_rounded,
-                      color: KivoraColors.of(context).accentText),
-                  title: Text(AppLocalizations.of(context).biT1Name,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text(AppLocalizations.of(context).biT1Sub),
-                  onTap: () {
-                    _applyTemplate(
-                      AppLocalizations.of(context).biT1Title,
-                      AppLocalizations.of(context).biT1Desc,
-                      VotingType.candidateElection,
-                      PrivacyMode.anonymous,
-                    );
-                    Navigator.pop(context);
-                  },
-                ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.gavel_rounded,
-                      color: AppTheme.accentTeal),
-                  title: Text(AppLocalizations.of(context).biT2Name,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text(AppLocalizations.of(context).biT2Sub),
-                  onTap: () {
-                    _applyTemplate(
-                      AppLocalizations.of(context).biT2Title,
-                      AppLocalizations.of(context).biT2Desc,
-                      VotingType.yesNoPoll,
-                      PrivacyMode.anonymous,
-                    );
-                    Navigator.pop(context);
-                  },
-                ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.poll_rounded,
-                      color: AppTheme.accentGold),
-                  title: Text(AppLocalizations.of(context).biT3Name,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text(AppLocalizations.of(context).biT3Sub),
-                  onTap: () {
-                    _applyTemplate(
-                      AppLocalizations.of(context).biT3Title,
-                      AppLocalizations.of(context).biT3Desc,
-                      VotingType.singleChoicePoll,
-                      PrivacyMode.identifiable,
-                    );
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+                  ListTile(
+                    leading: Icon(Icons.stars_rounded,
+                        color: RaayColors.of(context).accentText),
+                    title: Text(AppLocalizations.of(context).biT1Name,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Text(AppLocalizations.of(context).biT1Sub),
+                    onTap: () {
+                      _applyTemplate(
+                        AppLocalizations.of(context).biT1Title,
+                        AppLocalizations.of(context).biT1Desc,
+                        VotingType.candidateElection,
+                        PrivacyMode.anonymous,
+                      );
+                      Navigator.pop(context);
+                    },
+                  ),
+                  const Divider(),
+                  ListTile(
+                    leading: const Icon(Icons.gavel_rounded,
+                        color: AppTheme.accentTeal),
+                    title: Text(AppLocalizations.of(context).biT2Name,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Text(AppLocalizations.of(context).biT2Sub),
+                    onTap: () {
+                      _applyTemplate(
+                        AppLocalizations.of(context).biT2Title,
+                        AppLocalizations.of(context).biT2Desc,
+                        VotingType.yesNoPoll,
+                        PrivacyMode.anonymous,
+                      );
+                      Navigator.pop(context);
+                    },
+                  ),
+                  const Divider(),
+                  ListTile(
+                    leading: const Icon(Icons.poll_rounded,
+                        color: AppTheme.accentGold),
+                    title: Text(AppLocalizations.of(context).biT3Name,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Text(AppLocalizations.of(context).biT3Sub),
+                    onTap: () {
+                      _applyTemplate(
+                        AppLocalizations.of(context).biT3Title,
+                        AppLocalizations.of(context).biT3Desc,
+                        VotingType.singleChoicePoll,
+                        PrivacyMode.identifiable,
+                      );
+                      Navigator.pop(context);
+                    },
+                  ),
+                  if (savedTemplates.isNotEmpty) ...[
+                    const Divider(height: 24),
+                    Text(AppLocalizations.of(context).tplLegacyHeading,
+                        style: const TextStyle(fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 4),
+                    ...savedTemplates.map((template) => ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: const Icon(Icons.bookmark_outline_rounded),
+                          title: Text(template.name),
+                          subtitle: Text(template.title),
+                          onTap: () {
+                            _applyTemplate(template.title, template.description,
+                                template.votingType, template.privacyMode);
+                            Navigator.pop(context);
+                          },
+                          trailing: IconButton(
+                            tooltip: AppLocalizations.of(context).tplDelete,
+                            icon: const Icon(Icons.delete_outline_rounded),
+                            onPressed: () async {
+                              await EventTemplateStore.delete(
+                                  widget.orgId, template.id);
+                              if (context.mounted) Navigator.pop(context);
+                              if (mounted) _showTemplateSelector();
+                            },
+                          ),
+                        )),
+                  ],
+                  if (sharedTemplates.isNotEmpty) ...[
+                    const Divider(height: 24),
+                    Text(AppLocalizations.of(context).tplSharedHeading,
+                        style: const TextStyle(fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 4),
+                    ...sharedTemplates.map((template) => ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: const Icon(Icons.groups_2_outlined),
+                          title: Text(template.name),
+                          subtitle: Text(template.title),
+                          onTap: () {
+                            _applyTemplate(template.title, template.description,
+                                template.votingType, template.privacyMode);
+                            Navigator.pop(context);
+                          },
+                          trailing: IconButton(
+                            tooltip: AppLocalizations.of(context).tplDeleteShared,
+                            icon: const Icon(Icons.delete_outline_rounded),
+                            onPressed: () async {
+                              try {
+                                await CloudEventTemplateStore.delete(
+                                    widget.orgId, template.id);
+                                if (context.mounted) Navigator.pop(context);
+                                if (mounted) _showTemplateSelector();
+                              } catch (_) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(AppLocalizations.of(context)
+                                            .tplDeleteSharedFailed)),
+                                  );
+                                }
+                              }
+                            },
+                          ),
+                        )),
+                  ],
+                ],
+              ),
             ),
           ),
         ),
@@ -172,7 +312,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
   Widget build(BuildContext context) {
     final isDraft = ref.watch(draftEventProvider(widget.orgId)).status ==
         VotingEventStatus.draft;
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final compact = ResponsiveLayout.isCompact(context);
 
     return Form(
@@ -185,9 +325,9 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
             child: Container(
               padding: EdgeInsets.all(compact ? 16 : 24),
               decoration: BoxDecoration(
-                color: KivoraColors.surfaceOf(context),
+                color: RaayColors.surfaceOf(context),
                 borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-                border: Border.all(color: KivoraColors.borderOf(context)),
+                border: Border.all(color: RaayColors.borderOf(context)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,9 +336,9 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: KivoraColors.surfaceOf(context),
+                        color: RaayColors.surfaceOf(context),
                         border:
-                            Border.all(color: KivoraColors.borderOf(context)),
+                            Border.all(color: RaayColors.borderOf(context)),
                         borderRadius:
                             BorderRadius.circular(AppTheme.radiusInput),
                       ),
@@ -206,13 +346,13 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                         children: [
                           Icon(Icons.lock_outline_rounded,
                               size: 16,
-                              color: KivoraColors.textSecondaryOf(context)),
+                              color: RaayColors.textSecondaryOf(context)),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               AppLocalizations.of(context).biLocked,
                               style: TextStyle(
-                                  color: KivoraColors.textSecondaryOf(context),
+                                  color: RaayColors.textSecondaryOf(context),
                                   fontSize: 13),
                             ),
                           ),
@@ -251,15 +391,25 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                         ),
                       ),
                       if (isDraft)
-                        TextButton.icon(
-                          style: TextButton.styleFrom(
-                              minimumSize: const Size(48, 48)),
-                          onPressed: () => _showTemplateSelector(context),
-                          icon:
-                              const Icon(Icons.auto_awesome_rounded, size: 18),
-                          label:
-                              Text(AppLocalizations.of(context).biUseTemplate),
-                        ),
+                        Wrap(spacing: 4, runSpacing: 4, children: [
+                          TextButton.icon(
+                            style: TextButton.styleFrom(
+                                minimumSize: const Size(48, 48)),
+                            onPressed: _showTemplateSelector,
+                            icon: const Icon(Icons.auto_awesome_rounded,
+                                size: 18),
+                            label: Text(
+                                AppLocalizations.of(context).biUseTemplate),
+                          ),
+                          TextButton.icon(
+                            style: TextButton.styleFrom(
+                                minimumSize: const Size(48, 48)),
+                            onPressed: _saveCurrentTemplate,
+                            icon: const Icon(Icons.bookmark_add_outlined,
+                                size: 18),
+                            label: Text(AppLocalizations.of(context).tplSaveSetup),
+                          ),
+                        ]),
                     ],
                   ),
                   const SizedBox(height: 28),
@@ -274,14 +424,14 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
-                          color: KivoraColors.textPrimaryOf(context),
+                          color: RaayColors.textPrimaryOf(context),
                         ),
                       )),
                       Text(
                         '${_titleCtrl.text.length}/100',
                         style: TextStyle(
                             fontSize: 12,
-                            color: KivoraColors.textSecondaryOf(context)),
+                            color: RaayColors.textSecondaryOf(context)),
                       ),
                     ],
                   ),
@@ -315,14 +465,14 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
-                          color: KivoraColors.textPrimaryOf(context),
+                          color: RaayColors.textPrimaryOf(context),
                         ),
                       )),
                       Text(
                         '${_descCtrl.text.length}/500',
                         style: TextStyle(
                             fontSize: 12,
-                            color: KivoraColors.textSecondaryOf(context)),
+                            color: RaayColors.textSecondaryOf(context)),
                       ),
                     ],
                   ),
@@ -354,7 +504,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: KivoraColors.textPrimaryOf(context),
+                      color: RaayColors.textPrimaryOf(context),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -402,12 +552,22 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                   const SizedBox(height: 24),
 
                   // Ballot Privacy Dropdown
+                  if (_type == VotingType.candidateElection) Material(
+                    type: MaterialType.transparency,
+                    child: SwitchListTile.adaptive(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(AppLocalizations.of(context).mcMode),
+                    subtitle: Text(AppLocalizations.of(context).mcPolicy),
+                    value: ref.watch(draftEventProvider(widget.orgId)).multiContest,
+                    onChanged: !isDraft || ref.watch(draftEventProvider(widget.orgId)).serverEventId != null ? null
+                        : (value) => ref.read(draftEventProvider(widget.orgId).notifier).setMultiContest(value),
+                  )),
                   Text(
                     AppLocalizations.of(context).biPrivacy,
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: KivoraColors.textPrimaryOf(context),
+                      color: RaayColors.textPrimaryOf(context),
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -444,7 +604,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                         : AppLocalizations.of(context).biIdentifiableNote,
                     style: TextStyle(
                         fontSize: 14,
-                        color: KivoraColors.textSecondaryOf(context)),
+                        color: RaayColors.textSecondaryOf(context)),
                   ),
 
                   const SizedBox(height: 32),
@@ -515,12 +675,12 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
           decoration: BoxDecoration(
             color: isSelected
                 ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.10)
-                : KivoraColors.surfaceOf(context),
+                : RaayColors.surfaceOf(context),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isSelected
                   ? Theme.of(context).colorScheme.primary
-                  : KivoraColors.borderOf(context),
+                  : RaayColors.borderOf(context),
               width: isSelected ? 2.0 : 1.0,
             ),
           ),
@@ -532,8 +692,8 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                     ? Icons.radio_button_checked_rounded
                     : Icons.radio_button_unchecked_rounded,
                 color: isSelected
-                    ? KivoraColors.of(context).accentText
-                    : KivoraColors.textSecondaryOf(context),
+                    ? RaayColors.of(context).accentText
+                    : RaayColors.textSecondaryOf(context),
                 size: 20,
               ),
               const SizedBox(width: 10),
@@ -545,7 +705,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                       children: [
                         Icon(icon,
                             size: 16,
-                            color: KivoraColors.of(context).accentText),
+                            color: RaayColors.of(context).accentText),
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
@@ -554,8 +714,8 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
                               color: isSelected
-                                  ? KivoraColors.of(context).accentText
-                                  : KivoraColors.textPrimaryOf(context),
+                                  ? RaayColors.of(context).accentText
+                                  : RaayColors.textPrimaryOf(context),
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -568,7 +728,7 @@ class _BasicInfoStepState extends ConsumerState<BasicInfoStep> {
                       subtitle,
                       style: TextStyle(
                           fontSize: 13,
-                          color: KivoraColors.textSecondaryOf(context),
+                          color: RaayColors.textSecondaryOf(context),
                           height: 1.3),
                     ),
                   ],

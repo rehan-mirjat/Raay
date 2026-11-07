@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-/// Represents the Global Kivora Account.
+/// Represents the Global raay Account.
 /// This model specifically excludes any organization roles or permissions,
 /// as those are tenant-specific and belong in [OrganizationMember].
 class AppUser {

@@ -4,7 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../services/auth_service.dart';
 import '../utils/friendly_error.dart';
-import '../theme/kivora_colors.dart';
+import 'totp_challenge_dialog.dart';
+import '../theme/raay_colors.dart';
 
 /// Shows a dialog to re-prove identity (password re-entry, or a fresh Google
 /// sign-in) and returns true once the server would accept a fresh
@@ -39,9 +40,23 @@ Future<bool> showReauthDialog(
             dialogError = null;
           });
           try {
-            await authService.reauthenticate(
-              password: isGoogleUser ? null : passwordController.text,
-            );
+            try {
+              await authService.reauthenticate(
+                password: isGoogleUser ? null : passwordController.text,
+              );
+            } on MfaRequiredException catch (mfa) {
+              // Accounts with a TOTP second factor must pass the challenge
+              // too, otherwise re-auth can never succeed for them.
+              if (!dialogContext.mounted) return;
+              final credential =
+                  await showTotpChallengeDialog(dialogContext, mfa.resolver);
+              if (!dialogContext.mounted) return;
+              if (credential == null) {
+                setDialogState(() => isVerifying = false);
+                return;
+              }
+              await credential.user?.getIdToken(true);
+            }
             if (dialogContext.mounted) Navigator.of(dialogContext).pop(true);
           } catch (e) {
             if (!dialogContext.mounted) return;
@@ -85,7 +100,7 @@ Future<bool> showReauthDialog(
                     const SizedBox(height: 8),
                     Text(dialogError!,
                         style: TextStyle(
-                            color: KivoraColors.of(context).errorText)),
+                            color: RaayColors.of(context).errorText)),
                   ],
                 ],
               ),

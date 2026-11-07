@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/theme/kivora_colors.dart';
+import '../../../../core/theme/raay_colors.dart';
 import '../../../../core/widgets/status_badge.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/voting_event.dart';
@@ -22,7 +22,7 @@ class EventCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
 
     return Material(
@@ -48,7 +48,7 @@ class EventCard extends ConsumerWidget {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kc.textPrimary),
               ),
               const SizedBox(height: 4),
-              Text(_typeLabel(l10n, event.votingType),
+              Text(event.isMultiContest ? l10n.mcMode : _typeLabel(l10n, event.votingType),
                   style: TextStyle(fontSize: 14, color: kc.textSecondary)),
               const SizedBox(height: 12),
               Wrap(spacing: 8, runSpacing: 8, children: [
@@ -88,7 +88,7 @@ class EventCard extends ConsumerWidget {
         VotingType.yesNoPoll => l10n.adminTypeYesNo,
       };
 
-  Widget _actions(BuildContext context, WidgetRef ref, AppLocalizations l10n, KivoraColors kc) {
+  Widget _actions(BuildContext context, WidgetRef ref, AppLocalizations l10n, RaayColors kc) {
     Widget filled(String label, String path) => FilledButton(
           style: FilledButton.styleFrom(minimumSize: _minSize),
           onPressed: () => context.go(path),
@@ -160,7 +160,7 @@ class EventCard extends ConsumerWidget {
           ),
           TextButton(
             style: TextButton.styleFrom(
-                minimumSize: _minSize, foregroundColor: KivoraColors.of(ctx).errorText),
+                minimumSize: _minSize, foregroundColor: RaayColors.of(ctx).errorText),
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(confirmLabel),
           ),

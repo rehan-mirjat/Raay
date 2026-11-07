@@ -37,12 +37,16 @@ class VotingRepository {
     required String eventId,
     String? candidateId,
     String? pollOptionId,
+    Map<String, String>? contestSelections,
+    bool abstain = false,
   }) async {
     final callable = _firebase.functions.httpsCallable('castVote');
     
     final payload = <String, dynamic>{
       'organizationId': organizationId,
       'eventId': eventId,
+      if (abstain) 'abstain': true,
+      if (contestSelections != null) 'contestSelections': contestSelections,
     };
     
     if (candidateId != null && candidateId.isNotEmpty) {

@@ -62,7 +62,8 @@ const kPlans = <PlanInfo>[
 /// Mirrors resolvePlanId() on the server.
 PlanId effectivePlan(Organization org) {
   final paid = org.plan == 'pro' || org.plan == 'enterprise';
-  final entitled = const {'active', 'trialing', 'past_due'}.contains(org.planStatus);
+  final entitled =
+      const {'active', 'trialing', 'past_due'}.contains(org.planStatus);
   final notExpired =
       org.planExpiresAt == null || org.planExpiresAt!.isAfter(DateTime.now());
   if (paid && entitled && notExpired) {

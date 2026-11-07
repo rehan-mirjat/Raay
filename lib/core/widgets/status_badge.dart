@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../../l10n/app_localizations.dart';
-import '../theme/kivora_colors.dart';
+import '../theme/raay_colors.dart';
 
 enum BadgeType { status, privacy, role }
 
-/// Semantic tone. Colors are resolved at build time from [KivoraColors] so each
+/// Semantic tone. Colors are resolved at build time from [RaayColors] so each
 /// tone meets contrast in both light and dark mode (see docs/design/contrast_check.py).
 enum BadgeTone { success, accent, neutral, error, warning, identifiable }
 
@@ -140,7 +140,7 @@ class StatusBadge extends StatelessWidget {
     }
   }
 
-  static Color _toneColor(BadgeTone tone, KivoraColors kc) {
+  static Color _toneColor(BadgeTone tone, RaayColors kc) {
     switch (tone) {
       case BadgeTone.success:
         return kc.successText;
@@ -159,7 +159,7 @@ class StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final fg = textColor ?? _toneColor(tone!, kc);
     // Falls back to the English label when no localizations are mounted.
     final l10n = Localizations.of<AppLocalizations>(context, AppLocalizations);

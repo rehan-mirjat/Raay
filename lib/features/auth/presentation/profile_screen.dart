@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/layout/responsive.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
-import '../../../core/theme/kivora_icons.dart';
+import '../../../core/theme/raay_colors.dart';
+import '../../../core/theme/raay_icons.dart';
 import '../../../core/theme/accessibility_providers.dart';
 import '../../../core/theme/locale_provider.dart';
 import '../../../core/theme/theme_provider.dart';
@@ -15,9 +16,10 @@ import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../core/widgets/totp_enroll_dialog.dart';
-import '../../../core/widgets/ui_kit/kivora_button.dart';
-import '../../../core/widgets/ui_kit/kivora_card.dart';
-import '../../../core/widgets/ui_kit/kivora_text_field.dart';
+import '../../../core/widgets/reauth_dialog.dart';
+import '../../../core/widgets/ui_kit/raay_button.dart';
+import '../../../core/widgets/ui_kit/raay_card.dart';
+import '../../../core/widgets/ui_kit/raay_text_field.dart';
 import '../../../services/auth_service.dart';
 import '../../../services/firebase_service.dart';
 import '../../../l10n/app_localizations.dart';
@@ -89,6 +91,54 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     if (_phoneController.text.isEmpty && user.phoneNumber != null) {
       _phoneController.text = user.phoneNumber!;
     }
+  }
+
+  Future<void> _deleteAccount() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Delete your Raay account?'),
+        content: const Text(
+          'This permanently removes your account and profile, organization memberships, participation history, receipts, notifications, support reports, nomination applications, and profile photo. You will be signed out. Ballots, frozen voter rosters, and administrative audit records may remain to preserve election integrity and organizational records.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton.tonal(
+            style: FilledButton.styleFrom(foregroundColor: Colors.red.shade700),
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Continue to delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    try {
+      final reauthenticated = await showReauthDialog(
+        context,
+        ref,
+        reason:
+            'Confirm your identity before permanently deleting your Raay account.',
+      );
+      if (!reauthenticated || !mounted) return;
+      await ref.read(authServiceProvider).deleteAccount();
+      if (!mounted) return;
+      widget.onSignOut?.call();
+      // Auth state routing will take the signed-out user to the public landing.
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(_friendly(error))),
+      );
+    }
+  }
+
+  Future<void> _openPrivacyPolicy() async {
+    final uri = Uri.parse('https://vote-d1ae4.web.app/privacy.html');
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
   Future<void> _pickAndUploadImage() async {
@@ -167,7 +217,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final userAsync = ref.watch(userProfileProvider(widget.uid));
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
 
     return Scaffold(
       backgroundColor: kc.background,
@@ -256,11 +306,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   static const _tabIcons = [
-    KivoraIcons.user,
-    KivoraIcons.lock,
-    KivoraIcons.bell,
-    KivoraIcons.settings,
-    KivoraIcons.link,
+    RaayIcons.user,
+    RaayIcons.lock,
+    RaayIcons.bell,
+    RaayIcons.settings,
+    RaayIcons.link,
   ];
 
   String _tabTitle(AppLocalizations l, int i) => switch (i) {
@@ -303,8 +353,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     required VoidCallback onTap,
   }) {
     final color = isSelected
-        ? KivoraColors.of(context).accentText
-        : KivoraColors.textPrimaryOf(context);
+        ? RaayColors.of(context).accentText
+        : RaayColors.textPrimaryOf(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -366,13 +416,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final dateFormat = DateFormat('MMMM d, yyyy');
 
     final sanitizedPhotoUrl = FirebaseService.sanitizeStorageUrl(photoUrl);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // Profile Avatar Header Card
-        KivoraCard(
+        RaayCard(
           padding: const EdgeInsets.all(24),
           child: Row(
             children: [
@@ -393,7 +443,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             style: TextStyle(
                               fontSize: 26,
                               fontWeight: FontWeight.bold,
-                              color: KivoraColors.of(context).accentText,
+                              color: RaayColors.of(context).accentText,
                             ),
                           )
                         : null,
@@ -514,14 +564,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
             child: Row(
               children: [
-                Icon(KivoraIcons.checkCircle,
-                    color: KivoraColors.of(context).successText, size: 20),
+                Icon(RaayIcons.checkCircle,
+                    color: RaayColors.of(context).successText, size: 20),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     _successMessage!,
                     style: TextStyle(
-                      color: KivoraColors.of(context).successText,
+                      color: RaayColors.of(context).successText,
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
                     ),
@@ -543,14 +593,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
             child: Row(
               children: [
-                Icon(KivoraIcons.alertCircle,
-                    color: KivoraColors.of(context).errorText, size: 20),
+                Icon(RaayIcons.alertCircle,
+                    color: RaayColors.of(context).errorText, size: 20),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     _error!,
                     style: TextStyle(
-                      color: KivoraColors.of(context).errorText,
+                      color: RaayColors.of(context).errorText,
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
                     ),
@@ -562,7 +612,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           const SizedBox(height: 16),
         ],
 
-        KivoraCard(
+        RaayCard(
           child: Form(
             key: _formKey,
             child: Column(
@@ -583,7 +633,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     if (isSmall) {
                       return Column(
                         children: [
-                          KivoraTextField(
+                          RaayTextField(
                             label: AppLocalizations.of(context).acctFirstName,
                             controller: _firstNameController,
                             validator: (v) => Validators.required(
@@ -592,7 +642,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                     .acctFirstNameField),
                           ),
                           const SizedBox(height: 16),
-                          KivoraTextField(
+                          RaayTextField(
                             label: AppLocalizations.of(context).acctLastName,
                             controller: _lastNameController,
                             validator: (v) => Validators.required(v,
@@ -604,7 +654,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     return Row(
                       children: [
                         Expanded(
-                          child: KivoraTextField(
+                          child: RaayTextField(
                             label: AppLocalizations.of(context).acctFirstName,
                             controller: _firstNameController,
                             validator: (v) => Validators.required(
@@ -615,7 +665,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ),
                         const SizedBox(width: 16),
                         Expanded(
-                          child: KivoraTextField(
+                          child: RaayTextField(
                             label: AppLocalizations.of(context).acctLastName,
                             controller: _lastNameController,
                             validator: (v) => Validators.required(v,
@@ -627,7 +677,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                KivoraTextField(
+                RaayTextField(
                   label: AppLocalizations.of(context).acctPhone,
                   controller: _phoneController,
                   hint: '+1 234 567 8900',
@@ -636,7 +686,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 const SizedBox(height: 32),
                 Align(
                   alignment: AlignmentDirectional.centerEnd,
-                  child: KivoraButton(
+                  child: RaayButton(
                     onPressed: _isSaving ? null : _saveProfile,
                     isLoading: _isSaving,
                     label: AppLocalizations.of(context).acctSaveChanges,
@@ -652,7 +702,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Widget _buildSecurityView(BuildContext context, AppUser user) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final isGoogleAuth = ref
         .watch(authServiceProvider)
         .currentUser
@@ -663,7 +713,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (isGoogleAuth == true) ...[
-          KivoraCard(
+          RaayCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -691,7 +741,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           const ChangePasswordSection(),
           const SizedBox(height: 16),
         ],
-        KivoraCard(
+        RaayCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -712,9 +762,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              KivoraButton(
-                type: KivoraButtonType.secondary,
-                icon: KivoraIcons.shieldCheck,
+              RaayButton(
+                type: RaayButtonType.secondary,
+                icon: RaayIcons.shieldCheck,
                 label: AppLocalizations.of(context).acctSetupAuth,
                 onPressed: () {
                   showTotpEnrollDialog(context, ref);
@@ -724,11 +774,46 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ],
           ),
         ),
+        const SizedBox(height: 16),
+        RaayCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Privacy and account',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: kc.textPrimary)),
+              const SizedBox(height: 6),
+              Text(
+                'Read how Raay handles account and election data, or permanently delete your account.',
+                style: TextStyle(fontSize: 14, color: kc.textSecondary),
+              ),
+              const SizedBox(height: 16),
+              Wrap(spacing: 12, runSpacing: 8, children: [
+                RaayButton(
+                  type: RaayButtonType.secondary,
+                  icon: RaayIcons.lock,
+                  label: AppLocalizations.of(context).privacyPolicyLabel,
+                  onPressed: _openPrivacyPolicy,
+                  isExpanded: false,
+                ),
+                RaayButton(
+                  type: RaayButtonType.destructive,
+                  icon: RaayIcons.trash2,
+                  label: AppLocalizations.of(context).deleteAccountLabel,
+                  onPressed: _deleteAccount,
+                  isExpanded: false,
+                ),
+              ]),
+            ],
+          ),
+        ),
         const SizedBox(height: 24),
-        KivoraButton(
-          type: KivoraButtonType.destructive,
+        RaayButton(
+          type: RaayButtonType.destructive,
           label: AppLocalizations.of(context).acctSignOut,
-          icon: KivoraIcons.logIn,
+          icon: RaayIcons.logIn,
           onPressed: () async {
             await ref.read(authServiceProvider).signOut();
             if (widget.onSignOut != null) widget.onSignOut!();
@@ -739,7 +824,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Widget _buildPreferencesView(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final currentMode = ref.watch(themeModeProvider);
 
     Widget modeOption(ThemeMode mode, IconData icon, String label) {
@@ -797,7 +882,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        KivoraCard(
+        RaayCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -826,7 +911,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
         const SizedBox(height: 16),
-        KivoraCard(
+        RaayCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -866,7 +951,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
         const SizedBox(height: 16),
-        KivoraCard(
+        RaayCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -927,7 +1012,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Widget _buildNotificationsView(BuildContext context, AppUser user) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final prefs = user.notificationPreferences;
 
     Widget toggle(String key, String title, String subtitle) {
@@ -974,13 +1059,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
             child: Text(_error!,
                 style: TextStyle(
-                    color: KivoraColors.of(context).errorText,
+                    color: RaayColors.of(context).errorText,
                     fontWeight: FontWeight.bold,
                     fontSize: 13)),
           ),
           const SizedBox(height: 16),
         ],
-        KivoraCard(
+        RaayCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1016,7 +1101,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Widget _buildConnectedAccountsView(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final authUser = ref.watch(authServiceProvider).currentUser;
     final providers =
         authUser?.providerData.map((p) => p.providerId).toSet() ?? {};
@@ -1057,7 +1142,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             TextButton(
               onPressed: () => Navigator.pop(ctx, true),
               child: Text(AppLocalizations.of(context).acctDisconnect,
-                  style: TextStyle(color: KivoraColors.of(context).errorText)),
+                  style: TextStyle(color: RaayColors.of(context).errorText)),
             ),
           ],
         ),
@@ -1143,8 +1228,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       icon: Icons.check_circle_outline,
                     )
                   else if (onConnect != null)
-                    KivoraButton(
-                      type: KivoraButtonType.secondary,
+                    RaayButton(
+                      type: RaayButtonType.secondary,
                       label: AppLocalizations.of(context).acctConnect,
                       isExpanded: false,
                       isLoading: _isLinkingAccount,
@@ -1180,7 +1265,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
             child: Text(_successMessage!,
                 style: TextStyle(
-                    color: KivoraColors.of(context).successText,
+                    color: RaayColors.of(context).successText,
                     fontWeight: FontWeight.bold,
                     fontSize: 13)),
           ),
@@ -1196,13 +1281,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
             child: Text(_error!,
                 style: TextStyle(
-                    color: KivoraColors.of(context).errorText,
+                    color: RaayColors.of(context).errorText,
                     fontWeight: FontWeight.bold,
                     fontSize: 13)),
           ),
           const SizedBox(height: 16),
         ],
-        KivoraCard(
+        RaayCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1217,7 +1302,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               const SizedBox(height: 8),
               Divider(color: kc.border),
               accountRow(
-                icon: KivoraIcons.mail,
+                icon: RaayIcons.mail,
                 title: AppLocalizations.of(context).acctEmailPassword,
                 subtitle: authUser?.email ?? '',
                 isConnected: hasPassword,
@@ -1228,7 +1313,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
               Divider(color: kc.border, height: 1),
               accountRow(
-                icon: KivoraIcons.google,
+                icon: RaayIcons.google,
                 title: 'Google',
                 subtitle: hasGoogle
                     ? authUser?.email ?? ''

@@ -1,4 +1,4 @@
-# Kivora Enterprise Expansion & Improvement Roadmap
+# raay Enterprise Expansion & Improvement Roadmap
 
 Based on the 51-screen strategic plan and enterprise requirements.
 

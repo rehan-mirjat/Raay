@@ -1,6 +1,6 @@
-# Kivora Project Logic, Flow, and Frontend Analysis
+# raay Project Logic, Flow, and Frontend Analysis
 
-This document provides a deep architectural and UI/UX analysis of the Kivora Secure e-Voting Platform in its current state, specifically assessing the codebase following the recent M6 deliverables and the initial injection of the Premium UI/UX design tokens.
+This document provides a deep architectural and UI/UX analysis of the raay Secure e-Voting Platform in its current state, specifically assessing the codebase following the recent M6 deliverables and the initial injection of the Premium UI/UX design tokens.
 
 ---
 
@@ -29,15 +29,15 @@ This document provides a deep architectural and UI/UX analysis of the Kivora Sec
 
 ## 2. Frontend UI/UX Issues & Improvement Needs
 
-We have established the `KivoraDesignSystem` (colors, typography, spacing) and created base UI kit components (`KivoraButton`, `KivoraCard`, `KivoraTextField`), but the application screens have not yet been fully migrated to use them.
+We have established the `raayDesignSystem` (colors, typography, spacing) and created base UI kit components (`raayButton`, `raayCard`, `raayTextField`), but the application screens have not yet been fully migrated to use them.
 
 ### A. Component Consistency (The "Premium" Gap)
 *   **Issue:** Existing screens (e.g., `LoginScreen`, `CreateOrganizationScreen`, `EventDetailScreen`) are still heavily utilizing standard Material 3 components (e.g., `ElevatedButton`, raw `Card`, `TextFormField`). 
-*   **Action Needed:** A systematic refactor of all 31 screens to replace standard widgets with `KivoraButton`, `KivoraCard`, `KivoraTextField`, etc. This will instantly apply the glassmorphic dark mode, exact border radii, and premium styling defined in the design proposal.
+*   **Action Needed:** A systematic refactor of all 31 screens to replace standard widgets with `raayButton`, `raayCard`, `raayTextField`, etc. This will instantly apply the glassmorphic dark mode, exact border radii, and premium styling defined in the design proposal.
 
 ### B. Responsive Layouts & Data Density
 *   **Issue:** The `AppNavigationShell` now elegantly supports Desktop (Sidebar) and Mobile (Bottom Nav). However, inner screens like the `OrganizationDashboardScreen` use simple `ListView` or `Wrap` layouts. On large 1440p desktop monitors, these screens will stretch awkwardly or leave massive white spaces.
-*   **Action Needed:** Implement a standard `KivoraResponsiveGrid` or multi-panel layout for Desktop/Tablet views. Dashboards should utilize side-by-side columns (e.g., Metrics on top, Activity Feed on the right, Upcoming Events on the left).
+*   **Action Needed:** Implement a standard `raayResponsiveGrid` or multi-panel layout for Desktop/Tablet views. Dashboards should utilize side-by-side columns (e.g., Metrics on top, Activity Feed on the right, Upcoming Events on the left).
 
 ### C. Polling vs. Real-time Streams
 *   **Issue:** In `organization_providers.dart`, `memberInvitationsProvider` uses a `Stream.periodic` to poll for new invitations every 45 seconds via a repository fetch. 
@@ -49,7 +49,7 @@ We have established the `KivoraDesignSystem` (colors, typography, spacing) and c
 
 ### E. Theme Adherence
 *   **Issue:** Hardcoded colors exist in older features. E.g., `Colors.grey[200]`, `Colors.blue`.
-*   **Action Needed:** Scrub the codebase for hardcoded `Colors.*` and replace them with `AppTheme` or `KivoraColors.of(context)` to ensure perfect Light/Dark mode transitions without glaring visual bugs.
+*   **Action Needed:** Scrub the codebase for hardcoded `Colors.*` and replace them with `AppTheme` or `raayColors.of(context)` to ensure perfect Light/Dark mode transitions without glaring visual bugs.
 
 ---
 
@@ -63,7 +63,7 @@ To proceed with the Premium Transformation efficiently, I recommend choosing one
 
 **Path 2: The Core Dashboard Transformation**
 *   Rewrite `OrganizationDashboardScreen` and `HomeScreen`.
-*   Implement desktop-grade grid layouts, premium metric cards (`KivoraMetricCard`), and proper shimmer loaders.
+*   Implement desktop-grade grid layouts, premium metric cards (`raayMetricCard`), and proper shimmer loaders.
 
 **Path 3: Data Logic Refinement**
 *   Fix the 45-second polling issue on invitations (switch to Firestore snapshots).

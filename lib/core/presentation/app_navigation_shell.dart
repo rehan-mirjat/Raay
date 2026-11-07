@@ -16,7 +16,7 @@ import '../navigation/exit_guard.dart';
 import '../navigation/nav_destinations.dart';
 import '../../features/auth/data/user_repository.dart';
 import '../theme/app_theme.dart';
-import '../theme/kivora_colors.dart';
+import '../theme/raay_colors.dart';
 import '../theme/theme_provider.dart';
 import '../../features/onboarding/presentation/tour_keys.dart';
 import '../widgets/global_search_overlay.dart';
@@ -41,6 +41,9 @@ String _navLabel(AppLocalizations l10n, NavId id) => switch (id) {
       NavId.calendar => l10n.navCalendar,
       NavId.observer => l10n.navObserver,
       NavId.orgSettings => l10n.navOrgSettings,
+      NavId.communications => l10n.navCommunications,
+      NavId.nominations => l10n.navNominations,
+      NavId.organizationReports => l10n.navOrganizationReports,
       NavId.billing => l10n.navBilling,
       NavId.account => l10n.navAccount,
       NavId.help => l10n.navHelp,
@@ -155,7 +158,7 @@ class AppNavigationShell extends ConsumerWidget {
       child: Focus(
         autofocus: true,
         child: Scaffold(
-          backgroundColor: KivoraColors.backgroundOf(context),
+          backgroundColor: RaayColors.backgroundOf(context),
           body: SafeArea(bottom: false, child: content),
           bottomNavigationBar: isExpanded || isMedium || keyboardVisible
               ? null
@@ -202,7 +205,7 @@ class _SidebarBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
 
     Widget sectionLabel(String text) => Padding(
@@ -294,7 +297,7 @@ class _SidebarTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final primary = Theme.of(context).colorScheme.primary;
     final color = selected ? kc.accentText : kc.textSecondary;
 
@@ -375,7 +378,7 @@ class _MediumRail extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     final items = [...model.primary, ...model.secondary, ...model.platform];
     final selectedIndex = active == null ? null : items.indexOf(active!);
@@ -440,7 +443,7 @@ class _CompactBottomBar extends ConsumerWidget {
 
   void _openMore(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -489,7 +492,7 @@ class _CompactBottomBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final l10n = AppLocalizations.of(context);
     final moreActive = active != null && !model.primary.contains(active);
 
@@ -657,21 +660,32 @@ class _ThemeToggleButton extends ConsumerWidget {
       message: isDark
           ? AppLocalizations.of(context).shLight
           : AppLocalizations.of(context).shDark,
-      child: GestureDetector(
-        onTap: () => ref.read(themeModeProvider.notifier).toggle(),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          width: 36,
-          height: 36,
-          decoration: BoxDecoration(
-            color: bgColor,
-            shape: BoxShape.circle,
-            border: Border.all(color: pillBorder, width: 1.2),
-          ),
-          child: Icon(
-            isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-            size: 17,
-            color: iconColor,
+      child: Semantics(
+        button: true,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => ref.read(themeModeProvider.notifier).toggle(),
+          // 48x48 hit area around the 36px visual circle.
+          child: SizedBox(
+            width: 48,
+            height: 48,
+            child: Center(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: bgColor,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: pillBorder, width: 1.2),
+                ),
+                child: Icon(
+                  isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                  size: 17,
+                  color: iconColor,
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -700,9 +714,17 @@ class _SearchButtonState extends State<_SearchButton> {
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
+      child: Semantics(
+        button: true,
+        label: AppLocalizations.of(context).shSearch,
+        child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () => showGlobalSearch(context),
-        child: AnimatedContainer(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Center(
+            widthFactor: 1,
+            child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           height: 36,
           padding: EdgeInsets.symmetric(
@@ -746,6 +768,9 @@ class _SearchButtonState extends State<_SearchButton> {
             ],
           ),
         ),
+        ),
+        ),
+      ),
       ),
     );
   }
@@ -780,7 +805,7 @@ class _BrandLogoLink extends StatelessWidget {
               ),
               SizedBox(width: compact ? 8 : 10),
               Text(
-                'Kivora',
+                'Raay',
                 style: TextStyle(
                   color: isDark
                       ? AppTheme.darkTextPrimary
@@ -876,7 +901,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                     : Icons.notifications_none_rounded,
                 size: 17,
                 color: (hasUnread || _isHovered)
-                    ? AppTheme.primaryBlue
+                    ? RaayColors.of(context).accentText
                     : (isDark
                         ? AppTheme.darkTextSecondary
                         : AppTheme.textSecondary),
@@ -966,7 +991,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                         AppLocalizations.of(context).shMarkRead,
                         style: TextStyle(
                           fontSize: 12,
-                          color: KivoraColors.of(context).accentText,
+                          color: RaayColors.of(context).accentText,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -1013,7 +1038,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                             height: 8,
                             margin: const EdgeInsets.only(top: 5),
                             decoration: BoxDecoration(
-                              color: KivoraColors.of(context).accentText,
+                              color: RaayColors.of(context).accentText,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -1102,7 +1127,7 @@ class _NotificationDropdownState extends ConsumerState<_NotificationDropdown> {
                 child: Text(
                   AppLocalizations.of(context).shViewAll,
                   style: TextStyle(
-                    color: KivoraColors.of(context).accentText,
+                    color: RaayColors.of(context).accentText,
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
                   ),
@@ -1195,7 +1220,9 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: _isHovered ? AppTheme.primaryBlue : textColor,
+                      color: _isHovered
+                          ? RaayColors.of(context).accentText
+                          : textColor,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -1231,7 +1258,9 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
               Icon(
                 Icons.keyboard_arrow_down_rounded,
                 size: 14,
-                color: _isHovered ? AppTheme.primaryBlue : subColor,
+                color: _isHovered
+                    ? RaayColors.of(context).accentText
+                    : subColor,
               ),
             ],
           ),
@@ -1346,7 +1375,7 @@ class _ProfileDropdownState extends ConsumerState<_ProfileDropdown> {
               style: TextStyle(
                 fontSize: size * 0.75,
                 fontWeight: FontWeight.bold,
-                color: KivoraColors.of(context).accentText,
+                color: RaayColors.of(context).accentText,
               ),
             )
           : null,
@@ -1386,7 +1415,7 @@ class _BarSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Container(
       padding: padding,
       decoration: BoxDecoration(

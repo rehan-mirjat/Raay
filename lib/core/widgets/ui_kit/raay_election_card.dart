@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kivora/core/theme/kivora_icons.dart';
+import 'package:raay/core/theme/raay_icons.dart';
 import '../../../features/voting_events/domain/voting_event.dart';
 import '../../theme/app_theme.dart';
-import '../../theme/kivora_colors.dart';
-import 'kivora_button.dart';
-import 'kivora_card.dart';
+import '../../theme/raay_colors.dart';
+import 'raay_button.dart';
+import 'raay_card.dart';
 
-class KivoraElectionCard extends StatelessWidget {
+class RaayElectionCard extends StatelessWidget {
   final VotingEvent event;
   final bool isAdmin;
   final String? organizationName;
 
-  const KivoraElectionCard({
+  const RaayElectionCard({
     super.key,
     required this.event,
     this.isAdmin = false,
@@ -21,10 +21,10 @@ class KivoraElectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final isActive = event.status == VotingEventStatus.active;
 
-    return KivoraCard(
+    return RaayCard(
       padding: const EdgeInsets.all(20),
       onTap: () => context.go('/elections/${event.id}'),
       child: Column(
@@ -41,7 +41,7 @@ class KivoraElectionCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
-                  isActive ? KivoraIcons.vote : KivoraIcons.calendarClock,
+                  isActive ? RaayIcons.vote : RaayIcons.calendarClock,
                   color: isActive ? AppTheme.primaryBlue : AppTheme.accentTeal,
                   size: 20,
                 ),
@@ -96,15 +96,15 @@ class KivoraElectionCard extends StatelessWidget {
             children: [
               if (isActive && !isAdmin)
                 Expanded(
-                  child: KivoraButton(
+                  child: RaayButton(
                     label: 'Vote Now',
                     onPressed: () => context.go('/elections/${event.id}/vote'),
                   ),
                 )
               else
                 Expanded(
-                  child: KivoraButton(
-                    type: KivoraButtonType.secondary,
+                  child: RaayButton(
+                    type: RaayButtonType.secondary,
                     label: 'Details',
                     onPressed: () => context.go('/elections/${event.id}'),
                   ),
@@ -116,7 +116,7 @@ class KivoraElectionCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge(KivoraColors kc) {
+  Widget _buildStatusBadge(RaayColors kc) {
     Color bg;
     Color fg;
     String label;

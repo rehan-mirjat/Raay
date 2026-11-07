@@ -15,6 +15,9 @@ enum NavId {
   observer,
   joiningCodes,
   orgSettings,
+  organizationReports,
+  nominations,
+  communications,
   billing,
   account,
   help,
@@ -69,6 +72,10 @@ const _departments = NavDestination(NavId.departments, '/orgs/departments',
     Icons.apartment_outlined, Icons.apartment_rounded);
 const _activityAdmin = NavDestination(NavId.activity, '/orgs/audit',
     Icons.history_outlined, Icons.history_rounded);
+const _communications = NavDestination(NavId.communications, '/communications', Icons.campaign_outlined, Icons.campaign);
+const _nominations = NavDestination(NavId.nominations, '/nominations', Icons.how_to_reg_outlined, Icons.how_to_reg);
+const _organizationReports = NavDestination(NavId.organizationReports,
+    '/orgs/reports', Icons.analytics_outlined, Icons.analytics_rounded);
 const _invitations = NavDestination(NavId.invitations, '/orgs/invitations',
     Icons.notifications_none_rounded, Icons.notifications_rounded);
 const _organizations = NavDestination(NavId.organizations, '/orgs',
@@ -98,8 +105,8 @@ const _platformAccounts = NavDestination(
     '/platform/admin',
     Icons.admin_panel_settings_outlined,
     Icons.admin_panel_settings_rounded);
-const _platformReports = NavDestination(NavId.platformReports, '/platform/reports',
-    Icons.flag_outlined, Icons.flag_rounded);
+const _platformReports = NavDestination(NavId.platformReports,
+    '/platform/reports', Icons.flag_outlined, Icons.flag_rounded);
 const _platformAudit = NavDestination(NavId.platformAudit, '/platform/audit',
     Icons.fact_check_outlined, Icons.fact_check_rounded);
 
@@ -129,6 +136,9 @@ NavModel navModelFor({
         _joiningCodes,
         _calendar,
         _organizations,
+        _organizationReports,
+        _nominations,
+        _communications,
         if (isObserver) _observer,
         if (isOwner) _orgSettings,
         if (isOwner) _billing,
@@ -143,6 +153,7 @@ NavModel navModelFor({
     // and calendar in the bar; profile and help under More.
     primary: const [_myElections, _organizations, _invitations, _calendar],
     secondary: [
+      _nominations,
       _account,
       if (isObserver) _observer,
       _help,

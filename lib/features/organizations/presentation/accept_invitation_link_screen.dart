@@ -5,12 +5,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import '../data/organization_repository.dart';
 import 'providers/organization_providers.dart';
 import '../../../core/utils/friendly_error.dart';
 
-/// Landing screen for a kivora://invite (or https://.../invite) deep link -
+/// Landing screen for a raay://invite (or https://.../invite) deep link -
 /// see buildInviteLink in organization_repository.dart for how the link is
 /// generated, and pendingInviteTokenProvider in app_router.dart for how a
 /// not-yet-signed-in user is brought back here once they finish signing in.
@@ -89,9 +89,9 @@ class _AcceptInvitationLinkScreenState
             constraints: const BoxConstraints(maxWidth: 480),
             child: Container(
               decoration: BoxDecoration(
-                color: KivoraColors.surfaceOf(context),
+                color: RaayColors.surfaceOf(context),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: KivoraColors.borderOf(context)),
+                border: Border.all(color: RaayColors.borderOf(context)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.04),
@@ -126,21 +126,21 @@ class _AcceptInvitationLinkScreenState
             borderRadius: BorderRadius.circular(14),
           ),
           child: Icon(Icons.mail_outline_rounded,
-              size: 24, color: KivoraColors.of(context).accentText),
+              size: 24, color: RaayColors.of(context).accentText),
         ),
         const SizedBox(height: 20),
         Text(
           AppLocalizations.of(context).aiInvited,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: KivoraColors.textPrimaryOf(context),
+                color: RaayColors.textPrimaryOf(context),
               ),
         ),
         const SizedBox(height: 8),
         Text(
           AppLocalizations.of(context).aiInvitedBody,
           style: TextStyle(
-              color: KivoraColors.textSecondaryOf(context),
+              color: RaayColors.textSecondaryOf(context),
               fontSize: 14,
               height: 1.4),
         ),
@@ -182,7 +182,7 @@ class _AcceptInvitationLinkScreenState
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
             Text(AppLocalizations.of(context).aiAccepting,
-                style: TextStyle(color: KivoraColors.textSecondaryOf(context))),
+                style: TextStyle(color: RaayColors.textSecondaryOf(context))),
           ],
         ),
       ),
@@ -195,21 +195,21 @@ class _AcceptInvitationLinkScreenState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(Icons.check_circle_rounded,
-            size: 40, color: KivoraColors.of(context).successText),
+            size: 40, color: RaayColors.of(context).successText),
         const SizedBox(height: 16),
         Text(
           AppLocalizations.of(context).aiWelcome(
               _organizationName ?? AppLocalizations.of(context).aiTheOrg),
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: KivoraColors.textPrimaryOf(context),
+                color: RaayColors.textPrimaryOf(context),
               ),
         ),
         const SizedBox(height: 8),
         Text(
           AppLocalizations.of(context).aiJoinedBody,
           style: TextStyle(
-              color: KivoraColors.textSecondaryOf(context),
+              color: RaayColors.textSecondaryOf(context),
               fontSize: 14,
               height: 1.4),
         ),
@@ -235,20 +235,20 @@ class _AcceptInvitationLinkScreenState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(Icons.error_outline_rounded,
-            size: 40, color: KivoraColors.of(context).errorText),
+            size: 40, color: RaayColors.of(context).errorText),
         const SizedBox(height: 16),
         Text(
           AppLocalizations.of(context).aiFailedTitle,
           style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: KivoraColors.textPrimaryOf(context)),
+              color: RaayColors.textPrimaryOf(context)),
         ),
         const SizedBox(height: 8),
         Text(
           _error ?? AppLocalizations.of(context).aiFailedBody,
           style: TextStyle(
-              color: KivoraColors.textSecondaryOf(context),
+              color: RaayColors.textSecondaryOf(context),
               fontSize: 14,
               height: 1.4),
         ),

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-import '../../core/theme/kivora_colors.dart';
+import '../../core/theme/raay_colors.dart';
 import '../../services/auth_service.dart';
 import 'reauth_dialog.dart';
 
@@ -41,7 +41,7 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
     secret = await TotpMultiFactorGenerator.generateSecret(session);
     qrCodeUrl = await secret.generateQrCodeUrl(
       accountName: user.email ?? user.uid,
-      issuer: 'Kivora',
+      issuer: 'Raay',
     );
   } catch (_) {
     if (context.mounted) {
@@ -128,7 +128,7 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(8),
                           border:
-                              Border.all(color: KivoraColors.borderOf(context)),
+                              Border.all(color: RaayColors.borderOf(context)),
                         ),
                         child: QrImageView(
                           data: qrCodeUrl,
@@ -142,7 +142,7 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
                       AppLocalizations.of(context).teManual,
                       style: TextStyle(
                           fontSize: 12,
-                          color: KivoraColors.textSecondaryOf(context)),
+                          color: RaayColors.textSecondaryOf(context)),
                     ),
                     const SizedBox(height: 4),
                     SelectableText(
@@ -174,7 +174,7 @@ Future<bool> showTotpEnrollDialog(BuildContext context, WidgetRef ref) async {
                       const SizedBox(height: 8),
                       Text(dialogError!,
                           style: TextStyle(
-                              color: KivoraColors.of(context).errorText)),
+                              color: RaayColors.of(context).errorText)),
                     ],
                   ],
                 ),

@@ -1,10 +1,10 @@
 import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kivora/core/theme/app_theme.dart';
-import 'package:kivora/core/theme/kivora_colors.dart';
-import 'package:kivora/core/theme/kivora_icons.dart';
-import 'package:kivora/core/widgets/ui_kit/kivora_text_field.dart';
+import 'package:raay/core/theme/app_theme.dart';
+import 'package:raay/core/theme/raay_colors.dart';
+import 'package:raay/core/theme/raay_icons.dart';
+import 'package:raay/core/widgets/ui_kit/raay_text_field.dart';
 
 import '../../../core/widgets/inline_error_banner.dart';
 import '../data/organization_repository.dart';
@@ -61,7 +61,7 @@ class _AddExistingMemberDialogState
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final screenWidth = MediaQuery.sizeOf(context).width;
 
     return Dialog(
@@ -86,8 +86,8 @@ class _AddExistingMemberDialogState
                           color: AppTheme.primaryBlue.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Icon(KivoraIcons.userPlus,
-                            color: KivoraColors.of(context).accentText,
+                        child: Icon(RaayIcons.userPlus,
+                            color: RaayColors.of(context).accentText,
                             size: 20),
                       ),
                       const SizedBox(width: 12),
@@ -108,7 +108,7 @@ class _AddExistingMemberDialogState
                         tooltip: AppLocalizations.of(context).aeClose,
                         constraints:
                             const BoxConstraints(minWidth: 48, minHeight: 48),
-                        icon: const Icon(KivoraIcons.x, size: 20),
+                        icon: const Icon(RaayIcons.x, size: 20),
                         onPressed:
                             _isSubmitting ? null : () => Navigator.pop(context),
                       ),
@@ -120,11 +120,11 @@ class _AddExistingMemberDialogState
                     style: TextStyle(fontSize: 13, color: kc.textSecondary),
                   ),
                   const SizedBox(height: 20),
-                  KivoraTextField(
+                  RaayTextField(
                     controller: _emailController,
                     label: AppLocalizations.of(context).aeEmailLabel,
                     hint: AppLocalizations.of(context).aeEmailHint,
-                    prefixIcon: KivoraIcons.mail,
+                    prefixIcon: RaayIcons.mail,
                     keyboardType: TextInputType.emailAddress,
                     onFieldSubmitted: (_) => _submit(),
                     validator: (value) {
@@ -164,7 +164,7 @@ class _AddExistingMemberDialogState
                                 width: 16,
                                 child:
                                     CircularProgressIndicator(strokeWidth: 2))
-                            : const Icon(KivoraIcons.userCheck, size: 18),
+                            : const Icon(RaayIcons.userCheck, size: 18),
                         label: Text(AppLocalizations.of(context).aeAdd),
                       ),
                     ],

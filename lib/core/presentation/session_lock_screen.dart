@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../session/session_lock_provider.dart';
 import '../theme/app_theme.dart';
-import '../../core/theme/kivora_colors.dart';
+import '../../core/theme/raay_colors.dart';
 import '../widgets/inline_error_banner.dart';
 import '../../services/auth_service.dart';
 import '../widgets/totp_challenge_dialog.dart';
@@ -126,7 +126,7 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                           color: AppTheme.primaryBlue.withValues(alpha: 0.25)),
                     ),
                     child: Icon(Icons.lock_outline_rounded,
-                        size: 32, color: KivoraColors.of(context).accentText),
+                        size: 32, color: RaayColors.of(context).accentText),
                   ),
                   const SizedBox(height: 24),
                   Text(
@@ -134,7 +134,7 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                     style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: KivoraColors.textPrimaryOf(context)),
+                        color: RaayColors.textPrimaryOf(context)),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
@@ -145,7 +145,7 @@ class _SessionLockScreenState extends ConsumerState<SessionLockScreen> {
                         : AppLocalizations.of(context).slVerify),
                     style: TextStyle(
                         fontSize: 14,
-                        color: KivoraColors.textSecondaryOf(context),
+                        color: RaayColors.textSecondaryOf(context),
                         height: 1.4),
                     textAlign: TextAlign.center,
                   ),

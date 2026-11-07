@@ -6,7 +6,7 @@ import 'package:flutter/gestures.dart' show PointerHoverEvent;
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/kivora_colors.dart';
+import '../../../core/theme/raay_colors.dart';
 import 'landing_content.dart';
 
 const kLandingMaxWidth = 1160.0;
@@ -76,7 +76,7 @@ class GlassBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final radius = BorderRadius.circular(20);
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -122,7 +122,7 @@ class SectionShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final narrow = MediaQuery.sizeOf(context).width < 640;
     return Container(
       width: double.infinity,
@@ -153,7 +153,7 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final narrow = MediaQuery.sizeOf(context).width < 640;
     final align = center ? CrossAxisAlignment.center : CrossAxisAlignment.start;
     final ta = center ? TextAlign.center : TextAlign.start;
@@ -198,7 +198,7 @@ class IconTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Container(
       width: size,
       height: size,
@@ -228,7 +228,7 @@ class _FeatureCardState extends State<FeatureCard> {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final f = widget.feature;
     return MouseRegion(
@@ -340,7 +340,7 @@ class _IllustrativeBallotState extends State<IllustrativeBallot> {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Container(
       constraints: const BoxConstraints(maxWidth: 440),
       padding: const EdgeInsets.all(24),
@@ -430,7 +430,7 @@ class _IllustrativeBallotState extends State<IllustrativeBallot> {
   }
 
   Widget _row(BuildContext context, int i) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final selected = _selected == i;
     final reduce = MediaQuery.disableAnimationsOf(context);
     return Semantics(
@@ -500,7 +500,7 @@ class _FaqListState extends State<FaqList> {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     return Column(children: [
       for (var i = 0; i < widget.items.length; i++)
@@ -729,7 +729,7 @@ class _StepsTimelineState extends State<StepsTimeline> {
       : const Duration(milliseconds: 450);
 
   Widget _markerFor(int i) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final on = i < _active;
     return AnimatedContainer(
       duration: _anim,
@@ -751,7 +751,7 @@ class _StepsTimelineState extends State<StepsTimeline> {
   }
 
   Widget _card(int i, {Key? key}) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final on = i < _active;
     return AnimatedContainer(
       key: key,
@@ -783,7 +783,7 @@ class _StepsTimelineState extends State<StepsTimeline> {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final n = widget.steps.length;
     return LayoutBuilder(builder: (context, c) {
       if (c.maxWidth >= _wideMinWidth) return _wide(kc, c.maxWidth, n);
@@ -791,7 +791,7 @@ class _StepsTimelineState extends State<StepsTimeline> {
     });
   }
 
-  Widget _wide(KivoraColors kc, double width, int n) {
+  Widget _wide(RaayColors kc, double width, int n) {
     final colW = (width - _gap * (n - 1)) / n;
     final pitch = colW + _gap;
     // The rail runs from the first marker's centre to the last marker's centre;
@@ -842,7 +842,7 @@ class _StepsTimelineState extends State<StepsTimeline> {
     ]);
   }
 
-  Widget _narrow(KivoraColors kc, int n) {
+  Widget _narrow(RaayColors kc, int n) {
     return Column(children: [
       for (var i = 0; i < n; i++)
         IntrinsicHeight(
@@ -888,7 +888,7 @@ class HelpCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(

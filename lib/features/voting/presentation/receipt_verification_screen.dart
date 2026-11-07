@@ -1,12 +1,12 @@
 import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:kivora/core/theme/kivora_icons.dart';
+import 'package:raay/core/theme/raay_icons.dart';
 
 import '../../../core/layout/responsive.dart';
-import '../../../core/theme/kivora_colors.dart';
-import '../../../core/widgets/ui_kit/kivora_button.dart';
-import '../../../core/widgets/ui_kit/kivora_card.dart';
-import '../../../core/widgets/ui_kit/kivora_text_field.dart';
+import '../../../core/theme/raay_colors.dart';
+import '../../../core/widgets/ui_kit/raay_button.dart';
+import '../../../core/widgets/ui_kit/raay_card.dart';
+import '../../../core/widgets/ui_kit/raay_text_field.dart';
 import '../../../services/firebase_service.dart';
 import '../domain/receipt_verification_outcome.dart';
 
@@ -78,7 +78,7 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     final isDesktop = ResponsiveLayout.isWide(context);
 
     return Scaffold(
@@ -95,11 +95,11 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                KivoraCard(
+                RaayCard(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(KivoraIcons.shieldCheck,
+                      Icon(RaayIcons.shieldCheck,
                           size: 32, color: kc.accentText),
                       const SizedBox(height: 16),
                       Text(
@@ -117,18 +117,18 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
                             fontSize: 14, color: kc.textSecondary, height: 1.5),
                       ),
                       const SizedBox(height: 24),
-                      KivoraTextField(
+                      RaayTextField(
                         label: AppLocalizations.of(context).rvfHashLabel,
                         controller: _hashController,
                         hint: AppLocalizations.of(context).rvfHashHint,
-                        prefixIcon: KivoraIcons.lock,
+                        prefixIcon: RaayIcons.lock,
                         textInputAction: TextInputAction.search,
                         onFieldSubmitted: (_) => _verifyReceipt(),
                       ),
                       const SizedBox(height: 16),
-                      KivoraButton(
+                      RaayButton(
                         label: AppLocalizations.of(context).rvfVerify,
-                        icon: KivoraIcons.search,
+                        icon: RaayIcons.search,
                         isLoading: _isSearching,
                         onPressed: _isSearching ? null : _verifyReceipt,
                       ),
@@ -156,7 +156,7 @@ class _OutcomeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final kc = KivoraColors.of(context);
+    final kc = RaayColors.of(context);
     late final IconData icon;
     late final Color color;
     late final String title;
@@ -165,12 +165,12 @@ class _OutcomeCard extends StatelessWidget {
 
     switch (outcome) {
       case ReceiptVerificationOutcome.verified:
-        icon = KivoraIcons.checkCircle;
+        icon = RaayIcons.checkCircle;
         color = kc.successText;
         title = AppLocalizations.of(context).rvfOkTitle;
         body = AppLocalizations.of(context).rvfOkBody;
       case ReceiptVerificationOutcome.notFound:
-        icon = KivoraIcons.alertCircle;
+        icon = RaayIcons.alertCircle;
         color = kc.errorText;
         title = AppLocalizations.of(context).rvfNoTitle;
         body = AppLocalizations.of(context).rvfNoBody;
@@ -195,7 +195,7 @@ class _OutcomeCard extends StatelessWidget {
 
     return Semantics(
       liveRegion: true,
-      child: KivoraCard(
+      child: RaayCard(
         child: Column(
           children: [
             Icon(icon, size: 40, color: color),
@@ -214,8 +214,8 @@ class _OutcomeCard extends StatelessWidget {
             ),
             if (retry) ...[
               const SizedBox(height: 16),
-              KivoraButton(
-                type: KivoraButtonType.secondary,
+              RaayButton(
+                type: RaayButtonType.secondary,
                 label: AppLocalizations.of(context).rvfRetry,
                 icon: Icons.refresh_rounded,
                 onPressed: onRetry,

@@ -1,3 +1,5 @@
+import { isAbstention } from "../utils/ballotRules";
+import { contestVoteRecords, parseContests, validateContestSelections } from "../utils/multiContest";
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, Timestamp } from "firebase-admin/firestore";
 import { generateVoteReceipt } from "./generateReceipt";
@@ -13,6 +15,8 @@ export interface CastVoteRequest {
   eventId: string;
   candidateId?: string;
   pollOptionId?: string;
+  contestSelections?: Record<string, string>;
+  abstain?: boolean;
 }
 
 /**
@@ -114,7 +118,12 @@ export const castVote = onCall({ cors: true }, async (request) => {
       );
 
       // Read 5: Choice Reference Validation (passes pre-fetched snaps)
-      const choiceResult = await validateChoiceReference(
+      const abstain = isAbstention(data as unknown as Record<string, unknown>, eventData.allowAbstain === true);
+      const multi = eventData.ballotMode === "MULTI_CONTEST";
+      if (multi && (cleanCandidateId || cleanPollOptionId)) throw new HttpsError("invalid-argument", "Use contest selections for this election.");
+      if (!multi && data.contestSelections !== undefined) throw new HttpsError("invalid-argument", "This election accepts a single choice only.");
+      const selections = multi && !abstain ? validateContestSelections(parseContests(eventData.contests), data.contestSelections) : [];
+      const choiceResult = multi || abstain ? null : await validateChoiceReference(
         transaction,
         db,
         {
@@ -130,7 +139,21 @@ export const castVote = onCall({ cors: true }, async (request) => {
       const votesRef = db.collection("votes").doc();
       const nowTs = Timestamp.now();
 
-      if (privacyMode === "IDENTIFIABLE") {
+      if (abstain) {
+        const contestIds = multi ? parseContests(eventData.contests).map(c => c.id) : [null];
+        for (const contestId of contestIds) {
+          transaction.set(db.collection("votes").doc(), {
+            organizationId: cleanOrgId, votingEventId: cleanEventId, choiceType: "ABSTAIN",
+            privacyMode: privacyMode === "IDENTIFIABLE" ? "IDENTIFIABLE" : "ANONYMOUS",
+            ...(contestId ? { contestId } : {}),
+            ...(privacyMode === "IDENTIFIABLE" ? { userId: uid, createdAt: nowTs } : {}),
+          });
+        }
+      } else if (multi) {
+        for (const record of contestVoteRecords(cleanOrgId, cleanEventId, selections, privacyMode === "IDENTIFIABLE" ? uid : undefined, nowTs)) {
+          transaction.set(db.collection("votes").doc(), record);
+        }
+      } else if (privacyMode === "IDENTIFIABLE") {
         validateIdentifiableBallotPayload({
           organizationId: cleanOrgId,
           votingEventId: cleanEventId,
@@ -142,8 +165,8 @@ export const castVote = onCall({ cors: true }, async (request) => {
           organizationId: cleanOrgId,
           votingEventId: cleanEventId,
           privacyMode: "IDENTIFIABLE",
-          choiceType: choiceResult.choiceType,
-          choiceId: choiceResult.choiceId,
+          choiceType: choiceResult!.choiceType,
+          choiceId: choiceResult!.choiceId,
           userId: uid,
           createdAt: nowTs,
         });
@@ -163,8 +186,8 @@ export const castVote = onCall({ cors: true }, async (request) => {
           organizationId: cleanOrgId,
           votingEventId: cleanEventId,
           privacyMode: "ANONYMOUS",
-          choiceType: choiceResult.choiceType,
-          choiceId: choiceResult.choiceId,
+          choiceType: choiceResult!.choiceType,
+          choiceId: choiceResult!.choiceId,
           // createdAt deliberately omitted — see anonymity note above.
         });
       }

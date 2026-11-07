@@ -26,12 +26,12 @@ String _escapeIcsText(String text) {
 /// Builds a minimal, standards-compliant VEVENT for an election's voting
 /// window (RFC 5545) - good enough for Google/Outlook/Apple Calendar import.
 String buildVotingEventIcs(VotingEvent event, String organizationName) {
-  final uid = '${event.id}@kivora';
+  final uid = '${event.id}@raay';
   final now = _icsDate(DateTime.now());
   return [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Kivora//Election Calendar//EN',
+    'PRODID:-//raay//Election Calendar//EN',
     'CALSCALE:GREGORIAN',
     'BEGIN:VEVENT',
     'UID:$uid',

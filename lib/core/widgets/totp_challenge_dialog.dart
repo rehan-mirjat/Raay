@@ -2,7 +2,7 @@ import '../../l10n/app_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../theme/kivora_colors.dart';
+import '../theme/raay_colors.dart';
 
 /// Shown when signing in throws [FirebaseAuthMultiFactorException] - the
 /// account has a TOTP second factor enrolled. Prompts for the current code
@@ -102,7 +102,7 @@ Future<UserCredential?> showTotpChallengeDialog(
                     const SizedBox(height: 8),
                     Text(dialogError!,
                         style: TextStyle(
-                            color: KivoraColors.of(context).errorText)),
+                            color: RaayColors.of(context).errorText)),
                   ],
                 ],
               ),
