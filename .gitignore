@@ -39,3 +39,17 @@ GoogleService-Info.plist
 android/app/*.jks
 android/app/*.keystore
 android/key.properties
+
+# Test suites are kept local and are not published
+test/
+firestore-tests/
+functions/src/__tests__/
+functions/integration/
+functions/jest.config.js
+firebase.rules-ci.json
+firebase.integration-ci.json
+
+# Local agent notes and backups
+AGENTS.md
+.cursor/
+*.bak

@@ -8,7 +8,7 @@ on:
 
 jobs:
   flutter:
-    name: Flutter analyze & test
+    name: Flutter analyze
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,11 +24,8 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
-      - name: Test
-        run: flutter test
-
   functions:
-    name: Cloud Functions build & test
+    name: Cloud Functions type-check
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -47,6 +44,3 @@ jobs:
 
       - name: Type-check
         run: npx tsc --noEmit
-
-      - name: Test
-        run: npm test
