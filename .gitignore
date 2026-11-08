@@ -53,3 +53,8 @@ firebase.integration-ci.json
 AGENTS.md
 .cursor/
 *.bak
+
+# Local assistant files
+CLAUDE.md
+.claude/
+artifacts/ui-references/**/CLAUDE_*.md
