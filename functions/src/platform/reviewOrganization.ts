@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { FieldValue, getFirestore } from "firebase-admin/firestore";
+import { requireMfaVerified, requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
 
 type ReviewAction = "VERIFY" | "REJECT" | "SUSPEND" | "REACTIVATE";
 
@@ -7,6 +8,11 @@ export const reviewOrganization = onCall(async (request) => {
   const uid = request.auth?.uid;
   if (!uid) throw new HttpsError("unauthenticated", "Authentication required.");
   if (request.auth?.token.platformAdmin !== true) throw new HttpsError("permission-denied", "Platform administrator access required.");
+
+  // FR-10 / MFA-REQ-001: suspending or reactivating a tenant affects every member and election in it.
+  await requireNotRevoked(request);
+  requireRecentAuthentication(request.auth);
+  await requireMfaVerified(request.auth);
 
   const organizationId = typeof request.data?.organizationId === "string" ? request.data.organizationId.trim() : "";
   const action = request.data?.action as ReviewAction;

@@ -113,13 +113,15 @@ export async function requireMfaVerified(auth: CallableRequest["auth"]): Promise
 export async function requireOperationalOrganization(
   db: Firestore,
   organizationId: string,
-  tx?: Transaction
-): Promise<void> {
+  tx?: Transaction,
+  opts?: { preFetchedSnap?: DocumentSnapshot }
+): Promise<DocumentSnapshot> {
   const ref = db.collection("organizations").doc(organizationId);
-  const snap = tx ? await tx.get(ref) : await ref.get();
+  const snap = opts?.preFetchedSnap ?? (tx ? await tx.get(ref) : await ref.get());
   if (!snap.exists || !OPERATIONAL_ORG_STATUSES.includes(snap.data()?.status)) {
     throw new HttpsError("failed-precondition", "This organization is not currently active.");
   }
+  return snap;
 }
 
 /**

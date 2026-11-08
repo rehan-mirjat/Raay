@@ -215,13 +215,15 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
             ? sessionLockGate()
             : (child ?? const SizedBox.shrink());
 
-        // Package C3: "Reduce motion" is a user preference layered on top of
-        // the OS-level signal MediaQuery already carries, since that signal
-        // isn't exposed on every platform this app targets.
-        if (reducedMotion) {
+        // Package C3: "Reduce motion" and "High contrast" are user preferences
+        // layered on top of the OS-level signals MediaQuery already carries.
+        if (reducedMotion || highContrast) {
           final mq = MediaQuery.of(context);
           content = MediaQuery(
-            data: mq.copyWith(disableAnimations: true),
+            data: mq.copyWith(
+              disableAnimations: reducedMotion ? true : mq.disableAnimations,
+              highContrast: highContrast ? true : mq.highContrast,
+            ),
             child: content,
           );
         }

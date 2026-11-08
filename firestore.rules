@@ -15,7 +15,9 @@ rules_version = '2';
 //    and joinCodeOrgThrottle/{organizationId} are all written only by Cloud
 //    Functions (global deny applies to each - none has an explicit rule below).
 //  - results/{eventId} has a boolean `published` field set by publishResults().
-//  - turnout/{eventId} holds a counter document maintained by castVote().
+//  - turnout/{eventId} is created once at activation by writeActivationDocs()
+//    (participationCount: 0). castVote() does not update it, so its count stays
+//    0; live turnout comes from getEventMonitoring() instead.
 //  - All organization membership/role/event/candidate/option writes go through
 //    Cloud Functions (Admin SDK bypasses these rules).
 
@@ -285,11 +287,25 @@ service cloud.firestore {
 
     match /participation/{participationId} {
 
-      // FIX: `resource` is null for non-existent docs, which made the
-      // "have I voted?" check error out. Allow the null case so the client
-      // gets a clean "not found".
-      allow read: if signedIn()
+      // IDs are {orgId}_{eventId}_{uid}. Compares a literal suffix rather than
+      // using matches(), so a uid can never be interpreted as a regex.
+      function idEndsWithOwnUid() {
+        let suffix = "_" + request.auth.uid;
+        return participationId.size() > suffix.size()
+          && participationId[participationId.size() - suffix.size():participationId.size()] == suffix;
+      }
+
+      // The ID check runs before `resource` is considered, so another user's
+      // ID is denied whether or not the document exists: allowing every missing
+      // document made not-found vs permission-denied reveal who had voted.
+      // `resource == null` stays for the caller's own ID so the client's
+      // "have I voted?" check gets a clean not-found.
+      allow get: if signedIn()
+        && idEndsWithOwnUid()
         && (resource == null || resource.data.userId == request.auth.uid);
+
+      // Queries must be constrained to the caller's own userId.
+      allow list: if signedIn() && resource.data.userId == request.auth.uid;
 
       allow create, update, delete: if false;
     }

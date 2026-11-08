@@ -3,7 +3,7 @@ import { OPERATIONAL_ORG_STATUSES } from "../voting_events/votingCommon";
 import { getFirestore, FieldValue, Firestore, DocumentData } from "firebase-admin/firestore";
 import * as logger from "firebase-functions/logger";
 import { requireActiveMembership, requireMfaVerified, requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
-import { calculateEventResults, getEligibleMembers } from "../results/tally";
+import { getEligibleMembers, publishEventResults } from "../results/tally";
 import { filterOptedIn } from "../utils/notificationPreferences";
 
 const NOTIFICATIONS_BATCH_SIZE = 400; // headroom under Firestore's 500-write batch limit
@@ -86,16 +86,12 @@ export const publishResults = onCall(async (request) => {
       return { status: "success", eventId, published: true, alreadyPublished: true };
     }
 
-    const results = await calculateEventResults(db, eventId, uid, { publish: true });
-    await db.collection("auditLogs").add({
-      organizationId,
-      actorUid: uid,
-      action: "PUBLISH_RESULTS",
-      resourceType: "votingEvent",
-      resourceId: eventId,
-      metadata: { totalVotes: results.totalVotes },
-      timestamp: FieldValue.serverTimestamp(),
-    });
+    // The audit entry commits with the publication. A concurrent call can pass
+    // the check above and still lose the transaction, so only the winner notifies.
+    const { transitioned } = await publishEventResults(db, eventId, uid);
+    if (!transitioned) {
+      return { status: "success", eventId, published: true, alreadyPublished: true };
+    }
 
     await notifyResultsPublished(db, organizationId, eventId, eventSnap.data()!);
 

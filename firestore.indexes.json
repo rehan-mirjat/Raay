@@ -79,16 +79,12 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "organizationId",
+          "fieldPath": "userId",
           "order": "ASCENDING"
         },
         {
           "fieldPath": "status",
           "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "departmentIds",
-          "arrayConfig": "CONTAINS"
         }
       ]
     },
@@ -139,6 +135,20 @@
       ]
     },
     {
+      "collectionGroup": "organizationInvitations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "email",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "departments",
       "queryScope": "COLLECTION",
       "fields": [
@@ -153,20 +163,6 @@
       ]
     },
     {
-      "collectionGroup": "joiningCodes",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "organizationId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "status",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
       "collectionGroup": "candidates",
       "queryScope": "COLLECTION",
       "fields": [
@@ -190,20 +186,6 @@
         },
         {
           "fieldPath": "votingEventId",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "pollOptions",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "votingEventId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "sortOrder",
           "order": "ASCENDING"
         }
       ]

@@ -1,47 +1,51 @@
 import { HttpsError } from "firebase-functions/v2/https";
 
 /**
- * Validates that an anonymous ballot payload contains ZERO voter identity and matches
- * the EXACT approved discriminated schema for V1 candidate or poll ballots.
+ * Validates that an anonymous ballot payload contains ZERO voter identity or timing metadata
+ * and matches the EXACT approved Firestore ballot record schema in castVote:
+ * { organizationId, votingEventId, privacyMode, choiceType, choiceId }
  */
 export function validateAnonymousBallotPayload(data: Record<string, any>): void {
-  if (!data || typeof data !== "object") {
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
     throw new HttpsError("invalid-argument", "Ballot payload must be a valid object.");
   }
 
-  const keys = Object.keys(data);
-
-  // Prohibited Voter Identity / Linkage Fields
+  // Strictly Prohibited Voter Identity, Linkage, and Timing Fields
   const prohibitedFields = [
-    "userId", "voterId", "email", "ipAddress", "participationId",
-    "receiptId", "choiceKey", "voterName", "user"
+    "castAt", "createdAt", "userId", "voterId",
+    "email", "ipAddress", "participationId", "receiptId",
+    "choiceKey", "voterName", "user", "votedAt", "timestamp",
   ];
 
   for (const field of prohibitedFields) {
     if (field in data) {
       throw new HttpsError(
         "invalid-argument",
-        `Prohibited field '${field}' detected in anonymous ballot payload. Ballots must contain zero voter identity.`
+        `Prohibited field '${field}' detected in anonymous ballot payload. Anonymous ballots must contain zero voter identity or timing metadata.`
       );
     }
   }
 
-  // Strict Schema Whitelisting
-  const candidateBallotKeys = ["organizationId", "votingEventId", "candidateId", "castAt"];
-  const pollBallotKeys = ["organizationId", "votingEventId", "pollOptionId", "castAt"];
+  // Strict Schema Whitelisting: { organizationId, votingEventId, privacyMode, choiceType, choiceId }
+  const allowedKeys = ["organizationId", "votingEventId", "privacyMode", "choiceType", "choiceId"];
 
-  const isCandidateBallot = "candidateId" in data && !("pollOptionId" in data);
-  const isPollBallot = "pollOptionId" in data && !("candidateId" in data);
+  for (const field of allowedKeys) {
+    if (!(field in data) || typeof data[field] !== "string" || !data[field].trim()) {
+      throw new HttpsError(
+        "invalid-argument",
+        `Missing or invalid required field '${field}' in anonymous ballot payload.`
+      );
+    }
+  }
 
-  if (!isCandidateBallot && !isPollBallot) {
+  if (data.privacyMode !== "ANONYMOUS") {
     throw new HttpsError(
       "invalid-argument",
-      "Invalid ballot schema. Must contain either 'candidateId' or 'pollOptionId', never both or neither."
+      "Anonymous ballot privacyMode must be 'ANONYMOUS'."
     );
   }
 
-  const allowedKeys = isCandidateBallot ? candidateBallotKeys : pollBallotKeys;
-
+  const keys = Object.keys(data);
   for (const key of keys) {
     if (!allowedKeys.includes(key)) {
       throw new HttpsError(

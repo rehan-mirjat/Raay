@@ -181,12 +181,40 @@ export async function countEligibleVoters(
   return (await getEligibleMembers(db, organizationId, eventId, eventData)).length;
 }
 
+export interface PublishEventResultsOutcome {
+  results: EventResultsPayload;
+  /** True only for the single call whose transaction moved the result to published. */
+  transitioned: boolean;
+}
+
+/** Calculates and stores unpublished results; a published record is returned untouched. */
 export async function calculateEventResults(
+  db: Firestore,
+  eventId: string,
+  actorUid: string
+): Promise<EventResultsPayload> {
+  return (await storeEventResults(db, eventId, actorUid)).results;
+}
+
+/**
+ * Publishes results and writes the PUBLISH_RESULTS audit entry in the same
+ * transaction, so neither can commit without the other. The audit entry is
+ * written only by the call that performs the transition.
+ */
+export function publishEventResults(
+  db: Firestore,
+  eventId: string,
+  actorUid: string
+): Promise<PublishEventResultsOutcome> {
+  return storeEventResults(db, eventId, actorUid, { publish: true });
+}
+
+async function storeEventResults(
   db: Firestore,
   eventId: string,
   actorUid: string,
   options?: { publish?: boolean }
-): Promise<EventResultsPayload> {
+): Promise<PublishEventResultsOutcome> {
   const eventSnap = await db.collection("votingEvents").doc(eventId).get();
   if (!eventSnap.exists) {
     throw new Error("NOT_FOUND");
@@ -210,7 +238,7 @@ export async function calculateEventResults(
   const existingData = existingResults.data();
   // Published tallies are a public record. Recalculation must never silently
   // change results that members have already seen.
-  if (existingData?.published === true) return existingData as EventResultsPayload;
+  if (existingData?.published === true) return { results: existingData as EventResultsPayload, transitioned: false };
 
   const counts = new Map<string, number>();
   for (const doc of votesSnap.docs) {
@@ -299,9 +327,20 @@ export async function calculateEventResults(
     if (!currentEvent || currentEvent.organizationId !== organizationId || !["CLOSED", "ARCHIVED"].includes(currentEvent.status)) throw new Error("NOT_CLOSED");
     const resultRef = db.collection("eventResults").doc(eventId);
     const currentResult = (await tx.get(resultRef)).data();
-    if (currentResult?.published === true) return currentResult as EventResultsPayload;
+    if (currentResult?.published === true) return { results: currentResult as EventResultsPayload, transitioned: false };
     if (options?.publish === true) await assertIndependentApproval(tx, db, eventId, currentEvent, "RESULTS", actorUid, resultApprovalContent(payload));
     tx.set(resultRef, payload, { merge: true });
-    return payload;
+    if (options?.publish === true) {
+      tx.set(db.collection("auditLogs").doc(), {
+        organizationId,
+        actorUid,
+        action: "PUBLISH_RESULTS",
+        resourceType: "votingEvent",
+        resourceId: eventId,
+        metadata: { totalVotes: payload.totalVotes },
+        timestamp: FieldValue.serverTimestamp(),
+      });
+    }
+    return { results: payload, transitioned: options?.publish === true };
   });
 }

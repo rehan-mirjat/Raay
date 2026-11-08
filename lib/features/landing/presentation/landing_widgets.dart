@@ -257,22 +257,25 @@ class _FeatureCardState extends State<FeatureCard> {
                 ]
               : const [],
         ),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconTile(f.icon),
-              const SizedBox(height: 16),
-              Text(f.title,
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: kc.textPrimary)),
-              const SizedBox(height: 8),
-              Text(f.body,
-                  style: TextStyle(
-                      fontSize: 15, height: 1.55, color: kc.textSecondary)),
-            ]),
+        child: SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconTile(f.icon),
+                const SizedBox(height: 16),
+                Text(f.title,
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: kc.textPrimary)),
+                const SizedBox(height: 8),
+                Text(f.body,
+                    style: TextStyle(
+                        fontSize: 15, height: 1.55, color: kc.textSecondary)),
+              ]),
+        ),
       ),
     );
   }

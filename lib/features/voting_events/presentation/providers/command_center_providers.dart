@@ -12,7 +12,7 @@ final eventMonitoringSummaryProvider =
     final response = await FirebaseService()
         .functions
         .httpsCallable('getEventMonitoring')
-        .call({'eventId': eventId});
+        .call({'eventId': eventId, 'includeDetails': false});
     return Map<String, dynamic>.from(response.data as Map);
   } catch (_) {
     return null;

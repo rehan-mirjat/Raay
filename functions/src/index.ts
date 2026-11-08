@@ -56,6 +56,7 @@ export * from "./voting_events/updateVotingEvent";
 export * from "./voting_events/publishVotingEvent";
 export * from "./voting_events/closeVotingEvent";
 export * from "./voting_events/cancelVotingEvent";
+export * from "./voting_events/archiveVotingEvent";
 export * from "./voting_events/deleteVotingEvent";
 export * from "./voting_events/evaluateVotingEventLifecycles";
 export * from "./voting_events/manageEventTemplates";

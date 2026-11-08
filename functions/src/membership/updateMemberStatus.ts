@@ -1,15 +1,18 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
-import { requireActiveMembership, requireOperationalOrganization, requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
+import { requireActiveMembership, requireOperationalOrganization, requireNotRevoked, requireRecentAuthentication, requireMfaVerified } from "../utils/authorization";
+import { requireMemberCapacity } from "../billing/plans";
 
 export const updateMemberStatus = onCall(async (request) => {
   if (!request.auth || !request.auth.uid) {
     throw new HttpsError("unauthenticated", "Authentication required.");
   }
 
-  // FR-10: suspension/status changes are an explicitly-named sensitive operation.
+  // FR-10 / MFA-REQ-001: status changes decide who can vote, in both directions,
+  // so deactivating and reactivating carry the same guards as removeMember.
   await requireNotRevoked(request);
   requireRecentAuthentication(request.auth);
+  await requireMfaVerified(request.auth);
 
   const uid = request.auth.uid;
   const { organizationId, targetUid, newStatus } = request.data || {};
@@ -43,7 +46,8 @@ export const updateMemberStatus = onCall(async (request) => {
         db, organizationId, uid, ["owner", "admin"], { preFetchedSnap: callerSnap }
       );
 
-      await requireOperationalOrganization(db, organizationId, transaction);
+      const orgSnap = await requireOperationalOrganization(db, organizationId, transaction);
+      const orgData = orgSnap.data();
 
       if (!targetSnap.exists) {
         throw new HttpsError("not-found", "Target user is not a member of this organization.");
@@ -62,6 +66,10 @@ export const updateMemberStatus = onCall(async (request) => {
 
       if (currentStatus === newStatus) {
         throw new HttpsError("failed-precondition", `User status is already '${newStatus}'.`);
+      }
+
+      if (newStatus === "active" && currentStatus !== "active") {
+        await requireMemberCapacity(db, transaction, organizationId, orgData);
       }
 
       // Apply update

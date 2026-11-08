@@ -173,7 +173,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
       final location = state.matchedLocation;
 
-      if (location == '/pricing') return null;
+      if (location == '/pricing' ||
+          location == '/receipt-verify' ||
+          location == '/transparency') {
+        return null;
+      }
 
       if (notifier.isAuthLoading) {
         return '/splash';
@@ -282,7 +286,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/receipt-verify',
-        builder: (context, state) => const ReceiptVerificationScreen(),
+        builder: (context, state) => ReceiptVerificationScreen(
+          initialHash: state.uri.queryParameters['hash'],
+        ),
       ),
       GoRoute(
         path: '/transparency',

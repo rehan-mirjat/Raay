@@ -1,7 +1,7 @@
 import { getAuth } from "firebase-admin/auth";
 import { FieldValue, getFirestore } from "firebase-admin/firestore";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
-import { requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
+import { requireMfaVerified, requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
 
 /** Removes the platform-admin custom claim without changing other custom claims. */
 export const removeAdmin = onCall(async (request) => {
@@ -11,9 +11,10 @@ export const removeAdmin = onCall(async (request) => {
     throw new HttpsError("permission-denied", "Platform administrator access required.");
   }
 
-  // FR-10: revoking privileged access is a role/privilege change - sensitive.
+  // FR-10 / MFA-REQ-001: revoking privileged access is a role/privilege change - sensitive.
   await requireNotRevoked(request);
   requireRecentAuthentication(request.auth);
+  await requireMfaVerified(request.auth);
 
   const targetUid = typeof request.data?.uid === "string"
     ? request.data.uid.trim()

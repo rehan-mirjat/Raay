@@ -171,25 +171,20 @@ export const castVote = onCall({ cors: true }, async (request) => {
           createdAt: nowTs,
         });
       } else {
-        validateAnonymousBallotPayload({
-          organizationId: cleanOrgId,
-          votingEventId: cleanEventId,
-          ...(cleanCandidateId ? { candidateId: cleanCandidateId } : { pollOptionId: cleanPollOptionId }),
-          castAt: nowTs,
-        });
-        // ANONYMITY HARDENING: no timestamp stored on the ballot record.
-        // participation/{id} carries votedAt (needed for duplicate-prevention
-        // and turnout counts) but that document is keyed by uid - it is the
-        // intended linkage point. The votes document intentionally carries no
-        // field that could be correlated back to a specific voter via timing.
-        transaction.set(votesRef, {
+        const anonymousBallotPayload = {
           organizationId: cleanOrgId,
           votingEventId: cleanEventId,
           privacyMode: "ANONYMOUS",
           choiceType: choiceResult!.choiceType,
           choiceId: choiceResult!.choiceId,
-          // createdAt deliberately omitted — see anonymity note above.
-        });
+        };
+        validateAnonymousBallotPayload(anonymousBallotPayload);
+        // ANONYMITY HARDENING: no timestamp stored on the ballot record.
+        // participation/{id} carries votedAt (needed for duplicate-prevention
+        // and turnout counts) but that document is keyed by uid - it is the
+        // intended linkage point. The votes document intentionally carries no
+        // field that could be correlated back to a specific voter via timing.
+        transaction.set(votesRef, anonymousBallotPayload);
       }
 
       // Write 2: Atomic Participation Record

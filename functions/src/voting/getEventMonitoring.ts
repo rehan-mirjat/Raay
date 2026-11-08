@@ -45,6 +45,74 @@ export const getEventMonitoring = onCall(async (request) => {
     throw new HttpsError("failed-precondition", "Live monitoring is available for scheduled or active events.");
   }
 
+  const contestCount = event.ballotMode === "MULTI_CONTEST" ? parseContests(event.contests).length : 1;
+  const includeDetails = request.data?.includeDetails !== false && request.data?.details !== false;
+  const shouldComputeDetails = isAdminCaller && includeDetails;
+
+  // When the caller is an observer or when detail arrays are not requested,
+  // leverage server-side aggregation (.count().get()) on participation and
+  // votingEventEligibility rather than downloading individual documents.
+  if (!shouldComputeDetails) {
+    const [acceptedVotesSnap, participationCountSnap, eligCountSnap, eligDocSnap] = await Promise.all([
+      db.collection("votes")
+        .where("organizationId", "==", organizationId)
+        .where("votingEventId", "==", eventId)
+        .count()
+        .get(),
+      db.collection("participation")
+        .where("organizationId", "==", organizationId)
+        .where("votingEventId", "==", eventId)
+        .count()
+        .get(),
+      db.collection("votingEventEligibility")
+        .where("organizationId", "==", organizationId)
+        .where("votingEventId", "==", eventId)
+        .count()
+        .get(),
+      db.collection("votingEventEligibility").doc(eventId).get(),
+    ]);
+
+    let eligibleCount: number;
+    const eligData = eligDocSnap.exists ? eligDocSnap.data() : null;
+
+    if (eligCountSnap.data().count > 1) {
+      eligibleCount = eligCountSnap.data().count;
+    } else if (typeof eligData?.eligibleCount === "number") {
+      eligibleCount = eligData.eligibleCount;
+    } else if (Array.isArray(eligData?.eligibleUserIds)) {
+      eligibleCount = eligData.eligibleUserIds.length;
+    } else if (eligCountSnap.data().count === 1) {
+      eligibleCount = eligCountSnap.data().count;
+    } else if (eligData?.eligibilityType === "ALL_MEMBERS" || event.eligibilityType === "ALL_MEMBERS") {
+      const allMembersSnap = await db.collection("organizationMembers")
+        .where("organizationId", "==", organizationId)
+        .where("status", "==", "active")
+        .count()
+        .get();
+      eligibleCount = allMembersSnap.data().count;
+    } else {
+      eligibleCount = eligCountSnap.data().count;
+    }
+
+    const participationRecordCount = participationCountSnap.data().count;
+    const participationCount = acceptedVotesSnap.data().count > 0 || participationRecordCount === 0
+      ? acceptedBallotCount(acceptedVotesSnap.data().count, contestCount)
+      : participationRecordCount;
+    const turnoutPercent = eligibleCount === 0 ? 0 : Math.round((participationCount / eligibleCount) * 10000) / 100;
+
+    return {
+      eventId,
+      status: event.status,
+      eligibleCount,
+      participationCount,
+      turnoutPercent,
+      detailsUnavailable: false,
+      departmentBreakdown: [],
+      participationHistory: [],
+      refreshedAt: new Date().toISOString(),
+    };
+  }
+
   const [eligibleMembers, participationSnap, departmentsSnap, acceptedVotes] = await Promise.all([
     getEligibleMembers(db, organizationId, eventId, event),
     db.collection("participation")
@@ -68,7 +136,7 @@ export const getEventMonitoring = onCall(async (request) => {
   votedAtMs.sort((a, b) => a - b);
 
   const eligibleCount = eligibleMembers.length;
-  const participationCount = acceptedBallotCount(acceptedVotes.data().count, event.ballotMode === "MULTI_CONTEST" ? parseContests(event.contests).length : 1);
+  const participationCount = acceptedBallotCount(acceptedVotes.data().count, contestCount);
   const detailsComplete = participationCount === votedUserIds.size;
   const turnoutPercent = eligibleCount === 0 ? 0 : Math.round((participationCount / eligibleCount) * 10000) / 100;
 
@@ -78,11 +146,11 @@ export const getEventMonitoring = onCall(async (request) => {
   // Package D's spec says an Observer must never see ("do not expose...
   // small-group turnout breakdowns that could reveal sensitive participation
   // patterns"). Only computed for admin callers.
-  const departmentBreakdown = isAdminCaller && detailsComplete
+  const departmentBreakdown = detailsComplete
     ? buildDepartmentBreakdown(eligibleMembers, votedUserIds, departmentNames)
     : [];
   const openedAtMs = (event.startAt instanceof Timestamp ? event.startAt.toMillis() : null) ?? (votedAtMs[0] ?? Date.now());
-  const participationHistory = isAdminCaller && detailsComplete
+  const participationHistory = detailsComplete
     ? buildParticipationHistory(votedAtMs, openedAtMs, Date.now(), PARTICIPATION_HISTORY_POINTS)
     : [];
 
@@ -92,7 +160,7 @@ export const getEventMonitoring = onCall(async (request) => {
     eligibleCount,
     participationCount,
     turnoutPercent,
-    detailsUnavailable: isAdminCaller && !detailsComplete,
+    detailsUnavailable: !detailsComplete,
     departmentBreakdown,
     participationHistory,
     refreshedAt: new Date().toISOString(),

@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import '../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:raay/core/theme/raay_icons.dart';
@@ -13,11 +14,16 @@ import '../domain/receipt_verification_outcome.dart';
 typedef ReceiptVerifier = Future<void> Function(String hash);
 
 class ReceiptVerificationScreen extends StatefulWidget {
-  const ReceiptVerificationScreen({super.key, this.verifier});
+  const ReceiptVerificationScreen({
+    super.key,
+    this.verifier,
+    this.initialHash,
+  });
 
   /// Replaces the network call. Throws exactly like the `verifyReceipt`
   /// callable does. Production leaves this null; tests inject it.
   final ReceiptVerifier? verifier;
+  final String? initialHash;
 
   @override
   State<ReceiptVerificationScreen> createState() =>
@@ -25,9 +31,15 @@ class ReceiptVerificationScreen extends StatefulWidget {
 }
 
 class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
-  final _hashController = TextEditingController();
+  late final TextEditingController _hashController;
   bool _isSearching = false;
   ReceiptVerificationOutcome? _outcome;
+
+  @override
+  void initState() {
+    super.initState();
+    _hashController = TextEditingController(text: widget.initialHash ?? '');
+  }
 
   @override
   void dispose() {
@@ -76,6 +88,16 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
     });
   }
 
+  Future<void> _pasteFromClipboard() async {
+    final data = await Clipboard.getData('text/plain');
+    final text = data?.text?.trim();
+    if (text != null && text.isNotEmpty) {
+      setState(() {
+        _hashController.text = text;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final kc = RaayColors.of(context);
@@ -122,6 +144,11 @@ class _ReceiptVerificationScreenState extends State<ReceiptVerificationScreen> {
                         controller: _hashController,
                         hint: AppLocalizations.of(context).rvfHashHint,
                         prefixIcon: RaayIcons.lock,
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.content_paste_rounded, size: 20),
+                          tooltip: 'Paste from clipboard',
+                          onPressed: _pasteFromClipboard,
+                        ),
                         textInputAction: TextInputAction.search,
                         onFieldSubmitted: (_) => _verifyReceipt(),
                       ),

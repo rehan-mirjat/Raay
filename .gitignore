@@ -33,12 +33,20 @@ firestore-tests/node_modules/
 # Secrets
 google-services.json
 GoogleService-Info.plist
-.env
+.env*
+*serviceAccount*.json
+*-adminsdk-*.json
 
-# Android release signing - NEVER commit these
-android/app/*.jks
-android/app/*.keystore
+# Android / Mobile release signing - NEVER commit these
+*.jks
+*.keystore
+*.p12
+*.key
 android/key.properties
+
+# Coverage and cache
+coverage/
+.config/
 
 # Test suites are kept local and are not published
 test/

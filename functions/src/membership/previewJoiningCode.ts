@@ -149,13 +149,11 @@ export const previewJoiningCode = onCall(
         throw new HttpsError("failed-precondition", `Organization is currently ${orgStatus} and cannot accept new members.`);
       }
 
-      // A successful preview isn't an attack signal, so it shouldn't eat into
-      // the budget the real join attempt needs - clear it, same as a
-      // successful join does.
-      await rateLimitRef.delete().catch((e: unknown) => {
-        const logger = require("firebase-functions/logger");
-        logger.warn("Failed to clear join-code rate limit after successful preview", { uid, error: (e as Error).message });
-      });
+      // Security note (CWE-307 / CWE-799): Do NOT delete or clear rateLimitRef on preview.
+      // A successful preview must not reset the rate limiter; otherwise, an attacker
+      // could guess 4 invalid codes against a victim organization, then preview a valid code
+      // from their own organization to clear the counter and evade the 15-minute lockout.
+      // Only genuine joining (joinOrganizationWithCode) clears the rate limit upon successful join.
 
       return {
         status: "success",

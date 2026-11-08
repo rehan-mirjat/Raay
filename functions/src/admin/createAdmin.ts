@@ -1,7 +1,7 @@
 import { getAuth } from "firebase-admin/auth";
 import { FieldValue, getFirestore } from "firebase-admin/firestore";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
-import { requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
+import { requireMfaVerified, requireNotRevoked, requireRecentAuthentication } from "../utils/authorization";
 
 /** Grants the platform-admin custom claim to an existing verified account. */
 export const createAdmin = onCall(async (request) => {
@@ -11,9 +11,10 @@ export const createAdmin = onCall(async (request) => {
     throw new HttpsError("permission-denied", "Platform administrator access required.");
   }
 
-  // FR-10: granting privileged access is a role/privilege change - sensitive.
+  // FR-10 / MFA-REQ-001: granting privileged access is a role/privilege change - sensitive.
   await requireNotRevoked(request);
   requireRecentAuthentication(request.auth);
+  await requireMfaVerified(request.auth);
 
   const email = typeof request.data?.email === "string"
     ? request.data.email.trim().toLowerCase()
