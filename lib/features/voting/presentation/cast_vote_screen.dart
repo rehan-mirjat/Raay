@@ -536,6 +536,71 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
     final isIdentifiable = event.privacyMode == PrivacyMode.identifiable;
     final primary = Theme.of(context).colorScheme.primary;
 
+    if (event.isMultiContest && !_abstain) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Semantics(
+            header: true,
+            child: Text(l10n.voteReviewYourBallot,
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: kc.textSecondary)),
+          ),
+          const SizedBox(height: 12),
+          for (final c in event.contests) ...[
+            () {
+              final choice = c.choices.firstWhere(
+                (ch) => ch.id == _contestSelections[c.id],
+                orElse: () => c.choices.first,
+              );
+              return Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: primary.withValues(alpha: kc.isDark ? 0.16 : 0.08),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+                  border: Border.all(color: primary.withValues(alpha: 0.5)),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.check_circle_rounded,
+                        color: kc.successText, size: 20),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        '${c.title}: ${choice.label}',
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: kc.textPrimary),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }(),
+          ],
+          const SizedBox(height: 6),
+          _banner(context,
+              icon: isIdentifiable
+                  ? Icons.visibility_outlined
+                  : Icons.visibility_off_outlined,
+              color: isIdentifiable ? kc.warningText : kc.successText,
+              text: isIdentifiable
+                  ? l10n.voteIdentifiableExplanation
+                  : l10n.voteAnonymousExplanation),
+          const SizedBox(height: 12),
+          _banner(context,
+              icon: Icons.lock_outline_rounded,
+              color: kc.accentText,
+              text: l10n.ballotFinality),
+        ],
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -553,7 +618,8 @@ class _CastVoteScreenState extends ConsumerState<CastVoteScreen> {
             border: Border.all(color: primary.withValues(alpha: 0.5)),
           ),
           child: Row(children: [
-            Icon(Icons.how_to_vote, color: kc.accentText),
+            Icon(_abstain ? Icons.block_rounded : Icons.how_to_vote,
+                color: kc.accentText),
             const SizedBox(width: 12),
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -769,9 +835,11 @@ class _RadioMark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final kc = RaayColors.of(context);
+    final primary = Theme.of(context).colorScheme.primary;
     return Icon(
-      selected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-      color: selected ? kc.accentText : kc.textSecondary,
+      selected ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
+      color: selected ? primary : kc.textSecondary,
+      size: 22,
     );
   }
 }

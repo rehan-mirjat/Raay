@@ -123,23 +123,23 @@ class RaayElectionCard extends StatelessWidget {
 
     switch (event.status) {
       case VotingEventStatus.active:
-        bg = AppTheme.success.withValues(alpha: 0.12);
-        fg = AppTheme.success;
+        bg = kc.successBg;
+        fg = kc.successText;
         label = 'Ongoing';
         break;
       case VotingEventStatus.scheduled:
-        bg = AppTheme.warning.withValues(alpha: 0.12);
-        fg = AppTheme.warning;
+        bg = kc.warningBg;
+        fg = kc.warningText;
         label = 'Upcoming';
         break;
       case VotingEventStatus.draft:
-        bg = kc.isDark ? AppTheme.darkBorder : AppTheme.borderLight;
+        bg = kc.subtleBorder;
         fg = kc.textSecondary;
         label = 'Draft';
         break;
       default:
-        bg = kc.isDark ? AppTheme.darkBorder : AppTheme.borderLight;
-        fg = kc.textSecondary;
+        bg = kc.subtleBorder;
+        fg = kc.textMuted;
         label = 'Completed';
     }
 

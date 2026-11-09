@@ -217,7 +217,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
                   _note(kc, Icons.sync_problem_rounded, l10n.monRefreshIssue, color: kc.warningText),
                 ],
                 const SizedBox(height: 20),
-                _stats(context, l10n, kc),
+                _stats(context, l10n, kc, event),
                 const SizedBox(height: 20),
                 _mainGrid(context, l10n, kc, event, isDesktop),
                 if (event?.status == VotingEventStatus.active) ...[
@@ -303,7 +303,7 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
     ]);
   }
 
-  Widget _stats(BuildContext context, AppLocalizations l10n, RaayColors kc) {
+  Widget _stats(BuildContext context, AppLocalizations l10n, RaayColors kc, VotingEvent? event) {
     final eligible = (_summary?['eligibleCount'] as num?)?.toInt() ?? 0;
     final voted = (_summary?['participationCount'] as num?)?.toInt() ?? 0;
     final notYet = (eligible - voted).clamp(0, eligible);
@@ -312,28 +312,99 @@ class _EventMonitoringScreenState extends ConsumerState<EventMonitoringScreen> {
     final turnoutCard = Container(
       padding: const EdgeInsets.all(20),
       decoration: _card(kc),
-      child: Wrap(crossAxisAlignment: WrapCrossAlignment.center, spacing: 16, runSpacing: 8, children: [
-        Text('${turnout.toStringAsFixed(0)}%',
-            style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: kc.accentText)),
-        ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: 160, maxWidth: 360),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-            Text(l10n.monTurnoutLabel, style: TextStyle(fontSize: 14, color: kc.textSecondary)),
-            const SizedBox(height: 6),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(999),
-              child: LinearProgressIndicator(
-                value: eligible == 0 ? 0 : (voted / eligible).clamp(0, 1).toDouble(),
-                minHeight: 8,
-                backgroundColor: kc.border,
-                valueColor: AlwaysStoppedAnimation<Color>(kc.accentText),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 16,
+            runSpacing: 8,
+            children: [
+              Text('${turnout.toStringAsFixed(0)}%',
+                  style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      color: kc.accentText)),
+              ConstrainedBox(
+                constraints:
+                    const BoxConstraints(minWidth: 160, maxWidth: 360),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(l10n.monTurnoutLabel,
+                        style:
+                            TextStyle(fontSize: 14, color: kc.textSecondary)),
+                    const SizedBox(height: 6),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(999),
+                      child: LinearProgressIndicator(
+                        value: eligible == 0
+                            ? 0
+                            : (voted / eligible).clamp(0, 1).toDouble(),
+                        minHeight: 8,
+                        backgroundColor: kc.border,
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(kc.accentText),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(l10n.monOfEligible(voted, eligible),
+                        style:
+                            TextStyle(fontSize: 14, color: kc.textSecondary)),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(l10n.monOfEligible(voted, eligible), style: TextStyle(fontSize: 14, color: kc.textSecondary)),
-          ]),
-        ),
-      ]),
+            ],
+          ),
+          if (event?.quorumPercent != null) ...[
+            const SizedBox(height: 14),
+            () {
+              final quorum = event!.quorumPercent!;
+              final isMet = turnout >= quorum;
+              final diff = (quorum - turnout).clamp(0, 100);
+              final color = isMet ? kc.successText : kc.warningText;
+              return Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: kc.isDark ? 0.16 : 0.08),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+                  border: Border.all(color: color.withValues(alpha: 0.35)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      isMet ? Icons.verified_rounded : Icons.flag_outlined,
+                      size: 18,
+                      color: color,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '${l10n.quorumLabel}: $quorum%',
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: kc.textPrimary),
+                      ),
+                    ),
+                    Text(
+                      isMet
+                          ? l10n.quorumMetLabel
+                          : '${diff.toStringAsFixed(0)}% needed',
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: color),
+                    ),
+                  ],
+                ),
+              );
+            }(),
+          ],
+        ],
+      ),
     );
 
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [

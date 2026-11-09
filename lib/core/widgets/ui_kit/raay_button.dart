@@ -2,15 +2,23 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/raay_colors.dart';
 
-enum RaayButtonType { primary, secondary, ghost, destructive }
+enum RaayButtonType { primary, secondary, ghost, destructive, accent }
 
+/// Raay Design System Button component.
+///
+/// Implements standardized brand button hierarchy with accessible WCAG contrast,
+/// loading spinner, icon placement, and crisp high-DPI rounded borders.
 class RaayButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
   final RaayButtonType type;
   final IconData? icon;
+  final IconData? trailingIcon;
   final bool isLoading;
   final bool isExpanded;
+  final double height;
+  final EdgeInsetsGeometry? padding;
+  final double? borderRadius;
 
   const RaayButton({
     super.key,
@@ -18,14 +26,18 @@ class RaayButton extends StatelessWidget {
     this.onPressed,
     this.type = RaayButtonType.primary,
     this.icon,
+    this.trailingIcon,
     this.isLoading = false,
     this.isExpanded = true,
+    this.height = 50.0,
+    this.padding,
+    this.borderRadius,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final colors = RaayColors.of(context);
+    final theme = Theme.of(context);
 
     Color bg;
     Color fg;
@@ -33,15 +45,16 @@ class RaayButton extends StatelessWidget {
 
     switch (type) {
       case RaayButtonType.primary:
-        bg = Theme.of(context).colorScheme.primary;
-        fg = Theme.of(context).colorScheme.onPrimary;
+        bg = theme.colorScheme.primary;
+        fg = theme.colorScheme.onPrimary;
         break;
       case RaayButtonType.secondary:
-        bg = isDark ? AppTheme.darkElevated : AppTheme.surfaceWhite;
-        fg = isDark ? AppTheme.darkTextPrimary : AppTheme.textPrimary;
+        bg = colors.elevated;
+        fg = colors.textPrimary;
         border = BorderSide(
-          color: isDark ? AppTheme.darkBorder : AppTheme.borderLight,
+          color: colors.border,
           width: 1.2,
+          strokeAlign: BorderSide.strokeAlignInside,
         );
         break;
       case RaayButtonType.ghost:
@@ -49,24 +62,41 @@ class RaayButton extends StatelessWidget {
         fg = colors.accentText;
         break;
       case RaayButtonType.destructive:
-        bg = colors.errorText.withValues(alpha: 0.1);
+        bg = colors.errorBg;
         fg = colors.errorText;
-        border = BorderSide(color: colors.errorText.withValues(alpha: 0.5));
+        border = BorderSide(
+          color: colors.errorBorder,
+          width: 1.2,
+          strokeAlign: BorderSide.strokeAlignInside,
+        );
+        break;
+      case RaayButtonType.accent:
+        bg = const Color(0xFF0F766E);
+        fg = Colors.white;
         break;
     }
+
+    final effectiveRadius = borderRadius ?? AppTheme.radiusButton;
 
     final buttonStyle = ElevatedButton.styleFrom(
       backgroundColor: bg,
       foregroundColor: fg,
       shadowColor: Colors.transparent,
-      disabledBackgroundColor: bg.withValues(alpha: 0.5),
+      elevation: 0,
+      disabledBackgroundColor: bg.withValues(alpha: 0.4),
       disabledForegroundColor: fg.withValues(alpha: 0.5),
-      minimumSize: Size(isExpanded ? double.infinity : 0, 50),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+      minimumSize: Size(isExpanded ? double.infinity : 0, height),
+      padding: padding ?? const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppTheme.radiusButton),
-        side: border ?? BorderSide.none,
+        borderRadius: BorderRadius.circular(effectiveRadius),
       ),
+    ).copyWith(
+      side: WidgetStateProperty.resolveWith<BorderSide?>((states) {
+        if (states.contains(WidgetState.focused)) {
+          return BorderSide(color: colors.accentText, width: 2.0);
+        }
+        return border ?? BorderSide.none;
+      }),
     );
 
     Widget content = Row(
@@ -75,32 +105,44 @@ class RaayButton extends StatelessWidget {
       children: [
         if (isLoading)
           Container(
-            width: 20,
-            height: 20,
-            margin: const EdgeInsetsDirectional.only(end: 12),
+            width: 18,
+            height: 18,
+            margin: const EdgeInsetsDirectional.only(end: 10),
             child: CircularProgressIndicator(
               strokeWidth: 2.5,
+              strokeCap: StrokeCap.round,
               valueColor: AlwaysStoppedAnimation<Color>(fg),
             ),
           )
         else if (icon != null)
           Padding(
             padding: const EdgeInsetsDirectional.only(end: 8),
-            child: Icon(icon, size: 20),
+            child: ExcludeSemantics(child: Icon(icon, size: 20, color: fg)),
           ),
         Flexible(
-            child: Text(
-          label,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-        )),
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+          ),
+        ),
+        if (!isLoading && trailingIcon != null)
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 8),
+            child: ExcludeSemantics(child: Icon(trailingIcon, size: 20, color: fg)),
+          ),
       ],
     );
 
-    return ElevatedButton(
-      onPressed: isLoading ? null : onPressed,
-      style: buttonStyle,
-      child: content,
+    return Semantics(
+      button: true,
+      enabled: !isLoading && onPressed != null,
+      label: isLoading ? '$label, loading' : label,
+      child: ElevatedButton(
+        onPressed: isLoading ? null : onPressed,
+        style: buttonStyle,
+        child: content,
+      ),
     );
   }
 }

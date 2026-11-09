@@ -227,6 +227,12 @@ class _SecureEVotingAppState extends ConsumerState<SecureEVotingApp>
             child: content,
           );
         }
+        // User mandate: LTR for every language across the app
+        content = Directionality(
+          textDirection: TextDirection.ltr,
+          child: content,
+        );
+
         return ColoredBox(color: RaayColors.backgroundOf(context),
             child: AppUpdateGate(child: content));
       },

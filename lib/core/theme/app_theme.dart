@@ -10,11 +10,15 @@ class AppTheme {
     )
   ];
   // ── Brand Colors ────────────────────────────────────────────────────────────
+  static const Color primaryNavy = Color(0xFF0A192F);   // Raay Deep Navy (#0A192F)
+  static const Color primarySlate = Color(0xFF0F172A);  // Raay Slate Primary (#0F172A)
   static const Color primaryBlue = Color(0xFF6D4AFF);   // Raay Violet (primary, filled controls)
   static const Color primaryBlueDark = Color(0xFF5936DB);   // pressed / hover
   static const Color secondaryBlue = Color(0xFF3284FF); // Secondary Blue
   static const Color accentCyan = Color(0xFF28C8FF);    // Accent Cyan
   static const Color secondaryNavy = Color(0xFF0B1020); // Deep Midnight
+  static const Color accentEmerald = Color(0xFF10B981); // Emerald accent (#10B981)
+  static const Color accentTealDark = Color(0xFF0D9488);// Deep Teal accent (#0D9488)
 
   // ── Semantic Colors ──────────────────────────────────────────────────────────
   static const Color accentTeal = Color(0xFF10B981);    // Success / Verified
@@ -37,6 +41,10 @@ class AppTheme {
   static const Color warningTextDark = Color(0xFFF5B94A);
   static const Color errorTextDark = Color(0xFFFF8A80);
   static const Color infoTextDark = Color(0xFF7DB8FF);
+
+  // ── Text Hierarchy Tokens (Primary, Secondary, Muted) ──────────────────────
+  static const Color textMuted = Color(0xFF64748B);       // Slate 500 (WCAG 4.73:1 on white)
+  static const Color darkTextMuted = Color(0xFF94A3B8);   // Slate 400 (WCAG 6.5:1 on dark)
 
   // ── Light Mode Surfaces ──────────────────────────────────────────────────────
   static const Color backgroundLight = Color(0xFFF7F8FC);
@@ -568,23 +576,43 @@ class AppTheme {
           const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(radiusInput),
-        borderSide: BorderSide(color: borderColor, width: 1.2),
+        borderSide: BorderSide(
+          color: borderColor,
+          width: 1.2,
+          strokeAlign: BorderSide.strokeAlignInside,
+        ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(radiusInput),
-        borderSide: BorderSide(color: borderColor, width: 1.2),
+        borderSide: BorderSide(
+          color: borderColor,
+          width: 1.2,
+          strokeAlign: BorderSide.strokeAlignInside,
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(radiusInput),
-        borderSide: BorderSide(color: focusColor, width: 1.8),
+        borderSide: BorderSide(
+          color: focusColor,
+          width: 1.8,
+          strokeAlign: BorderSide.strokeAlignInside,
+        ),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(radiusInput),
-        borderSide: const BorderSide(color: error, width: 1.2),
+        borderSide: const BorderSide(
+          color: error,
+          width: 1.2,
+          strokeAlign: BorderSide.strokeAlignInside,
+        ),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(radiusInput),
-        borderSide: const BorderSide(color: error, width: 1.8),
+        borderSide: const BorderSide(
+          color: error,
+          width: 1.8,
+          strokeAlign: BorderSide.strokeAlignInside,
+        ),
       ),
       hintStyle: GoogleFonts.plusJakartaSans(color: hintColor, fontSize: 14),
       labelStyle: GoogleFonts.plusJakartaSans(

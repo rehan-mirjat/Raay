@@ -1,22 +1,42 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+// ─── Accessibility Helper ─────────────────────────────────────────────────────
+
+/// Returns true if reduced motion is requested via system accessibility
+/// or the Raay user preference (layered into MediaQuery at the app root).
+bool _reduceMotion(BuildContext context) =>
+    MediaQuery.maybeOf(context)?.disableAnimations ?? false;
 
 // ─── Page route transitions ───────────────────────────────────────────────────
 
 /// Fade + upward-slide page entry. Use as GoRouter's pageBuilder.
+/// Respects accessibility reduced-motion settings.
 class RaayFadeSlideRoute<T> extends PageRouteBuilder<T> {
   RaayFadeSlideRoute({required WidgetBuilder builder, super.settings})
       : super(
           pageBuilder: (context, animation, secondaryAnimation) =>
               builder(context),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            if (_reduceMotion(context)) {
+              return child;
+            }
             final fade = CurvedAnimation(
-                parent: animation, curve: Curves.easeOutCubic);
+              parent: animation,
+              curve: Curves.easeOutCubic,
+            );
             final slide = Tween<Offset>(
-                    begin: const Offset(0, 0.03), end: Offset.zero)
-                .animate(CurvedAnimation(
-                    parent: animation, curve: Curves.easeOutCubic));
+              begin: const Offset(0, 0.03),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+            ));
             return FadeTransition(
-                opacity: fade, child: SlideTransition(position: slide, child: child));
+              opacity: fade,
+              child: SlideTransition(position: slide, child: child),
+            );
           },
           transitionDuration: const Duration(milliseconds: 220),
           reverseTransitionDuration: const Duration(milliseconds: 180),
@@ -27,6 +47,7 @@ class RaayFadeSlideRoute<T> extends PageRouteBuilder<T> {
 
 /// Wraps any screen content in a fade + upward-slide entry.
 /// Drop it at the top of each screen's build() body.
+/// Instantly renders child without animation when reduced motion is preferred.
 class PageEntry extends StatefulWidget {
   const PageEntry({super.key, required this.child, this.delay = Duration.zero});
   final Widget child;
@@ -41,12 +62,15 @@ class _PageEntryState extends State<PageEntry>
   late final AnimationController _ctrl;
   late final Animation<double> _fade;
   late final Animation<Offset> _slide;
+  Timer? _delayTimer;
 
   @override
   void initState() {
     super.initState();
     _ctrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 280));
+      vsync: this,
+      duration: const Duration(milliseconds: 260),
+    );
     _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic);
     _slide = Tween<Offset>(begin: const Offset(0, 0.04), end: Offset.zero)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
@@ -54,7 +78,7 @@ class _PageEntryState extends State<PageEntry>
     if (widget.delay == Duration.zero) {
       _ctrl.forward();
     } else {
-      Future.delayed(widget.delay, () {
+      _delayTimer = Timer(widget.delay, () {
         if (mounted) _ctrl.forward();
       });
     }
@@ -62,24 +86,34 @@ class _PageEntryState extends State<PageEntry>
 
   @override
   void dispose() {
+    _delayTimer?.cancel();
     _ctrl.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) =>
-      FadeTransition(opacity: _fade, child: SlideTransition(position: _slide, child: widget.child));
+  Widget build(BuildContext context) {
+    if (_reduceMotion(context)) {
+      return widget.child;
+    }
+    return FadeTransition(
+      opacity: _fade,
+      child: SlideTransition(position: _slide, child: widget.child),
+    );
+  }
 }
 
 // ─── Staggered list entry ─────────────────────────────────────────────────────
 
-/// Animates a list item in with a delay based on [index].
+/// Animates a list item in with a progressive delay based on [index].
+/// Automatically capped so deep lists remain snappy (<300ms max stagger).
+/// Skips animation when reduced motion is requested.
 class StaggeredListItem extends StatefulWidget {
   const StaggeredListItem({
     super.key,
     required this.index,
     required this.child,
-    this.baseDelay = const Duration(milliseconds: 40),
+    this.baseDelay = const Duration(milliseconds: 35),
   });
   final int index;
   final Widget child;
@@ -94,43 +128,60 @@ class _StaggeredListItemState extends State<StaggeredListItem>
   late final AnimationController _ctrl;
   late final Animation<double> _fade;
   late final Animation<Offset> _slide;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     _ctrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 240));
+      vsync: this,
+      duration: const Duration(milliseconds: 240),
+    );
     _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
-    _slide = Tween<Offset>(begin: const Offset(0, 0.06), end: Offset.zero)
+    _slide = Tween<Offset>(begin: const Offset(0, 0.05), end: Offset.zero)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
 
     // Cap at 8 items worth of stagger so long lists don't feel slow
     final delay = widget.baseDelay * (widget.index.clamp(0, 8));
-    Future.delayed(delay, () {
-      if (mounted) _ctrl.forward();
-    });
+    if (delay == Duration.zero) {
+      _ctrl.forward();
+    } else {
+      _timer = Timer(delay, () {
+        if (mounted) _ctrl.forward();
+      });
+    }
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
     _ctrl.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) =>
-      FadeTransition(opacity: _fade, child: SlideTransition(position: _slide, child: widget.child));
+  Widget build(BuildContext context) {
+    if (_reduceMotion(context)) {
+      return widget.child;
+    }
+    return FadeTransition(
+      opacity: _fade,
+      child: SlideTransition(position: _slide, child: widget.child),
+    );
+  }
 }
 
 // ─── Press-scale button wrapper ───────────────────────────────────────────────
 
-/// Wraps any widget and scales it down slightly on press.
+/// Wraps interactive widgets with a subtle (scale 0.97) tactile compression
+/// and responsive (<100ms) spring release with gentle haptic feedback.
+/// Disables scale animation when reduced motion is preferred.
 class PressScaleWidget extends StatefulWidget {
   const PressScaleWidget({
     super.key,
     required this.child,
     this.onTap,
-    this.scale = 0.96,
+    this.scale = 0.97,
   });
   final Widget child;
   final VoidCallback? onTap;
@@ -149,9 +200,17 @@ class _PressScaleWidgetState extends State<PressScaleWidget>
   void initState() {
     super.initState();
     _ctrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 80));
-    _scale = Tween<double>(begin: 1.0, end: widget.scale)
-        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
+      vsync: this,
+      duration: const Duration(milliseconds: 70),
+      reverseDuration: const Duration(milliseconds: 90),
+    );
+    _scale = Tween<double>(begin: 1.0, end: widget.scale).animate(
+      CurvedAnimation(
+        parent: _ctrl,
+        curve: Curves.easeInOut,
+        reverseCurve: Curves.easeOutCubic,
+      ),
+    );
   }
 
   @override
@@ -160,12 +219,35 @@ class _PressScaleWidgetState extends State<PressScaleWidget>
     super.dispose();
   }
 
+  void _triggerHaptic() {
+    try {
+      HapticFeedback.lightImpact();
+    } catch (_) {}
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (widget.onTap == null) {
+      return widget.child;
+    }
+
+    if (_reduceMotion(context)) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          _triggerHaptic();
+          widget.onTap?.call();
+        },
+        child: widget.child,
+      );
+    }
+
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTapDown: (_) => _ctrl.forward(),
       onTapUp: (_) async {
-        await Future.delayed(const Duration(milliseconds: 60));
+        _triggerHaptic();
+        await Future.delayed(const Duration(milliseconds: 40));
         if (mounted) {
           _ctrl.reverse();
           widget.onTap?.call();
@@ -179,7 +261,8 @@ class _PressScaleWidgetState extends State<PressScaleWidget>
 
 // ─── Hover-lift card wrapper ──────────────────────────────────────────────────
 
-/// Wraps a card and elevates + lifts it slightly on hover (desktop).
+/// Wraps a card and elevates + lifts it slightly on hover (desktop/web).
+/// Provides smooth 60fps micro-elevation while honoring reduced motion preferences.
 class HoverLiftCard extends StatefulWidget {
   const HoverLiftCard({
     super.key,
@@ -205,8 +288,10 @@ class _HoverLiftCardState extends State<HoverLiftCard>
   void initState() {
     super.initState();
     _ctrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 160));
-    _elevation = Tween<double>(begin: 0, end: 6)
+      vsync: this,
+      duration: const Duration(milliseconds: 140),
+    );
+    _elevation = Tween<double>(begin: 0, end: 5)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
     _offset = Tween<Offset>(begin: Offset.zero, end: const Offset(0, -0.008))
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
@@ -220,10 +305,22 @@ class _HoverLiftCardState extends State<HoverLiftCard>
 
   @override
   Widget build(BuildContext context) {
+    final effectiveCursor = widget.onTap != null
+        ? SystemMouseCursors.click
+        : MouseCursor.defer;
+
+    if (_reduceMotion(context)) {
+      return MouseRegion(
+        cursor: effectiveCursor,
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: widget.child,
+        ),
+      );
+    }
+
     return MouseRegion(
-      cursor: widget.onTap != null
-          ? SystemMouseCursors.click
-          : MouseCursor.defer,
+      cursor: effectiveCursor,
       onEnter: (_) => _ctrl.forward(),
       onExit: (_) => _ctrl.reverse(),
       child: GestureDetector(
