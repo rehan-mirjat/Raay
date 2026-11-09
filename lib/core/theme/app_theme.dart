@@ -55,10 +55,10 @@ class AppTheme {
   static const Color surfaceBlue = Color(0xFFF0EDFF);   // Light violet tint
 
   // ── Dark Mode Surfaces ───────────────────────────────────────────────────────
-  static const Color darkBackground = Color(0xFF0F1420);
-  static const Color darkSurface = Color(0xFF171F2E);
-  static const Color darkElevated = Color(0xFF202B3D);
-  static const Color darkBorder = Color(0xFF354158);
+  static const Color darkBackground = Color(0xFF0B1118); // Stitch Obsidian Canvas
+  static const Color darkSurface = Color(0xFF161F2E);    // Stitch Panel Container
+  static const Color darkElevated = Color(0xFF1E293B);   // Stitch Elevated Card
+  static const Color darkBorder = Color(0xFF2A374A);     // Stitch Container Outline
   static const Color darkTextPrimary = Color(0xFFF4F6FB);
   static const Color darkTextSecondary = Color(0xFFB0BCD0);
 
